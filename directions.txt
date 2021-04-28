@@ -1,0 +1,42 @@
+Directions from Lobby Hallway 6 to Hallway Node 3 Floor 1:
+Head North towards Lobby Shattuck Street
+Turn Right towards Lower Pike Hallway Exit Lobby
+Continue Straight towards Hallway Connector 1 Floor 1
+Continue Straight towards Hallway Connector 2 Floor 1
+Continue Straight towards Staircase K1 Floor 1
+Continue Straight towards Hallway Node 1 Floor 1
+Continue Straight towards Hallway Node 2 Floor 1
+Continue Straight towards Hallway Node 3 Floor 1
+
+Welcome to Hallway Node 3 Floor 1
+Directions from Spiritual Care Office to Shattuck Street Lobby Exit:
+Head North towards Tower Hallway 9
+Turn Right towards Tower Hallway 10
+Turn Left towards Tower Elevator Entrance
+Turn Right towards Elevator L Floor 1
+Continue Straight towards Tower Lobby Entrance 1
+Continue Straight towards Shattuck Street Lobby 3
+Continue Straight towards Shattuck Street Lobby 2
+Continue Straight towards Shattuck Street Lobby 1
+Turn Left towards Shattuck Street Lobby Exit
+
+Welcome to Shattuck Street Lobby Exit
+Directions from Sharf Admitting Center to Tower Hallway 10:
+Head West towards Tower Hallway Entrance
+Turn Right towards Tower Hallway 11
+Continue Straight towards Tower Hallway 8
+Continue Straight towards Tower Hallway 13
+Turn Left towards Tower Hallway 10
+
+Welcome to Tower Hallway 10
+Directions from Spiritual Care Office to Staircase K1 Floor 1:
+Head North towards Tower Hallway 9
+Turn Left towards Tower Hallway 10
+Continue Straight towards Elevator L Floor 1
+Continue Straight towards Tower Lobby Entrance 1
+Continue Straight towards Shattuck Street Lobby 3
+Continue Straight towards Shattuck Street Lobby 2
+Continue Straight towards Shattuck Street Lobby 1
+Continue Straight towards Hallway Connector 1 Floor 1
+
+Welcome to Staircase K1 Floor 1

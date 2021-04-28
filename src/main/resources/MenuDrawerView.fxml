@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400.0" prefWidth="150.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.teamname.views.MenuDrawerController">
+   <children>
+      <VBox fx:id="menuBtns" layoutX="16.0" layoutY="120.0" spacing="50.0">
+         <children>
+            <JFXButton fx:id="mapBtn" onAction="#changeView" prefHeight="37.0" prefWidth="118.0" style="-fx-background-color: #cdcdcd;" text="Hospital Map">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </JFXButton>
+            <JFXButton fx:id="serviceBtn" onAction="#changeView" style="-fx-background-color: #cdcdcd;" text="Service Pages">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </JFXButton>
+         </children>
+      </VBox>
+      <Pane prefHeight="84.0" prefWidth="150.0" style="-fx-background-color: #043d7e;" />
+   </children>
+</AnchorPane>

@@ -1,0 +1,49 @@
+nodeID,xcoord,ycoord,floor,building,nodeType,longName,shortName
+dEXIT00101,567,1609,1,PARKING,EXIT,Entrance/Exit to Left Parking Garage 01,Left Parking Garage 01
+dPARK00101,116,1761,1,PARKING,PARK,Parking Space #1 In Left Parking Garage 01,Parking Space L1 01
+dPARK00201,206,1761,1,PARKING,PARK,Parking Space #2 In Left Parking Garage 01,Parking Space L2 01
+dPARK00301,297,1761,1,PARKING,PARK,Parking Space #3 In Left Parking Garage 01,Parking Space L3 01
+dPARK00401,383,1761,1,PARKING,PARK,Parking Space #4 In Left Parking Garage 01,Parking Space L4 01
+dPARK00501,467,1761,1,PARKING,PARK,Parking Space #5 In Left Parking Garage 01,Parking Space L5 01
+dPARK00601,60,2228,1,PARKING,PARK,Parking Space #6 In Left Parking Garage 01,Parking Space L6 01
+dPARK00701,145,2228,1,PARKING,PARK,Parking Space #7 In Left Parking Garage 01,Parking Space L7 01
+dPARK00801,236,2228,1,PARKING,PARK,Parking Space #8 In Left Parking Garage 01,Parking Space L8 01
+dPARK00901,343,2228,1,PARKING,PARK,Parking Space #9 In Left Parking Garage 01,Parking Space L9 01
+dPARK01001,436,2228,1,PARKING,PARK,Parking Space #10 In Left Parking Garage 01,Parking Space L10 01
+dEXIT00201,3050,1485,1,PARKING,EXIT,Entrance/Exit to Right Parking Garage 02,Right Parking Garage 02
+dPARK01101,3116,1131,1,PARKING,PARK,Parking Space #1 In Right Parking Garage 01,Parking Space R1 01
+dPARK01201,3116,1154,1,PARKING,PARK,Parking Space #2 In Right Parking Garage 01,Parking Space R2 01
+dPARK01301,3116,1181,1,PARKING,PARK,Parking Space #3 In Right Parking Garage 01,Parking Space R3 01
+dPARK01401,3116,1207,1,PARKING,PARK,Parking Space #4 In Right Parking Garage 01,Parking Space R4 01
+dPARK01501,3116,1229,1,PARKING,PARK,Parking Space #5 In Right Parking Garage 01,Parking Space R5 01
+dPARK01601,3116,1258,1,PARKING,PARK,Parking Space #6 In Right Parking Garage 01,Parking Space R6 01
+dPARK01701,3250,1115,1,PARKING,PARK,Parking Space #7 In Right Parking Garage 01,Parking Space R7 01
+dPARK01801,3250,1135,1,PARKING,PARK,Parking Space #8 In Right Parking Garage 01,Parking Space R8 01
+dPARK01901,3250,1160,1,PARKING,PARK,Parking Space #9 In Right Parking Garage 01,Parking Space R9 01
+dPARK02001,3280,1115,1,PARKING,PARK,Parking Space #10 In Right Parking Garage 01,Parking Space R10 01
+dPARK02101,3280,1135,1,PARKING,PARK,Parking Space #11 In Right Parking Garage 01,Parking Space R11 01
+dPARK02201,3280,1160,1,PARKING,PARK,Parking Space #12 In Right Parking Garage 01,Parking Space R12 01
+dPARK02301,3275,1420,1,PARKING,PARK,Parking Space #13 In Right Parking Garage 01,Parking Space R13 01
+dPARK02401,3300,1420,1,PARKING,PARK,Parking Space #14 In Right Parking Garage 01,Parking Space R14 01
+dPARK02501,3330,1420,1,PARKING,PARK,Parking Space #15 In Right Parking Garage 01,Parking Space R15 01
+dEXIT00302,1750,1338,2,PARKING,EXIT,Entrance/Exit to 75 Lobby 02,EE 75 Lobby 02
+dEXIT00401,2100,1355,1,PARKING,EXIT,Emergency Entrance/Exit 01,Emergency EE 01
+dWALK00101,85,201,1,WALKWAY,WALK,Street Node #1 01,SN101
+dWALK00201,1000,125,1,WALKWAY,WALK,Street Node #2 01,SN201
+dWALK00301,1000,600,1,WALKWAY,WALK,Street Node #3 01,SN301
+dWALK00401,1050,1625,1,WALKWAY,WALK,Street Node #4 01,SN401
+dWALK00501,1030,2330,1,WALKWAY,WALK,Street Node #5 01,SN501
+dWALK00601,200,2350,1,WALKWAY,WALK,Street Node #6 01,SN601
+dWALK00701,30,2740,1,WALKWAY,WALK,Street Node #7 01,SN701
+dWALK00801,685,3380,1,WALKWAY,WALK,Street Node #8 01,SN801
+dWALK00901,1825,3170,1,WALKWAY,WALK,Street Node #9 01,SN901
+dWALK01001,1840,2340,1,WALKWAY,WALK,Street Node #10 01,SN1001
+dWALK01101,1870,1600,1,WALKWAY,WALK,Street Node #11 01,SN1101
+dWALK01201,2625,2370,1,WALKWAY,WALK,Street Node #12 01,SN1201
+dWALK01301,3370,2390,1,WALKWAY,WALK,Street Node #13 01,SN1301
+dWALK01401,3418,2960,1,WALKWAY,WALK,Street Node #14 01,SN1401
+dWALK01501,2770,3380,1,WALKWAY,WALK,Street Node #15 01,SN1501
+dWALK01601,3377,1653,1,WALKWAY,WALK,Street Node #16 01,SN1601
+dWALK01701,4670,1609,1,WALKWAY,WALK,Street Node #17 01,SN1701
+dWALK01801,4341,2429,1,WALKWAY,WALK,Street Node #18 01,SN1801
+dWALK01901,4213,320,1,WALKWAY,WALK,Street Node #19 01,SN1901

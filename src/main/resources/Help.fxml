@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="360.0" prefWidth="587.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.teamname.views.HelpController">
+   <children>
+      <Label layoutX="256.0" layoutY="14.0" text="HELP" textFill="#1974d2">
+         <font>
+            <Font name="System Bold" size="31.0" />
+         </font>
+      </Label>
+      <VBox layoutX="47.0" layoutY="48.0" prefHeight="288.0" prefWidth="494.0">
+         <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-color: #1974D2;" text="• If you would like to find a physician, you may call a health navigator at: 777-Team-D02" wrappingWidth="484.21630859375">
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="15.0" />
+               </VBox.margin>
+            </Text>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-color: #1974D2;" text="• If you want to find out whether a patient is admitted, you may call 666-Team-D02" wrappingWidth="484.21630859375">
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="15.0" />
+               </VBox.margin>
+            </Text>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-color: #1974D2;" text="• If you require immediate medical help, please press the Emergency Button." wrappingWidth="480.21630859375">
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="15.0" />
+               </VBox.margin>
+            </Text>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-color: #1974D2;" text="• If you still have questions, please don't hesitate to contact us as: 800-Team-D02" wrappingWidth="480.21630859375">
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="15.0" />
+               </VBox.margin>
+            </Text>
+         </children>
+      </VBox>
+      <JFXButton fx:id="okBtn" layoutX="493.0" layoutY="321.0" onAction="#okFunction" prefHeight="24.0" prefWidth="70.0" style="-fx-background-color: #1974d2; -fx-background-radius: 6px;" text="OK" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font></JFXButton>
+   </children>
+</AnchorPane>

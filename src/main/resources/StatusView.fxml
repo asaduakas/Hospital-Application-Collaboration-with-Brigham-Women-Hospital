@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTreeTableView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="675.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.teamname.views.ServiceRequests.ServiceStatus.StatusController">
+   <children>
+      <JFXButton fx:id="backBtn" layoutX="32.0" layoutY="26.0" onAction="#goHome" ripplerFill="#7d7d7d" style="-fx-background-color: #cdcdcd;" text="BACK">
+         <font>
+            <Font size="14.0" />
+         </font></JFXButton>
+      <Label layoutX="527.0" layoutY="27.0" text="Requests Status">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+      <JFXButton fx:id="saveBtn" layoutX="1117.0" layoutY="27.0" onAction="#saveData" ripplerFill="#7d7d7d" style="-fx-background-color: #cdcdcd;" text="SAVE">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
+      <JFXComboBox fx:id="typeBox" layoutX="180.0" layoutY="30.0" prefHeight="25.0" prefWidth="158.0" promptText="Services Types" />
+      <JFXTreeTableView fx:id="tableView" layoutX="35.0" layoutY="88.0" prefHeight="561.0" prefWidth="1130.0" />
+      <JFXTreeTableView fx:id="foodTable" layoutX="35.0" layoutY="88.0" prefHeight="561.0" prefWidth="1130.0" />
+      <JFXTreeTableView fx:id="audVisTable" layoutX="35.0" layoutY="88.0" prefHeight="561.0" prefWidth="1130.0" />
+      <JFXTreeTableView fx:id="computerTable" layoutX="35.0" layoutY="88.0" prefHeight="561.0" prefWidth="1130.0" />
+      <JFXTreeTableView fx:id="facilitiesTable" layoutX="35.0" layoutY="88.0" prefHeight="561.0" prefWidth="1130.0" />
+      <JFXTreeTableView fx:id="floralTable" layoutX="35.0" layoutY="88.0" prefHeight="561.0" prefWidth="1130.0" />
+      <JFXTreeTableView fx:id="internalTransTable" layoutX="35.0" layoutY="88.0" prefHeight="561.0" prefWidth="1130.0" />
+      <JFXTreeTableView fx:id="langInterpTable" layoutX="35.0" layoutY="88.0" prefHeight="561.0" prefWidth="1130.0" />
+      <JFXTreeTableView fx:id="laundryTable" layoutX="35.0" layoutY="88.0" prefHeight="561.0" prefWidth="1130.0" />
+      <JFXTreeTableView fx:id="medDelivTable" layoutX="35.0" layoutY="88.0" prefHeight="561.0" prefWidth="1130.0" />
+      <JFXTreeTableView fx:id="sanitationTable" layoutX="35.0" layoutY="88.0" prefHeight="561.0" prefWidth="1130.0" />
+      <JFXTreeTableView fx:id="securityTable" layoutX="35.0" layoutY="88.0" prefHeight="561.0" prefWidth="1130.0" />
+   </children>
+</AnchorPane>

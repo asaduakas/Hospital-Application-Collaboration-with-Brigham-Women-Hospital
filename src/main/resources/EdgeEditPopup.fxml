@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="276.0" prefWidth="374.0" style="-fx-background-color: #FFFFFE;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.teamname.views.Mapping.EdgePopupController">
+   <children>
+      <Pane prefHeight="94.0" prefWidth="374.0" style="-fx-background-color: #043d7e;">
+         <children>
+            <ImageView fitHeight="94.0" fitWidth="196.0">
+               <image>
+                  <Image url="@hospital_Logo.png" />
+               </image>
+            </ImageView>
+         </children></Pane>
+      <VBox layoutX="137.0" layoutY="114.0" prefHeight="166.0" prefWidth="100.0" spacing="10.0">
+         <children>
+            <JFXButton onAction="#EditEdge" prefHeight="45.0" prefWidth="114.0" style="-fx-background-color: #1a479a;" text="Edit Edge" textFill="WHITE" />
+            <JFXButton onAction="#DeleteEdge" prefHeight="45.0" prefWidth="114.0" style="-fx-background-color: #1a479a;" text="Delete Edge" textFill="WHITE" />
+            <JFXButton fx:id="cancelBtn" onAction="#Cancel" prefHeight="45.0" prefWidth="114.0" style="-fx-background-color: #1a479a;" text="Cancel" textFill="WHITE" />
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

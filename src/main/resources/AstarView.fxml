@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="Anchor" layoutX="10.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="881.0" prefWidth="1669.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.teamname.views.Mapping.AstarController">
+   <children>
+      <AnchorPane fx:id="mapImage" prefHeight="690.0" prefWidth="990.0">
+         <children>
+            <Label layoutX="620.0" prefHeight="37.0" prefWidth="370.0" />
+         </children>
+      </AnchorPane>
+      <ImageView fx:id="TheMap" fitHeight="849.0" fitWidth="1250.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true" />
+      <Label fx:id="hovering_node_label" layoutX="401.0" layoutY="14.0" prefHeight="37.0" prefWidth="477.0" />
+      <JFXButton fx:id="dirBtn" layoutX="1292.0" layoutY="732.0" onAction="#downloadDirections" prefHeight="37.0" prefWidth="175.0" ripplerFill="#7d7d7d" style="-fx-background-color: #000000;" text="Download Directions" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
+
+      <JFXButton fx:id="btn1" layoutX="1305.0" layoutY="811.0" onAction="#changeView" prefHeight="37.0" prefWidth="73.0" ripplerFill="#7d7d7d" style="-fx-background-color: #000000;" text="BACK" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
+      <JFXTextArea fx:id="dirText" layoutX="1271.0" layoutY="137.0" prefHeight="546.0" prefWidth="397.0" />
+   </children>
+</AnchorPane>

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="675.0" prefWidth="1200.0" styleClass="bodybg" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.teamname.views.ServiceRequests.ServicePageController">
+   <children>
+      <Label alignment="TOP_LEFT" layoutX="470.0" layoutY="25.0" text="Service Request Systems">
+         <font>
+            <Font name="System Bold" size="28.0" />
+         </font>
+      </Label>
+      <JFXButton fx:id="backBtn" layoutX="1137.0" layoutY="25.0" onAction="#goHome" style="-fx-background-color: #366CDB; -fx-background-radius: 10px; -fx-font-weight: Bold;" text="X" textFill="WHITE">
+         <font>
+            <Font size="18.0" />
+         </font></JFXButton>
+      <JFXButton fx:id="statusBtn" layoutX="934.0" layoutY="611.0" onAction="#statusView" ripplerFill="#7d7d7d" style="-fx-background-color: #366CDB; -fx-background-radius: 10px;" text="Check Requests Status" textFill="WHITE">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </JFXButton>
+      <GridPane hgap="50.0" layoutX="120.0" layoutY="120.0" vgap="25.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="20.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="20.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="20.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="20.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <JFXButton fx:id="ExTransBtn" onAction="#changeView" prefHeight="138.0" prefWidth="138.0" style="-fx-content-display: top; -fx-background-radius: 15px; -fx-background-color: #043D7E;" text="External&#10;Transportation" textAlignment="CENTER" textFill="WHITE">
+               <graphic>
+                  <ImageView fitHeight="73.0" fitWidth="71.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@Images/exTransIcon_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </JFXButton>
+            <JFXButton fx:id="floralBtn" onAction="#changeView" prefHeight="138.0" prefWidth="138.0" style="-fx-content-display: top; -fx-background-radius: 15px; -fx-background-color: #043D7E;" text="Floral &#10;Delivery" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="2">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="150.0" fitWidth="71.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@Images/floralIcon_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="foodBtn" onAction="#changeView" prefHeight="138.0" prefWidth="138.0" style="-fx-content-display: top; -fx-background-radius: 15px; -fx-background-color: #043D7E;" text="Food&#10;Delivery" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="4">
+               <graphic>
+                  <ImageView fitHeight="73.0" fitWidth="71.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@Images/foodIcon_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </JFXButton>
+            <JFXButton fx:id="laundryBtn" onAction="#changeView" prefHeight="138.0" prefWidth="138.0" style="-fx-content-display: top; -fx-background-radius: 15px; -fx-background-color: #043D7E;" text="Laundry&#10;Service" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="6">
+               <graphic>
+                  <ImageView fitHeight="76.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@Images/laundryIcon_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </JFXButton>
+            <JFXButton fx:id="languageBtn" onAction="#changeView" prefHeight="138.0" prefWidth="138.0" style="-fx-content-display: top; -fx-background-radius: 15px; -fx-background-color: #043D7E;" text="Language&#10;Interpreters" textAlignment="CENTER" textFill="WHITE" GridPane.rowIndex="1">
+               <graphic>
+                  <ImageView fitHeight="65.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@Images/Translate_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </JFXButton>
+            <JFXButton fx:id="inTransBtn" onAction="#changeView" prefHeight="138.0" prefWidth="138.0" style="-fx-content-display: top; -fx-background-radius: 15px; -fx-background-color: #043D7E;" text="Internal&#10;Transportation" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="1">
+               <graphic>
+                  <ImageView fitHeight="73.0" fitWidth="71.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@Images/wheelchair_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </JFXButton>
+            <JFXButton fx:id="securityBtn" onAction="#changeView" prefHeight="138.0" prefWidth="138.0" style="-fx-content-display: top; -fx-background-radius: 15px; -fx-background-color: #043D7E;" text="Security&#10;Service" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="4" GridPane.rowIndex="1">
+               <graphic>
+                  <ImageView fitHeight="73.0" fitWidth="71.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@Images/security1_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </JFXButton>
+            <JFXButton fx:id="maintenceBtn" onAction="#changeView" prefHeight="138.0" prefWidth="138.0" style="-fx-content-display: top; -fx-background-radius: 15px; -fx-background-color: #043D7E;" text="Facilities&#10;Maintenance" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="6" GridPane.rowIndex="1">
+               <graphic>
+                  <ImageView fitHeight="73.0" fitWidth="71.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@Images/maintenance_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </JFXButton>
+            <JFXButton fx:id="csBtn" onAction="#changeView" prefHeight="138.0" prefWidth="138.0" style="-fx-content-display: top; -fx-background-radius: 15px; -fx-background-color: #043D7E;" text="Computer&#10;Service" textAlignment="CENTER" textFill="WHITE" GridPane.rowIndex="2">
+               <graphic>
+                  <ImageView fitHeight="73.0" fitWidth="71.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@Images/Computer_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </JFXButton>
+            <JFXButton fx:id="audioBtn" onAction="#changeView" prefHeight="138.0" prefWidth="138.0" style="-fx-content-display: top; -fx-background-radius: 15px; -fx-background-color: #043D7E;" text="Audio/Visual&#10;Service" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="2">
+               <graphic>
+                  <ImageView fitHeight="73.0" fitWidth="71.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@Images/audio-visual_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </JFXButton>
+            <JFXButton fx:id="sanitizBtn" onAction="#changeView" prefHeight="138.0" prefWidth="138.0" style="-fx-content-display: top; -fx-background-radius: 15px; -fx-background-color: #043D7E;" text="Sanitization&#10;Service" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="4" GridPane.rowIndex="2">
+               <graphic>
+                  <ImageView fitHeight="73.0" fitWidth="71.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@Images/sanitatize_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </JFXButton>
+            <JFXButton fx:id="mediBtn" onAction="#changeView" prefHeight="138.0" prefWidth="138.0" style="-fx-content-display: top; -fx-background-radius: 15px; -fx-background-color: #043D7E;" text="Medicine&#10;Delivery" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="6" GridPane.rowIndex="2">
+               <graphic>
+                  <ImageView fitHeight="73.0" fitWidth="71.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@Images/medicine_white.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </JFXButton>
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Yiyi Wu" translateX="-40.0" GridPane.columnIndex="5" />
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Tia Mehta" translateX="-40.0" GridPane.columnIndex="3" />
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Curtis Lee" translateX="-40.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Reagan Brunelle" translateX="-40.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Uri Dvir" translateX="-40.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Eliane Chen" translateX="-40.0" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Patrick Hagearty" translateX="-40.0" GridPane.columnIndex="5" GridPane.rowIndex="2" />
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Veronica Andrews" translateX="-40.0" GridPane.columnIndex="7" GridPane.rowIndex="1" />
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Kushal Gandhi" translateX="-40.0" GridPane.columnIndex="7" GridPane.rowIndex="2" />
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Arman Saduakas" translateX="-40.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+         </children>
+      </GridPane>
+   </children>
+</AnchorPane>

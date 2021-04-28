@@ -1,0 +1,120 @@
+package edu.wpi.teamname.Ddb;
+
+import java.sql.*;
+
+public class FoodDeliveryRequestTable extends AbsTables {
+  // id,type,status,pFirstName,pLastName,contactInfo,location,specialNeeds
+  // *specialNeeds - field should be optional for user
+
+  public FoodDeliveryRequestTable() {}
+
+  public void createTable(Connection conn) {
+    Statement stmt = null;
+    try {
+      stmt = conn.createStatement();
+      String query =
+          "CREATE TABLE FoodDeliveryServiceRequest("
+              + "id INT GENERATED ALWAYS AS IDENTITY NOT NULL,"
+              + "status VARCHAR(100) DEFAULT 'Incomplete',"
+              + "firstName VARCHAR(100) NOT NULL,"
+              + "lastName VARCHAR(200) NOT NULL,"
+              + "contactInfo VARCHAR(100) NOT NULL,"
+              + "location VARCHAR(100) NOT NULL,"
+              + "assignedEmployee VARCHAR(100) DEFAULT '',"
+              + "specialNeeds VARCHAR(500) DEFAULT '',"
+              + "PRIMARY KEY(id),"
+              + "CONSTRAINT FD_employee_FK FOREIGN KEY (assignedEmployee) REFERENCES Users (id),"
+              // + "CONSTRAINT FD_location_FK FOREIGN KEY (location) REFERENCES Nodes (nodeID),"
+              + "CONSTRAINT FD_status_check CHECK (status IN ('Incomplete', 'Complete', 'In Progress')))";
+      stmt.executeUpdate(query);
+      System.out.println("Food Delivery Service Request table created");
+    } catch (Exception e) {
+      System.out.println("Food Delivery Service Request table was not created");
+      e.printStackTrace();
+      return;
+    }
+  }
+
+  public static void dispFoodDelivery(Connection conn) {
+    Statement stmt = null;
+
+    try {
+      stmt = conn.createStatement();
+      String query = "SELECT * FROM FoodDeliveryServiceRequest";
+      ResultSet rs = stmt.executeQuery(query);
+      System.out.println(
+          "id \tstatus \tfirstName \tlastName \tcontactInfo \tlocation \tassignedEm \tspecialNeeds");
+
+      while (rs.next()) {
+        // id,type,pFirstName,pLastName,contactInfo,location,transType,status
+        System.out.println(
+            rs.getString(1)
+                + " \t"
+                + rs.getString(2)
+                + " \t"
+                + rs.getString(3)
+                + " \t"
+                + rs.getString(4)
+                + " \t"
+                + rs.getString(5)
+                + " \t"
+                + rs.getString(6)
+                + " \t"
+                + rs.getString(7)
+                + " \t"
+                + rs.getString(8));
+        System.out.println(" ");
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+  }
+
+  public void populateTable(Connection conn, String filePath) {}
+
+  public void addEntity(
+      Connection conn,
+      String firstName,
+      String lastName,
+      String contactInfo,
+      String location,
+      String assignedEmployee,
+      String specialNeeds) {
+    try {
+      PreparedStatement stmt =
+          conn.prepareStatement(
+              "INSERT INTO FoodDeliveryServiceRequest (firstName, lastName, contactInfo, location, assignedEmployee, specialNeeds) VALUES(?,?,?,?,?,?)");
+      stmt.setString(1, firstName);
+      stmt.setString(2, lastName);
+      stmt.setString(3, contactInfo);
+      stmt.setString(4, location);
+      stmt.setString(5, assignedEmployee);
+      stmt.setString(6, specialNeeds);
+      stmt.executeUpdate();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  public void addEntityNoNeeds(
+      Connection conn,
+      String firstName,
+      String lastName,
+      String contactInfo,
+      String location,
+      String assignedEmployee) {
+    try {
+      PreparedStatement stmt =
+          conn.prepareStatement(
+              "INSERT INTO FoodDeliveryServiceRequest (firstName, lastName, contactInfo, location, assignedEmployee) VALUES(?,?,?,?,?)");
+      stmt.setString(1, firstName);
+      stmt.setString(2, lastName);
+      stmt.setString(3, contactInfo);
+      stmt.setString(4, location);
+      stmt.setString(5, assignedEmployee);
+      stmt.executeUpdate();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+}

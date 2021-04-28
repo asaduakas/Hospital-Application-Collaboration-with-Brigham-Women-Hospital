@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane opacity="0.9" prefHeight="310.0" prefWidth="374.0" style="-fx-background-color: #FFFFFE;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.teamname.views.Mapping.NodePopup">
+   <children>
+      <Pane prefHeight="94.0" prefWidth="374.0" style="-fx-background-color: #043d7e;">
+         <children>
+            <ImageView fitHeight="94.0" fitWidth="196.0">
+               <image>
+                  <Image url="@hospital_Logo.png" />
+               </image>
+            </ImageView>
+         </children></Pane>
+      <Label fx:id="nodeName" alignment="CENTER" layoutX="22.0" layoutY="109.0" prefHeight="25.0" prefWidth="327.0" text="Node Name" underline="true">
+         <font>
+            <Font name="AdobeHeitiStd-Regular" size="12.0" />
+         </font>
+      </Label>
+      <VBox layoutX="130.0" layoutY="143.0" prefHeight="155.0" prefWidth="114.0" spacing="10.0">
+         <children>
+            <JFXButton fx:id="favoriteBtn" onAction="#changeFavorite" prefHeight="45.0" prefWidth="114.0" style="-fx-background-color: #1a479a;" text="Favorite" textFill="WHITE" />
+            <JFXButton fx:id="selectStartBtn" onAction="#selectStart" prefHeight="45.0" prefWidth="114.0" style="-fx-background-color: #1a479a;" text="Select Start" textFill="WHITE" />
+            <JFXButton fx:id="cancelBtn" onAction="#Cancel" prefHeight="45.0" prefWidth="114.0" style="-fx-background-color: #1a479a;" text="Cancel" textFill="WHITE" />
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

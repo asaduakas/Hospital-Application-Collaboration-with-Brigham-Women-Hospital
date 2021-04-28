@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+
+<AnchorPane fx:id="mainPane" prefHeight="675.0" prefWidth="1200.0" styleClass="bodybg" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.teamname.views.HomeController">
+   <children>
+
+      <Pane prefHeight="85.0" prefWidth="200.0" style="-fx-background-color: #ffffff;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      <ImageView fitHeight="590.0" fitWidth="1248.0" layoutX="-48.0" y="87.0">
+         <image>
+            <Image url="@Images/Brigham-and-Women’s-Innovation-Hub-1500x1125(2).jpg" />
+         </image>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </ImageView>
+      <VBox layoutX="485.0" layoutY="278.0" prefHeight="227.0" prefWidth="296.0" spacing="20.0">
+         <children>
+            <JFXButton fx:id="mapEditing" defaultButton="true" onAction="#hospitalMapView" prefWidth="274.0" style="-fx-background-color: #0000b3; -fx-border-color: #0000b3; -fx-border-radius: 15px; -fx-background-radius: 20px; -fx-border-width: 5px; -fx-font-size: 25px; -fx-font-weight: bold;" text="Hospital Map" textFill="WHITE" />
+            <JFXButton fx:id="serviceRequest" defaultButton="true" onAction="#serviceRequestView" prefWidth="274.0" style="-fx-background-color: #4993D9; -fx-border-color: #4993D9; -fx-border-radius: 15px; -fx-background-radius: 20px; -fx-border-width: 5px; -fx-font-size: 25px; -fx-font-weight: bold;" text="Service Requests" textFill="WHITE">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></JFXButton>
+         </children>
+      </VBox>
+      <ImageView fitHeight="85.0" fitWidth="167.0" x="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="0.0">
+         <image>
+            <Image url="@Images/careers.aan.png" />
+         </image>
+      </ImageView>
+      <HBox layoutX="690.0" layoutY="24.0" spacing="20.0">
+         <children>
+            <JFXButton fx:id="covidButton" onAction="#covidSurvey" style="-fx-font-weight: Bold;" text="COVID-19 Survey">
+               <graphic>
+                  <ImageView fitHeight="47.0" fitWidth="47.0">
+                     <image>
+                        <Image url="@Images/covid_colored.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </JFXButton>
+            <Line endX="-4.0" endY="-8.0" startX="-4.0" startY="37.0" translateX="-5.0" translateY="5.0" />
+            <JFXButton fx:id="helpButton" onAction="#helpView" style="-fx-font-weight: Bold" text="HELP" translateX="-5.0" translateY="10.0">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="33.0">
+                     <image>
+                        <Image url="@Images/help.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </JFXButton>
+            <Line endX="-4.0" endY="-8.0" startX="-4.0" startY="37.0" translateX="-5.0" translateY="5.0" />
+            <JFXButton fx:id="emergencyButton" onAction="#emergencyView" prefHeight="36.0" prefWidth="119.0" style="-fx-font-weight: Bold; -fx-background-color: #ff3300; -fx-background-radius: 10px; -fx-font-size: 18;" text="Emergency" textFill="WHITE" translateY="10.0">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></JFXButton>
+         </children>
+      </HBox>
+      <JFXButton fx:id="logoutButton" layoutX="960.0" layoutY="613.0" onAction="#logout" prefHeight="39.0" prefWidth="97.0" style="-fx-background-color: #cdcdcd; -fx-background-radius: 10px; -fx-font-weight: Bold; -fx-font-size: 18;" text="Logout">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></JFXButton>
+      <JFXButton fx:id="exitButton" layoutX="1076.0" layoutY="613.0" onAction="#closeApp" prefHeight="39.0" prefWidth="97.0" style="-fx-background-color: #cdcdcd; -fx-background-radius: 10px; -fx-font-weight: Bold; -fx-font-size: 18;" text="Exit">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></JFXButton>
+   </children>
+
+</AnchorPane>

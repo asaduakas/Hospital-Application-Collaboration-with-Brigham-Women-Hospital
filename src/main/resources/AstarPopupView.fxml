@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<?import com.jfoenix.controls.JFXButton?>-->
+<!--<?import com.jfoenix.controls.JFXComboBox?>-->
+<!--<?import com.jfoenix.controls.JFXDialog?>-->
+<!--<?import com.jfoenix.controls.JFXButton?>-->
+<!--<?import com.jfoenix.controls.JFXComboBox?>-->
+<!--<?import javafx.scene.control.Label?>-->
+<!--<?import javafx.scene.layout.AnchorPane?>-->
+<!--<?import javafx.scene.layout.Pane?>-->
+<!--<?import javafx.scene.layout.StackPane?>-->
+<!--<?import javafx.scene.text.Font?>-->
+<!--<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.teamname.views.Mapping.AstarPopupController">-->
+<!--   <children>-->
+<!--      <Label layoutX="245.0" layoutY="50.0" text="Path Finding">-->
+<!--         <font>-->
+<!--            <Font name="System Bold" size="19.0" />-->
+<!--         </font>-->
+<!--      </Label>-->
+<!--      <JFXButton fx:id="viewMapID" layoutX="45.0" layoutY="35.0" onAction="#changeView" ripplerFill="#5b5b5b" style="-fx-background-color: #cdcdcd;" text="Add Favorites" />-->
+<!--      <JFXComboBox fx:id="start_choice" layoutX="114.0" layoutY="125.0" prefHeight="25.0" prefWidth="204.0" promptText="Start Location" />-->
+<!--      <JFXComboBox fx:id="end_choice" layoutX="108.0" layoutY="216.0" prefHeight="25.0" prefWidth="204.0" promptText="End Location" />-->
+<!--      <JFXComboBox fx:id="start_favorites" layoutX="347.0" layoutY="125.0" prefHeight="25.0" prefWidth="150.0" promptText="Favorite" />-->
+<!--      <JFXComboBox fx:id="end_favorites" layoutX="347.0" layoutY="216.0" prefHeight="25.0" prefWidth="150.0" promptText="Favorite" />-->
+<!--      <JFXButton fx:id="btn1" layoutX="199.0" layoutY="312.0" onAction="#changeView" ripplerFill="#7d7d7d" style="-fx-background-color: #cdcdcd;" text="Submit">-->
+<!--         <font>-->
+<!--            <Font size="14.0" />-->
+<!--         </font>-->
+<!--      </JFXButton>-->
+<!--      <JFXButton fx:id="btn2" layoutX="340.0" layoutY="312.0" onAction="#changeView" style="-fx-background-color: #cdcdcd;" text="Cancel">-->
+<!--         <font>-->
+<!--            <Font size="14.0" />-->
+<!--         </font>-->
+<!--      </JFXButton>-->
+<!--      <Pane layoutX="11.0" layoutY="10.0" prefHeight="84.0" prefWidth="600.0" style="-fx-background-color: #043d7e;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">-->
+<!--         <children>-->
+<!--            <Label layoutX="217.0" layoutY="31.0" prefHeight="39.0" prefWidth="167.0" text="Path Finding" textFill="WHITE">-->
+<!--               <font>-->
+<!--                  <Font name="System Bold" size="27.0" />-->
+<!--               </font>-->
+<!--            </Label>-->
+<!--         </children>-->
+<!--      </Pane>-->
+<!--      <JFXComboBox fx:id="start_choice" layoutX="156.0" layoutY="128.0" prefHeight="25.0" prefWidth="283.0" promptText="Start Location" />-->
+<!--      <JFXComboBox fx:id="end_choice" layoutX="158.0" layoutY="200.0" prefHeight="25.0" prefWidth="283.0" promptText="End Location" />-->
+<!--      <JFXButton fx:id="btn1" layoutX="193.0" layoutY="270.0" onAction="#changeView" prefHeight="25.0" prefWidth="81.0" ripplerFill="#7d7d7d" style="-fx-background-color: #cdcdcd;" text="SUBMIT" />-->
+<!--      <JFXButton fx:id="btn2" layoutX="323.0" layoutY="270.0" onAction="#cancelPage" prefHeight="25.0" prefWidth="81.0" ripplerFill="#7d7d7d" style="-fx-background-color: #cdcdcd;" text="CANCEL" />-->
+<!--      <JFXButton layoutX="522.0" layoutY="353.0" onAction="#loadDialog" style="-fx-background-color: #cdcdcd;" text="HELP" />-->
+<!--      <StackPane fx:id="stackPane1" layoutX="167.0" layoutY="134.0" prefHeight="158.0" prefWidth="267.0">-->
+<!--         <children>-->
+<!--            <JFXDialog />-->
+<!--         </children>-->
+<!--      </StackPane>-->
+<!--      <StackPane fx:id="stackPane2" layoutX="155.0" layoutY="134.0" prefHeight="140.0" prefWidth="291.0">-->
+<!--         <children>-->
+<!--            <JFXDialog />-->
+<!--         </children>-->
+<!--      </StackPane>-->
+<!--   </children>-->
+<!--</AnchorPane>-->
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.teamname.views.Mapping.AstarPopupController">
+   <children>
+      <Label layoutX="245.0" layoutY="50.0" text="Path Finding">
+         <font>
+            <Font name="System Bold" size="19.0" />
+         </font>
+      </Label>
+      <JFXComboBox fx:id="start_choice" editable="true" layoutX="114.0" layoutY="125.0" onAction="#type" prefHeight="25.0" prefWidth="204.0" promptText="Start Location" />
+      <JFXComboBox fx:id="end_choice" editable="true" layoutX="108.0" layoutY="216.0" onAction="#type" prefHeight="25.0" prefWidth="204.0" promptText="End Location" />
+      <JFXComboBox fx:id="start_favorites" editable="true" layoutX="347.0" layoutY="125.0" onAction="#type" prefHeight="25.0" prefWidth="150.0" promptText="Favorite" />
+      <JFXComboBox fx:id="end_favorites" editable="true" layoutX="347.0" layoutY="216.0" onAction="#type" prefHeight="25.0" prefWidth="150.0" promptText="Favorite" />
+      <JFXButton fx:id="btn1" layoutX="199.0" layoutY="312.0" onAction="#changeView" ripplerFill="#7d7d7d" style="-fx-background-color: #cdcdcd;" text="Submit">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
+      <JFXButton fx:id="btn2" layoutX="340.0" layoutY="312.0" onAction="#changeView" style="-fx-background-color: #cdcdcd;" text="Cancel">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
+   </children>
+</AnchorPane>
