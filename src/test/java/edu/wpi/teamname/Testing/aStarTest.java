@@ -6,9 +6,7 @@ import edu.wpi.teamname.Astar.Edge;
 import edu.wpi.teamname.Astar.Node;
 import edu.wpi.teamname.Astar.RoomGraph;
 import edu.wpi.teamname.Astar.aStar;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,7 +15,6 @@ public class aStarTest {
   RoomGraph graph = new RoomGraph();
 
   // nodes in graph
-  HashMap<String, Node> nodes = new HashMap<String, Node>();
   Node node1 = new Node("ID1", 1, 1, "1", "building", "test", "long1", "short1");
   Node node2 = new Node("ID2", 1, 2, "1", "building", "test", "long2", "short2");
   Node node3 = new Node("ID3", 1, 3, "1", "building", "test", "long3", "short3");
@@ -28,14 +25,6 @@ public class aStarTest {
 
   @Before
   public void setUp() throws Exception {
-    nodes.put("ID1", node1);
-    nodes.put("ID2", node2);
-    nodes.put("ID3", node3);
-    nodes.put("ID4", node4);
-    nodes.put("ID5", node5);
-    nodes.put("ID6", node6);
-    nodes.put("ID7", node7);
-    graph.setNodes(nodes);
 
     // add edges to graph
     LinkedList<Edge> edges1 = new LinkedList<Edge>();
@@ -46,7 +35,6 @@ public class aStarTest {
     LinkedList<Edge> edges6 = new LinkedList<Edge>();
     LinkedList<Edge> edges7 = new LinkedList<Edge>();
 
-    HashMap<Node, List<Edge>> edges = new HashMap<Node, List<Edge>>();
     // 1-2
     Edge edge1_2 = new Edge(node1, node2, node1.getMeasuredDistance(node2));
     edges1.add(edge1_2);
@@ -95,15 +83,21 @@ public class aStarTest {
     Edge edge5_2 = new Edge(node5, node2, node5.getMeasuredDistance(node2));
     edges5.add(edge2_5);
 
-    edges.put(node1, edges1);
-    edges.put(node2, edges2);
-    edges.put(node3, edges3);
-    edges.put(node4, edges4);
-    edges.put(node5, edges5);
-    edges.put(node6, edges6);
-    edges.put(node7, edges7);
+    node1.setEdges(edges1);
+    node2.setEdges(edges2);
+    node3.setEdges(edges3);
+    node4.setEdges(edges4);
+    node5.setEdges(edges5);
+    node6.setEdges(edges6);
+    node7.setEdges(edges7);
 
-    graph.setGraphInfo(edges);
+    graph.getGraphInfo().add(node1);
+    graph.getGraphInfo().add(node2);
+    graph.getGraphInfo().add(node3);
+    graph.getGraphInfo().add(node4);
+    graph.getGraphInfo().add(node5);
+    graph.getGraphInfo().add(node6);
+    graph.getGraphInfo().add(node7);
 
     /* TestGraph
            1 - 4   7
