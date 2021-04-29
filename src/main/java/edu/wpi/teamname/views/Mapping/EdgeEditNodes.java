@@ -47,17 +47,17 @@ public class EdgeEditNodes {
       setupDraggablePopUp(root);
 
       // tie this controller to popup for easy access of functions like pathfinding
-      EdgePopupController popupController = fxmlLoader.getController();
-      popupController.setMapController(mapController);
-      popupController.setEdge(theEdge);
-      popupController.setline(line);
+      // EdgePopupController popupController = fxmlLoader.getController();
+      // popupController.setMapController(mapController);
+      // popupController.setEdge(theEdge);
+      // popupController.setline(line);
 
       this.popup = new Popup();
       popup.getContent().addAll(root);
       popup.show(App.getPrimaryStage());
       exitPopup();
     } else {
-      mapController.deleteLine(line);
+      // mapController.deleteLine(line);
       GaussianBlur blur = new GaussianBlur(25);
       App.getPrimaryStage().getScene().getRoot().setEffect(blur);
       FXMLLoader fxmlLoader =
@@ -68,11 +68,11 @@ public class EdgeEditNodes {
 
       setupDraggablePopUp(root);
 
-      NodeEditPopup popupController = fxmlLoader.getController();
-      popupController.setMapController(mapController);
-      popupController.setNode(N);
-      popupController.setCricle(C);
-      popupController.setNodeName(N.getLongName());
+      //      NodeEditPopup popupController = fxmlLoader.getController();
+      //      popupController.setMapController(mapController);
+      //      popupController.setNode(N);
+      //      popupController.setCricle(C);
+      //      popupController.setNodeName(N.getLongName());
 
       this.popup = new Popup();
 
@@ -85,22 +85,22 @@ public class EdgeEditNodes {
 
   @FXML
   private void selectStart() throws IOException {
-    mapController.setMode(MapController.edgeNodeSelection.STARTSELECT);
+    // mapController.setMode(MapController.edgeNodeSelection.STARTSELECT);
     exitPopup();
   }
 
   @FXML
   private void selectEnd() throws IOException {
-    mapController.setMode(MapController.edgeNodeSelection.ENDSELECT);
+    // mapController.setMode(MapController.edgeNodeSelection.ENDSELECT);
     cancelBtn.setDisable(false);
     cancelBtn.setVisible(true);
     exitPopup();
   }
 
   private void exitPopup() {
-    if (EdgePopupController.popup != null) EdgePopupController.popup.hide();
-    if (mapController.popup != null) mapController.popup.hide();
-    if (NodeEditPopup.popup != null) NodeEditPopup.popup.hide();
+    // if (EdgePopupController.popup != null) EdgePopupController.popup.hide();
+    // if (mapController.popup != null) mapController.popup.hide();
+    // if (NodeEditPopup.popup != null) NodeEditPopup.popup.hide();
     App.getPrimaryStage().getScene().getRoot().setEffect(null);
   }
 
