@@ -6,6 +6,8 @@ import edu.wpi.teamname.views.Access.AdminAccessible;
 import java.awt.*;
 import java.sql.*;
 import java.util.*;
+
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.ScrollPane;
@@ -111,14 +113,59 @@ public class MapController implements AdminAccessible {
 
   // _______________________________________EDITOR FEATURES________________________________________
 
-  private void deleteNode (){
-
+  private void deleteNode (NodeUI N){
+    GlobalDb.getTables().getNodeTable().deleteEntity(GlobalDb.getConnection(), "Nodes", N.getN().getNodeID());
+    secondaryAnchor.getChildren().remove(N.getI());
+    NODES.remove(N);
   }
 
-  private void deleteEdge (){
-
+  private void deleteEdge (EdgeUI E){
+    GlobalDb.getTables().getEdgeTable().deleteEntity(GlobalDb.getConnection(), "Tables", E.getE().getEdgeID());
+    secondaryAnchor.getChildren().remove(E.getL());
+    EDGES.remove(E);
   }
 
+  private void addNode(NodeUI N){
+    GlobalDb.getTables().getNodeTable().addEntity(
+      GlobalDb.getConnection(),
+      N.getN().getNodeID(),
+      N.getN().getXCoord(),
+      N.getN().getYCoord(),
+      N.getN().getFloor(),
+      N.getN().getBuilding(),
+      N.getN().getNodeType(),
+      N.getN().getLongName(),
+      N.getN().getShortName(),
+      0);
+    addNodeUI(N);
+    NODES.add(N);
+  }
+
+  private void addEdge(EdgeUI E){
+    GlobalDb.getTables().getEdgeTable().addEntity(
+      GlobalDb.getConnection(),
+      E.getE().getEdgeID(),
+      E.getE().getStartNode().getNodeID(),
+      E.getE().getEndNode().getNodeID());
+    addEdgeUI(E);
+    EDGES.add(E);
+  }
+
+  private void editNode(){} //TODO Implement edit nodes
+
+  private void editEdge(){} //TODO Implement edit edges
+
+// _______________________________________CONTROLLERS____________________________________________
+
+  private class existingNodeEventHandler implements EventHandler<MouseEvent> {
+
+    public existingNodeEventHandler() {}
+
+    @Override
+    public void handle(MouseEvent event) {
+
+    }
+  }
 
 
 
