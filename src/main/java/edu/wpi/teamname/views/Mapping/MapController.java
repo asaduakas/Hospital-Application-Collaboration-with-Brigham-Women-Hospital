@@ -247,8 +247,8 @@ public class MapController implements AdminAccessible {
   /*----------------------------------  ALGO ---------------------------------*/
 
   public void runPathFinding(String startNode, String targetNode) throws IOException {
-    Node start = data.getNode(startNode);
-    Node target = data.getNode(targetNode);
+    Node start = data.getNodeByID(startNode);
+    Node target = data.getNodeByID(targetNode);
 
     algorithm.search(data, start, target);
     algorithm.printPathTo();
@@ -308,15 +308,15 @@ public class MapController implements AdminAccessible {
 
     if (isMapEditing) {
       for (Edge N : data.getListOfEdges()) {
-        if (N.getStartNode().getFloor().equals(floor) && N.getEndNode().getFloor().equals(floor))
-          drawEdge(N);
+        if (data.getNodeByID(N.getStartNode()).getFloor().equals(floor)
+            && data.getNodeByID(N.getEndNode()).getFloor().equals(floor)) drawEdge(N);
       }
     } else {
       showPath();
     }
 
-    for (Map.Entry<String, Node> N : data.getNodes().entrySet()) {
-      if (N.getValue().getFloor().equals(floor)) drawNode(N.getValue());
+    for (Node N : data.getGraphInfo()) {
+      if (N.getFloor().equals(floor)) drawNode(N);
     }
   }
 
@@ -348,8 +348,8 @@ public class MapController implements AdminAccessible {
   }
 
   private void initialNodes() {
-    for (Map.Entry<String, Node> N : data.getNodes().entrySet()) {
-      if (N.getValue().getFloor().equals("1")) drawNode(N.getValue());
+    for (Node N : data.getGraphInfo()) {
+      if (N.getFloor().equals("1")) drawNode(N);
     }
   }
 
@@ -461,17 +461,17 @@ public class MapController implements AdminAccessible {
 
   public Line drawEdge(Edge E) {
     Line TempE = new Line();
-    TempE.startXProperty().bind(E.getStartNode().simpXcoordProperty());
-    TempE.startYProperty().bind(E.getStartNode().simpYcoordProperty());
-    TempE.endXProperty().bind(E.getEndNode().simpXcoordProperty());
-    TempE.endYProperty().bind(E.getEndNode().simpYcoordProperty());
+    TempE.startXProperty().bind(data.getNodeByID(E.getStartNode()).simpXcoordProperty());
+    TempE.startYProperty().bind(data.getNodeByID(E.getStartNode()).simpYcoordProperty());
+    TempE.endXProperty().bind(data.getNodeByID(E.getEndNode()).simpXcoordProperty());
+    TempE.endYProperty().bind(data.getNodeByID(E.getEndNode()).simpYcoordProperty());
     TempE.startXProperty().addListener(new invalidateLine(TempE));
     TempE.startYProperty().addListener(new invalidateLine(TempE));
     TempE.endXProperty().addListener(new invalidateLine(TempE));
     TempE.endYProperty().addListener(new invalidateLine(TempE));
     TempE.setStrokeWidth(4.0);
     TempE.setStroke(Color.RED);
-    TempE.setId(E.getStartNode().getNodeID() + "_" + E.getEndNode().getNodeID());
+    TempE.setId(E.getStartNode() + "_" + E.getEndNode());
     TempE.setOnMouseClicked(new edgeEventHandler(E, TempE));
     secondaryAnchor.getChildren().add(TempE);
     return TempE;
@@ -492,8 +492,8 @@ public class MapController implements AdminAccessible {
     } else {
       System.out.println("Path Exists!");
       for (Edge N : thePath) {
-        if (N.getStartNode().getFloor().equals(currentFloor)
-            && N.getEndNode().getFloor().equals(currentFloor)) drawEdge(N);
+        if (data.getNodeByID(N.getStartNode()).getFloor().equals(currentFloor)
+            && data.getNodeByID(N.getEndNode()).getFloor().equals(currentFloor)) drawEdge(N);
       }
     }
   }
@@ -552,24 +552,24 @@ public class MapController implements AdminAccessible {
       System.out.println("No Directions to Give!");
       return;
     }
-    ScaleDown(edges.getFirst().getStartNode());
+    ScaleDown(data.getNodeByID(edges.getFirst().getStartNode()));
 
     dirText.appendText(
         "Directions from "
-            + edges.getFirst().getStartNode().getLongName()
+            + data.getNodeByID(edges.getFirst().getStartNode()).getLongName()
             + " to "
-            + edges.getLast().getEndNode().getLongName()
+            + data.getNodeByID(edges.getLast().getEndNode()).getLongName()
             + ":\n");
 
-    ScaleDown(edges.getFirst().getEndNode());
+    ScaleDown(data.getNodeByID(edges.getFirst().getEndNode()));
     String initialDirection =
         firstMove(
-            edges.getFirst().getStartNode().getXCoord(),
-            edges.getFirst().getStartNode().getYCoord(),
-            edges.getFirst().getEndNode().getXCoord(),
-            edges.getFirst().getEndNode().getYCoord(),
-            edges.getFirst().getStartNode().getLongName(),
-            edges.getFirst().getEndNode().getLongName()); // removed directions
+            data.getNodeByID(edges.getFirst().getStartNode()).getXCoord(),
+            data.getNodeByID(edges.getFirst().getStartNode()).getYCoord(),
+            data.getNodeByID(edges.getFirst().getEndNode()).getXCoord(),
+            data.getNodeByID(edges.getFirst().getEndNode()).getYCoord(),
+            data.getNodeByID(edges.getFirst().getStartNode()).getLongName(),
+            data.getNodeByID(edges.getFirst().getEndNode()).getLongName()); // removed directions
 
     // used to skip first edge
     int skip = 0;
@@ -578,19 +578,20 @@ public class MapController implements AdminAccessible {
         skip++;
         continue;
       }
-      ScaleDown(N.getEndNode());
+      ScaleDown(data.getNodeByID(N.getEndNode()));
       String newDirection =
           evalTurn(
               initialDirection,
-              N.getStartNode().getXCoord(),
-              N.getStartNode().getYCoord(),
-              N.getEndNode().getXCoord(),
-              N.getEndNode().getYCoord(),
-              N.getStartNode().getLongName(),
-              N.getEndNode().getLongName());
+              data.getNodeByID(N.getStartNode()).getXCoord(),
+              data.getNodeByID(N.getStartNode()).getYCoord(),
+              data.getNodeByID(N.getEndNode()).getXCoord(),
+              data.getNodeByID(N.getEndNode()).getYCoord(),
+              data.getNodeByID(N.getStartNode()).getLongName(),
+              data.getNodeByID(N.getEndNode()).getLongName());
       initialDirection = newDirection;
     }
-    dirText.appendText("\nWelcome to " + edges.getLast().getEndNode().getLongName() + "\n");
+    dirText.appendText(
+        "\nWelcome to " + data.getNodeByID(edges.getLast().getEndNode()).getLongName() + "\n");
   }
 
   public String evalTurn(

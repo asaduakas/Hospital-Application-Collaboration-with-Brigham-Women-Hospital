@@ -30,11 +30,11 @@ public class AllPathsSearch implements IPathFinding { // DFS but for every possi
         return;
       }
 
-      List<Edge> edges = data.getGraphInfo().get(start); // get list of edges from parent
+      List<Edge> edges = data.getNode(start).getEdges(); // get list of edges from parent
 
       if (edges != null) { // if there are children
         for (int i = 0; i < edges.size(); i++) { // iterates through each edge
-          Node child = edges.get(i).getEndNode();
+          Node child = data.getNodeByID(edges.get(i).getEndNode());
           if (!path.getPath()
               .contains(
                   child)) { // add sorted children to open list if we haven't already queued it in

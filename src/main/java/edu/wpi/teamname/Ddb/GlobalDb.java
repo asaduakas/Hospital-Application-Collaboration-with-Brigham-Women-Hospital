@@ -29,8 +29,6 @@ public class GlobalDb {
 
         GlobalDb.tables
             .createAllTables(); // might not be doing what we want with the connections, but this
-
-
       }
     } catch (SQLException e) {
       System.out.println("Connection failed. Check output console.");

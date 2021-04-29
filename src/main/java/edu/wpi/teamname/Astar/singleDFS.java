@@ -35,7 +35,7 @@ public class singleDFS
       return;
     }
 
-    List<Edge> edges = data.getGraphInfo().get(start); // get list of edges from parent
+    List<Edge> edges = data.getNode(start).getEdges(); // get list of edges from parent
 
     if (edges == null) { // if we reached dead end and we haven't reached target
       nodeTo.getPath().remove(start);
@@ -46,7 +46,7 @@ public class singleDFS
           i < edges.size() && !hasPath;
           i++) { // iterates through each edge. since sorted, it will go through smallest cost
         // first (and it's children)
-        Node child = edges.get(i).getEndNode();
+        Node child = data.getNodeByID(edges.get(i).getEndNode());
         if (!nodeTo.getPath().contains(child)
             && !closed.contains(child)) { // analyze if node not already in path
           // open list or determined it's a dead end

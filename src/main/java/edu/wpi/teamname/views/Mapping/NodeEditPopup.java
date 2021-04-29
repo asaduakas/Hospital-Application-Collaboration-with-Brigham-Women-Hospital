@@ -121,8 +121,8 @@ public class NodeEditPopup {
         .addEntity(
             GlobalDb.getConnection(),
             theEdge.getEdgeID(),
-            theEdge.getStartNode().getNodeID(),
-            theEdge.getEndNode().getNodeID());
+            theEdge.getStartNode(),
+            theEdge.getEndNode());
 
     mapController.get().setIseditedge(false);
 
