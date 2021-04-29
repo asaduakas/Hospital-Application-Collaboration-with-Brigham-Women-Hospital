@@ -6,7 +6,6 @@ import edu.wpi.teamname.Astar.Edge;
 import edu.wpi.teamname.Astar.Node;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.Random;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -17,7 +16,6 @@ import javafx.scene.control.Label;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
 import javafx.stage.Popup;
 import javax.swing.*;
 
@@ -45,23 +43,24 @@ public class NodeEditPopup {
 
   @FXML
   private void changeFavorite() {
-//    LinkedList<String> favNodeList =
-//        mapController
-//            .get()
-//            .getFav(GlobalDb.getConnection()); // update from database everytime we click
+    //    LinkedList<String> favNodeList =
+    //        mapController
+    //            .get()
+    //            .getFav(GlobalDb.getConnection()); // update from database everytime we click
     Node n = theNode;
     int setFavorite = 0;
 
-//    if (!(favNodeList.contains(n.getNodeID()))) {
-//      favoriteBtn.setText("Add to Favorites");
-//      setFavorite = 1;
-//    } else if (favNodeList.contains(n.getNodeID())) {
-//      favoriteBtn.setText("Remove from Favorites");
-//      setFavorite = 0;
-//    }
+    //    if (!(favNodeList.contains(n.getNodeID()))) {
+    //      favoriteBtn.setText("Add to Favorites");
+    //      setFavorite = 1;
+    //    } else if (favNodeList.contains(n.getNodeID())) {
+    //      favoriteBtn.setText("Remove from Favorites");
+    //      setFavorite = 0;
+    //    }
 
-//    mapController.get().updateFavorite(GlobalDb.getConnection(), n.getNodeID(), setFavorite); //
-//    mapController.get().redrawMap();
+    //    mapController.get().updateFavorite(GlobalDb.getConnection(), n.getNodeID(), setFavorite);
+    // //
+    //    mapController.get().redrawMap();
     exitPopup();
   }
 
@@ -102,7 +101,7 @@ public class NodeEditPopup {
 
   @FXML
   private void DeleteNode() {
-//    mapController.get().deleteNode(theNode, theCricle);
+    //    mapController.get().deleteNode(theNode, theCricle);
     exitPopup();
   }
 
@@ -110,12 +109,12 @@ public class NodeEditPopup {
   private void AddEdge() throws IOException {
     //
     Edge theEdge = new Edge(theNode, theNode, 0.0);
-//    Line line = mapController.get().drawEdge(theEdge);
+    //    Line line = mapController.get().drawEdge(theEdge);
 
     Random random = new Random(System.currentTimeMillis());
     theEdge.setEdgeID("NEWEDGE"); // String.valueOf(random.nextInt(100000)));
 
-//    mapController.get().setTempN(theNode);
+    //    mapController.get().setTempN(theNode);
 
     GlobalDb.getTables()
         .getEdgeTable()
@@ -124,8 +123,8 @@ public class NodeEditPopup {
             theEdge.getEdgeID(),
             theEdge.getStartNode(),
             theEdge.getEndNode());
-//
-//    mapController.get().setIseditedge(false);
+    //
+    //    mapController.get().setIseditedge(false);
 
     // popup
     GaussianBlur blur = new GaussianBlur(25);
@@ -145,11 +144,11 @@ public class NodeEditPopup {
 
     this.popup = new Popup();
     popupController.setEdge(theEdge);
-//    popupController.setline(line);
+    //    popupController.setline(line);
     popupController.setN(theNode);
     popupController.setC(theCricle);
     popupController.setAdd(true);
-//    mapController.get().setTempL(line);
+    //    mapController.get().setTempL(line);
     popup.getContent().addAll(root);
     popup.isAutoFix();
     popup.show(App.getPrimaryStage());
@@ -158,7 +157,7 @@ public class NodeEditPopup {
   }
 
   private void exitPopup() {
-//    mapController.get().popup.hide();
+    //    mapController.get().popup.hide();
     if (edgeEditNodes.popup != null) edgeEditNodes.popup.hide();
     App.getPrimaryStage().getScene().getRoot().setEffect(null);
   }

@@ -22,20 +22,20 @@ public class EditPropertiesController {
 
   @FXML
   public void updateNode() {
-//    mapController.updateNode(
-//        theNode,
-//        nodeID.getText(),
-//        floor.getText(),
-//        building.getText(),
-//        nodeType.getText(),
-//        longName.getText(),
-//        shortName.getText());
+    //    mapController.updateNode(
+    //        theNode,
+    //        nodeID.getText(),
+    //        floor.getText(),
+    //        building.getText(),
+    //        nodeType.getText(),
+    //        longName.getText(),
+    //        shortName.getText());
     exitPopup();
   }
 
   @FXML
   public void Close() {
-//    if (isAdd) mapController.deleteCircle(theCircle);
+    //    if (isAdd) mapController.deleteCircle(theCircle);
     exitPopup();
   }
 
@@ -44,9 +44,9 @@ public class EditPropertiesController {
     if (NodeEditPopup.popup != null) {
       NodeEditPopup.popup.hide();
     }
-//    if (mapController.popup != null) {
-//      mapController.popup.hide();
-//    }
+    //    if (mapController.popup != null) {
+    //      mapController.popup.hide();
+    //    }
 
     App.getPrimaryStage().getScene().getRoot().setEffect(null);
   }

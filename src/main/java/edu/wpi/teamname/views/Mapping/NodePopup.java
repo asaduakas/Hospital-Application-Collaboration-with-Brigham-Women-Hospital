@@ -3,8 +3,6 @@ package edu.wpi.teamname.views.Mapping;
 import com.jfoenix.controls.JFXButton;
 import edu.wpi.teamname.App;
 import edu.wpi.teamname.Astar.Node;
-import edu.wpi.teamname.Ddb.GlobalDb;
-import java.util.LinkedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
@@ -29,32 +27,33 @@ public class NodePopup {
 
   @FXML
   private void changeFavorite() {
-//    LinkedList<String> favNodeList =
-//        mapController.getFav(GlobalDb.getConnection()); // update from database everytime we click
+    //    LinkedList<String> favNodeList =
+    //        mapController.getFav(GlobalDb.getConnection()); // update from database everytime we
+    // click
     Node n = theNode;
     int setFavorite = 0;
 
-//    if (!(favNodeList.contains(n.getNodeID()))) {
-//      favoriteBtn.setText("Add to Favorites");
-//      setFavorite = 1;
-//    } else if (favNodeList.contains(n.getNodeID())) {
-//      favoriteBtn.setText("Remove from Favorites");
-//      setFavorite = 0;
-//    }
+    //    if (!(favNodeList.contains(n.getNodeID()))) {
+    //      favoriteBtn.setText("Add to Favorites");
+    //      setFavorite = 1;
+    //    } else if (favNodeList.contains(n.getNodeID())) {
+    //      favoriteBtn.setText("Remove from Favorites");
+    //      setFavorite = 0;
+    //    }
 
-//    mapController.updateFavorite(GlobalDb.getConnection(), n.getNodeID(), setFavorite); //
-//    mapController.redrawMap();
+    //    mapController.updateFavorite(GlobalDb.getConnection(), n.getNodeID(), setFavorite); //
+    //    mapController.redrawMap();
     exitPopup();
   }
 
   @FXML
   private void selectStart() {
-//    mapController.setSimpleStartNode(theNode);
+    //    mapController.setSimpleStartNode(theNode);
     exitPopup();
   }
 
   private void exitPopup() {
-//    mapController.popup.hide();
+    //    mapController.popup.hide();
     App.getPrimaryStage().getScene().getRoot().setEffect(null);
   }
 

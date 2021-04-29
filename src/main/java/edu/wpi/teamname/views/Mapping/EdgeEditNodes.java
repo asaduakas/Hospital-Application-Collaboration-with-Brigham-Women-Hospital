@@ -48,12 +48,12 @@ public class EdgeEditNodes {
       setupDraggablePopUp(root);
 
       // tie this controller to popup for easy access of functions like pathfinding
-//      EdgePopupController popupController = fxmlLoader.getController();
-//      popupController.setMapController(mapController);
-//      popupController.setEdgeEditNodes(this);
-//
-//      popupController.setEdge(theEdge);
-//      popupController.setline(line);
+      //      EdgePopupController popupController = fxmlLoader.getController();
+      //      popupController.setMapController(mapController);
+      //      popupController.setEdgeEditNodes(this);
+      //
+      //      popupController.setEdge(theEdge);
+      //      popupController.setline(line);
 
       this.popup = new Popup();
       popup.getContent().addAll(root);
@@ -71,12 +71,12 @@ public class EdgeEditNodes {
 
       setupDraggablePopUp(root);
 
-//      NodeEditPopup popupController = fxmlLoader.getController();
-//      popupController.setMapController(mapController);
-//      popupController.setEdgeEditNodes(this);
-//      popupController.setNode(N);
-//      popupController.setCricle(C);
-//      popupController.setNodeName(N.getLongName());
+      //      NodeEditPopup popupController = fxmlLoader.getController();
+      //      popupController.setMapController(mapController);
+      //      popupController.setEdgeEditNodes(this);
+      //      popupController.setNode(N);
+      //      popupController.setCricle(C);
+      //      popupController.setNodeName(N.getLongName());
 
       this.popup = new Popup();
 
@@ -102,9 +102,9 @@ public class EdgeEditNodes {
   }
 
   private void exitPopup() {
-//    if (edgePopupController.popup != null) edgePopupController.popup.hide();
-//    if (mapController.popup != null) mapController.popup.hide();
-//    if (NodeEditPopup.popup != null) NodeEditPopup.popup.hide();
+    //    if (edgePopupController.popup != null) edgePopupController.popup.hide();
+    //    if (mapController.popup != null) mapController.popup.hide();
+    //    if (NodeEditPopup.popup != null) NodeEditPopup.popup.hide();
     App.getPrimaryStage().getScene().getRoot().setEffect(null);
   }
 

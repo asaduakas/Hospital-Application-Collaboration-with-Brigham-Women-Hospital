@@ -32,18 +32,18 @@ public class EdgePopupController {
 
   @FXML
   private void DeleteEdge() {
-//    mapController.deleteEdge(theEdge, line);
+    //    mapController.deleteEdge(theEdge, line);
     exitPopup();
   }
 
   @FXML
   private void EditEdge() throws IOException {
-//    mapController.setTempL(this.line);
-//    mapController.setEdgeEdited(this.theEdge);
+    //    mapController.setTempL(this.line);
+    //    mapController.setEdgeEdited(this.theEdge);
     GaussianBlur blur = new GaussianBlur(25);
     App.getPrimaryStage().getScene().getRoot().setEffect(blur);
 
-//    mapController.setIseditedge(true);
+    //    mapController.setIseditedge(true);
 
     FXMLLoader fxmlLoader =
         new FXMLLoader(getClass().getClassLoader().getResource("EdgeEditNodes.fxml"));
@@ -70,7 +70,7 @@ public class EdgePopupController {
   }
 
   private void exitPopup() {
-//    if (mapController.popup != null) mapController.popup.hide();
+    //    if (mapController.popup != null) mapController.popup.hide();
     if (edgeEditNodes.popup != null) edgeEditNodes.popup.hide();
     if (nodeEditPopup.popup != null) nodeEditPopup.popup.hide();
     App.getPrimaryStage().getScene().getRoot().setEffect(null);
@@ -124,11 +124,11 @@ public class EdgePopupController {
     this.edgeEditNodes = edgeEditNodes;
   }
 
-    public NodeEditPopup getNodeEditPopup() {
-        return nodeEditPopup;
-    }
+  public NodeEditPopup getNodeEditPopup() {
+    return nodeEditPopup;
+  }
 
-    public void setNodeEditPopup(NodeEditPopup nodeEditPopup) {
-        this.nodeEditPopup = nodeEditPopup;
-    }
+  public void setNodeEditPopup(NodeEditPopup nodeEditPopup) {
+    this.nodeEditPopup = nodeEditPopup;
+  }
 }
