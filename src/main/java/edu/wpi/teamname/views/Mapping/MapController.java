@@ -55,8 +55,8 @@ public class MapController implements AdminAccessible {
   @FXML private JFXButton formBtn;
   @FXML private JFXButton exitBtn;
   @FXML private JFXButton cancelBtn;
-  @FXML public static Popup popup;
-  @FXML public Slider slider;
+  @FXML public Popup popup;
+  @FXML private Slider slider;
   private boolean iseditedge = false;
   private RoomGraph data = new RoomGraph(GlobalDb.getConnection());
 

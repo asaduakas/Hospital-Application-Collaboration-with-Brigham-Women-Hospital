@@ -15,10 +15,11 @@ import javafx.stage.Popup;
 
 public class EdgePopupController {
 
-  public static javafx.stage.Popup popup;
+  public javafx.stage.Popup popup;
   private Edge theEdge; // holds node clicked for popup
   private Line line; // holds circle clicked for popup
   private MapController mapController;
+  private EdgeEditNodes edgeEditNodes;
 
   @FXML
   private void initialize() {}
@@ -54,6 +55,7 @@ public class EdgePopupController {
     // tie this controller to popup for easy access of functions like pathfinding
     EdgeEditNodes popupController = fxmlLoader.getController();
     popupController.setMapController(this.mapController);
+    popupController.setEdgePopupController(this);
 
     this.popup = new Popup();
     popupController.setEdge(theEdge);
@@ -67,8 +69,8 @@ public class EdgePopupController {
   }
 
   private void exitPopup() {
-    if (mapController.popup != null) MapController.popup.hide();
-    if (EdgeEditNodes.popup != null) EdgeEditNodes.popup.hide();
+    if (mapController.popup != null) mapController.popup.hide();
+    if (edgeEditNodes.popup != null) edgeEditNodes.popup.hide();
     if (NodeEditPopup.popup != null) NodeEditPopup.popup.hide();
     App.getPrimaryStage().getScene().getRoot().setEffect(null);
   }
@@ -111,5 +113,13 @@ public class EdgePopupController {
         });
 
     container.setOnMouseReleased(event -> mouseLocation.set(null));
+  }
+
+  public EdgeEditNodes getEdgeEditNodes() {
+    return edgeEditNodes;
+  }
+
+  public void setEdgeEditNodes(EdgeEditNodes edgeEditNodes) {
+    this.edgeEditNodes = edgeEditNodes;
   }
 }

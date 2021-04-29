@@ -44,8 +44,8 @@ public class EditPropertiesController {
     if (NodeEditPopup.popup != null) {
       NodeEditPopup.popup.hide();
     }
-    if (MapController.popup != null) {
-      MapController.popup.hide();
+    if (mapController.popup != null) {
+      mapController.popup.hide();
     }
 
     App.getPrimaryStage().getScene().getRoot().setEffect(null);

@@ -142,7 +142,7 @@ public class AstarPopupController implements PatientAccessible {
   }
 
   private void exitPopup() {
-    MapController.popup.hide();
+    mapController.get().popup.hide();
     App.getPrimaryStage().getScene().getRoot().setEffect(null);
   }
 

@@ -54,7 +54,7 @@ public class NodePopup {
   }
 
   private void exitPopup() {
-    MapController.popup.hide();
+    mapController.popup.hide();
     App.getPrimaryStage().getScene().getRoot().setEffect(null);
   }
 

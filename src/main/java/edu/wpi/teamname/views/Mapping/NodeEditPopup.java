@@ -24,6 +24,7 @@ import javax.swing.*;
 public class NodeEditPopup {
 
   private ObjectProperty<MapController> mapController = new SimpleObjectProperty<MapController>();
+  private EdgeEditNodes edgeEditNodes;
   private Node theNode = new Node(); // holds node clicked for popup
   private Circle theCricle = new Circle(); // holds circle clicked for popup
   @FXML private Label nodeName;
@@ -157,8 +158,8 @@ public class NodeEditPopup {
   }
 
   private void exitPopup() {
-    MapController.popup.hide();
-    if (EdgeEditNodes.popup != null) EdgeEditNodes.popup.hide();
+    mapController.get().popup.hide();
+    if (edgeEditNodes.popup != null) edgeEditNodes.popup.hide();
     App.getPrimaryStage().getScene().getRoot().setEffect(null);
   }
 
@@ -204,5 +205,13 @@ public class NodeEditPopup {
         });
 
     container.setOnMouseReleased(event -> mouseLocation.set(null));
+  }
+
+  public EdgeEditNodes getEdgeEditNodes() {
+    return edgeEditNodes;
+  }
+
+  public void setEdgeEditNodes(EdgeEditNodes edgeEditNodes) {
+    this.edgeEditNodes = edgeEditNodes;
   }
 }
