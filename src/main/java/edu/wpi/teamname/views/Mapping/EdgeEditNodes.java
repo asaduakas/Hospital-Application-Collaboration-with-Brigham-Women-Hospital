@@ -18,10 +18,11 @@ import javafx.stage.Popup;
 
 public class EdgeEditNodes {
 
-  public static Popup popup;
+  public Popup popup;
   private Edge theEdge; // holds node clicked for popup
   private Line line; // holds circle clicked for popup
   private MapController mapController;
+  private EdgePopupController edgePopupController;
   private Node N;
   private Circle C;
   public static boolean isAdd = false; // isAdd = true if coming from Add edge
@@ -47,10 +48,12 @@ public class EdgeEditNodes {
       setupDraggablePopUp(root);
 
       // tie this controller to popup for easy access of functions like pathfinding
-      // EdgePopupController popupController = fxmlLoader.getController();
-      // popupController.setMapController(mapController);
-      // popupController.setEdge(theEdge);
-      // popupController.setline(line);
+//      EdgePopupController popupController = fxmlLoader.getController();
+//      popupController.setMapController(mapController);
+//      popupController.setEdgeEditNodes(this);
+//
+//      popupController.setEdge(theEdge);
+//      popupController.setline(line);
 
       this.popup = new Popup();
       popup.getContent().addAll(root);
@@ -68,11 +71,12 @@ public class EdgeEditNodes {
 
       setupDraggablePopUp(root);
 
-      //      NodeEditPopup popupController = fxmlLoader.getController();
-      //      popupController.setMapController(mapController);
-      //      popupController.setNode(N);
-      //      popupController.setCricle(C);
-      //      popupController.setNodeName(N.getLongName());
+//      NodeEditPopup popupController = fxmlLoader.getController();
+//      popupController.setMapController(mapController);
+//      popupController.setEdgeEditNodes(this);
+//      popupController.setNode(N);
+//      popupController.setCricle(C);
+//      popupController.setNodeName(N.getLongName());
 
       this.popup = new Popup();
 
@@ -98,9 +102,9 @@ public class EdgeEditNodes {
   }
 
   private void exitPopup() {
-    // if (EdgePopupController.popup != null) EdgePopupController.popup.hide();
-    // if (mapController.popup != null) mapController.popup.hide();
-    // if (NodeEditPopup.popup != null) NodeEditPopup.popup.hide();
+//    if (edgePopupController.popup != null) edgePopupController.popup.hide();
+//    if (mapController.popup != null) mapController.popup.hide();
+//    if (NodeEditPopup.popup != null) NodeEditPopup.popup.hide();
     App.getPrimaryStage().getScene().getRoot().setEffect(null);
   }
 
@@ -187,5 +191,13 @@ public class EdgeEditNodes {
 
   public void setC(Circle c) {
     C = c;
+  }
+
+  public EdgePopupController getEdgePopupController() {
+    return edgePopupController;
+  }
+
+  public void setEdgePopupController(EdgePopupController edgePopupController) {
+    this.edgePopupController = edgePopupController;
   }
 }

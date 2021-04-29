@@ -30,9 +30,9 @@ public class singleBFS implements IPathFinding {
       searchQueue.add(start);
       while (!searchQueue.isEmpty()) {
         Node node = searchQueue.removeFirst();
-        LinkedList<Edge> edges = (LinkedList<Edge>) data.getGraphInfo().get(node);
+        LinkedList<Edge> edges = (LinkedList<Edge>) data.getNode(node).getEdges();
         for (Edge edge : edges) { // for each edge connected to node
-          Node child = edge.getEndNode();
+          Node child = data.getNodeByID(edge.getEndNode());
           if (child == target) hasPath = true;
           if (!visited.contains(child)) { // if we haven't visited child, enqueue
             searchQueue.add(child);
@@ -47,7 +47,7 @@ public class singleBFS implements IPathFinding {
         Node node = target;
         nodeTo.getPath().addFirst(node);
         while (node != start) {
-          Node parent = nodesTo.get(node).getStartNode();
+          Node parent = data.getNodeByID(nodesTo.get(node).getStartNode());
           nodeTo.getPath().addFirst(parent);
           nodeTo.getPathEdges().addFirst(nodesTo.get(node));
           nodeTo.setCost(nodeTo.getCost() + nodesTo.get(node).getCost());

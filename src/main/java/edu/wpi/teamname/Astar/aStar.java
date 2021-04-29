@@ -45,11 +45,11 @@ public class aStar implements IPathFinding {
 
         LinkedList<Edge> edges =
             (LinkedList<Edge>)
-                data.getGraphInfo().get(current); // get edges with this node as start
+                data.getNode(current).getEdges(); // get edges with this node as start
 
         if (edges != null) {
           for (Edge edge : edges) { // iterate through each edge
-            Node child = edge.getEndNode();
+            Node child = data.getNodeByID(edge.getEndNode());
             double totalWeight =
                 costs.get(edge.getStartNode())
                     + edge.getCost(); // calculate cost to get to this node
@@ -86,7 +86,7 @@ public class aStar implements IPathFinding {
         Node node = target;
         nodeTo.getPath().addFirst(node);
         while (node != start) {
-          Node parent = nodesTo.get(node).getStartNode();
+          Node parent = data.getNodeByID(nodesTo.get(node).getStartNode());
           nodeTo.getPath().addFirst(parent);
           nodeTo.getPathEdges().addFirst(nodesTo.get(node));
           nodeTo.setCost(nodeTo.getCost() + nodesTo.get(node).getCost());

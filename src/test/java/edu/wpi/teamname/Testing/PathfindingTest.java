@@ -1,7 +1,5 @@
 package edu.wpi.teamname.Testing;
 
-import static org.junit.Assert.*;
-
 import edu.wpi.teamname.Astar.*;
 import java.io.IOException;
 import java.sql.Connection;
@@ -21,8 +19,8 @@ public class PathfindingTest {
     RoomGraph data2 = new RoomGraph("MapDnodes.csv", "MapDedges.csv");
     PathAlgoPicker pathfinder = new PathAlgoPicker();
 
-    Node start = data.getNode("CCONF002L1");
-    Node target = data.getNode("CHALL002L1"); // more than 2 paths available
+    Node start = data.getNodeByID("CCONF002L1");
+    Node target = data.getNodeByID("CHALL002L1"); // more than 2 paths available
     // Node target = data.getNode("GEXIT001L1"); // no path exists
     // Node target = data.getNode("CRETL001L1");
 
@@ -69,9 +67,9 @@ public class PathfindingTest {
 
     System.out.println();
 
-    Node start2 = data2.getNode("dWALK00101");
+    Node start2 = data2.getNodeByID("dWALK00101");
     // Node target2 = data2.getNode("dWALK01501");
-    Node target2 = data2.getNode("dWALK01201");
+    Node target2 = data2.getNodeByID("dWALK01201");
 
     System.out.println(
         "-----------------Starting AllPaths* print2--------------------------------");
@@ -115,8 +113,8 @@ public class PathfindingTest {
   public void multiFloorTest() throws IOException {
     RoomGraph data = new RoomGraph("MapDAllNodes.csv", "MapDAllEdges.csv");
     PathAlgoPicker pathfinder = new PathAlgoPicker();
-    Node start = data.getNode("FHALL02901");
-    Node target = data.getNode("FRETL00201");
+    Node start = data.getNodeByID("FHALL02901");
+    Node target = data.getNodeByID("FRETL00201");
     //    Node start = data.getNode("FRETL00201");
     //    Node target = data.getNode("FHALL02901");
     // Node target = data.getNode("BHALL00502");

@@ -1,5 +1,6 @@
 package edu.wpi.teamname.Astar;
 
+import java.util.LinkedList;
 import javafx.beans.property.SimpleDoubleProperty;
 
 public class Node {
@@ -11,6 +12,7 @@ public class Node {
   private String nodeType;
   private String longName;
   private String shortName;
+  private LinkedList<Edge> edges;
 
   // For UI
   private SimpleDoubleProperty simpXcoord;
@@ -33,6 +35,7 @@ public class Node {
     this.nodeType = nodeType;
     this.longName = longName;
     this.shortName = shortName;
+    this.edges = new LinkedList<Edge>();
     this.simpXcoord = new SimpleDoubleProperty(xcoord);
     this.simpYcoord = new SimpleDoubleProperty(ycoord);
   }
@@ -46,6 +49,7 @@ public class Node {
     this.nodeType = "nodeType";
     this.longName = "longName";
     this.shortName = "shortName";
+    this.edges = new LinkedList<Edge>();
     this.simpXcoord = new SimpleDoubleProperty(xcoord);
     this.simpYcoord = new SimpleDoubleProperty(ycoord);
   }
@@ -161,5 +165,17 @@ public class Node {
 
   public void setSimpYcoord(double simpYcoord) {
     this.simpYcoord.set(simpYcoord);
+  }
+
+  public LinkedList<Edge> getEdges() {
+    return edges;
+  }
+
+  public void setEdges(LinkedList<Edge> edges) {
+    this.edges = edges;
+  }
+
+  public void addEdge(Edge edge) {
+    this.edges.add(edge);
   }
 }

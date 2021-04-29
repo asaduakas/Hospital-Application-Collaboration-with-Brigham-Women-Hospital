@@ -48,8 +48,8 @@ public class MapController implements AdminAccessible {
     initializeEdges();
 
     for (EdgeUI EUI : EDGES) {
-      if (EUI.getE().getStartNode().getFloor().equals(Floor)
-          || EUI.getE().getEndNode().getFloor().equals(Floor)) {
+      if (initialData.getNodeByID(EUI.getE().getStartNode()).getFloor().equals(Floor)
+          || initialData.getNodeByID(EUI.getE().getEndNode()).getFloor().equals(Floor)) {
         addEdgeUI(EUI);
       }
     }
@@ -65,17 +65,17 @@ public class MapController implements AdminAccessible {
     double markerX = 15;
     double markerY = 26.25;
 
-    for (Map.Entry<String, Node> N : initialData.getNodes().entrySet()) {
+    for (Node N: initialData.getGraphInfo()) {
       ImageView Marker = new ImageView(I);
       Marker.setFitWidth(markerX);
       Marker.setFitHeight(markerY);
-      Marker.setX(N.getValue().getXCoord() - markerX / 2);
-      Marker.setY(N.getValue().getYCoord() - markerY);
+      Marker.setX(N.getXCoord() - markerX / 2);
+      Marker.setY(N.getYCoord() - markerY);
       Marker.setOnMouseClicked(
           (MouseEvent e) -> {
             disableListener(e);
           }); // TODO ACTION
-      NodeUI Temp = new NodeUI(N.getValue(), Marker);
+      NodeUI Temp = new NodeUI(N, Marker);
       NODES.add(Temp);
     }
   }
@@ -84,10 +84,10 @@ public class MapController implements AdminAccessible {
     for (Edge E : initialData.getListOfEdges()) {
       Line L =
           new Line(
-              E.getStartNode().getSimpXcoord(),
-              E.getStartNode().getSimpYcoord(),
-              E.getEndNode().getSimpXcoord(),
-              E.getEndNode().getSimpYcoord());
+              initialData.getNodeByID(E.getStartNode()).getSimpXcoord(),
+              initialData.getNodeByID(E.getStartNode()).getSimpYcoord(),
+              initialData.getNodeByID(E.getEndNode()).getSimpXcoord(),
+              initialData.getNodeByID(E.getEndNode()).getSimpYcoord());
       L.setOnMouseClicked(
           (MouseEvent e) -> {
             disableListener(e);
