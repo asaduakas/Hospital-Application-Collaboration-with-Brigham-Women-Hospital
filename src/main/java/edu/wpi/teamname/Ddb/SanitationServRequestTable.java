@@ -52,8 +52,8 @@ public class SanitationServRequestTable extends AbsTables {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
-              "INSERT INTO SecurityRequest (firstName, lastName, contactInfo,"
-                  + "location, assignedEmployee, description, urgencyLevel) VALUES(?,?,?,?,?,?,?)");
+              "INSERT INTO SanitationRequest (firstName, lastName, contactInfo,"
+                  + "location, assignedEmployee, descriptionOfIssue, urgencyLevel) VALUES(?,?,?,?,?,?,?)");
       stmt.setString(1, firstName);
       stmt.setString(2, lastName);
       stmt.setString(3, contactInfo);

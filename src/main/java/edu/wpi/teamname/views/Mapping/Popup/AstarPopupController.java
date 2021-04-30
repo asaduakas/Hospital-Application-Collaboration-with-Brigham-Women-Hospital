@@ -88,7 +88,8 @@ public class AstarPopupController implements PatientAccessible {
         // fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("AstarView.fxml"));
         // root = fxmlLoader.load();
         // fxmlLoader.<AstarController>getController().runAStar(startFavID, endFavID);
-        FDatabaseTables.getSearchHistoryTable().addEntity(GlobalDb.getConnection(), recentStart, recentEnd);
+        FDatabaseTables.getSearchHistoryTable()
+            .addEntity(GlobalDb.getConnection(), recentStart, recentEnd);
         HomeController.historyTracker = 1;
         getSearchHistory(GlobalDb.getConnection());
       } else if ((startID != null && endID != null)
@@ -100,7 +101,8 @@ public class AstarPopupController implements PatientAccessible {
         recentStart = startName;
         recentEnd = endName;
         System.out.println("reached condition 2" + recentStart + recentEnd);
-        FDatabaseTables.getSearchHistoryTable().addEntity(GlobalDb.getConnection(), recentStart, recentEnd);
+        FDatabaseTables.getSearchHistoryTable()
+            .addEntity(GlobalDb.getConnection(), recentStart, recentEnd);
         HomeController.historyTracker = 1;
         getSearchHistory(GlobalDb.getConnection());
         //  fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("AstarView.fxml"));
@@ -117,7 +119,8 @@ public class AstarPopupController implements PatientAccessible {
         //  fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("AstarView.fxml"));
         // root = fxmlLoader.load();
         // fxmlLoader.<AstarController>getController().runAStar(startID, endFavID);
-        FDatabaseTables.getSearchHistoryTable().addEntity(GlobalDb.getConnection(), recentStart, recentEnd);
+        FDatabaseTables.getSearchHistoryTable()
+            .addEntity(GlobalDb.getConnection(), recentStart, recentEnd);
         HomeController.historyTracker = 1;
         getSearchHistory(GlobalDb.getConnection());
       } else if ((startID == null && endID != null)
@@ -131,7 +134,8 @@ public class AstarPopupController implements PatientAccessible {
         //  fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("AstarView.fxml"));
         // root = fxmlLoader.load();
         // fxmlLoader.<AstarController>getController().runAStar(startFavID, endID);
-        FDatabaseTables.getSearchHistoryTable().addEntity(GlobalDb.getConnection(), recentStart, recentEnd);
+        FDatabaseTables.getSearchHistoryTable()
+            .addEntity(GlobalDb.getConnection(), recentStart, recentEnd);
         HomeController.historyTracker = 1;
         getSearchHistory(GlobalDb.getConnection());
       } else {

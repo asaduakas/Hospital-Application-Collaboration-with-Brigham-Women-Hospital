@@ -772,7 +772,7 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
                 rs.getString("contactInfo"),
                 rs.getString("location"),
                 rs.getString("assignedEmployee"),
-                rs.getString("description"),
+                rs.getString("descriptionOfIssue"),
                 rs.getString("urgencyLevel")));
       }
     } catch (SQLException throwables) {
@@ -1041,7 +1041,7 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
               stmt =
                   GlobalDb.getConnection()
                       .prepareStatement(
-                          "UPDATE SanitationRequest SET status = ?, assignedEmployee = ? WHERE id=?");
+                          "UPDATE SecurityRequest SET status = ?, assignedEmployee = ? WHERE id=?");
               stmt.setString(1, securityInfo.getStatus());
               stmt.setString(2, securityInfo.getAssignedEmployee());
               stmt.setString(3, securityInfo.getId());
@@ -1549,12 +1549,12 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
         });
     statusCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn(statusList));
 
-    securityTable.setEditable(true);
+    sanitationTable.setEditable(true);
     fNCol.setEditable(false);
     lNCol.setEditable(false);
     contactInfoCol.setEditable(false);
 
-    securityTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+    sanitationTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
     sanitationTable
         .getColumns()
@@ -1567,8 +1567,7 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
             descriptCol,
             assignedCol,
             statusCol);
-
-    sanitationTable.setPlaceholder(new Label("No request of sanitation service has been made yet"));
+    sanitationTable.setPlaceholder(new Label("No request of security service has been made yet"));
   }
 
   private void medDelivTableSetup() {

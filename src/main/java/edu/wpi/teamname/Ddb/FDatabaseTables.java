@@ -90,7 +90,9 @@ public class FDatabaseTables {
     return userTable;
   }
 
-  public static SearchHistoryTable getSearchHistoryTable() { return searchHistoryTable; }
+  public static SearchHistoryTable getSearchHistoryTable() {
+    return searchHistoryTable;
+  }
 
   public static SanitationServRequestTable getSanitationServiceTable() {
     return sanitationServiceTable;
