@@ -1,6 +1,13 @@
-Directions from Walkway Node #33 Left of Intersection of Binny and Shattuck Street to Walkway Node #35 Upper Right Corner of Intersection of Binny and Shattuck Street:
-Head North towards Walkway Node #42 Bottom Left Corner of Intersection at North Binny Street
-Turn Right towards Walkway Node #43 Bottom Right Corner of Intersection at North Binny Street
-Turn Right towards Walkway Node #35 Upper Right Corner of Intersection of Binny and Shattuck Street
+Directions from Tower Hallway 7 to Staircase Intersection 1 Level 2:
+Head East towards Tower Hallway 8
+Turn Left towards edu.wpi.teamname.Astar.Node@1122847e
+Continue Straight towards Tower Hallway 10
+Continue Straight towards Tower Elevator Entrance
+Turn Right towards edu.wpi.teamname.Astar.Node@899098d
+Continue Straight towards Hallway Connector 2 Floor 2
+Continue Straight towards Hallway Connector 3 Floor 2
+Continue Straight towards Hallway Connector 3 Floor 2
+Continue Straight towards Hallway Connector 4 Floor 2
+Continue Straight towards Staircase Intersection 1 Level 2
 
-Welcome to Walkway Node #35 Upper Right Corner of Intersection of Binny and Shattuck Street
+Welcome to Staircase Intersection 1 Level 2

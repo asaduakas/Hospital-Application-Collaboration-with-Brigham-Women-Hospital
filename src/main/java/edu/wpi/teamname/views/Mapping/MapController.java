@@ -568,8 +568,8 @@ public class MapController implements AdminAccessible {
             edges.getFirst().getStartNode().getYCoord(),
             edges.getFirst().getEndNode().getXCoord(),
             edges.getFirst().getEndNode().getYCoord(),
-            edges.getFirst().getStartNode().getLongName(),
-            edges.getFirst().getEndNode().getLongName()); // removed directions
+            edges.getFirst().getStartNode(),
+            edges.getFirst().getEndNode()); // removed directions
 
     // used to skip first edge
     int skip = 0;
@@ -605,18 +605,24 @@ public class MapController implements AdminAccessible {
     int deltaX = endX - startX;
     int deltaY = endY - startY;
 
+    System.out.println("start type: " + startNode.getNodeType());
+    System.out.println("end type: " + endNode.getNodeType());
 
     // add handling for changing floors
-    if(startNode.getNodeType().equals("Elevator") && endNode.getNodeType().equals("Elevator"))
-    {
-      dirText.appendText("Take the elevator towards floor " + endNode.getFloor());
+    if (startNode.getNodeType().equals("ELEV") && endNode.getNodeType().equals("ELEV")) {
+      dirText.appendText("Take the elevator towards floor " + endNode.getFloor() + "\n");
+      return "In elevator";
 
+    } else if (startNode.getNodeType().equals("ELEV") && !endNode.getNodeType().equals("ELEV")) {
+      newDirection = firstMove(startX, startY, endX, endY, startNode, endNode);
+      return newDirection;
+    } else if (startNode.getNodeType().equals("STAI") && endNode.getNodeType().equals("STAI")) {
+      dirText.appendText("Take the stairs towards floor " + endNode.getFloor() + "\n");
+      return "In stairs";
+    } else if (startNode.getNodeType().equals("STAI") && !endNode.getNodeType().equals("STAI")) {
+      newDirection = firstMove(startX, startY, endX, endY, startNode, endNode);
+      return newDirection;
     }
-    else if(startNode.getNodeType().equals("Elevator") && endNode.getNodeType()!="Elevator")
-    {
-      return firstMove();
-    }
-
 
     // North
     if ((deltaY < 0) && (Math.abs(deltaY) > Math.abs(deltaX))) {
@@ -642,7 +648,7 @@ public class MapController implements AdminAccessible {
         || (currentDirection.equals("East") && newDirection.equals("North"))
         || (currentDirection.equals("South") && newDirection.equals("East"))
         || (currentDirection.equals("West") && newDirection.equals("South"))) {
-      dirText.appendText("Turn Left towards " + endNode + "\n");
+      dirText.appendText("Turn Left towards " + endNode.getLongName() + "\n");
 
     }
     // Turn Right
@@ -650,7 +656,7 @@ public class MapController implements AdminAccessible {
         || (currentDirection.equals("East") && newDirection.equals("South"))
         || (currentDirection.equals("South") && newDirection.equals("West"))
         || (currentDirection.equals("West") && newDirection.equals("North"))) {
-      dirText.appendText("Turn Right towards " + endNode + "\n");
+      dirText.appendText("Turn Right towards " + endNode.getLongName() + "\n");
     }
     // Continue Straight
     else if (currentDirection.equals(newDirection)) {
@@ -661,35 +667,44 @@ public class MapController implements AdminAccessible {
   }
 
   public String firstMove(
-      int startX, int startY, int endX, int endY, String startNode, String endNode) {
+      int startX, int startY, int endX, int endY, Node startNode, Node endNode) {
     int deltaX = endX - startX;
     int deltaY = endY - startY;
 
+    // add handling for changing floors
+    if (startNode.getNodeType().equals("ELEV") && endNode.getNodeType().equals("ELEV")) {
+      dirText.appendText("Take the elevator towards floor " + endNode.getFloor() + "\n");
+      return "In elevator";
+    } else if (startNode.getNodeType().equals("STAI") && endNode.getNodeType().equals("STAI")) {
+      dirText.appendText("Take the stairs towards floor " + endNode.getFloor() + "\n");
+      return "In stairs";
+    }
+
     // North
     if ((deltaY < 0) && (Math.abs(deltaY) > Math.abs(deltaX))) {
-      System.out.println("Head North towards " + endNode);
-      dirText.appendText("Head North towards " + endNode + "\n");
+      System.out.println("Head North towards " + endNode.getLongName());
+      dirText.appendText("Head North towards " + endNode.getLongName() + "\n");
       return "North";
     }
     // South
     else if ((deltaY > 0) && (deltaY > Math.abs(deltaX))) {
-      System.out.println("Head South towards " + endNode);
-      dirText.appendText("Head South towards " + endNode + "\n");
+      System.out.println("Head South towards " + endNode.getLongName());
+      dirText.appendText("Head South towards " + endNode.getLongName() + "\n");
       return "South";
     }
     // East
     else if ((deltaX > 0) && (deltaX > Math.abs(deltaY))) {
-      System.out.println("Head East towards " + endNode);
-      dirText.appendText("Head East towards " + endNode + "\n");
+      System.out.println("Head East towards " + endNode.getLongName());
+      dirText.appendText("Head East towards " + endNode.getLongName() + "\n");
       return "East";
     }
     // West
     else if ((deltaX < 0) && (Math.abs(deltaX) > Math.abs(deltaY))) {
-      System.out.println("Head West towards " + endNode);
-      dirText.appendText("Head West towards " + endNode + "\n");
+      System.out.println("Head West towards " + endNode.getLongName());
+      dirText.appendText("Head West towards " + endNode.getLongName() + "\n");
       return "West";
     } else {
-      System.out.println("Error determining turn direction towards " + endNode);
+      System.out.println("Error determining turn direction towards " + endNode.getLongName());
       return "Direction Error";
     }
   }
