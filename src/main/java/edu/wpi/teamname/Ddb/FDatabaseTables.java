@@ -2,21 +2,21 @@ package edu.wpi.teamname.Ddb;
 
 public class FDatabaseTables {
 
-  private AudVisRequestTable audVisTable;
-  private ComputerRequestTable compRequestTable;
-  private EdgesTable edgeTable;
-  private ExtTransRequestTable externalTransportTable;
-  private FacilitiesRequestTable facilitiesTable;
-  private FloralDeliveryRequestTable floralDeliveryTable;
-  private FoodDeliveryRequestTable foodDeliveryTable;
-  private InternalTransRequestTable internalDeliveryTable;
-  private LangInterpreterRequestTable langInterpreterTable;
-  private LaundryRequestTable laundryRequestTable;
-  private MedDeliveryRequestTable medDeliveryTable;
+  private static AudVisRequestTable audVisTable;
+  private static ComputerRequestTable compRequestTable;
+  private static EdgesTable edgeTable;
+  private static ExtTransRequestTable externalTransportTable;
+  private static FacilitiesRequestTable facilitiesTable;
+  private static FloralDeliveryRequestTable floralDeliveryTable;
+  private static FoodDeliveryRequestTable foodDeliveryTable;
+  private static InternalTransRequestTable internalDeliveryTable;
+  private static LangInterpreterRequestTable langInterpreterTable;
+  private static LaundryRequestTable laundryRequestTable;
+  private static MedDeliveryRequestTable medDeliveryTable;
   private static NodesTable nodeTable;
-  private UsersTable userTable;
-  private SanitationServRequestTable sanitationServiceTable;
-  private SecurityRequestTable securityRequestTable;
+  private static UsersTable userTable;
+  private static SanitationServRequestTable sanitationServiceTable;
+  private static SecurityRequestTable securityRequestTable;
 
   public FDatabaseTables() {
     this.audVisTable = new AudVisRequestTable();
@@ -84,7 +84,7 @@ public class FDatabaseTables {
     return medDeliveryTable;
   }
 
-  public UsersTable getUserTable() {
+  public static UsersTable getUserTable() {
     return userTable;
   }
 

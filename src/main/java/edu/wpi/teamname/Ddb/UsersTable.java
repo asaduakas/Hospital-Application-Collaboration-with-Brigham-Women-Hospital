@@ -1,5 +1,8 @@
 package edu.wpi.teamname.Ddb;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.sql.*;
 import java.util.Scanner;
 
@@ -115,6 +118,23 @@ public class UsersTable extends AbsTables {
       throwables.printStackTrace();
     }
   }
+
+
+  public static ObservableList<String> fetchEmployee(Connection conn) {
+    ObservableList<String> employees = FXCollections.observableArrayList();
+    try {
+      PreparedStatement longNameStmt =
+              conn.prepareStatement("SELECT id FROM Users WHERE category = 'Employee'");
+      ResultSet rs = longNameStmt.executeQuery();
+      while (rs.next()) {
+        employees.add(rs.getString(1));
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    return employees;
+  }
+
 
   // TODO: implement this function
   public static void updateUserPassword(Connection conn, String id, String password) {
