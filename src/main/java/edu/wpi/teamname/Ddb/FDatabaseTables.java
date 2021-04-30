@@ -15,6 +15,7 @@ public class FDatabaseTables {
   private static MedDeliveryRequestTable medDeliveryTable;
   private static NodesTable nodeTable;
   private static UsersTable userTable;
+  private static SearchHistoryTable searchHistory;
   private static SanitationServRequestTable sanitationServiceTable;
   private static SecurityRequestTable securityRequestTable;
 
@@ -32,6 +33,7 @@ public class FDatabaseTables {
     this.medDeliveryTable = new MedDeliveryRequestTable();
     this.nodeTable = new NodesTable();
     this.userTable = new UsersTable();
+    this.searchHistory = new SearchHistoryTable();
     this.sanitationServiceTable = new SanitationServRequestTable();
     this.securityRequestTable = new SecurityRequestTable();
   }
@@ -88,6 +90,8 @@ public class FDatabaseTables {
     return userTable;
   }
 
+  public static SearchHistoryTable getSearchHistory() { return searchHistory; }
+
   public static SanitationServRequestTable getSanitationServiceTable() {
     return sanitationServiceTable;
   }
@@ -107,6 +111,7 @@ public class FDatabaseTables {
     edgeTable.populateTable(GlobalDb.getConnection(), "");
     userTable.createTable(GlobalDb.getConnection());
     userTable.populateTable(GlobalDb.getConnection(), "");
+    searchHistory.createTable(GlobalDb.getConnection());
     audVisTable.createTable(GlobalDb.getConnection());
     compRequestTable.createTable(GlobalDb.getConnection());
     externalTransportTable.createTable(GlobalDb.getConnection());
@@ -132,6 +137,10 @@ public class FDatabaseTables {
   public void createEdgesTable() {
     edgeTable.createTable(GlobalDb.getConnection());
     edgeTable.populateTable(GlobalDb.getConnection(), "");
+  }
+
+  public void createSearchHistoryTable() {
+    searchHistory.createTable(GlobalDb.getConnection());
   }
 
   public void createExternalTransportTable() {
