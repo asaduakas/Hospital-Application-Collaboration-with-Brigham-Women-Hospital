@@ -75,7 +75,7 @@ public class UsersTable extends AbsTables {
       stmt.setString(1, id);
       stmt.setString(2, password);
       stmt.setString(3, name);
-      stmt.setString(5, category);
+      stmt.setString(4, category);
       stmt.executeUpdate();
     } catch (Exception e) {
       e.printStackTrace();
