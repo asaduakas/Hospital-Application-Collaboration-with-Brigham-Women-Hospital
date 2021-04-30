@@ -5,8 +5,8 @@ import com.jfoenix.controls.base.IFXLabelFloatControl;
 import com.jfoenix.skins.JFXTextFieldSkin;
 import com.jfoenix.skins.ValidationPane;
 import edu.wpi.teamname.App;
+import edu.wpi.teamname.Ddb.FDatabaseTables;
 import edu.wpi.teamname.Ddb.GlobalDb;
-import edu.wpi.teamname.Ddb.Tables;
 import edu.wpi.teamname.views.Access.LoginController;
 import edu.wpi.teamname.views.AutoCompleteComboBox;
 import edu.wpi.teamname.views.HomeController;
@@ -195,7 +195,7 @@ public abstract class AbsRequest {
 
   public void type(ActionEvent actionEvent) {
     AutoCompleteComboBox locationAutoComplete = new AutoCompleteComboBox(locationBox);
-    ArrayList<String> longNameList = Tables.fetchLongName(GlobalDb.getConnection());
+    ArrayList<String> longNameList = FDatabaseTables.getNodeTable().fetchLongName(GlobalDb.getConnection());
     locationAutoComplete.getEntries().addAll(longNameList);
   }
 }

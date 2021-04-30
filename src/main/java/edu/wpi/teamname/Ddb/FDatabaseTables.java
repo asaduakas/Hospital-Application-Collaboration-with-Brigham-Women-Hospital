@@ -13,7 +13,7 @@ public class FDatabaseTables {
   private LangInterpreterRequestTable langInterpreterTable;
   private LaundryRequestTable laundryRequestTable;
   private MedDeliveryRequestTable medDeliveryTable;
-  private NodesTable nodeTable;
+  private static NodesTable nodeTable;
   private UsersTable userTable;
   private SanitationServRequestTable sanitationServiceTable;
   private SecurityRequestTable securityRequestTable;
@@ -44,7 +44,7 @@ public class FDatabaseTables {
     return compRequestTable;
   }
 
-  public NodesTable getNodeTable() {
+  public static NodesTable getNodeTable() {
     return nodeTable;
   }
 
