@@ -2,7 +2,7 @@ id,password,name,category
 admin,admin,ll,Admin
 patient,patient,qq,Patient
 employee,employee,ee,Employee
-wwong,admin,wilsonwong,Admin
+wwong,admin,Wilson Wong,Admin
 elaine,employee,elaine,Employee
 veronica,employee,veronica,Employee
 tia,employee,tia,Employee
