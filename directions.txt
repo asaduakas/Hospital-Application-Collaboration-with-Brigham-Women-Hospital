@@ -1,13 +1,6 @@
-Directions from Tower Hallway 7 to Staircase Intersection 1 Level 2:
-Head East towards Tower Hallway 8
-Turn Left towards edu.wpi.teamname.Astar.Node@1122847e
-Continue Straight towards Tower Hallway 10
-Continue Straight towards Tower Elevator Entrance
-Turn Right towards edu.wpi.teamname.Astar.Node@899098d
-Continue Straight towards Hallway Connector 2 Floor 2
-Continue Straight towards Hallway Connector 3 Floor 2
-Continue Straight towards Hallway Connector 3 Floor 2
-Continue Straight towards Hallway Connector 4 Floor 2
-Continue Straight towards Staircase Intersection 1 Level 2
+Directions from Tower Hallway 4 to Tower Hallway 10:
+Head North towards Tower Hallway 2
+Turn Right towards Tower Hallway 1
+Turn Right towards Tower Elevator Entrance
 
-Welcome to Staircase Intersection 1 Level 2
+Welcome to Tower Hallway 10

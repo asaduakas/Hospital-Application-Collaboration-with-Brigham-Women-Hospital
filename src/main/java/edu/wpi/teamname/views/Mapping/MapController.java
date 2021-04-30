@@ -660,7 +660,9 @@ public class MapController implements AdminAccessible {
     }
     // Continue Straight
     else if (currentDirection.equals(newDirection)) {
-      dirText.appendText("Continue Straight towards " + endNode.getLongName() + "\n");
+      if (!(startNode.getNodeType().equals("HALL") && endNode.getNodeType().equals("HALL"))) {
+        dirText.appendText("Continue Straight towards " + endNode.getLongName() + "\n");
+      }
     }
 
     return newDirection;
@@ -678,34 +680,34 @@ public class MapController implements AdminAccessible {
     } else if (startNode.getNodeType().equals("STAI") && endNode.getNodeType().equals("STAI")) {
       dirText.appendText("Take the stairs towards floor " + endNode.getFloor() + "\n");
       return "In stairs";
-    }
-
-    // North
-    if ((deltaY < 0) && (Math.abs(deltaY) > Math.abs(deltaX))) {
-      System.out.println("Head North towards " + endNode.getLongName());
-      dirText.appendText("Head North towards " + endNode.getLongName() + "\n");
-      return "North";
-    }
-    // South
-    else if ((deltaY > 0) && (deltaY > Math.abs(deltaX))) {
-      System.out.println("Head South towards " + endNode.getLongName());
-      dirText.appendText("Head South towards " + endNode.getLongName() + "\n");
-      return "South";
-    }
-    // East
-    else if ((deltaX > 0) && (deltaX > Math.abs(deltaY))) {
-      System.out.println("Head East towards " + endNode.getLongName());
-      dirText.appendText("Head East towards " + endNode.getLongName() + "\n");
-      return "East";
-    }
-    // West
-    else if ((deltaX < 0) && (Math.abs(deltaX) > Math.abs(deltaY))) {
-      System.out.println("Head West towards " + endNode.getLongName());
-      dirText.appendText("Head West towards " + endNode.getLongName() + "\n");
-      return "West";
     } else {
-      System.out.println("Error determining turn direction towards " + endNode.getLongName());
-      return "Direction Error";
+      // North
+      if ((deltaY < 0) && (Math.abs(deltaY) > Math.abs(deltaX))) {
+        System.out.println("Head North towards " + endNode.getLongName());
+        dirText.appendText("Head North towards " + endNode.getLongName() + "\n");
+        return "North";
+      }
+      // South
+      else if ((deltaY > 0) && (deltaY > Math.abs(deltaX))) {
+        System.out.println("Head South towards " + endNode.getLongName());
+        dirText.appendText("Head South towards " + endNode.getLongName() + "\n");
+        return "South";
+      }
+      // East
+      else if ((deltaX > 0) && (deltaX > Math.abs(deltaY))) {
+        System.out.println("Head East towards " + endNode.getLongName());
+        dirText.appendText("Head East towards " + endNode.getLongName() + "\n");
+        return "East";
+      }
+      // West
+      else if ((deltaX < 0) && (Math.abs(deltaX) > Math.abs(deltaY))) {
+        System.out.println("Head West towards " + endNode.getLongName());
+        dirText.appendText("Head West towards " + endNode.getLongName() + "\n");
+        return "West";
+      } else {
+        System.out.println("Error determining turn direction towards " + endNode.getLongName());
+        return "Direction Error";
+      }
     }
   }
 
