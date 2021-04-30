@@ -17,7 +17,6 @@ import javafx.scene.effect.GaussianBlur;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.stage.Popup;
-import javax.swing.*;
 
 public class NodeEditPopup {
 
@@ -121,8 +120,8 @@ public class NodeEditPopup {
         .addEntity(
             GlobalDb.getConnection(),
             theEdge.getEdgeID(),
-            theEdge.getStartNode(),
-            theEdge.getEndNode());
+            theEdge.getStartNodeID(),
+            theEdge.getEndNodeID());
     //
     //    mapController.get().setIseditedge(false);
 

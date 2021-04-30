@@ -34,7 +34,7 @@ public class AllPathsSearch implements IPathFinding { // DFS but for every possi
 
       if (edges != null) { // if there are children
         for (int i = 0; i < edges.size(); i++) { // iterates through each edge
-          Node child = data.getNodeByID(edges.get(i).getEndNode());
+          Node child = data.getNodeByID(edges.get(i).getEndNodeID());
           if (!path.getPath()
               .contains(
                   child)) { // add sorted children to open list if we haven't already queued it in

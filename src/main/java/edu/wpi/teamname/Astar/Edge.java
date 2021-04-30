@@ -3,8 +3,8 @@ package edu.wpi.teamname.Astar;
 import javafx.beans.property.SimpleStringProperty;
 
 public class Edge {
-  private String startNode;
-  private String endNode;
+  private String startNodeID;
+  private String endNodeID;
   private double cost;
 
   // for ui
@@ -18,8 +18,8 @@ public class Edge {
   private SimpleStringProperty endShortSimple;
 
   public Edge(Node startNode, Node endNode, double cost) {
-    this.startNode = startNode.getNodeID();
-    this.endNode = endNode.getNodeID();
+    this.startNodeID = startNode.getNodeID();
+    this.endNodeID = endNode.getNodeID();
     this.cost = cost;
     this.edgeID = startNode.getNodeID() + "_" + endNode.getNodeID();
     this.startNodeShortName = startNode.getShortName();
@@ -39,9 +39,9 @@ public class Edge {
     System.out.print("{");
     System.out.print(edgeID);
     System.out.print(", ");
-    System.out.print(startNode);
+    System.out.print(startNodeID);
     System.out.print(", ");
-    System.out.print(endNode);
+    System.out.print(endNodeID);
     System.out.print(", ");
     System.out.print(cost);
     System.out.print("}");
@@ -56,12 +56,12 @@ public class Edge {
     this.edgeID = edgeID;
   }
 
-  public String getStartNode() {
-    return startNode;
+  public String getStartNodeID() {
+    return startNodeID;
   }
 
-  public String getEndNode() {
-    return endNode;
+  public String getEndNodeID() {
+    return endNodeID;
   }
 
   public double getCost() {
