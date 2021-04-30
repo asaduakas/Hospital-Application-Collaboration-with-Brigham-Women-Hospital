@@ -310,7 +310,6 @@ public class HomeController extends Application {
     System.out.println(password + "password in validateUser");
 
     try {
-      GlobalDb.establishCon();
       Statement statement = GlobalDb.getConnection().createStatement();
       String query = "SELECT category, password FROM Users WHERE id = '" + username + "'";
       statement.executeQuery(query);

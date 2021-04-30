@@ -2,12 +2,10 @@ package edu.wpi.teamname.views.Access;
 
 import com.jfoenix.controls.*;
 import edu.wpi.teamname.App;
+import edu.wpi.teamname.Ddb.FDatabaseTables;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.InitPageController;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -57,34 +55,18 @@ public class signUpController {
           || (categoryName == null)) {
         popupWarning(event);
       } else {
-        addToDatabase(
-            GlobalDb.getConnection(),
-            usernameField.getText(),
-            passwordField.getText().toString(),
-            nameField.getText(),
-            categoryName);
+        FDatabaseTables.getUserTable()
+            .addEntity(
+                GlobalDb.getConnection(),
+                usernameField.getText(),
+                passwordField.getText().toString(),
+                nameField.getText(),
+                categoryName);
         InitPageController.popup.hide();
         App.getPrimaryStage().close();
         App takeToInit = new App();
         takeToInit.start(App.getPrimaryStage());
       }
-    }
-  }
-
-  public void addToDatabase(
-      Connection conn, String username, String password, String name, String category) {
-    PreparedStatement stmnt = null;
-    try {
-      stmnt =
-          conn.prepareStatement(
-              "INSERT INTO Users(id, password, firstName, category) VALUES(?,?,?,?)");
-      stmnt.setString(1, username);
-      stmnt.setString(2, password);
-      stmnt.setString(3, name);
-      stmnt.setString(4, category);
-      stmnt.executeUpdate();
-    } catch (SQLException e) {
-
     }
   }
 

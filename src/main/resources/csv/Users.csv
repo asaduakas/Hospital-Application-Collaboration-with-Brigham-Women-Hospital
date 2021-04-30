@@ -1,9 +1,8 @@
-id,password,firstName,lastName,category
-patient1,patient,qq,ww,Patient
-employee1,employee,ee,rr,Employee
-employee2,employee,tt,yy,Employee
-employee3,employee,aa,ss,Employee
-employee4,employee,xx,cc,Employee
-employee5,employee,vv,bb,Employee
-admin1,admin,ll,kk,Admin
-guest1,guest,ww,ee,Guest
+id,password,name,category
+patient,patient,qq,Patient
+employee,employee,ee,Employee
+employee2,employee,tt,Employee
+employee3,employee,aa,Employee
+employee4,employee,xx,Employee
+employee5,employee,vv,Employee
+admin,admin,ll,Admin

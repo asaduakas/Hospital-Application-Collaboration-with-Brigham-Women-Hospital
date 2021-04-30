@@ -16,11 +16,10 @@ public class UsersTable extends AbsTables {
           "CREATE TABLE Users("
               + "id VARCHAR(100) NOT NULL,"
               + "password VARCHAR(50) DEFAULT '',"
-              + "firstName VARCHAR(50) DEFAULT '',"
-              + "lastName VARCHAR(50) DEFAULT '',"
+              + "name VARCHAR(50) DEFAULT '',"
               + "category VARCHAR(8) NOT NULL,"
               + "PRIMARY KEY(id),"
-              + "CONSTRAINT USE_role_check CHECK (category IN ('Employee', 'Patient', 'Guest', 'Admin')))";
+              + "CONSTRAINT USE_role_check CHECK (category IN ('Employee', 'Patient', 'Admin')))";
       stmt.executeUpdate(query);
       System.out.println("User table created");
     } catch (Exception e) {
@@ -53,9 +52,6 @@ public class UsersTable extends AbsTables {
                   + "',"
                   + "'"
                   + row[3]
-                  + "',"
-                  + "'"
-                  + row[4]
                   + "')";
           stmt.execute(query);
         } catch (Exception e) {
@@ -73,18 +69,12 @@ public class UsersTable extends AbsTables {
   }
 
   public static void addEntity(
-      Connection conn,
-      String id,
-      String password,
-      String firstName,
-      String lastName,
-      String category) {
+      Connection conn, String id, String password, String name, String category) {
     try {
-      PreparedStatement stmt = conn.prepareStatement("INSERT INTO Users VALUES(?,?,?,?,?)");
+      PreparedStatement stmt = conn.prepareStatement("INSERT INTO Users VALUES(?,?,?,?)");
       stmt.setString(1, id);
       stmt.setString(2, password);
-      stmt.setString(3, firstName);
-      stmt.setString(4, lastName);
+      stmt.setString(3, name);
       stmt.setString(5, category);
       stmt.executeUpdate();
     } catch (Exception e) {
@@ -99,16 +89,14 @@ public class UsersTable extends AbsTables {
       stmt = conn.createStatement();
       String query = "SELECT * FROM Users";
       ResultSet rs = stmt.executeQuery(query);
-      System.out.println("id \tpassword \tfirstname \tlastname \tcategory");
+      System.out.println("id \tpassword \tname \tcategory");
       while (rs.next()) {
         System.out.println(
             rs.getString("id")
                 + " \t"
                 + rs.getString("password")
                 + " \t"
-                + rs.getString("firstName")
-                + " \t"
-                + rs.getString("lastName")
+                + rs.getString("name")
                 + " \t"
                 + rs.getString("category"));
         System.out.println(" ");
