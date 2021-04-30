@@ -1,15 +1,15 @@
 package edu.wpi.teamname.Astar;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
-public class aStar extends IntermediaryAlgo implements IPathFinding {
+public class Dijkstras extends IntermediaryAlgo implements IPathFinding {
 
   private Path nodeTo; // visited nodes (in order) that are part of the final path
   private boolean hasPath; // to stop search if path is found
-  private HashMap<String, Double> scores =
-      new HashMap<String, Double>(); // key = node, value = score of node = cost + heuristic
 
-  public aStar() {
+  public Dijkstras() {
     this.nodeTo = new Path();
     this.hasPath = false;
   }
@@ -18,7 +18,6 @@ public class aStar extends IntermediaryAlgo implements IPathFinding {
     if (start != null && target != null) {
       // reinitialize
       this.nodeTo = new Path();
-      this.scores = new HashMap<String, Double>();
       hasPath = false;
 
       LinkedList<Node> closedList =
@@ -27,56 +26,26 @@ public class aStar extends IntermediaryAlgo implements IPathFinding {
 
       HashMap<String, Edge> nodesTo =
           new HashMap<String, Edge>(); // key = node, value = edge leading to node, holds parent
-      HashMap<String, Double> costs =
-          new HashMap<String, Double>(); // key = node, value = accumulated cost to get to node
 
-      // initialize at start
-      costs.put(start.getNodeID(), 0.0);
-      scores.put(start.getNodeID(), calculateHeuristic(start, target));
       openList.add(start);
-
       while (!openList.isEmpty()) { // until queue is empty
-        insertionSortScore(openList); // sort queue by smallest score first
         Node current = openList.peek();
         if (current == target) { // if current node is target
           hasPath = true;
           break;
         }
-
         LinkedList<Edge> edges =
             (LinkedList<Edge>)
                 data.getNode(current).getEdges(); // get edges with this node as start
 
+        insertionSortEdgesCost(edges);
+
         if (edges != null) {
           for (Edge edge : edges) { // iterate through each edge
             Node child = data.getNodeByID(edge.getEndNodeID());
-            double totalWeight =
-                costs.get(edge.getStartNodeID())
-                    + edge.getCost(); // calculate cost to get to this node
-
-            if (!openList.contains(child)
-                && !closedList.contains(child)) { // if neither list contain, put into queue
+            if (!openList.contains(child) && !closedList.contains(child)) {
               nodesTo.put(child.getNodeID(), edge);
-              costs.put(child.getNodeID(), totalWeight);
-              scores.put(
-                  child.getNodeID(),
-                  costs.get(child.getNodeID()) + calculateHeuristic(child, target));
               openList.add(child);
-            } else {
-              if (totalWeight
-                  < costs.get(
-                      child.getNodeID())) { // if this cost is smaller than previous recorded cost
-                nodesTo.put(child.getNodeID(), edge);
-                costs.put(child.getNodeID(), totalWeight);
-                scores.put(
-                    child.getNodeID(),
-                    costs.get(child.getNodeID()) + calculateHeuristic(child, target));
-
-                if (closedList.contains(child)) { // move back from closed list to open list
-                  closedList.remove(child);
-                  openList.add(child);
-                }
-              }
             }
           }
         }
@@ -86,7 +55,6 @@ public class aStar extends IntermediaryAlgo implements IPathFinding {
         closedList.add(current);
       }
 
-      // makes Path from nodesTo hashmap info
       if (hasPath) {
         Node node = target;
         nodeTo.getPath().addFirst(node);
@@ -102,31 +70,24 @@ public class aStar extends IntermediaryAlgo implements IPathFinding {
     return nodeTo;
   }
 
-  private void insertionSortScore(List<Node> nodes) { // sort edges by cost
-    int N = nodes.size();
+  private void insertionSortEdgesCost(List<Edge> edges) { // sort edges by cost
+    int N = edges.size();
     for (int i = 1; i < N; i++) { // move down the list starting from left to right
       for (int j = i;
-          j > 0
-              && (scores.get(nodes.get(j).getNodeID()) < scores.get(nodes.get(j - 1).getNodeID()));
+          j > 0 && (edges.get(j).getCost() < edges.get(j - 1).getCost());
           j--) { // exchange edges if previous is smaller
-        Node temp = nodes.get(j - 1);
-        Node temp2 = nodes.get(j);
-        nodes.remove(nodes.get(j));
-        nodes.remove(nodes.get(j - 1));
-        nodes.add(j - 1, temp2);
-        nodes.add(j, temp);
+        Edge temp = edges.get(j - 1);
+        Edge temp2 = edges.get(j);
+        edges.remove(edges.get(j));
+        edges.remove(edges.get(j - 1));
+        edges.add(j - 1, temp2);
+        edges.add(j, temp);
       }
     }
   }
 
   public Path shortestPath() {
     return this.nodeTo;
-  }
-
-  private double calculateHeuristic(Node current, Node target) {
-    return Math.max(
-        Math.abs(target.getXCoord() - current.getXCoord()),
-        Math.abs(target.getYCoord() - current.getYCoord()));
   }
 
   public boolean pathExists() {

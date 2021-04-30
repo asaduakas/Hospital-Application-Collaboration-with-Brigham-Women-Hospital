@@ -47,9 +47,9 @@ public class RoomGraph {
       // ignore the  th element of the string array
       // 1st elem of the string array is start node (parent??)
       // 2nd element of the string array is end node (children??)
-      if (nodes.containsKey(edges.get(i).getStartNode())
-          && nodes.containsKey(edges.get(i).getEndNode())) {
-        getNodeByID(edges.get(i).getStartNode()).addEdge(edges.get(i)); // add edge to node
+      if (nodes.containsKey(edges.get(i).getStartNodeID())
+          && nodes.containsKey(edges.get(i).getEndNodeID())) {
+        getNodeByID(edges.get(i).getStartNodeID()).addEdge(edges.get(i)); // add edge to node
         listOfEdges.add(edges.get(i));
       }
     }

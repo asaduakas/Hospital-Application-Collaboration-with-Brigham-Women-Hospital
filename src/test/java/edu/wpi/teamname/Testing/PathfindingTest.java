@@ -21,8 +21,8 @@ public class PathfindingTest {
 
     Node start = data.getNodeByID("CCONF002L1");
     Node target = data.getNodeByID("CHALL002L1"); // more than 2 paths available
-    // Node target = data.getNode("GEXIT001L1"); // no path exists
-    // Node target = data.getNode("CRETL001L1");
+    // Node target = data.getNodeByID("GEXIT001L1"); // no path exists
+    // Node target = data.getNodeByID("CRETL001L1");
 
     StopWatch timer = new StopWatch();
 
@@ -54,6 +54,15 @@ public class PathfindingTest {
     timer.printTime();
     pathfinder.printPathTo();
 
+    System.out.println("-----------------Starting Dijkstra print--------------------------------");
+
+    timer.reset();
+    pathfinder.setAlgorithm(new Dijkstras());
+    pathfinder.search(data, start, target);
+    timer.elapsedTime();
+    timer.printTime();
+    pathfinder.printPathTo();
+
     System.out.println("-----------------Starting A* print--------------------------------");
 
     timer.reset();
@@ -68,7 +77,7 @@ public class PathfindingTest {
     System.out.println();
 
     Node start2 = data2.getNodeByID("dWALK00101");
-    // Node target2 = data2.getNode("dWALK01501");
+    // Node target2 = data2.getNodeByID("dWALK01501");
     Node target2 = data2.getNodeByID("dWALK01201");
 
     System.out.println(
@@ -99,6 +108,16 @@ public class PathfindingTest {
     timer.printTime();
     pathfinder.printPathTo();
 
+    System.out.println(
+        "-----------------Starting Dijisktra print2--------------------------------");
+
+    timer.reset();
+    pathfinder.setAlgorithm(new Dijkstras());
+    pathfinder.search(data2, start2, target2);
+    timer.elapsedTime();
+    timer.printTime();
+    pathfinder.printPathTo();
+
     System.out.println("-----------------Starting A* print2--------------------------------");
 
     timer.reset();
@@ -115,9 +134,9 @@ public class PathfindingTest {
     PathAlgoPicker pathfinder = new PathAlgoPicker();
     Node start = data.getNodeByID("FHALL02901");
     Node target = data.getNodeByID("FRETL00201");
-    //    Node start = data.getNode("FRETL00201");
-    //    Node target = data.getNode("FHALL02901");
-    // Node target = data.getNode("BHALL00502");
+    //    Node start = data.getNodeByID("FRETL00201");
+    //    Node target = data.getNodeByID("FHALL02901");
+    // Node target = data.getNodeByID("BHALL00502");
 
     StopWatch timer = new StopWatch();
 
@@ -147,6 +166,17 @@ public class PathfindingTest {
     timer.elapsedTime();
     timer.printTime();
     pathfinder.printPathTo();
+
+    System.out.println("-----------------Starting Dijkstras print--------------------------------");
+
+    timer.reset();
+    pathfinder.setAlgorithm(new Dijkstras());
+    pathfinder.search(data, start, target);
+    timer.elapsedTime();
+    timer.printTime();
+    pathfinder.printPathTo();
+
+    System.out.println();
 
     System.out.println("-----------------Starting A* print--------------------------------");
 

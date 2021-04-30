@@ -4,7 +4,7 @@ package edu.wpi.teamname.Astar;
 import java.util.LinkedList;
 import java.util.List;
 
-public class singleDFS
+public class singleDFS extends IntermediaryAlgo
     implements IPathFinding { // based on aStar (technically aStar is based on this, but aStar was
   // written first)
 
@@ -17,7 +17,7 @@ public class singleDFS
     this.hasPath = false;
   }
 
-  public void search(RoomGraph data, Node start, Node target) {
+  public Path search(RoomGraph data, Node start, Node target) {
     if (start != null && target != null) {
       // reinitialize
       this.nodeTo = new Path();
@@ -25,6 +25,7 @@ public class singleDFS
       this.hasPath = false;
       searchS(data, start, target);
     }
+    return nodeTo;
   }
 
   private void searchS(RoomGraph data, Node start, Node target) {
@@ -46,7 +47,7 @@ public class singleDFS
           i < edges.size() && !hasPath;
           i++) { // iterates through each edge. since sorted, it will go through smallest cost
         // first (and it's children)
-        Node child = data.getNodeByID(edges.get(i).getEndNode());
+        Node child = data.getNodeByID(edges.get(i).getEndNodeID());
         if (!nodeTo.getPath().contains(child)
             && !closed.contains(child)) { // analyze if node not already in path
           // open list or determined it's a dead end

@@ -45,8 +45,8 @@ public class MapController implements AdminAccessible {
     initializeEdges();
 
     for (EdgeUI EUI : EDGES) {
-      if (initialData.getNodeByID(EUI.getE().getStartNode()).getFloor().equals(Floor)
-          || initialData.getNodeByID(EUI.getE().getEndNode()).getFloor().equals(Floor)) {
+      if (initialData.getNodeByID(EUI.getE().getStartNodeID()).getFloor().equals(Floor)
+          || initialData.getNodeByID(EUI.getE().getEndNodeID()).getFloor().equals(Floor)) {
         addEdgeUI(EUI);
       }
     }
@@ -81,10 +81,10 @@ public class MapController implements AdminAccessible {
     for (Edge E : initialData.getListOfEdges()) {
       Line L =
           new Line(
-              initialData.getNodeByID(E.getStartNode()).getSimpXcoord(),
-              initialData.getNodeByID(E.getStartNode()).getSimpYcoord(),
-              initialData.getNodeByID(E.getEndNode()).getSimpXcoord(),
-              initialData.getNodeByID(E.getEndNode()).getSimpYcoord());
+              initialData.getNodeByID(E.getStartNodeID()).getSimpXcoord(),
+              initialData.getNodeByID(E.getStartNodeID()).getSimpYcoord(),
+              initialData.getNodeByID(E.getEndNodeID()).getSimpXcoord(),
+              initialData.getNodeByID(E.getEndNodeID()).getSimpYcoord());
       L.setOnMouseClicked(
           (MouseEvent e) -> {
             disableListener(e);
@@ -148,8 +148,8 @@ public class MapController implements AdminAccessible {
         .addEntity(
             GlobalDb.getConnection(),
             E.getE().getEdgeID(),
-            E.getE().getStartNode(),
-            E.getE().getEndNode());
+            E.getE().getStartNodeID(),
+            E.getE().getEndNodeID());
     addEdgeUI(E);
     EDGES.add(E);
   }

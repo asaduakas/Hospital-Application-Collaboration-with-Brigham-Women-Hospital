@@ -3,7 +3,7 @@ package edu.wpi.teamname.Astar;
 
 public interface IPathFinding {
   // common methods of algorithms with a start and target
-  void search(RoomGraph data, Node start, Node target);
+  Path search(RoomGraph data, Node start, Node target);
 
   void printPathTo();
 
