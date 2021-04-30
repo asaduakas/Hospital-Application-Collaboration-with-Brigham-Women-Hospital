@@ -6,6 +6,7 @@ import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
 import edu.wpi.teamname.App;
 import edu.wpi.teamname.Astar.Node;
+import edu.wpi.teamname.Ddb.FDatabaseTables;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.Access.PatientAccessible;
 import edu.wpi.teamname.views.AutoCompleteComboBox;
@@ -87,7 +88,7 @@ public class AstarPopupController implements PatientAccessible {
         // fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("AstarView.fxml"));
         // root = fxmlLoader.load();
         // fxmlLoader.<AstarController>getController().runAStar(startFavID, endFavID);
-        setSearchHistory(GlobalDb.getConnection(), recentStart, recentEnd);
+        FDatabaseTables.getSearchHistoryTable().addEntity(GlobalDb.getConnection(), recentStart, recentEnd);
         HomeController.historyTracker = 1;
         getSearchHistory(GlobalDb.getConnection());
       } else if ((startID != null && endID != null)
@@ -99,7 +100,7 @@ public class AstarPopupController implements PatientAccessible {
         recentStart = startName;
         recentEnd = endName;
         System.out.println("reached condition 2" + recentStart + recentEnd);
-        setSearchHistory(GlobalDb.getConnection(), recentStart, recentEnd);
+        FDatabaseTables.getSearchHistoryTable().addEntity(GlobalDb.getConnection(), recentStart, recentEnd);
         HomeController.historyTracker = 1;
         getSearchHistory(GlobalDb.getConnection());
         //  fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("AstarView.fxml"));
@@ -116,7 +117,7 @@ public class AstarPopupController implements PatientAccessible {
         //  fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("AstarView.fxml"));
         // root = fxmlLoader.load();
         // fxmlLoader.<AstarController>getController().runAStar(startID, endFavID);
-        setSearchHistory(GlobalDb.getConnection(), recentStart, recentEnd);
+        FDatabaseTables.getSearchHistoryTable().addEntity(GlobalDb.getConnection(), recentStart, recentEnd);
         HomeController.historyTracker = 1;
         getSearchHistory(GlobalDb.getConnection());
       } else if ((startID == null && endID != null)
@@ -130,7 +131,7 @@ public class AstarPopupController implements PatientAccessible {
         //  fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("AstarView.fxml"));
         // root = fxmlLoader.load();
         // fxmlLoader.<AstarController>getController().runAStar(startFavID, endID);
-        setSearchHistory(GlobalDb.getConnection(), recentStart, recentEnd);
+        FDatabaseTables.getSearchHistoryTable().addEntity(GlobalDb.getConnection(), recentStart, recentEnd);
         HomeController.historyTracker = 1;
         getSearchHistory(GlobalDb.getConnection());
       } else {
@@ -249,20 +250,6 @@ public class AstarPopupController implements PatientAccessible {
 
     AutoCompleteComboBox autoEndFav = new AutoCompleteComboBox(this.end_favorites);
     autoEndFav.getEntries().addAll(favoriteNodes);
-  }
-
-  public void setSearchHistory(Connection conn, String startName, String endName) {
-
-    PreparedStatement stmt = null;
-    try {
-      System.out.println("set stuff-----" + startName + endName);
-      stmt = conn.prepareStatement("INSERT INTO SearchHistory VALUES (?, ?)");
-      stmt.setString(1, startName);
-      stmt.setString(2, endName);
-      stmt.executeUpdate();
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
   }
 
   public void getSearchHistory(Connection conn) {
