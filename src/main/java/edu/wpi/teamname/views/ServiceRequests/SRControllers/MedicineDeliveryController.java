@@ -192,11 +192,13 @@ public class MedicineDeliveryController extends AbsRequest
               if (!newVal) medication.validate();
             });
 
-    ObservableList<String> employeeList = FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
+    ObservableList<String> employeeList =
+        FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
     employeeList.sort(String::compareToIgnoreCase);
     staffAssigned.getItems().addAll(employeeList);
 
-    ArrayList<String> longNameList = FDatabaseTables.getNodeTable().fetchLongName(GlobalDb.getConnection());
+    ArrayList<String> longNameList =
+        FDatabaseTables.getNodeTable().fetchLongName(GlobalDb.getConnection());
     longNameList.sort(String::compareToIgnoreCase);
     locationBox.getItems().addAll(longNameList);
   }

@@ -185,12 +185,14 @@ public class ExternalTransportationController extends AbsRequest
     transportComboBox.getItems().add("Helicopter");
     transportComboBox.getItems().add("Car");
 
-    ArrayList<String> longNameList = FDatabaseTables.getNodeTable().fetchLongName(GlobalDb.getConnection());
+    ArrayList<String> longNameList =
+        FDatabaseTables.getNodeTable().fetchLongName(GlobalDb.getConnection());
     longNameList.sort(String::compareToIgnoreCase);
     locationBox.getItems().addAll(longNameList);
     locationBox.getItems().addAll(longNameList);
 
-    ObservableList<String> employeeList = FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
+    ObservableList<String> employeeList =
+        FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
     employeeList.sort(String::compareToIgnoreCase);
     staffAssigned.getItems().addAll(employeeList);
     locationBox.getItems().addAll(longNameList);

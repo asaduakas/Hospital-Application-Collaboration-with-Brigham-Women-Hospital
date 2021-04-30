@@ -1114,7 +1114,8 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
           }
         });
 
-    ObservableList<String> emloyeeList = FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
+    ObservableList<String> emloyeeList =
+        FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
     //    JFXComboBox<String> emList = new JFXComboBox<String>();
     assignedCol.setCellValueFactory(
         (JFXTreeTableColumn.CellDataFeatures<ExtTransNodeInfo, String> p) -> {
@@ -1250,7 +1251,8 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
             return locationCol.getComputedValue(p);
           }
         });
-    ObservableList<String> emloyeeList = FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
+    ObservableList<String> emloyeeList =
+        FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
     //    JFXComboBox<String> emList = new JFXComboBox<String>();
     assignedCol.setCellValueFactory(
         (JFXTreeTableColumn.CellDataFeatures<FoodDelivNodeInfo, String> p) -> {
@@ -1405,7 +1407,8 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
         });
     urgencyCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn(urgencyList));
 
-    ObservableList<String> employeeList = FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
+    ObservableList<String> employeeList =
+        FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
     //    JFXComboBox<String> emList = new JFXComboBox<String>();
     assignedCol.setCellValueFactory(
         (JFXTreeTableColumn.CellDataFeatures<SecurityRequestNodeInfo, String> p) -> {
@@ -1521,7 +1524,8 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
         });
     urgencyCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn(urgencyList));
 
-    ObservableList<String> employeeList = FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
+    ObservableList<String> employeeList =
+        FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
     //    JFXComboBox<String> emList = new JFXComboBox<String>();
     assignedCol.setCellValueFactory(
         (JFXTreeTableColumn.CellDataFeatures<SanitationNodeInfo, String> p) -> {
@@ -1635,7 +1639,8 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
           }
         });
 
-    ObservableList<String> employeeList = FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
+    ObservableList<String> employeeList =
+        FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
     //    JFXComboBox<String> emList = new JFXComboBox<String>();
     assignedCol.setCellValueFactory(
         (JFXTreeTableColumn.CellDataFeatures<MedDelivNodeInfo, String> p) -> {
@@ -1730,7 +1735,8 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
           }
         });
 
-    ObservableList<String> employeeList = FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
+    ObservableList<String> employeeList =
+        FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
     //    JFXComboBox<String> emList = new JFXComboBox<String>();
     assignedCol.setCellValueFactory(
         (JFXTreeTableColumn.CellDataFeatures<LaundryNodeInfo, String> p) -> {
@@ -1836,7 +1842,8 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
           }
         });
 
-    ObservableList<String> employeeList = FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
+    ObservableList<String> employeeList =
+        FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
     //    JFXComboBox<String> emList = new JFXComboBox<String>();
     assignedCol.setCellValueFactory(
         (JFXTreeTableColumn.CellDataFeatures<LangInterpNodeInfo, String> p) -> {
@@ -1944,7 +1951,8 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
         });
     typeTransCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn(transportList));
 
-    ObservableList<String> employeeList = FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
+    ObservableList<String> employeeList =
+        FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
     //    JFXComboBox<String> emList = new JFXComboBox<String>();
     assignedCol.setCellValueFactory(
         (JFXTreeTableColumn.CellDataFeatures<InternalTransNodeInfo, String> p) -> {
@@ -2060,7 +2068,8 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
             return fromCol.getComputedValue(p);
           }
         });
-    ObservableList<String> employeeList = FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
+    ObservableList<String> employeeList =
+        FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
     //    JFXComboBox<String> emList = new JFXComboBox<String>();
     assignedCol.setCellValueFactory(
         (JFXTreeTableColumn.CellDataFeatures<FloralDelivNodeInfo, String> p) -> {
@@ -2167,7 +2176,8 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
             return descripCol.getComputedValue(p);
           }
         });
-    ObservableList<String> employeeList = FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
+    ObservableList<String> employeeList =
+        FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
     //    JFXComboBox<String> emList = new JFXComboBox<String>();
     assignedEmployCol.setCellValueFactory(
         (JFXTreeTableColumn.CellDataFeatures<AudVisNodeInfo, String> p) -> {
@@ -2273,7 +2283,8 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
             return descripCol.getComputedValue(p);
           }
         });
-    ObservableList<String> employeeList = FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
+    ObservableList<String> employeeList =
+        FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
     //    JFXComboBox<String> emList = new JFXComboBox<String>();
     assignedEmployCol.setCellValueFactory(
         (JFXTreeTableColumn.CellDataFeatures<ComputerNodeInfo, String> p) -> {
@@ -2390,7 +2401,8 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
             return descripCol.getComputedValue(p);
           }
         });
-    ObservableList<String> employeeList = FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
+    ObservableList<String> employeeList =
+        FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
     //    JFXComboBox<String> emList = new JFXComboBox<String>();
     assignedEmployCol.setCellValueFactory(
         (JFXTreeTableColumn.CellDataFeatures<FacilitiesNodeInfo, String> p) -> {

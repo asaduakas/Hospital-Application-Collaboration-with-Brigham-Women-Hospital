@@ -195,7 +195,8 @@ public abstract class AbsRequest {
 
   public void type(ActionEvent actionEvent) {
     AutoCompleteComboBox locationAutoComplete = new AutoCompleteComboBox(locationBox);
-    ArrayList<String> longNameList = FDatabaseTables.getNodeTable().fetchLongName(GlobalDb.getConnection());
+    ArrayList<String> longNameList =
+        FDatabaseTables.getNodeTable().fetchLongName(GlobalDb.getConnection());
     locationAutoComplete.getEntries().addAll(longNameList);
   }
 }

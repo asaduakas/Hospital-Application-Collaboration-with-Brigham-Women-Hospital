@@ -182,11 +182,13 @@ public class InternalTransportationController extends AbsRequest
     transportComboBox.getItems().add("Wheelchair");
     transportComboBox.getItems().add("Patient can walk");
 
-    ObservableList<String> employeeList = FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
+    ObservableList<String> employeeList =
+        FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
     employeeList.sort(String::compareToIgnoreCase);
     staffAssigned.getItems().addAll(employeeList);
 
-    ArrayList<String> longNameList = FDatabaseTables.getNodeTable().fetchLongName(GlobalDb.getConnection());
+    ArrayList<String> longNameList =
+        FDatabaseTables.getNodeTable().fetchLongName(GlobalDb.getConnection());
     longNameList.sort(String::compareToIgnoreCase);
     locationBox.getItems().addAll(longNameList);
   }
