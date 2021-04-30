@@ -2,7 +2,8 @@ package edu.wpi.teamname.Astar;
 
 import java.util.*;
 
-public class AllPathsSearch implements IPathFinding { // DFS but for every possibility
+public class AllPathsSearch extends IntermediaryAlgo
+    implements IPathFinding { // DFS but for every possibility
 
   private LinkedList<Path> nodesTo; // visited nodes (in order) that are part of the final path
   private boolean hasPath; // to stop search if path is found
@@ -12,11 +13,12 @@ public class AllPathsSearch implements IPathFinding { // DFS but for every possi
     this.hasPath = false;
   }
 
-  public void search(RoomGraph data, Node start, Node target) {
+  public Path search(RoomGraph data, Node start, Node target) {
     // reinitialize
     this.nodesTo = new LinkedList<Path>();
     this.hasPath = false;
     search(data, start, target, new Path());
+    return nodesTo.getFirst(); // idk just kinda needed something here
   }
 
   private void search(RoomGraph data, Node start, Node target, Path path) {

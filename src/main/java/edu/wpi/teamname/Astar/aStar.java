@@ -2,7 +2,7 @@ package edu.wpi.teamname.Astar;
 
 import java.util.*;
 
-public class aStar implements IPathFinding {
+public class aStar extends IntermediaryAlgo implements IPathFinding {
 
   private Path nodeTo; // visited nodes (in order) that are part of the final path
   private boolean hasPath; // to stop search if path is found
@@ -14,7 +14,7 @@ public class aStar implements IPathFinding {
     this.hasPath = false;
   }
 
-  public void search(RoomGraph data, Node start, Node target) {
+  public Path search(RoomGraph data, Node start, Node target) {
     if (start != null && target != null) {
       // reinitialize
       this.nodeTo = new Path();
@@ -99,6 +99,7 @@ public class aStar implements IPathFinding {
         }
       }
     }
+    return nodeTo;
   }
 
   private void insertionSortScore(List<Node> nodes) { // sort edges by cost

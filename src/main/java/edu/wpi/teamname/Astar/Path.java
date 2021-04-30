@@ -53,6 +53,9 @@ public class Path {
     for (Node node : this.path) {
       aPath.getPath().add(node);
     }
+    for (Edge edge : this.pathEdges) {
+      aPath.getPathEdges().add(edge);
+    }
     aPath.setCost(aPath.getCost() + cost);
     return aPath;
   }

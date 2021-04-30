@@ -4,7 +4,7 @@ package edu.wpi.teamname.Astar;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-public class singleBFS implements IPathFinding {
+public class singleBFS extends IntermediaryAlgo implements IPathFinding {
 
   private Path nodeTo; // visited nodes (in order) that are part of the final path
   private boolean hasPath; // to stop search if path is found
@@ -14,7 +14,7 @@ public class singleBFS implements IPathFinding {
     this.hasPath = false;
   }
 
-  public void search(RoomGraph data, Node start, Node target) {
+  public Path search(RoomGraph data, Node start, Node target) {
     if (start != null && target != null) {
       // reinitialize
       this.nodeTo = new Path();
@@ -55,6 +55,7 @@ public class singleBFS implements IPathFinding {
         }
       }
     }
+    return nodeTo;
   }
 
   public Path shortestPath() {

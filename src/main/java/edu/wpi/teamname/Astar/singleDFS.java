@@ -4,7 +4,7 @@ package edu.wpi.teamname.Astar;
 import java.util.LinkedList;
 import java.util.List;
 
-public class singleDFS
+public class singleDFS extends IntermediaryAlgo
     implements IPathFinding { // based on aStar (technically aStar is based on this, but aStar was
   // written first)
 
@@ -17,7 +17,7 @@ public class singleDFS
     this.hasPath = false;
   }
 
-  public void search(RoomGraph data, Node start, Node target) {
+  public Path search(RoomGraph data, Node start, Node target) {
     if (start != null && target != null) {
       // reinitialize
       this.nodeTo = new Path();
@@ -25,6 +25,7 @@ public class singleDFS
       this.hasPath = false;
       searchS(data, start, target);
     }
+    return nodeTo;
   }
 
   private void searchS(RoomGraph data, Node start, Node target) {

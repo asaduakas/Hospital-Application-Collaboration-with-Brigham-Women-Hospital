@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Dijkstras implements IPathFinding {
+public class Dijkstras extends IntermediaryAlgo implements IPathFinding {
 
   private Path nodeTo; // visited nodes (in order) that are part of the final path
   private boolean hasPath; // to stop search if path is found
@@ -14,7 +14,7 @@ public class Dijkstras implements IPathFinding {
     this.hasPath = false;
   }
 
-  public void search(RoomGraph data, Node start, Node target) {
+  public Path search(RoomGraph data, Node start, Node target) {
     if (start != null && target != null) {
       // reinitialize
       this.nodeTo = new Path();
@@ -67,6 +67,7 @@ public class Dijkstras implements IPathFinding {
         }
       }
     }
+    return nodeTo;
   }
 
   private void insertionSortEdgesCost(List<Edge> edges) { // sort edges by cost
@@ -87,12 +88,6 @@ public class Dijkstras implements IPathFinding {
 
   public Path shortestPath() {
     return this.nodeTo;
-  }
-
-  private double calculateHeuristic(Node current, Node target) {
-    return Math.max(
-        Math.abs(target.getXCoord() - current.getXCoord()),
-        Math.abs(target.getYCoord() - current.getYCoord()));
   }
 
   public boolean pathExists() {
