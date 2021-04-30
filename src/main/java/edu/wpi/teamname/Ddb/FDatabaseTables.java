@@ -36,11 +36,11 @@ public class FDatabaseTables {
     this.securityRequestTable = new SecurityRequestTable();
   }
 
-  public AudVisRequestTable getAudVisTable() {
+  public static AudVisRequestTable getAudVisTable() {
     return audVisTable;
   }
 
-  public ComputerRequestTable getCompRequestTable() {
+  public static ComputerRequestTable getCompRequestTable() {
     return compRequestTable;
   }
 
@@ -48,39 +48,39 @@ public class FDatabaseTables {
     return nodeTable;
   }
 
-  public EdgesTable getEdgeTable() {
+  public static EdgesTable getEdgeTable() {
     return edgeTable;
   }
 
-  public ExtTransRequestTable getExternalTransportTable() {
+  public static ExtTransRequestTable getExternalTransportTable() {
     return externalTransportTable;
   }
 
-  public FacilitiesRequestTable getFacilitiesTable() {
+  public static FacilitiesRequestTable getFacilitiesTable() {
     return facilitiesTable;
   }
 
-  public FloralDeliveryRequestTable getFloralDeliveryTable() {
+  public static FloralDeliveryRequestTable getFloralDeliveryTable() {
     return floralDeliveryTable;
   }
 
-  public FoodDeliveryRequestTable getFoodDeliveryTable() {
+  public static FoodDeliveryRequestTable getFoodDeliveryTable() {
     return foodDeliveryTable;
   }
 
-  public InternalTransRequestTable getInternalDeliveryTable() {
+  public static InternalTransRequestTable getInternalDeliveryTable() {
     return internalDeliveryTable;
   }
 
-  public LangInterpreterRequestTable getLangInterpreterTable() {
+  public static LangInterpreterRequestTable getLangInterpreterTable() {
     return langInterpreterTable;
   }
 
-  public LaundryRequestTable getLaundryRequestTable() {
+  public static LaundryRequestTable getLaundryRequestTable() {
     return laundryRequestTable;
   }
 
-  public MedDeliveryRequestTable getMedDeliveryTable() {
+  public static MedDeliveryRequestTable getMedDeliveryTable() {
     return medDeliveryTable;
   }
 
@@ -88,11 +88,11 @@ public class FDatabaseTables {
     return userTable;
   }
 
-  public SanitationServRequestTable getSanitationServiceTable() {
+  public static SanitationServRequestTable getSanitationServiceTable() {
     return sanitationServiceTable;
   }
 
-  public SecurityRequestTable getSecurityRequestTable() {
+  public static SecurityRequestTable getSecurityRequestTable() {
     return securityRequestTable;
   }
 
