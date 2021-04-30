@@ -3,12 +3,8 @@ package edu.wpi.teamname.views.Mapping;
 import edu.wpi.teamname.Astar.*;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.Access.AdminAccessible;
-import java.awt.*;
-import java.sql.*;
 import java.util.*;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -162,13 +158,6 @@ public class MapController implements AdminAccessible {
 
   private void editEdge() {} // TODO Implement edit edges
 
-  // _______________________________________CONTROLLERS____________________________________________
+  // _______________________________________PopUps____________________________________________
 
-  private class existingNodeEventHandler implements EventHandler<MouseEvent> {
-
-    public existingNodeEventHandler() {}
-
-    @Override
-    public void handle(MouseEvent event) {}
-  }
 }

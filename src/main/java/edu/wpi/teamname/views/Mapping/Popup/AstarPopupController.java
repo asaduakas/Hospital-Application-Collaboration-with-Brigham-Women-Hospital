@@ -1,4 +1,4 @@
-package edu.wpi.teamname.views.Mapping;
+package edu.wpi.teamname.views.Mapping.Popup;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -10,6 +10,7 @@ import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.Access.PatientAccessible;
 import edu.wpi.teamname.views.AutoCompleteComboBox;
 import edu.wpi.teamname.views.HomeController;
+import edu.wpi.teamname.views.Mapping.MapController;
 import java.io.IOException;
 import java.sql.*;
 import java.sql.Connection;
