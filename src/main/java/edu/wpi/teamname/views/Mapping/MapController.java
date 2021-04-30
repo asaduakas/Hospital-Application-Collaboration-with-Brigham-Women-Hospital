@@ -586,8 +586,8 @@ public class MapController implements AdminAccessible {
               N.getStartNode().getYCoord(),
               N.getEndNode().getXCoord(),
               N.getEndNode().getYCoord(),
-              N.getStartNode().getLongName(),
-              N.getEndNode().getLongName());
+              N.getStartNode(),
+              N.getEndNode());
       initialDirection = newDirection;
     }
     dirText.appendText("\nWelcome to " + edges.getLast().getEndNode().getLongName() + "\n");
@@ -599,11 +599,24 @@ public class MapController implements AdminAccessible {
       int startY,
       int endX,
       int endY,
-      String startNode,
-      String endNode) {
+      Node startNode,
+      Node endNode) {
     String newDirection = "";
     int deltaX = endX - startX;
     int deltaY = endY - startY;
+
+
+    // add handling for changing floors
+    if(startNode.getNodeType().equals("Elevator") && endNode.getNodeType().equals("Elevator"))
+    {
+      dirText.appendText("Take the elevator towards floor " + endNode.getFloor());
+
+    }
+    else if(startNode.getNodeType().equals("Elevator") && endNode.getNodeType()!="Elevator")
+    {
+      return firstMove();
+    }
+
 
     // North
     if ((deltaY < 0) && (Math.abs(deltaY) > Math.abs(deltaX))) {
@@ -641,7 +654,7 @@ public class MapController implements AdminAccessible {
     }
     // Continue Straight
     else if (currentDirection.equals(newDirection)) {
-      dirText.appendText("Continue Straight towards " + endNode + "\n");
+      dirText.appendText("Continue Straight towards " + endNode.getLongName() + "\n");
     }
 
     return newDirection;
