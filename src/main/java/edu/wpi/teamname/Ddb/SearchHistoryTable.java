@@ -54,7 +54,7 @@ public class SearchHistoryTable extends AbsTables {
 
   public void addEntity(Connection conn, String startName, String endName) {
     try {
-      PreparedStatement stmt = conn.prepareStatement("INSERT INTO Edges VALUES(?,?)");
+      PreparedStatement stmt = conn.prepareStatement("INSERT INTO SearchHistory VALUES(?,?)");
       stmt.setString(1, startName);
       stmt.setString(2, endName);
       stmt.executeUpdate();
