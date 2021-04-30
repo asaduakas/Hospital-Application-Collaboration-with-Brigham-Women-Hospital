@@ -19,6 +19,7 @@ public class MapController implements AdminAccessible {
   private LinkedList<NodeUI> NODES = new LinkedList<>();
   private LinkedList<EdgeUI> EDGES = new LinkedList<>();
   private Image I = new Image("Images/274px-Google_Maps_pin.svg.png");
+  private Image Exit = new Image("Images/exit.png");
   private Image F1 = new Image("01_thefirstfloor.png");
   @FXML private AnchorPane mainAnchor;
   @FXML private ScrollPane movingMap;
@@ -68,6 +69,12 @@ public class MapController implements AdminAccessible {
       Marker.setFitHeight(markerY);
       Marker.setX(N.getXCoord() - markerX / 2);
       Marker.setY(N.getYCoord() - markerY);
+
+      switch (N.getNodeType()) {
+        case "REST":
+          Marker.setImage(null);
+      }
+
       Marker.setOnMouseClicked(
           (MouseEvent e) -> {
             disableListener(e);
