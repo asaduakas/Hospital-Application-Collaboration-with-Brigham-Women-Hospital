@@ -19,6 +19,20 @@ public class GlobalDb {
   public static void establishCon() {
     tables = new FDatabaseTables();
     try {
+      Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+    } catch (ClassNotFoundException e) {
+      System.out.println("Apache Derby Driver not found. Add the classpath to your module.");
+      System.out.println("For IntelliJ do the following:");
+      System.out.println("File | Project Structure, Modules, Dependency tab");
+      System.out.println("Add by clicking on the green plus icon on the right of the window");
+      System.out.println(
+              "Select JARs or directories. Go to the folder where the database JAR is located");
+      System.out.println("Click OK, now you can compile your program and run it.");
+      e.printStackTrace();
+      return;
+    }
+    System.out.println("Apache Derby driver registered!");
+    try {
       // this should be the only connection established in the ENTIRE application, every other time
       // should use GlobalDB.getConnection()
       connection =
@@ -27,8 +41,7 @@ public class GlobalDb {
       // getConnection() gives a warning if there is already a database
       if (connection.getWarnings() == null) { // If there isn't already a populated database
 
-        GlobalDb.tables
-            .createAllTables(); // might not be doing what we want with the connections, but this
+        GlobalDb.getTables().createAllTables(); // might not be doing what we want with the connections, but this
       }
     } catch (SQLException e) {
       System.out.println("Connection failed. Check output console.");

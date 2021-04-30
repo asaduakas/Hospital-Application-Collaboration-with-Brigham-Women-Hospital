@@ -117,5 +117,7 @@ public class UsersTable extends AbsTables {
   }
 
   // TODO: implement this function
-  public static void updateUserPassword(Connection conn, String id, String password) {}
+  public static void updateUserPassword(Connection conn, String id, String password) {
+
+  }
 }
