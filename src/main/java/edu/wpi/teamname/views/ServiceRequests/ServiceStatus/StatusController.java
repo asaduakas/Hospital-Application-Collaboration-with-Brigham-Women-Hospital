@@ -14,6 +14,8 @@ import edu.wpi.teamname.views.ServiceRequests.NodeInfo.ExtTransNodeInfo;
 import edu.wpi.teamname.views.ServiceRequests.SRControllers.AbsRequest;
 import edu.wpi.teamname.views.ServiceRequests.SRControllers.IRequestStatus;
 import edu.wpi.teamname.views.ServiceRequests.ServicePageController;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
@@ -22,12 +24,16 @@ import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.cell.ComboBoxTreeTableCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 
 public class StatusController extends AbsRequest implements Initializable, IRequestStatus {
@@ -63,6 +69,10 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
   @FXML private JFXTreeTableView<ComputerNodeInfo> comTableView;
 
   @FXML private JFXComboBox<String> typeBox;
+
+  @FXML private JFXListView<Label> listView;
+
+  @FXML private JFXTextField search;
 
   private ObservableList<ExtTransNodeInfo> ExTransData;
 
@@ -115,6 +125,123 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
     typeBox.setOnAction(
         e -> {
           changeTable(typeBox.getValue().toString());
+        });
+
+    Label av = new Label("Audio/Visual");
+    Label cs = new Label("Computer Service");
+    Label exTrans = new Label("External Transportation");
+    Label faciMainten = new Label("Facilities Maintenance");
+    Label floral = new Label("Floral Delivery");
+    Label food = new Label("Food Delivery");
+    Label inTrans = new Label("Internal Transportation");
+    Label language = new Label("Language Interpreter");
+    Label laundry = new Label("Laundry Service");
+    Label med = new Label("Medicine Delivery");
+    Label sanitize = new Label("Sanitation Service");
+    Label security = new Label("Security Service");
+    try {
+      ImageView avImage =
+          new ImageView(
+              new Image(new FileInputStream("src/main/resources/Images/audio-visual.png")));
+      avImage.setFitWidth(35);
+      avImage.setFitHeight(35);
+      av.setGraphic(avImage);
+
+      ImageView csImage =
+          new ImageView(
+              new Image(new FileInputStream("src/main/resources/Images/Computer_colored.png")));
+      csImage.setFitWidth(40);
+      csImage.setFitHeight(40);
+      cs.setGraphic(csImage);
+
+      ImageView exTransImage =
+          new ImageView(
+              new Image(new FileInputStream("src/main/resources/Images/exTransIcon.png")));
+      exTransImage.setFitHeight(40);
+      exTransImage.setFitWidth(40);
+      exTrans.setGraphic(exTransImage);
+
+      ImageView faciMaintenImage =
+          new ImageView(
+              new Image(new FileInputStream("src/main/resources/Images/maintenance.png")));
+      faciMaintenImage.setFitWidth(40);
+      faciMaintenImage.setFitHeight(40);
+      faciMainten.setGraphic(faciMaintenImage);
+
+      ImageView floralImage =
+          new ImageView(new Image(new FileInputStream("src/main/resources/Images/floralIcon.png")));
+      floralImage.setFitWidth(40);
+      floralImage.setFitHeight(40);
+      floral.setGraphic(floralImage);
+
+      ImageView foodImage =
+          new ImageView(new Image(new FileInputStream("src/main/resources/Images/foodIcon.png")));
+      foodImage.setFitWidth(40);
+      foodImage.setFitHeight(40);
+      food.setGraphic(foodImage);
+
+      ImageView inTransImage =
+          new ImageView(new Image(new FileInputStream("src/main/resources/Images/wheelchair.png")));
+      inTransImage.setFitWidth(40);
+      inTransImage.setFitHeight(40);
+      inTrans.setGraphic(inTransImage);
+
+      ImageView languageImage =
+          new ImageView(new Image(new FileInputStream("src/main/resources/Images/Translate.png")));
+      languageImage.setFitWidth(32);
+      languageImage.setFitHeight(32);
+      language.setGraphic(languageImage);
+
+      ImageView laundryImage =
+          new ImageView(
+              new Image(new FileInputStream("src/main/resources/Images/laundryIcon.png")));
+      laundryImage.setFitWidth(40);
+      laundryImage.setFitHeight(40);
+      laundry.setGraphic(laundryImage);
+
+      ImageView medImage =
+          new ImageView(new Image(new FileInputStream("src/main/resources/Images/medicine.png")));
+      medImage.setFitWidth(40);
+      medImage.setFitHeight(40);
+      med.setGraphic(medImage);
+
+      ImageView sanitizeImage =
+          new ImageView(new Image(new FileInputStream("src/main/resources/Images/sanitatize.png")));
+      sanitizeImage.setFitWidth(40);
+      sanitizeImage.setFitHeight(40);
+      sanitize.setGraphic(sanitizeImage);
+
+      ImageView securityImage =
+          new ImageView(new Image(new FileInputStream("src/main/resources/Images/Security.png")));
+      securityImage.setFitWidth(40);
+      securityImage.setFitHeight(40);
+      security.setGraphic(securityImage);
+
+      listView
+          .getItems()
+          .addAll(
+              av,
+              cs,
+              exTrans,
+              faciMainten,
+              floral,
+              food,
+              inTrans,
+              language,
+              laundry,
+              med,
+              sanitize,
+              security);
+      listView.setStyle("-fx-padding: 0; -fx-background-insets: 0");
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
+    listView.setOnMouseClicked(
+        new EventHandler<MouseEvent>() {
+          @Override
+          public void handle(MouseEvent event) {
+            changeTable(listView.getSelectionModel().getSelectedItem().getText());
+          }
         });
   }
 
@@ -408,7 +535,7 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
   }
 
   @FXML
-  public void goHome(ActionEvent event) throws IOException {
+  public void goHome(MouseEvent event) throws IOException {
     List<Node> childrenList = App.getPrimaryStage().getScene().getRoot().getChildrenUnmodifiable();
     VBox buttonBox = (VBox) childrenList.get(2);
     buttonBox.setVisible(false);
@@ -680,7 +807,8 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
 
   @FXML
   public void saveData(ActionEvent event) {
-    changeData(typeBox.getValue().toString());
+    //    changeData(typeBox.getValue().toString());
+    changeData(listView.getSelectionModel().getSelectedItem().getText());
   }
 
   public void changeData(String ServeType) {
@@ -1009,6 +1137,25 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
           }
         });
     statusCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn(statusList));
+    //    statusCol.setCellFactory(
+    //        (TreeTableColumn<ExtTransNodeInfo, String> p) -> {
+    //          TreeTableCell<ExtTransNodeInfo, String> cell =
+    //              new TreeTableCell<ExtTransNodeInfo, String>() {
+    //                // @Override
+    //                protected void changeColor(String status, boolean empty) {
+    //                  TreeTableRow<ExtTransNodeInfo> row = getTreeTableRow();
+    //                  if (status.equals("Incomplete")) {
+    //                    row.setStyle("-fx-background-color: Red");
+    //                  } else if (status.equals("In progress")) {
+    //                    row.setStyle("-fx-background-color: Orange");
+    //                    //            setText("In progress");
+    //                  } else if (status.equals("Complete")) {
+    //                    row.setStyle("-fx-background-color: Blue");
+    //                  }
+    //                }
+    //              };
+    //          return cell;
+    //        });
 
     tableView.setEditable(true);
     typeCol.setEditable(false);
@@ -1041,6 +1188,9 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
             transTypeCol,
             assignedCol,
             statusCol);
+
+    tableView.setPlaceholder(
+        new Label("No request of external transportation service has been made yet"));
   }
 
   private void foodDeliTableSetup() {
@@ -1180,6 +1330,8 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
     foodTable
         .getColumns()
         .setAll(pFNCol, pLNCol, contactInfoCol, locationCol, needsCol, assignedCol, statusCol);
+
+    foodTable.setPlaceholder(new Label("No request of food delivery service has been made yet"));
   }
 
   private void securityTableSetup() {
@@ -1295,6 +1447,7 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
             descriptCol,
             assignedCol,
             statusCol);
+    securityTable.setPlaceholder(new Label("No request of security service has been made yet"));
   }
 
   private void sanitationTableSetup() {
@@ -1410,6 +1563,8 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
             descriptCol,
             assignedCol,
             statusCol);
+
+    sanitationTable.setPlaceholder(new Label("No request of sanitation service has been made yet"));
   }
 
   private void medDelivTableSetup() {
@@ -1522,6 +1677,9 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
             dateCol,
             assignedCol,
             statusCol);
+
+    medDelivTable.setPlaceholder(
+        new Label("No request of medicine delivery service has been made yet"));
   }
 
   private void laundryTableSetup() {
@@ -1606,6 +1764,8 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
     laundryTable
         .getColumns()
         .setAll(fNCol, lNCol, contactInfoCol, locationCol, assignedCol, statusCol);
+
+    laundryTable.setPlaceholder(new Label("No request of laundry service has been made yet"));
   }
 
   private void langInterpTableSetup() {
@@ -1718,6 +1878,9 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
             dateCol,
             assignedCol,
             statusCol);
+
+    langInterpTable.setPlaceholder(
+        new Label("No request of language interpreter service has been made yet"));
   }
 
   private void internalTransTableSetup() {
@@ -1815,6 +1978,9 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
     internalTransTable
         .getColumns()
         .setAll(fNCol, lNCol, contactInfoCol, locationCol, typeTransCol, assignedCol, statusCol);
+
+    internalTransTable.setPlaceholder(
+        new Label("No request of internal transportation service has been made yet"));
   }
 
   private void floralTableSetup() {
@@ -1937,6 +2103,9 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
             fromCol,
             assignedCol,
             statusCol);
+
+    floralTable.setPlaceholder(
+        new Label("No request of floral delivery service has been made yet"));
   }
 
   private void audVisTableSetup() {
@@ -2041,6 +2210,8 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
             descripCol,
             assignedEmployCol,
             statusCol);
+
+    audVisTable.setPlaceholder(new Label("No request of audio/visual service has been made yet"));
   }
 
   private void computerTableSetup() {
@@ -2145,6 +2316,8 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
             descripCol,
             assignedEmployCol,
             statusCol);
+
+    computerTable.setPlaceholder(new Label("No request of computer service has been made yet"));
   }
 
   //  private void computerTableSetup() {
@@ -2366,5 +2539,8 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
             descripCol,
             assignedEmployCol,
             statusCol);
+
+    facilitiesTable.setPlaceholder(
+        new Label("No request of facilities maintenance service has been made yet"));
   }
 }

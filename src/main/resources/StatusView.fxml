@@ -2,39 +2,46 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXTextField?>
 <?import com.jfoenix.controls.JFXTreeTableView?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="675.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.teamname.views.ServiceRequests.ServiceStatus.StatusController">
    <children>
-      <JFXButton fx:id="backBtn" layoutX="32.0" layoutY="26.0" onAction="#goHome" ripplerFill="#7d7d7d" style="-fx-background-color: #cdcdcd;" text="BACK">
-         <font>
-            <Font size="14.0" />
-         </font></JFXButton>
-      <Label layoutX="527.0" layoutY="27.0" text="Requests Status">
+      <Label layoutX="27.0" layoutY="27.0" text="Dashboard">
          <font>
             <Font name="System Bold" size="20.0" />
          </font>
       </Label>
-      <JFXButton fx:id="saveBtn" layoutX="1117.0" layoutY="27.0" onAction="#saveData" ripplerFill="#7d7d7d" style="-fx-background-color: #cdcdcd;" text="SAVE">
+      <JFXButton fx:id="saveBtn" layoutX="1041.0" layoutY="28.0" onAction="#saveData" ripplerFill="#7d7d7d" style="-fx-background-color: #cdcdcd;" text="SAVE">
          <font>
             <Font size="14.0" />
          </font>
       </JFXButton>
-      <JFXComboBox fx:id="typeBox" layoutX="180.0" layoutY="30.0" prefHeight="25.0" prefWidth="158.0" promptText="Services Types" />
-      <JFXTreeTableView fx:id="tableView" layoutX="35.0" layoutY="88.0" prefHeight="561.0" prefWidth="1130.0" />
-      <JFXTreeTableView fx:id="foodTable" layoutX="35.0" layoutY="88.0" prefHeight="561.0" prefWidth="1130.0" />
-      <JFXTreeTableView fx:id="audVisTable" layoutX="35.0" layoutY="88.0" prefHeight="561.0" prefWidth="1130.0" />
-      <JFXTreeTableView fx:id="computerTable" layoutX="35.0" layoutY="88.0" prefHeight="561.0" prefWidth="1130.0" />
-      <JFXTreeTableView fx:id="facilitiesTable" layoutX="35.0" layoutY="88.0" prefHeight="561.0" prefWidth="1130.0" />
-      <JFXTreeTableView fx:id="floralTable" layoutX="35.0" layoutY="88.0" prefHeight="561.0" prefWidth="1130.0" />
-      <JFXTreeTableView fx:id="internalTransTable" layoutX="35.0" layoutY="88.0" prefHeight="561.0" prefWidth="1130.0" />
-      <JFXTreeTableView fx:id="langInterpTable" layoutX="35.0" layoutY="88.0" prefHeight="561.0" prefWidth="1130.0" />
-      <JFXTreeTableView fx:id="laundryTable" layoutX="35.0" layoutY="88.0" prefHeight="561.0" prefWidth="1130.0" />
-      <JFXTreeTableView fx:id="medDelivTable" layoutX="35.0" layoutY="88.0" prefHeight="561.0" prefWidth="1130.0" />
-      <JFXTreeTableView fx:id="sanitationTable" layoutX="35.0" layoutY="88.0" prefHeight="561.0" prefWidth="1130.0" />
-      <JFXTreeTableView fx:id="securityTable" layoutX="35.0" layoutY="88.0" prefHeight="561.0" prefWidth="1130.0" />
+      <JFXComboBox fx:id="typeBox" layoutX="332.0" layoutY="30.0" prefHeight="25.0" prefWidth="158.0" promptText="Services Types" />
+      <JFXTreeTableView fx:id="tableView" layoutX="270.0" layoutY="88.0" prefHeight="561.0" prefWidth="900.0" stylesheets="@style.css" />
+      <JFXTreeTableView fx:id="foodTable" layoutX="270.0" layoutY="88.0" prefHeight="561.0" prefWidth="900.0" stylesheets="@style.css" />
+      <JFXTreeTableView fx:id="audVisTable" layoutX="270.0" layoutY="88.0" prefHeight="561.0" prefWidth="900.0" stylesheets="@style.css" />
+      <JFXTreeTableView fx:id="computerTable" layoutX="270.0" layoutY="88.0" prefHeight="561.0" prefWidth="900.0" stylesheets="@style.css" />
+      <JFXTreeTableView fx:id="facilitiesTable" layoutX="270.0" layoutY="88.0" prefHeight="561.0" prefWidth="900.0" stylesheets="@style.css" />
+      <JFXTreeTableView fx:id="floralTable" layoutX="270.0" layoutY="88.0" prefHeight="561.0" prefWidth="900.0" stylesheets="@style.css" />
+      <JFXTreeTableView fx:id="internalTransTable" layoutX="270.0" layoutY="88.0" prefHeight="561.0" prefWidth="900.0" stylesheets="@style.css" />
+      <JFXTreeTableView fx:id="langInterpTable" layoutX="270.0" layoutY="88.0" prefHeight="561.0" prefWidth="900.0" stylesheets="@style.css" />
+      <JFXTreeTableView fx:id="laundryTable" layoutX="270.0" layoutY="88.0" prefHeight="561.0" prefWidth="900.0" stylesheets="@style.css" />
+      <JFXTreeTableView fx:id="medDelivTable" layoutX="270.0" layoutY="88.0" prefHeight="561.0" prefWidth="900.0" stylesheets="@style.css" />
+      <JFXTreeTableView fx:id="sanitationTable" layoutX="270.0" layoutY="88.0" prefHeight="561.0" prefWidth="900.0" stylesheets="@style.css" />
+      <JFXTreeTableView fx:id="securityTable" layoutX="270.0" layoutY="88.0" prefHeight="561.0" prefWidth="900.0" stylesheets="@style.css" />
+      <JFXListView fx:id="listView" layoutY="75.0" prefHeight="600.0" prefWidth="240.0" />
+      <JFXTextField fx:id="search" layoutX="846.0" layoutY="31.0" promptText="Search here..." />
+      <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="1149.0" layoutY="16.0" onMouseClicked="#goHome" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@Images/close_1.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>
