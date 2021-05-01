@@ -16,7 +16,7 @@ public class Edge {
     this.endNodeID = endNode.getNodeID();
     this.cost = cost;
     this.edgeID = startNode.getNodeID() + "_" + endNode.getNodeID();
-    this.edgeID = endNode.getNodeID() + "_" + startNode.getNodeID();
+    this.reverseEdgeID = endNode.getNodeID() + "_" + startNode.getNodeID();
     this.startNodeShortName = startNode.getShortName();
     this.endNodeShortName = endNode.getShortName();
   }

@@ -146,7 +146,8 @@ public class MapController implements AdminAccessible {
       for (Edge E : thePath) {
         if (initialData.getNodeByID(E.getStartNodeID()).getFloor().equals(currentFloor)
             && initialData.getNodeByID(E.getEndNodeID()).getFloor().equals(currentFloor)) {
-          addEdgeUI(getEdgeUIByID(E.getEdgeID()));
+          if (!secondaryAnchor.getChildren().contains(getEdgeUIByID(E.getEdgeID())))
+            addEdgeUI(getEdgeUIByID(E.getEdgeID()));
         }
       }
     }
@@ -308,8 +309,7 @@ public class MapController implements AdminAccessible {
     for (EdgeUI theEdge : EDGES) {
       if (theEdge.getE().getEdgeID().equals(EdgeID)) {
         return theEdge;
-      }
-      else if (theEdge.getE().getReverseEdgeID().equals(EdgeID)) {
+      } else if (theEdge.getE().getReverseEdgeID().equals(EdgeID)) {
         return theEdge;
       }
     }
