@@ -162,15 +162,11 @@ public class MapController implements AdminAccessible {
       System.out.println("No path to show!");
     } else {
       System.out.println("Path Exists!");
-      //      clearMap();
-      //      drawNodeFloor("1");
       for (Edge E : thePath) {
         if (initialData.getNodeByID(E.getStartNodeID()).getFloor().equals(currentFloor)
             && initialData.getNodeByID(E.getEndNodeID()).getFloor().equals(currentFloor)) {
           EdgeUI EUI = getEdgeUIByID(E.getEdgeID());
-          System.out.println(!secondaryAnchor.getChildren().contains(EUI));
-          System.out.println(EUI.getE().getEdgeID());
-          if (!secondaryAnchor.getChildren().contains(EUI)) addEdgeUI(EUI);
+          if (!secondaryAnchor.getChildren().contains(EUI.getL())) addEdgeUI(EUI);
         }
       }
     }
@@ -245,8 +241,6 @@ public class MapController implements AdminAccessible {
   }
 
   public void runPathFindingClick() {
-    Path test = algorithm.multiSearch(initialData, Targets);
-    test.printPath();
     thePath = algorithm.multiSearch(initialData, Targets).getPathEdges();
     showPath();
   }
