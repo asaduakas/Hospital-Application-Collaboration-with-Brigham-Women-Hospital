@@ -42,7 +42,7 @@ public class MapController implements AdminAccessible {
   }
 
   private void initalizeMap(String Floor) {
-    initializeNodes();
+    initializeNodes(); // please do this first before edges thank
     initializeEdges();
 
     for (EdgeUI EUI : EDGES) {
@@ -88,10 +88,10 @@ public class MapController implements AdminAccessible {
     for (Edge E : initialData.getListOfEdges()) {
       Line L =
           new Line(
-              initialData.getNodeByID(E.getStartNodeID()).getSimpXcoord(),
-              initialData.getNodeByID(E.getStartNodeID()).getSimpYcoord(),
-              initialData.getNodeByID(E.getEndNodeID()).getSimpXcoord(),
-              initialData.getNodeByID(E.getEndNodeID()).getSimpYcoord());
+              getNodeUIByID(E.getStartNodeID()).getSimpXcoord(),
+              getNodeUIByID(E.getStartNodeID()).getSimpYcoord(),
+              getNodeUIByID(E.getEndNodeID()).getSimpXcoord(),
+              getNodeUIByID(E.getEndNodeID()).getSimpYcoord());
       L.setOnMouseClicked(
           (MouseEvent e) -> {
             disableListener(e);
@@ -167,4 +167,15 @@ public class MapController implements AdminAccessible {
 
   // _______________________________________PopUps____________________________________________
 
+  // _______________________________________Getter and
+  // Setter____________________________________________
+  public NodeUI getNodeUIByID(String NodeID) {
+    for (NodeUI theNode : NODES) {
+      if (theNode.getN().getNodeID().equals(NodeID)) {
+        return theNode;
+      }
+    }
+    System.out.println("This node doesn't exist.");
+    return null;
+  }
 }
