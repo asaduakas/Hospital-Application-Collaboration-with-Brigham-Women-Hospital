@@ -14,6 +14,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -75,6 +76,7 @@ public class MapController implements AdminAccessible {
   private void initializeNodes() {
     double markerX = 15;
     double markerY = 26.25;
+    NODES = new LinkedList<NodeUI>();
 
     for (Node N : initialData.getGraphInfo()) {
       ImageView Marker = new ImageView(I);
@@ -221,8 +223,9 @@ public class MapController implements AdminAccessible {
     N.getI()
         .setOnMouseClicked(
             (MouseEvent E) -> {
-              if (E.isSecondaryButtonDown()) {
+              if (E.getButton() == MouseButton.SECONDARY) {
                 String StartNode = N.getN().getNodeID();
+                resizeNodeUI(N, 2);
               }
             });
   }
@@ -231,21 +234,28 @@ public class MapController implements AdminAccessible {
     N.getI()
         .setOnMouseEntered(
             (MouseEvent e) -> {
-              N.getI().setFitWidth(N.getI().getFitWidth() * 2);
-              N.getI().setFitHeight(N.getI().getFitHeight() * 2);
-              N.getI().setX(N.getN().getXCoord() - N.getI().getFitWidth() / 2);
-              N.getI().setY(N.getN().getYCoord() - N.getI().getFitHeight());
+              resizeNodeUI(N, 2);
             });
 
     N.getI()
         .setOnMouseExited(
             (MouseEvent e) -> {
-              N.getI().setFitWidth(N.getI().getFitWidth() / 2);
-              N.getI().setFitHeight(N.getI().getFitHeight() / 2);
-              N.getI().setX(N.getN().getXCoord() - N.getI().getFitWidth() / 2);
-              N.getI().setY(N.getN().getYCoord() - N.getI().getFitHeight());
+              resizeNodeUI(N, .5);
             });
   }
+
+  private void resizeNodeUI(NodeUI N, double factor) {
+    if ((N.getI().getFitWidth() <= 40 && factor > 1)
+        || (N.getI().getFitWidth() > 40 && factor < 1)
+        || (N.getI().getFitWidth() <= 20 && factor > 1)
+        || (N.getI().getFitWidth() > 20 && factor < 1)) {
+      N.getI().setFitWidth(N.getI().getFitWidth() * factor);
+      N.getI().setFitHeight(N.getI().getFitHeight() * factor);
+      N.getI().setX(N.getN().getXCoord() - N.getI().getFitWidth() / 2);
+      N.getI().setY(N.getN().getYCoord() - N.getI().getFitHeight());
+    }
+  }
+
   // ___________________________________Getter and Setter_____________________________________
   public NodeUI getNodeUIByID(String NodeID) {
     for (NodeUI theNode : NODES) {
