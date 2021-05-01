@@ -49,9 +49,7 @@ public class MapController implements AdminAccessible {
     initializeNodes();
     initializeEdges();
 
-    for (NodeUI NUI : NODES) {
-      addNodeUI(NUI);
-    }
+    drawNodeFloor("1");
 
     movingMap.setPannable(true);
     movingMap.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
@@ -136,6 +134,22 @@ public class MapController implements AdminAccessible {
 
   private void addEdgeUI(EdgeUI EUI) {
     secondaryAnchor.getChildren().add(EUI.getL());
+  }
+
+  private void drawNodeFloor(String Floor) {
+    for (NodeUI NUI : NODES) {
+      if (NUI.getN().getFloor().equals(Floor)) {
+        addNodeUI(NUI);
+      }
+    }
+  }
+
+  private void drawEdgeFloor(String Floor) {
+    for (EdgeUI EUI : EDGES) {
+      if (getNodeUIByID(EUI.getE().getStartNodeID()).getN().getFloor().equals(Floor)) {
+        addEdgeUI(EUI);
+      }
+    }
   }
 
   public void showPath() {
@@ -241,13 +255,12 @@ public class MapController implements AdminAccessible {
 
                 if (toggleEditor.isSelected()) {
                   secondaryAnchor.getChildren().remove(0, secondaryAnchor.getChildren().size());
+                  secondaryAnchor.getChildren().add(TheMap);
                   LoadingNodesEdges("1");
                 } else {
                   secondaryAnchor.getChildren().remove(0, secondaryAnchor.getChildren().size());
                   secondaryAnchor.getChildren().add(TheMap);
-                  for (NodeUI NUI : NODES) {
-                    addNodeUI(NUI);
-                  }
+                  drawNodeFloor("1");
                 }
               }
             });
