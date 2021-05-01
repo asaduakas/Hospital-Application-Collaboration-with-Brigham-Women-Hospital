@@ -322,6 +322,9 @@ public class MapController implements AdminAccessible {
       if (theEdge.getE().getEdgeID().equals(EdgeID)) {
         return theEdge;
       }
+      else if (theEdge.getE().getReverseEdgeID().equals(EdgeID)) {
+        return theEdge;
+      }
     }
     System.out.println("This Edge doesn't exist.");
     return null;

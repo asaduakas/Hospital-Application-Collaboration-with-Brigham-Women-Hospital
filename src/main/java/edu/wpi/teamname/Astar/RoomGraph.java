@@ -110,8 +110,8 @@ public class RoomGraph {
                     this.getNodeByID(rsP.getString("endNode")),
                     this.getNodeByID(rsP.getString("startNode")),
                     cost);
-            edges.add(edge);
-            edges.add(edge1);
+            entry.getEdges().add(edge);
+            getNodeByID(rsP.getString("endNode")).getEdges().add(edge1);
             listOfEdges.add(edge);
           }
         }
