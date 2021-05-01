@@ -1,7 +1,6 @@
 package edu.wpi.teamname.Testing;
 
 import static org.junit.Assert.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import edu.wpi.teamname.Astar.IntermediaryAlgo;
 import edu.wpi.teamname.Astar.Node;
@@ -29,7 +28,8 @@ public class IntermediaryAlgoTest {
     //    Node target2 = data.getNodeByID("dWALK01201");
     //    Node target3 = data.getNodeByID("dWALK01901");
 
+    intermediaryAlgo.multiSearch(data, start, target1).printPath();
+    intermediaryAlgo.multiSearch(data, start, target1, target2).printPath();
     intermediaryAlgo.multiSearch(data, start, target1, target2, target3).printPath();
-    assertTrue(true);
   }
 }
