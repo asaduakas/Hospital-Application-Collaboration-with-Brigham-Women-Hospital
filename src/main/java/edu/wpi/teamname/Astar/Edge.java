@@ -2,6 +2,7 @@ package edu.wpi.teamname.Astar;
 
 public class Edge {
   private String edgeID;
+  private String reverseEdgeID;
   private String startNodeID;
   private String endNodeID;
   private double cost;
@@ -15,10 +16,12 @@ public class Edge {
     this.endNodeID = endNode.getNodeID();
     this.cost = cost;
     this.edgeID = startNode.getNodeID() + "_" + endNode.getNodeID();
+    this.edgeID = endNode.getNodeID() + "_" + startNode.getNodeID();
     this.startNodeShortName = startNode.getShortName();
     this.endNodeShortName = endNode.getShortName();
   }
 
+  // FOR TESTING DON'T USE ACUTALLY
   public Edge(String edgeID, String startNode, String endNode) {
     this.edgeID = edgeID;
     this.startNodeShortName = startNode;
@@ -76,5 +79,19 @@ public class Edge {
 
   public void setEndNodeShortName(String endNodeShortName) {
     this.endNodeShortName = endNodeShortName;
+  }
+
+  public String getReverseEdgeID() {
+    return reverseEdgeID;
+  }
+
+  public void setReverseEdgeID(String reverseEdgeID) {
+    this.reverseEdgeID = reverseEdgeID;
+  }
+
+  public boolean equals(Edge e) {
+    if (startNodeID.equals(e.getStartNodeID()) && endNodeID.equals(e.getEndNodeID())) return true;
+    if (startNodeID.equals(e.getEndNodeID()) && endNodeID.equals(e.getStartNodeID())) return true;
+    return false;
   }
 }
