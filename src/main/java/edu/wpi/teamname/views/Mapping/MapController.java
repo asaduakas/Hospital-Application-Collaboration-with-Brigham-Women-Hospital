@@ -544,7 +544,7 @@ public class MapController implements AdminAccessible {
 
   @FXML Button dirBtn;
   @FXML TextArea dirText;
-  private String endLocation;
+  private String endLocation = "";
 
   private void setEnd(String end) {
     endLocation = end;
@@ -735,7 +735,12 @@ public class MapController implements AdminAccessible {
         directions.write(dirText.getText());
         directions.close();
 
-        String DialogText = "Your Directions Have Been Downloaded";
+        String DialogText = "";
+        if (getEnd().equals("")) {
+          DialogText = "Select a Start and End Before Downloading Directions";
+        } else {
+          DialogText = "Your Directions Have Been Downloaded";
+        }
         Text header = new Text(DialogText);
         header.setFont(Font.font("System", FontWeight.BOLD, 18));
 
