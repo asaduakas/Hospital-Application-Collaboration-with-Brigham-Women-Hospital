@@ -42,5 +42,7 @@ public class PathAlgoPicker {
     this.algorithm = algorithm;
   }
 
-  public Path multiSearch(RoomGraph data, LinkedList<Node> targets){ return ((IntermediaryAlgo) algorithm).multiSearch(data, targets);}
+  public Path multiSearch(RoomGraph data, LinkedList<Node> targets) {
+    return ((IntermediaryAlgo) algorithm).multiSearch(data, targets);
+  }
 }

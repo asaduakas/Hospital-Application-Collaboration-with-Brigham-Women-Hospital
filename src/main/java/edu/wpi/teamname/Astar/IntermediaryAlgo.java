@@ -36,7 +36,7 @@ public abstract class IntermediaryAlgo implements IPathFinding {
       Path aPath = search(data, targets.get(i - 1), targets.get(i));
       if (aPath.getPath().isEmpty()) {
         System.out.printf(
-                "No path from %s to %s\n", targets.get(i - 1).getNodeID(), targets.get(i).getNodeID());
+            "No path from %s to %s\n", targets.get(i - 1).getNodeID(), targets.get(i).getNodeID());
         return new Path();
       }
       aPath.appendTo(thePath);

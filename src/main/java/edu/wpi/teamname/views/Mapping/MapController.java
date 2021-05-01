@@ -29,6 +29,7 @@ public class MapController implements AdminAccessible {
   private LinkedList<Edge> thePath = new LinkedList<Edge>();
   private LinkedList<Node> Targets = new LinkedList<Node>();
   private String userCategory = "admin";
+  private String currentFloor = "1";
 
   private Image I = new Image("Images/274px-Google_Maps_pin.svg.png");
   private Image Exit = new Image("Images/exit.png");
@@ -43,7 +44,15 @@ public class MapController implements AdminAccessible {
 
   @FXML
   private void initialize() {
+
     TheMap.setImage(F1);
+    initializeNodes();
+    initializeEdges();
+
+    for (NodeUI NUI : NODES) {
+      addNodeUI(NUI);
+    }
+
     movingMap.setPannable(true);
     movingMap.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
     movingMap.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
@@ -58,9 +67,6 @@ public class MapController implements AdminAccessible {
   }
 
   private void LoadingNodesEdges(String Floor) {
-    initializeNodes();
-    initializeEdges();
-
     for (EdgeUI EUI : EDGES) {
       if (initialData.getNodeByID(EUI.getE().getStartNodeID()).getFloor().equals(Floor)
           || initialData.getNodeByID(EUI.getE().getEndNodeID()).getFloor().equals(Floor)) {
@@ -77,7 +83,6 @@ public class MapController implements AdminAccessible {
   private void initializeNodes() {
     double markerX = 15;
     double markerY = 26.25;
-    NODES = new LinkedList<NodeUI>();
 
     for (Node N : initialData.getGraphInfo()) {
       ImageView Marker = new ImageView(I);
@@ -104,6 +109,7 @@ public class MapController implements AdminAccessible {
   }
 
   private void initializeEdges() {
+
     for (Edge E : initialData.getListOfEdges()) {
       Line L =
           new Line(
@@ -122,12 +128,28 @@ public class MapController implements AdminAccessible {
     }
   }
 
+  // _______________________________________Draw________________________________________
+
   private void addNodeUI(NodeUI NUI) {
     secondaryAnchor.getChildren().add(NUI.getI());
   }
 
   private void addEdgeUI(EdgeUI EUI) {
     secondaryAnchor.getChildren().add(EUI.getL());
+  }
+
+  public void showPath() {
+    if (thePath.isEmpty()) {
+      System.out.println("No path to show!");
+    } else {
+      System.out.println("Path Exists!");
+      for (Edge E : thePath) {
+        if (initialData.getNodeByID(E.getStartNodeID()).getFloor().equals(currentFloor)
+            && initialData.getNodeByID(E.getEndNodeID()).getFloor().equals(currentFloor)) {
+          addEdgeUI(getEdgeUIByID(E.getEdgeID()));
+        }
+      }
+    }
   }
 
   private void disableListener(MouseEvent e) {}
@@ -186,7 +208,7 @@ public class MapController implements AdminAccessible {
 
   // _______________________________________Path Finding____________________________________________
 
-  //For Directory
+  // For Directory
   public void runPathFindingDirectory(String startNode, String targetNode) throws IOException {
     Node start = initialData.getNodeByID(startNode);
     Node target = initialData.getNodeByID(targetNode);
@@ -198,9 +220,9 @@ public class MapController implements AdminAccessible {
     // getDirections(thePath);
   }
 
-  public void runPathFindingClick()
-  {
-     thePath =  ((IntermediaryAlgo)algorithm).multiSearch();
+  public void runPathFindingClick() {
+    thePath = algorithm.multiSearch(initialData, Targets).getPathEdges();
+    showPath();
   }
 
   // _______________________________________Event Handeler_________________________________________
@@ -217,10 +239,14 @@ public class MapController implements AdminAccessible {
                   Boolean newValue) {
 
                 if (toggleEditor.isSelected()) {
+                  secondaryAnchor.getChildren().remove(0, secondaryAnchor.getChildren().size());
                   LoadingNodesEdges("1");
                 } else {
                   secondaryAnchor.getChildren().remove(0, secondaryAnchor.getChildren().size());
                   secondaryAnchor.getChildren().add(TheMap);
+                  for (NodeUI NUI : NODES) {
+                    addNodeUI(NUI);
+                  }
                 }
               }
             });
@@ -233,6 +259,10 @@ public class MapController implements AdminAccessible {
               if (E.getButton() == MouseButton.SECONDARY) {
                 Targets.add(N.getN());
                 resizeNodeUI(N, 2);
+
+                if (Targets.size() >= 2) {
+                  runPathFindingClick();
+                }
               }
             });
   }
@@ -271,6 +301,16 @@ public class MapController implements AdminAccessible {
       }
     }
     System.out.println("This node doesn't exist.");
+    return null;
+  }
+
+  private EdgeUI getEdgeUIByID(String EdgeID) {
+    for (EdgeUI theEdge : EDGES) {
+      if (theEdge.getE().getEdgeID().equals(EdgeID)) {
+        return theEdge;
+      }
+    }
+    System.out.println("This Edge doesn't exist.");
     return null;
   }
 }
