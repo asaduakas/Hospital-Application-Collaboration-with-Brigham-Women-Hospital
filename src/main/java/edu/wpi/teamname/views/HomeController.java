@@ -24,7 +24,7 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javax.swing.*;
 
-public class HomeController extends Application {
+public class HomeController extends Application implements AllAccessible {
 
   @FXML private JFXButton exitButton; // Btn to exit program
   @FXML private JFXButton logoutButton;

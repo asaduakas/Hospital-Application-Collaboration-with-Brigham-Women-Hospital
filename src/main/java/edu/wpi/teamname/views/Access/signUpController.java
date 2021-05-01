@@ -1,10 +1,8 @@
 package edu.wpi.teamname.views.Access;
 
 import com.jfoenix.controls.*;
-import edu.wpi.teamname.App;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.ControllerManager;
-import edu.wpi.teamname.views.InitPageController;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,8 +12,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
@@ -43,9 +39,9 @@ public class signUpController implements AllAccessible {
 
   @FXML
   public void signUp(ActionEvent event) throws IOException {
-    FXMLLoader fxmlLoader =
-        new FXMLLoader(getClass().getClassLoader().getResource("HomeView.fxml"));
-    Parent root = fxmlLoader.load();
+    // FXMLLoader fxmlLoader =
+    //    new FXMLLoader(getClass().getClassLoader().getResource("HomeView.fxml"));
+    // Parent root = fxmlLoader.load();
 
     String categoryName = (String) category.getValue();
     System.out.println(categoryName);
@@ -64,10 +60,13 @@ public class signUpController implements AllAccessible {
             passwordField.getText().toString(),
             nameField.getText(),
             categoryName);
+        /*
         InitPageController.popup.hide();
         App.getPrimaryStage().close();
         App takeToInit = new App();
         takeToInit.start(App.getPrimaryStage());
+         */
+        ControllerManager.exitPopup();
       }
     }
   }

@@ -5,7 +5,6 @@ import com.jfoenix.controls.base.IFXLabelFloatControl;
 import com.jfoenix.skins.JFXTextFieldSkin;
 import com.jfoenix.skins.ValidationPane;
 import com.jfoenix.validation.RequiredFieldValidator;
-import edu.wpi.teamname.App;
 import edu.wpi.teamname.views.Access.AllAccessible;
 import java.io.IOException;
 import java.net.URL;
@@ -51,13 +50,7 @@ public class CovidSurveyController implements Initializable, AllAccessible {
                 + "diamonddragonsIT@gmail.com. "));
     JFXDialog dialog = new JFXDialog(stackPane1, content, JFXDialog.DialogTransition.CENTER);
     JFXButton closeButton = new JFXButton("Close");
-    closeButton.setOnAction(
-        new EventHandler<ActionEvent>() {
-          @Override
-          public void handle(ActionEvent event) {
-            dialog.close();
-          }
-        });
+    closeButton.setOnAction(e -> dialog.close());
     content.setActions(closeButton);
     dialog.show();
   }
@@ -74,13 +67,7 @@ public class CovidSurveyController implements Initializable, AllAccessible {
         new JFXDialog(stackPane1, warningLayout, JFXDialog.DialogTransition.CENTER);
     JFXButton okBtn = new JFXButton("Close");
     okBtn.setStyle("-fx-background-color: #cdcdcd;");
-    okBtn.setOnAction(
-        new EventHandler<ActionEvent>() {
-          @Override
-          public void handle(ActionEvent event) {
-            warningDia.close();
-          }
-        });
+    okBtn.setOnAction(e -> warningDia.close());
     warningLayout.setActions(okBtn);
     warningDia.show();
   }
@@ -99,19 +86,7 @@ public class CovidSurveyController implements Initializable, AllAccessible {
         new JFXDialog(stackPane1, warningLayout, JFXDialog.DialogTransition.CENTER);
     JFXButton okBtn = new JFXButton("OK");
     okBtn.setStyle("-fx-background-color: #cdcdcd;");
-    okBtn.setOnAction(
-        new EventHandler<ActionEvent>() {
-          @Override
-          public void handle(ActionEvent event) {
-            if (InitPageController.popup != null) {
-              InitPageController.popup.hide();
-            }
-            if (HomeController.popup != null) {
-              HomeController.popup.hide();
-            }
-            App.getPrimaryStage().getScene().getRoot().setEffect(null);
-          }
-        });
+    okBtn.setOnAction(e -> ControllerManager.exitPopup());
     okBtn.setStyle("-fx-background-color: #cdcdcd;");
 
     warningLayout.setActions(okBtn);
@@ -155,20 +130,7 @@ public class CovidSurveyController implements Initializable, AllAccessible {
       noBtn.setPrefWidth(60);
       noBtn.setId("noBtn");
       noBtn.setButtonType(JFXButton.ButtonType.FLAT);
-      noBtn.setOnAction(
-          new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-              //              submitDia.close();
-              if (InitPageController.popup != null) {
-                InitPageController.popup.hide();
-              }
-              if (HomeController.popup != null) {
-                HomeController.popup.hide();
-              }
-              App.getPrimaryStage().getScene().getRoot().setEffect(null);
-            }
-          });
+      noBtn.setOnAction(e -> ControllerManager.exitPopup());
       noBtn.setStyle("-fx-background-color: #cdcdcd;");
 
       layout.setActions(noBtn);
