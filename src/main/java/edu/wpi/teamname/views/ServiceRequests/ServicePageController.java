@@ -5,20 +5,18 @@ import com.jfoenix.controls.JFXComboBox;
 import edu.wpi.teamname.App;
 import edu.wpi.teamname.views.Access.AllAccessible;
 import edu.wpi.teamname.views.Access.LoginController;
-import edu.wpi.teamname.views.Access.UserCategory;
 import edu.wpi.teamname.views.ControllerManager;
-import edu.wpi.teamname.views.HomeController;
 import edu.wpi.teamname.views.InitPageController;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.effect.GaussianBlur;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
@@ -42,9 +40,7 @@ public class ServicePageController implements AllAccessible, Initializable {
 
   @FXML public static Popup popup;
 
-  private static UserCategory userTypeEnum;
   private static String userCategory;
-  public static Boolean disableStaffAssigned = false;
 
   @FXML
   private void goHome(ActionEvent event) throws IOException {
@@ -56,112 +52,73 @@ public class ServicePageController implements AllAccessible, Initializable {
 
   @FXML
   void changeView(ActionEvent event) throws IOException {
-
     if (LoginController.getUserCategory() != null) {
       this.userCategory = LoginController.getUserCategory();
     } else {
       this.userCategory = InitPageController.getUserCategory();
     }
 
-    if (userCategory.equalsIgnoreCase("Guest") || userCategory.equalsIgnoreCase("patient")) {
-      this.disableStaffAssigned = true;
-    } else if (userCategory.equalsIgnoreCase("admin")) {
-      this.disableStaffAssigned = false;
-    }
+    Consumer<FXMLLoader> configureStaffButton =
+        fxmlLoader -> {
+          Pane root = (Pane) fxmlLoader.getRoot();
+          JFXComboBox staff = (JFXComboBox) root.getChildren().get(5);
+
+          if (userCategory.equalsIgnoreCase("Guest") || userCategory.equalsIgnoreCase("patient")) {
+            staff.setDisable(true);
+            staff.setVisible(false);
+          } else if (userCategory.equalsIgnoreCase("admin")) {
+            staff.setDisable(false);
+            staff.setVisible(true);
+          }
+          root.setStyle("-fx-background-color: White");
+        };
 
     if (event.getSource() == ExTransBtn) {
-      HomeController.popup.hide();
-      popUpAction("ExternalTransportationView.fxml", disableStaffAssigned);
+      ControllerManager.attemptLoadPopupBlur(
+          "ExternalTransportationView.fxml", configureStaffButton);
     }
     if (event.getSource() == inTransBtn) {
-      HomeController.popup.hide();
-      popUpAction("InternalTransportationView.fxml", disableStaffAssigned);
+      ControllerManager.attemptLoadPopupBlur(
+          "InternalTransportationView.fxml", configureStaffButton);
     }
     if (event.getSource() == csBtn) {
-      System.out.println("in cs btn if");
-      HomeController.popup.hide();
-      popUpAction("ComputerServiceView.fxml", disableStaffAssigned);
+      ControllerManager.attemptLoadPopupBlur("ComputerServiceView.fxml", configureStaffButton);
     }
     if (event.getSource() == laundryBtn) {
-      HomeController.popup.hide();
-      popUpAction("LaundryView.fxml", disableStaffAssigned);
+      ControllerManager.attemptLoadPopupBlur("LaundryView.fxml", configureStaffButton);
     }
     if (event.getSource() == foodBtn) {
-      HomeController.popup.hide();
-      popUpAction("FoodDeliveryView.fxml", disableStaffAssigned);
+      ControllerManager.attemptLoadPopupBlur("FoodDeliveryView.fxml", configureStaffButton);
     }
     if (event.getSource() == floralBtn) {
-      HomeController.popup.hide();
-      popUpAction("FloralDeliveryView.fxml", disableStaffAssigned);
+      ControllerManager.attemptLoadPopupBlur("FloralDeliveryView.fxml", configureStaffButton);
     }
     if (event.getSource() == securityBtn) {
-      HomeController.popup.hide();
-      popUpAction("SecurityServicesView.fxml", disableStaffAssigned);
+      ControllerManager.attemptLoadPopupBlur("SecurityServicesView.fxml", configureStaffButton);
     }
     if (event.getSource() == maintenceBtn) {
-      HomeController.popup.hide();
-      popUpAction("FacilitiesMaintenanceView.fxml", disableStaffAssigned);
+      ControllerManager.attemptLoadPopupBlur(
+          "FacilitiesMaintenanceView.fxml", configureStaffButton);
     }
-
     if (event.getSource() == languageBtn) {
-      HomeController.popup.hide();
-      popUpAction("LanguageInterpreterView.fxml", disableStaffAssigned);
+      ControllerManager.attemptLoadPopupBlur("LanguageInterpreterView.fxml", configureStaffButton);
     }
     if (event.getSource() == sanitizBtn) {
-      HomeController.popup.hide();
-      popUpAction("SanitationView.fxml", disableStaffAssigned);
+      ControllerManager.attemptLoadPopupBlur("SanitationView.fxml", configureStaffButton);
     }
     if (event.getSource() == mediBtn) {
-      HomeController.popup.hide();
-      popUpAction("MedicineView.fxml", disableStaffAssigned);
+      ControllerManager.attemptLoadPopupBlur("MedicineView.fxml", configureStaffButton);
     }
     if (event.getSource() == audioBtn) {
-      HomeController.popup.hide();
-      popUpAction("AVRequestView.fxml", disableStaffAssigned);
+      ControllerManager.attemptLoadPopupBlur("AVRequestView.fxml", configureStaffButton);
     }
   }
 
   @FXML
-  public void statusView(ActionEvent event) throws IOException {
-    if (event.getSource() == statusBtn) {
-      HomeController.popup.hide();
-      GaussianBlur blur = new GaussianBlur(25);
-      App.getPrimaryStage().getScene().getRoot().setEffect(blur);
-
-      FXMLLoader fxmlLoader =
-          new FXMLLoader(getClass().getClassLoader().getResource("StatusView.fxml"));
-      Pane root = (Pane) fxmlLoader.load();
-
-      root.setStyle("-fx-background-color: White");
-
-      this.popup = new Popup();
-      popup.getContent().addAll(root);
-      popup.show(App.getPrimaryStage());
-    }
-  }
-
-  public void popUpAction(String fxml, boolean showAssignedTo) throws IOException {
-
-    GaussianBlur blur = new GaussianBlur(25);
-    App.getPrimaryStage().getScene().getRoot().setEffect(blur);
-
-    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource(fxml));
-    Pane root = (Pane) fxmlLoader.load();
-    JFXComboBox staff = (JFXComboBox) root.getChildren().get(5);
-
-    if (showAssignedTo) {
-      staff.setDisable(true);
-      staff.setVisible(false);
-    } else {
-      staff.setDisable(false);
-      staff.setVisible(true);
-    }
-
-    root.setStyle("-fx-background-color: White");
-
-    this.popup = new Popup();
-    popup.getContent().addAll(root);
-    popup.show(App.getPrimaryStage());
+  public void statusView(ActionEvent event) {
+    ControllerManager.attemptLoadPopupBlur(
+        "StatusView.fxml",
+        fxmlLoader -> ((Pane) fxmlLoader.getRoot()).setStyle("-fx-background-color: White"));
   }
 
   @Override

@@ -7,6 +7,7 @@ import com.jfoenix.skins.ValidationPane;
 import edu.wpi.teamname.App;
 import edu.wpi.teamname.Ddb.FDatabaseTables;
 import edu.wpi.teamname.Ddb.GlobalDb;
+import edu.wpi.teamname.views.Access.AllAccessible;
 import edu.wpi.teamname.views.Access.LoginController;
 import edu.wpi.teamname.views.AutoCompleteComboBox;
 import edu.wpi.teamname.views.HomeController;
@@ -31,7 +32,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Popup;
 
-public abstract class AbsRequest {
+public abstract class AbsRequest implements AllAccessible {
 
   @FXML StackPane stackPane1;
   @FXML JFXButton submitButton;

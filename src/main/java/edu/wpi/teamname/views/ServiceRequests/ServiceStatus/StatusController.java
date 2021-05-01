@@ -8,6 +8,8 @@ import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import edu.wpi.teamname.App;
 import edu.wpi.teamname.Ddb.FDatabaseTables;
 import edu.wpi.teamname.Ddb.GlobalDb;
+import edu.wpi.teamname.views.Access.AdminAccessible;
+import edu.wpi.teamname.views.Access.EmployeeAccessible;
 import edu.wpi.teamname.views.HomeController;
 import edu.wpi.teamname.views.ServiceRequests.NodeInfo.*;
 import edu.wpi.teamname.views.ServiceRequests.NodeInfo.ExtTransNodeInfo;
@@ -36,7 +38,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 
-public class StatusController extends AbsRequest implements Initializable, IRequestStatus {
+public class StatusController extends AbsRequest
+    implements Initializable, IRequestStatus, EmployeeAccessible, AdminAccessible {
 
   @FXML private JFXButton backBtn;
 
