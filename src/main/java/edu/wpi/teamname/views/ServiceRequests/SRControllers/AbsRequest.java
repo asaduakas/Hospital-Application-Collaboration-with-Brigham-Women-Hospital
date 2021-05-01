@@ -10,9 +10,8 @@ import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.Access.AllAccessible;
 import edu.wpi.teamname.views.Access.LoginController;
 import edu.wpi.teamname.views.AutoCompleteComboBox;
-import edu.wpi.teamname.views.HomeController;
+import edu.wpi.teamname.views.ControllerManager;
 import edu.wpi.teamname.views.InitPageController;
-import edu.wpi.teamname.views.ServiceRequests.ServicePageController;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,17 +19,14 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.effect.GaussianBlur;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.stage.Popup;
 
 public abstract class AbsRequest implements AllAccessible {
 
@@ -48,13 +44,10 @@ public abstract class AbsRequest implements AllAccessible {
     List<Node> childrenList = App.getPrimaryStage().getScene().getRoot().getChildrenUnmodifiable();
     VBox buttonBox = (VBox) childrenList.get(2);
     buttonBox.setVisible(true);
-    ServicePageController.popup.hide();
-    HomeController.popup.hide();
-    App.getPrimaryStage().getScene().getRoot().setEffect(null);
+    ControllerManager.exitPopup();
   }
 
-  public void popUpAction(String fxml, Popup popup, boolean isCheckRequestDisabled)
-      throws IOException {
+  public void popUpAction(String fxml) throws IOException {
 
     if (LoginController.getUserCategory() != null) {
       this.userCategory = LoginController.getUserCategory();
@@ -70,28 +63,27 @@ public abstract class AbsRequest implements AllAccessible {
       this.disableRequestStatus = false;
     }
 
-    GaussianBlur blur = new GaussianBlur(25);
-    App.getPrimaryStage().getScene().getRoot().setEffect(blur);
-
-    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource(fxml));
-    Pane root = (Pane) fxmlLoader.load();
-
-    JFXButton checkStatusButton = (JFXButton) root.getChildren().get(2);
-    if (disableRequestStatus) {
-      System.out.println("Hello 3");
-      checkStatusButton.setVisible(false);
-      checkStatusButton.setDisable(true);
-    } else {
-      System.out.println("Hello 4 ");
-      checkStatusButton.setVisible(true);
-      checkStatusButton.setDisable(false);
-    }
-
+    /*
     if (popup.getContent().size() > 0) {
       popup.getContent().remove(popup.getContent().size() - 1);
     }
-    popup.getContent().add(root);
-    popup.show(App.getPrimaryStage());
+    */
+
+    ControllerManager.attemptLoadPopupBlur(
+        fxml,
+        fxmlLoader -> {
+          Pane root = (Pane) fxmlLoader.getRoot();
+          JFXButton checkStatusButton = (JFXButton) root.getChildren().get(2);
+          if (disableRequestStatus) {
+            System.out.println("Hello 3");
+            checkStatusButton.setVisible(false);
+            checkStatusButton.setDisable(true);
+          } else {
+            System.out.println("Hello 4 ");
+            checkStatusButton.setVisible(true);
+            checkStatusButton.setDisable(false);
+          }
+        });
   }
 
   @FXML
@@ -110,9 +102,9 @@ public abstract class AbsRequest implements AllAccessible {
         new EventHandler<ActionEvent>() {
           @Override
           public void handle(ActionEvent event) {
-            ServicePageController.popup.hide();
+            // ServicePageController.popup.hide();
             try {
-              popUpAction("ServicePageView.fxml", HomeController.popup, disableRequestStatus);
+              popUpAction("ServicePageView.fxml");
             } catch (IOException e) {
               e.printStackTrace();
             }
@@ -170,9 +162,9 @@ public abstract class AbsRequest implements AllAccessible {
                 App.getPrimaryStage().getScene().getRoot().getChildrenUnmodifiable();
             VBox buttonBox = (VBox) childrenList.get(2);
             buttonBox.setVisible(false);
-            ServicePageController.popup.hide();
+            // ServicePageController.popup.hide();
             try {
-              popUpAction("ServicePageView.fxml", HomeController.popup, disableRequestStatus);
+              popUpAction("ServicePageView.fxml");
             } catch (IOException e) {
               e.printStackTrace();
             }
