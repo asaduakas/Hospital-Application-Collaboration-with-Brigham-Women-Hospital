@@ -2,6 +2,7 @@ package edu.wpi.teamname.views;
 
 import com.jfoenix.controls.JFXButton;
 import edu.wpi.teamname.App;
+import edu.wpi.teamname.views.Access.AllAccessible;
 import edu.wpi.teamname.views.Access.LoginController;
 import java.awt.*;
 import java.io.IOException;
@@ -14,7 +15,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 
-public class InitPageController {
+public class InitPageController implements AllAccessible {
   @FXML private JFXButton loginButton;
   @FXML private JFXButton signUpButton;
   @FXML private JFXButton emergencyButton;

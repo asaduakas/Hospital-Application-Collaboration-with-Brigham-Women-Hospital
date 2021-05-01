@@ -31,7 +31,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javax.swing.*;
 
-public class LoginController {
+public class LoginController implements AllAccessible {
 
   @FXML Button exitButton;
   @FXML Button loginButton;

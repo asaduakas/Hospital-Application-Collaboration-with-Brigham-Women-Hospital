@@ -21,7 +21,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-public class signUpController {
+public class signUpController implements AllAccessible {
 
   @FXML Button exitButton;
   @FXML Button signUpButton;

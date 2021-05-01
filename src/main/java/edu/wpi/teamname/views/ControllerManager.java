@@ -3,9 +3,10 @@ package edu.wpi.teamname.views;
 import edu.wpi.teamname.App;
 import edu.wpi.teamname.views.Access.*;
 import java.io.IOException;
-
+import java.util.function.Consumer;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.layout.Pane;
 import javafx.stage.Popup;
 
@@ -14,7 +15,7 @@ public class ControllerManager {
   private static Popup popup = null;
 
   private static boolean isPermissible(Class<?> controllerClass) {
-    if (AllAccessible.class.isAssignableFrom(controllerClass)){
+    if (AllAccessible.class.isAssignableFrom(controllerClass)) {
       return true;
     }
     if (LoginController.getUserCategory() == null) {
@@ -37,10 +38,10 @@ public class ControllerManager {
     return false;
   }
 
-  private static FXMLLoader getLoader(String fxmlName){
+  private static FXMLLoader getLoader(String fxmlName) {
     try {
       FXMLLoader fxmlLoader =
-              new FXMLLoader(ControllerManager.class.getClassLoader().getResource(fxmlName));
+          new FXMLLoader(ControllerManager.class.getClassLoader().getResource(fxmlName));
       fxmlLoader.load();
       return fxmlLoader;
     } catch (IOException e) {
@@ -49,24 +50,44 @@ public class ControllerManager {
     }
   }
 
-  public static void attemptLoadPage(String fxmlName) {
+  public static void attemptLoadPage(String fxmlName, Consumer<FXMLLoader> tasks) {
     FXMLLoader fxmlLoader = getLoader(fxmlName);
     if (!isPermissible(fxmlLoader.getController().getClass())) return;
-    if (popup != null){
+    if (popup != null) {
       popup.hide();
       popup = null;
     }
     App.getPrimaryStage().setScene(new Scene(fxmlLoader.getRoot()));
     App.getPrimaryStage().show();
+    tasks.accept(fxmlLoader); // Run additional tasks that were passed in
   }
 
-  public static void attemptLoadPopup(String fxmlName) {
+  public static void attemptLoadPage(String fxmlName) {
+    attemptLoadPage(fxmlName, fxmlLoader -> {});
+  }
+
+  public static void attemptLoadPopup(String fxmlName, Consumer<FXMLLoader> tasks) {
     FXMLLoader fxmlLoader = getLoader(fxmlName);
     if (!isPermissible(fxmlLoader.getController().getClass())) return;
     if (popup != null) popup.hide();
     popup = new Popup();
     popup.getContent().addAll((Pane) fxmlLoader.getRoot());
     popup.show(App.getPrimaryStage());
+    tasks.accept(fxmlLoader); // Run additional tasks that were passed in
   }
 
+  public static void attemptLoadPopup(
+      String fxmlName, boolean applyBlur, Consumer<FXMLLoader> tasks) {
+    attemptLoadPopup(
+        fxmlName,
+        !applyBlur
+            ? tasks
+            : tasks.andThen(
+                fxmlLoader ->
+                    App.getPrimaryStage().getScene().getRoot().setEffect(new GaussianBlur(25))));
+  }
+
+  public static void attemptLoadPopup(String fxmlName, boolean applyBlur) {
+    attemptLoadPopup(fxmlName, true, fxmlLoader -> {});
+  }
 }

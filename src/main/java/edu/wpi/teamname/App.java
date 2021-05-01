@@ -2,12 +2,12 @@ package edu.wpi.teamname;
 
 import com.jfoenix.controls.JFXButton;
 import edu.wpi.teamname.Ddb.GlobalDb;
+import edu.wpi.teamname.views.ControllerManager;
 import edu.wpi.teamname.views.SceneSizeChangeListener;
 import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
@@ -37,33 +37,28 @@ public class App extends Application {
   public void start(Stage primaryStage) throws IOException {
     GlobalDb.getTables().getUserTable().dispUsers(GlobalDb.getConnection());
     App.primaryStage = primaryStage;
-    Pane root =
-        (Pane) FXMLLoader.load(getClass().getClassLoader().getResource("initPageView.fxml"));
 
-    List<Node> childrenList = root.getChildren();
-
-    primaryStage.setMaximized(true);
-    //    primaryStage.setFullScreen(true);
-
-    Scene scene = new Scene(root);
-    primaryStage.setScene(scene);
-
-    primaryStage.setMinHeight(135 * 4);
-    primaryStage.setMinWidth(240 * 4);
-
-    primaryStage.show();
-
-    changeChildrenInitPage(childrenList);
-    // Overriding the method inside the object of fullScreenListener
-    SceneSizeChangeListener listener =
-        new SceneSizeChangeListener(scene, root, childrenList) {
-          @Override
-          public void changeChildren(List<Node> nodeList) {
-            changeChildrenInitPage(childrenList);
-          }
-        };
-    scene.widthProperty().addListener(listener);
-    scene.heightProperty().addListener(listener);
+    ControllerManager.attemptLoadPage(
+        "initPageView.fxml",
+        fxmlLoader -> {
+          Pane root = (Pane) fxmlLoader.getRoot();
+          List<Node> childrenList = root.getChildren();
+          primaryStage.setMaximized(true);
+          primaryStage.setMinHeight(135 * 4);
+          primaryStage.setMinWidth(240 * 4);
+          Scene scene = primaryStage.getScene();
+          changeChildrenInitPage(childrenList);
+          // Overriding the method inside the object of fullScreenListener
+          SceneSizeChangeListener listener =
+              new SceneSizeChangeListener(scene, root, childrenList) {
+                @Override
+                public void changeChildren(List<Node> nodeList) {
+                  changeChildrenInitPage(childrenList);
+                }
+              };
+          scene.widthProperty().addListener(listener);
+          scene.heightProperty().addListener(listener);
+        });
   }
 
   public void changeChildrenInitPage(List<Node> nodeList) {
