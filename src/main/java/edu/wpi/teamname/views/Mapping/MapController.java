@@ -544,6 +544,15 @@ public class MapController implements AdminAccessible {
 
   @FXML Button dirBtn;
   @FXML TextArea dirText;
+  private String endLocation;
+
+  private void setEnd(String end) {
+    endLocation = end;
+  }
+
+  private String getEnd() {
+    return endLocation;
+  }
 
   @FXML
   public void getDirections(LinkedList<Edge> edges) {
@@ -554,12 +563,15 @@ public class MapController implements AdminAccessible {
     }
     ScaleDown(edges.getFirst().getStartNode());
 
+    dirText.clear();
+
     dirText.appendText(
         "Directions from "
             + edges.getFirst().getStartNode().getLongName()
             + " to "
             + edges.getLast().getEndNode().getLongName()
             + ":\n");
+    setEnd(edges.getLast().getEndNode().getShortName());
 
     ScaleDown(edges.getFirst().getEndNode());
     String initialDirection =
@@ -715,8 +727,10 @@ public class MapController implements AdminAccessible {
   public void downloadDirections(ActionEvent event) {
     if (event.getSource() == dirBtn) {
 
+      String name = getEnd().replaceAll(" ", "") + "Directions.txt";
+
       try {
-        FileWriter directions = new FileWriter("directions.txt");
+        FileWriter directions = new FileWriter(name);
 
         directions.write(dirText.getText());
         directions.close();

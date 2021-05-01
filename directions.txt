@@ -1,6 +1,8 @@
-Directions from Tower Hallway 4 to Tower Hallway 10:
-Head North towards Tower Hallway 2
-Turn Right towards Tower Hallway 1
-Turn Right towards Tower Elevator Entrance
+Directions from Walkway Node #36 Behind 75 Francis on Lower Upper Shattuck Street to Walkway Node #37 Behind 75 Francis on Upper Mid Shattuck Street:
+Head East towards Walkway Node #37 Behind 75 Francis on Upper Mid Shattuck Street
 
-Welcome to Tower Hallway 10
+Welcome to Walkway Node #37 Behind 75 Francis on Upper Mid Shattuck Street
+Directions from Walkway Node #38 Behind 75 Francis on Mid Shattuck Street to Walkway Node #39 Behind 75 Francis on Lower Mid Shattuck Street:
+Head East towards Walkway Node #39 Behind 75 Francis on Lower Mid Shattuck Street
+
+Welcome to Walkway Node #39 Behind 75 Francis on Lower Mid Shattuck Street
