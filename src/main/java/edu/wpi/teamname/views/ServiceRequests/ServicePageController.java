@@ -3,9 +3,10 @@ package edu.wpi.teamname.views.ServiceRequests;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import edu.wpi.teamname.App;
-import edu.wpi.teamname.views.Access.EmployeeAccessible;
+import edu.wpi.teamname.views.Access.AllAccessible;
 import edu.wpi.teamname.views.Access.LoginController;
 import edu.wpi.teamname.views.Access.UserCategory;
+import edu.wpi.teamname.views.ControllerManager;
 import edu.wpi.teamname.views.HomeController;
 import edu.wpi.teamname.views.InitPageController;
 import java.io.IOException;
@@ -22,7 +23,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 
-public class ServicePageController implements EmployeeAccessible, Initializable {
+public class ServicePageController implements AllAccessible, Initializable {
 
   @FXML private JFXButton ExTransBtn;
   @FXML private JFXButton inTransBtn;
@@ -50,11 +51,7 @@ public class ServicePageController implements EmployeeAccessible, Initializable 
     List<Node> childrenList = App.getPrimaryStage().getScene().getRoot().getChildrenUnmodifiable();
     VBox buttonBox = (VBox) childrenList.get(2);
     buttonBox.setVisible(true);
-    HomeController.popup.hide();
-    if (ServicePageController.popup != null) {
-      ServicePageController.popup.hide();
-    }
-    App.getPrimaryStage().getScene().getRoot().setEffect(null);
+    ControllerManager.exitPopup();
   }
 
   @FXML

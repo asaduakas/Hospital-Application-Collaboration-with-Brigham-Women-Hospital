@@ -62,7 +62,6 @@ public class ControllerManager {
     if (!isPermissible(fxmlLoader.getController().getClass())) return;
     exitPopup();
     App.getPrimaryStage().setScene(new Scene(fxmlLoader.getRoot()));
-    App.getPrimaryStage().setMaximized(true);
     App.getPrimaryStage().show();
     tasks.accept(fxmlLoader); // Run additional tasks that were passed in
   }

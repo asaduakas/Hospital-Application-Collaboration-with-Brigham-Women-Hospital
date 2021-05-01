@@ -2,7 +2,7 @@ package edu.wpi.teamname.views.Mapping;
 
 import edu.wpi.teamname.Astar.*;
 import edu.wpi.teamname.Ddb.GlobalDb;
-import edu.wpi.teamname.views.Access.AdminAccessible;
+import edu.wpi.teamname.views.Access.AllAccessible;
 import java.util.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
@@ -13,7 +13,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
-public class MapController implements AdminAccessible {
+public class MapController implements AllAccessible {
 
   private RoomGraph initialData = new RoomGraph(GlobalDb.getConnection());
   private LinkedList<NodeUI> NODES = new LinkedList<>();

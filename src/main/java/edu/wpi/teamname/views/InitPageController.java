@@ -46,20 +46,6 @@ public class InitPageController implements AllAccessible {
     ControllerManager.attemptLoadPopupBlur("Help.fxml");
   }
 
-  /*
-  public void popUpAction(String fxml) throws IOException {
-
-    GaussianBlur blur = new GaussianBlur(25);
-    App.getPrimaryStage().getScene().getRoot().setEffect(blur);
-
-    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource(fxml));
-    Parent root = fxmlLoader.load();
-    this.popup = new Popup();
-    popup.getContent().addAll(root);
-    popup.show(App.getPrimaryStage());
-  }
-   */
-
   @FXML
   private void closeApp(ActionEvent event) {
     Stage stage = (Stage) exitButton.getScene().getWindow();

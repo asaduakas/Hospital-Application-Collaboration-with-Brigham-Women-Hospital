@@ -12,7 +12,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
@@ -51,14 +50,9 @@ public class HomeController extends Application implements AllAccessible {
     HomeController.username = null;
     HomeController.userTypeEnum = null;
     HomeController.userCategory = null;
+    LoginController.userCategory = null;
     HomeController.historyTracker = 0;
-    Stage stage = (Stage) logoutButton.getScene().getWindow();
-    stage.setScene(
-        new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("LoginView.fxml"))));
-    stage.show();
-    App.getPrimaryStage().close();
-    App takeToInit = new App();
-    takeToInit.start(App.getPrimaryStage());
+    ControllerManager.attemptLoadPage("initPageView.fxml");
   }
 
   @FXML
@@ -69,12 +63,12 @@ public class HomeController extends Application implements AllAccessible {
 
   @FXML
   public void emergencyView() throws IOException {
-    popUpAction("Emergency.fxml", false);
+    ControllerManager.attemptLoadPopupBlur("Emergency.fxml");
   }
 
   @FXML
   public void helpView() throws IOException {
-    popUpAction("Help.fxml", false);
+    ControllerManager.attemptLoadPopupBlur("Help.fxml");
   }
 
   @FXML
@@ -85,28 +79,23 @@ public class HomeController extends Application implements AllAccessible {
       this.userCategory = InitPageController.getUserCategory();
     }
 
-    App.getPrimaryStage().close();
-    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("MapView.fxml"));
-    Pane root = (Pane) fxmlLoader.load();
-
-    Scene scene = new Scene(root);
-    App.getPrimaryStage().setScene(scene);
-    App.getPrimaryStage().setMaximized(true);
-    App.getPrimaryStage().show();
-
-    List<Node> childrenList = root.getChildren();
-
-    changeChildrenMapView(childrenList);
-    this.sizeListener =
-        new SceneSizeChangeListener(scene, root, childrenList) {
-          @Override
-          public void changeChildren(List<Node> nodeList) {
-            changeChildrenMapView(childrenList);
-          }
-        };
-
-    scene.widthProperty().addListener(sizeListener);
-    scene.heightProperty().addListener(sizeListener);
+    ControllerManager.attemptLoadPage(
+        "MapView.fxml",
+        fxmlLoader -> {
+          Pane root = (Pane) fxmlLoader.getRoot();
+          List<Node> childrenList = root.getChildren();
+          Scene scene = App.getPrimaryStage().getScene();
+          changeChildrenMapView(childrenList);
+          this.sizeListener =
+              new SceneSizeChangeListener(scene, root, childrenList) {
+                @Override
+                public void changeChildren(List<Node> nodeList) {
+                  changeChildrenMapView(childrenList);
+                }
+              };
+          scene.widthProperty().addListener(sizeListener);
+          scene.heightProperty().addListener(sizeListener);
+        });
   }
 
   public void changeChildrenMapView(List<Node> nodeList) {
@@ -201,39 +190,49 @@ public class HomeController extends Application implements AllAccessible {
   }
 
   @FXML
-  private void covidSurvey(ActionEvent event) throws IOException {
-    GaussianBlur blur = new GaussianBlur(25);
-    App.getPrimaryStage().getScene().getRoot().setEffect(blur);
-
-    FXMLLoader fxmlLoader =
-        new FXMLLoader(getClass().getClassLoader().getResource("CovidSurveyView.fxml"));
-    Parent root = fxmlLoader.load();
-    root.setStyle("-fx-background-color: White");
-
-    this.popup = new Popup();
-    popup.getContent().addAll(root);
-    popup.show(App.getPrimaryStage());
+  private void covidSurvey(ActionEvent event) {
+    ControllerManager.attemptLoadPopupBlur(
+        "CovidSurveyView.fxml",
+        fxmlLoader -> {
+          Pane root = (Pane) fxmlLoader.getRoot();
+          root.setStyle("-fx-background-color: White");
+        });
   }
 
-  public void serviceRequestView() throws IOException {
-
+  public void serviceRequestView() {
     if (LoginController.getUserCategory() != null) {
       this.userCategory = LoginController.getUserCategory();
     } else {
       this.userCategory = InitPageController.getUserCategory();
     }
 
-    List<Node> childrenList = App.getPrimaryStage().getScene().getRoot().getChildrenUnmodifiable();
-    mainButtons = (VBox) childrenList.get(2);
-    mainButtons.setVisible(false);
-    if (userCategory.equalsIgnoreCase("Guest") || userCategory.equalsIgnoreCase("Patient")) {
-      // hide and disable the check request button
-      this.disableRequestStatus = true;
-    } else if (userCategory.equalsIgnoreCase("Admin")
-        || userCategory.equalsIgnoreCase("Employee")) {
-      this.disableRequestStatus = false;
-    }
-    popUpAction("ServicePageView.fxml", this.disableRequestStatus);
+    ControllerManager.attemptLoadPopupBlur(
+        "ServicePageView.fxml",
+        fxmlLoader -> {
+          List<Node> childrenList =
+              App.getPrimaryStage().getScene().getRoot().getChildrenUnmodifiable();
+          mainButtons = (VBox) childrenList.get(2);
+          mainButtons.setVisible(false);
+          boolean disableStatusButton = false;
+          if (userCategory.equalsIgnoreCase("Guest") || userCategory.equalsIgnoreCase("Patient")) {
+            // hide and disable the check request button
+            disableStatusButton = true;
+          } else if (userCategory.equalsIgnoreCase("Admin")
+              || userCategory.equalsIgnoreCase("Employee")) {
+            disableStatusButton = false;
+          }
+          JFXButton checkStatusButton =
+              (JFXButton) ((Pane) fxmlLoader.getRoot()).getChildren().get(2);
+          if (disableStatusButton) {
+            // System.out.println("Hello 1");
+            checkStatusButton.setVisible(false);
+            checkStatusButton.setDisable(true);
+          } else {
+            // System.out.println("Hello 2 ");
+            checkStatusButton.setVisible(true);
+            checkStatusButton.setDisable(false);
+          }
+        });
   }
 
   public void popUpAction(String fxml, Boolean isCheckRequestDisabled) throws IOException {
@@ -263,6 +262,7 @@ public class HomeController extends Application implements AllAccessible {
     popup.show(App.getPrimaryStage());
   }
 
+  // TODO: Remove this function
   public static boolean controllerPermissible(String controllerName) {
     try {
       Class<?> controllerClass = null;
