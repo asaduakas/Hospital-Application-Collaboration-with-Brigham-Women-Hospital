@@ -11,7 +11,6 @@ public abstract class IntermediaryAlgo implements IPathFinding {
     for (int i = 1; i < targets.length; i++) {
       // remove repetition of target and next start
       thePath.getPath().removeLast();
-      thePath.getPathEdges().removeLast();
 
       // search and append path
       Path aPath = search(data, targets[i - 1], targets[i]);
@@ -30,7 +29,6 @@ public abstract class IntermediaryAlgo implements IPathFinding {
     for (int i = 2; i < targets.size(); i++) {
       // remove repetition of target and next start
       thePath.getPath().removeLast();
-      thePath.getPathEdges().removeLast();
 
       // search and append path
       Path aPath = search(data, targets.get(i - 1), targets.get(i));

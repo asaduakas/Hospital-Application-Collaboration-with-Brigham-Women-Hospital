@@ -152,16 +152,25 @@ public class MapController implements AdminAccessible {
     }
   }
 
+  private void clearMap() {
+    secondaryAnchor.getChildren().remove(0, secondaryAnchor.getChildren().size());
+    secondaryAnchor.getChildren().add(TheMap);
+  }
+
   public void showPath() {
     if (thePath.isEmpty()) {
       System.out.println("No path to show!");
     } else {
       System.out.println("Path Exists!");
+      //      clearMap();
+      //      drawNodeFloor("1");
       for (Edge E : thePath) {
         if (initialData.getNodeByID(E.getStartNodeID()).getFloor().equals(currentFloor)
             && initialData.getNodeByID(E.getEndNodeID()).getFloor().equals(currentFloor)) {
-          if (!secondaryAnchor.getChildren().contains(getEdgeUIByID(E.getEdgeID())))
-            addEdgeUI(getEdgeUIByID(E.getEdgeID()));
+          EdgeUI EUI = getEdgeUIByID(E.getEdgeID());
+          System.out.println(!secondaryAnchor.getChildren().contains(EUI));
+          System.out.println(EUI.getE().getEdgeID());
+          if (!secondaryAnchor.getChildren().contains(EUI)) addEdgeUI(EUI);
         }
       }
     }
@@ -236,6 +245,8 @@ public class MapController implements AdminAccessible {
   }
 
   public void runPathFindingClick() {
+    Path test = algorithm.multiSearch(initialData, Targets);
+    test.printPath();
     thePath = algorithm.multiSearch(initialData, Targets).getPathEdges();
     showPath();
   }
@@ -254,12 +265,10 @@ public class MapController implements AdminAccessible {
                   Boolean newValue) {
 
                 if (toggleEditor.isSelected()) {
-                  secondaryAnchor.getChildren().remove(0, secondaryAnchor.getChildren().size());
-                  secondaryAnchor.getChildren().add(TheMap);
+                  clearMap();
                   LoadingNodesEdges("1");
                 } else {
-                  secondaryAnchor.getChildren().remove(0, secondaryAnchor.getChildren().size());
-                  secondaryAnchor.getChildren().add(TheMap);
+                  clearMap();
                   drawNodeFloor("1");
                 }
               }
