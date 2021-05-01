@@ -1,34 +1,27 @@
 package edu.wpi.teamname.Astar;
 
-import javafx.beans.property.SimpleStringProperty;
-
 public class Edge {
+  private String edgeID;
+  private String reverseEdgeID;
   private String startNodeID;
   private String endNodeID;
   private double cost;
 
   // for ui
-  private String edgeID;
   private String startNodeShortName;
   private String endNodeShortName;
-
-  // for editing columns
-  private SimpleStringProperty edgeIDsimple;
-  private SimpleStringProperty startShortsimple;
-  private SimpleStringProperty endShortSimple;
 
   public Edge(Node startNode, Node endNode, double cost) {
     this.startNodeID = startNode.getNodeID();
     this.endNodeID = endNode.getNodeID();
     this.cost = cost;
     this.edgeID = startNode.getNodeID() + "_" + endNode.getNodeID();
+    this.reverseEdgeID = endNode.getNodeID() + "_" + startNode.getNodeID();
     this.startNodeShortName = startNode.getShortName();
     this.endNodeShortName = endNode.getShortName();
-    this.edgeIDsimple = new SimpleStringProperty(edgeID);
-    this.startShortsimple = new SimpleStringProperty(startNodeShortName);
-    this.endShortSimple = new SimpleStringProperty(endNodeShortName);
   }
 
+  // FOR TESTING DON'T USE ACUTALLY
   public Edge(String edgeID, String startNode, String endNode) {
     this.edgeID = edgeID;
     this.startNodeShortName = startNode;
@@ -88,39 +81,17 @@ public class Edge {
     this.endNodeShortName = endNodeShortName;
   }
 
-  public String getEdgeIDsimple() {
-    return edgeIDsimple.get();
+  public String getReverseEdgeID() {
+    return reverseEdgeID;
   }
 
-  public SimpleStringProperty edgeIDsimpleProperty() {
-    return edgeIDsimple;
+  public void setReverseEdgeID(String reverseEdgeID) {
+    this.reverseEdgeID = reverseEdgeID;
   }
 
-  public void setEdgeIDsimple(String edgeIDsimple) {
-    this.edgeIDsimple.set(edgeIDsimple);
-  }
-
-  public String getStartShortsimple() {
-    return startShortsimple.get();
-  }
-
-  public SimpleStringProperty startShortsimpleProperty() {
-    return startShortsimple;
-  }
-
-  public void setStartShortsimple(String startShortsimple) {
-    this.startShortsimple.set(startShortsimple);
-  }
-
-  public String getEndShortSimple() {
-    return endShortSimple.get();
-  }
-
-  public SimpleStringProperty endShortSimpleProperty() {
-    return endShortSimple;
-  }
-
-  public void setEndShortSimple(String endShortSimple) {
-    this.endShortSimple.set(endShortSimple);
+  public boolean equals(Edge e) {
+    if (startNodeID.equals(e.getStartNodeID()) && endNodeID.equals(e.getEndNodeID())) return true;
+    if (startNodeID.equals(e.getEndNodeID()) && endNodeID.equals(e.getStartNodeID())) return true;
+    return false;
   }
 }
