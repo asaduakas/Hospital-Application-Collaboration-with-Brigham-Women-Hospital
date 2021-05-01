@@ -1,6 +1,8 @@
 package edu.wpi.teamname.Astar;
 // initially made in Algos repo
 
+import java.util.LinkedList;
+
 public class PathAlgoPicker {
   private IPathFinding algorithm;
 
@@ -39,4 +41,6 @@ public class PathAlgoPicker {
   public void setAlgorithm(IPathFinding algorithm) {
     this.algorithm = algorithm;
   }
+
+  public Path multiSearch(RoomGraph data, LinkedList<Node> targets){ return ((IntermediaryAlgo) algorithm).multiSearch(data, targets);}
 }
