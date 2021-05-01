@@ -27,6 +27,7 @@ public class MapController implements AdminAccessible {
   private LinkedList<EdgeUI> EDGES = new LinkedList<>();
   private PathAlgoPicker algorithm = new PathAlgoPicker(new aStar());
   private LinkedList<Edge> thePath = new LinkedList<Edge>();
+  private LinkedList<Node> Targets = new LinkedList<Node>();
   private String userCategory = "admin";
 
   private Image I = new Image("Images/274px-Google_Maps_pin.svg.png");
@@ -185,7 +186,8 @@ public class MapController implements AdminAccessible {
 
   // _______________________________________Path Finding____________________________________________
 
-  public void runPathFinding(String startNode, String targetNode) throws IOException {
+  //For Directory
+  public void runPathFindingDirectory(String startNode, String targetNode) throws IOException {
     Node start = initialData.getNodeByID(startNode);
     Node target = initialData.getNodeByID(targetNode);
 
@@ -194,6 +196,11 @@ public class MapController implements AdminAccessible {
     algorithm.printEdgeTo();
     thePath = algorithm.getShortestPath().getPathEdges();
     // getDirections(thePath);
+  }
+
+  public void runPathFindingClick()
+  {
+
   }
 
   // _______________________________________Event Handeler_________________________________________
@@ -224,7 +231,13 @@ public class MapController implements AdminAccessible {
         .setOnMouseClicked(
             (MouseEvent E) -> {
               if (E.getButton() == MouseButton.SECONDARY) {
-                String StartNode = N.getN().getNodeID();
+                Targets.add(N.getN());
+
+                if (Targets.size() == 2)
+                {
+
+                }
+
                 resizeNodeUI(N, 2);
               }
             });
