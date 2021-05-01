@@ -162,13 +162,11 @@ public class MapController implements AdminAccessible {
       System.out.println("No path to show!");
     } else {
       System.out.println("Path Exists!");
-      //      clearMap();
-      //      drawNodeFloor("1");
       for (Edge E : thePath) {
         if (initialData.getNodeByID(E.getStartNodeID()).getFloor().equals(currentFloor)
             && initialData.getNodeByID(E.getEndNodeID()).getFloor().equals(currentFloor)) {
           EdgeUI EUI = getEdgeUIByID(E.getEdgeID());
-          if (!secondaryAnchor.getChildren().contains(EUI)) addEdgeUI(EUI);
+          if (!secondaryAnchor.getChildren().contains(EUI.getL())) addEdgeUI(EUI);
         }
       }
     }

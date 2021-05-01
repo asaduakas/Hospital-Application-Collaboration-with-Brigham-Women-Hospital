@@ -72,6 +72,18 @@ public class Path {
     }
   }
 
+  public void printPathEdges() {
+    if (this.pathEdges.isEmpty()) {
+      System.out.println("Path doesn't exist");
+    } else {
+      System.out.println("EdgeIDs: ");
+      for (Edge edge : pathEdges) {
+        System.out.print(edge.getEdgeID() + "\t");
+      }
+      System.out.println("Cost:" + this.cost);
+    }
+  }
+
   @Override
   public boolean equals(Object o) {
     boolean isEqual = true;
