@@ -1,21 +1,14 @@
 package edu.wpi.teamname.Astar;
 
-import javafx.beans.property.SimpleStringProperty;
-
 public class Edge {
+  private String edgeID;
   private String startNodeID;
   private String endNodeID;
   private double cost;
 
   // for ui
-  private String edgeID;
   private String startNodeShortName;
   private String endNodeShortName;
-
-  // for editing columns
-  private SimpleStringProperty edgeIDsimple;
-  private SimpleStringProperty startShortsimple;
-  private SimpleStringProperty endShortSimple;
 
   public Edge(Node startNode, Node endNode, double cost) {
     this.startNodeID = startNode.getNodeID();
@@ -24,9 +17,6 @@ public class Edge {
     this.edgeID = startNode.getNodeID() + "_" + endNode.getNodeID();
     this.startNodeShortName = startNode.getShortName();
     this.endNodeShortName = endNode.getShortName();
-    this.edgeIDsimple = new SimpleStringProperty(edgeID);
-    this.startShortsimple = new SimpleStringProperty(startNodeShortName);
-    this.endShortSimple = new SimpleStringProperty(endNodeShortName);
   }
 
   public Edge(String edgeID, String startNode, String endNode) {
@@ -86,41 +76,5 @@ public class Edge {
 
   public void setEndNodeShortName(String endNodeShortName) {
     this.endNodeShortName = endNodeShortName;
-  }
-
-  public String getEdgeIDsimple() {
-    return edgeIDsimple.get();
-  }
-
-  public SimpleStringProperty edgeIDsimpleProperty() {
-    return edgeIDsimple;
-  }
-
-  public void setEdgeIDsimple(String edgeIDsimple) {
-    this.edgeIDsimple.set(edgeIDsimple);
-  }
-
-  public String getStartShortsimple() {
-    return startShortsimple.get();
-  }
-
-  public SimpleStringProperty startShortsimpleProperty() {
-    return startShortsimple;
-  }
-
-  public void setStartShortsimple(String startShortsimple) {
-    this.startShortsimple.set(startShortsimple);
-  }
-
-  public String getEndShortSimple() {
-    return endShortSimple.get();
-  }
-
-  public SimpleStringProperty endShortSimpleProperty() {
-    return endShortSimple;
-  }
-
-  public void setEndShortSimple(String endShortSimple) {
-    this.endShortSimple.set(endShortSimple);
   }
 }

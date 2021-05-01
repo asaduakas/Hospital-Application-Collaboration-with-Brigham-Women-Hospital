@@ -104,10 +104,10 @@ public class MapController implements AdminAccessible {
     for (Edge E : initialData.getListOfEdges()) {
       Line L =
           new Line(
-              initialData.getNodeByID(E.getStartNodeID()).getSimpXcoord(),
-              initialData.getNodeByID(E.getStartNodeID()).getSimpYcoord(),
-              initialData.getNodeByID(E.getEndNodeID()).getSimpXcoord(),
-              initialData.getNodeByID(E.getEndNodeID()).getSimpYcoord());
+              getNodeUIByID(E.getStartNodeID()).getSimpXcoord(),
+              getNodeUIByID(E.getStartNodeID()).getSimpYcoord(),
+              getNodeUIByID(E.getEndNodeID()).getSimpXcoord(),
+              getNodeUIByID(E.getEndNodeID()).getSimpYcoord());
       L.setOnMouseClicked(
           (MouseEvent e) -> {
             disableListener(e);
@@ -229,21 +229,31 @@ public class MapController implements AdminAccessible {
 
   private void hoverResize(NodeUI N) {
     N.getI()
-      .setOnMouseEntered(
-          (MouseEvent e) -> {
-            N.getI().setFitWidth(N.getI().getFitWidth() * 2);
-            N.getI().setFitHeight(N.getI().getFitHeight() * 2);
-            N.getI().setX(N.getN().getXCoord() - N.getI().getFitWidth() / 2);
-            N.getI().setY(N.getN().getYCoord() - N.getI().getFitHeight());
-          });
+        .setOnMouseEntered(
+            (MouseEvent e) -> {
+              N.getI().setFitWidth(N.getI().getFitWidth() * 2);
+              N.getI().setFitHeight(N.getI().getFitHeight() * 2);
+              N.getI().setX(N.getN().getXCoord() - N.getI().getFitWidth() / 2);
+              N.getI().setY(N.getN().getYCoord() - N.getI().getFitHeight());
+            });
 
     N.getI()
-      .setOnMouseExited(
-          (MouseEvent e) -> {
-            N.getI().setFitWidth(N.getI().getFitWidth() / 2);
-            N.getI().setFitHeight(N.getI().getFitHeight() / 2);
-            N.getI().setX(N.getN().getXCoord() - N.getI().getFitWidth() / 2);
-            N.getI().setY(N.getN().getYCoord() - N.getI().getFitHeight());
-          });
+        .setOnMouseExited(
+            (MouseEvent e) -> {
+              N.getI().setFitWidth(N.getI().getFitWidth() / 2);
+              N.getI().setFitHeight(N.getI().getFitHeight() / 2);
+              N.getI().setX(N.getN().getXCoord() - N.getI().getFitWidth() / 2);
+              N.getI().setY(N.getN().getYCoord() - N.getI().getFitHeight());
+            });
+  }
+  // ___________________________________Getter and Setter_____________________________________
+  public NodeUI getNodeUIByID(String NodeID) {
+    for (NodeUI theNode : NODES) {
+      if (theNode.getN().getNodeID().equals(NodeID)) {
+        return theNode;
+      }
+    }
+    System.out.println("This node doesn't exist.");
+    return null;
   }
 }
