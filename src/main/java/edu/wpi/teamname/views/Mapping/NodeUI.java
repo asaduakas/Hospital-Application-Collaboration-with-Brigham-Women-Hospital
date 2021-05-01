@@ -58,4 +58,10 @@ public class NodeUI {
   public void setSimpYcoord(double simpYcoord) {
     this.simpYcoord.set(simpYcoord);
   }
+
+  public void setNodeCoord(int x, int y){
+    N.setCoords(x,y);
+    setSimpXcoord(N.getXCoord());
+    setSimpYcoord(N.getYCoord());
+  }
 }
