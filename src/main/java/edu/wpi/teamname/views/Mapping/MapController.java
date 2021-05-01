@@ -200,7 +200,7 @@ public class MapController implements AdminAccessible {
 
   public void runPathFindingClick()
   {
-
+     thePath =  ((IntermediaryAlgo)algorithm).multiSearch();
   }
 
   // _______________________________________Event Handeler_________________________________________
@@ -232,12 +232,6 @@ public class MapController implements AdminAccessible {
             (MouseEvent E) -> {
               if (E.getButton() == MouseButton.SECONDARY) {
                 Targets.add(N.getN());
-
-                if (Targets.size() == 2)
-                {
-
-                }
-
                 resizeNodeUI(N, 2);
               }
             });
