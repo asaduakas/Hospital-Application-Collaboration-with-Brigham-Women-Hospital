@@ -1,9 +1,15 @@
 package edu.wpi.teamname.views.Mapping;
 
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXToggleButton;
 import edu.wpi.teamname.Astar.*;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.Access.AdminAccessible;
+import java.awt.*;
+import java.io.IOException;
 import java.util.*;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
@@ -18,30 +24,38 @@ public class MapController implements AdminAccessible {
   private RoomGraph initialData = new RoomGraph(GlobalDb.getConnection());
   private LinkedList<NodeUI> NODES = new LinkedList<>();
   private LinkedList<EdgeUI> EDGES = new LinkedList<>();
+  private PathAlgoPicker algorithm = new PathAlgoPicker(new aStar());
+  private LinkedList<Edge> thePath = new LinkedList<Edge>();
+  private String userCategory = "admin";
+
   private Image I = new Image("Images/274px-Google_Maps_pin.svg.png");
   private Image Exit = new Image("Images/exit.png");
   private Image F1 = new Image("01_thefirstfloor.png");
+
+  @FXML private JFXToggleButton toggleEditor;
   @FXML private AnchorPane mainAnchor;
+  @FXML private JFXComboBox FloorOption;
   @FXML private ScrollPane movingMap;
   @FXML private AnchorPane secondaryAnchor;
   @FXML private ImageView TheMap;
 
   @FXML
   private void initialize() {
-    initializeFloor(F1, "1");
+    TheMap.setImage(F1);
+    movingMap.setPannable(true);
+    movingMap.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+    movingMap.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+    ToggleListener();
   }
 
   // _______________________________________SET UP________________________________________
 
-  private void initializeFloor(Image floor, String floorNum) {
+  private void LoadMap(Image floor, String floorNum) {
     TheMap.setImage(floor);
-    movingMap.setPannable(true);
-    movingMap.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-    movingMap.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-    initalizeMap(floorNum);
+    LoadingNodesEdges(floorNum);
   }
 
-  private void initalizeMap(String Floor) {
+  private void LoadingNodesEdges(String Floor) {
     initializeNodes();
     initializeEdges();
 
@@ -52,7 +66,6 @@ public class MapController implements AdminAccessible {
       }
     }
     for (NodeUI NUI : NODES) {
-      System.out.println(NUI.getN().getFloor().equals(Floor));
       if (NUI.getN().getFloor().equals(Floor)) {
         addNodeUI(NUI);
       }
@@ -79,7 +92,10 @@ public class MapController implements AdminAccessible {
           (MouseEvent e) -> {
             disableListener(e);
           }); // TODO ACTION
+
       NodeUI Temp = new NodeUI(N, Marker);
+      pathListener(Temp);
+      hoverResize(Temp);
       NODES.add(Temp);
     }
   }
@@ -165,6 +181,69 @@ public class MapController implements AdminAccessible {
 
   private void editEdge() {} // TODO Implement edit edges
 
-  // _______________________________________PopUps____________________________________________
+  // _______________________________________Path Finding____________________________________________
 
+  public void runPathFinding(String startNode, String targetNode) throws IOException {
+    Node start = initialData.getNodeByID(startNode);
+    Node target = initialData.getNodeByID(targetNode);
+
+    algorithm.search(initialData, start, target);
+    algorithm.printPathTo();
+    algorithm.printEdgeTo();
+    thePath = algorithm.getShortestPath().getPathEdges();
+    // getDirections(thePath);
+  }
+
+  // _______________________________________Event Handeler_________________________________________
+
+  private void ToggleListener() {
+    toggleEditor
+        .selectedProperty()
+        .addListener(
+            new ChangeListener<Boolean>() {
+              @Override
+              public void changed(
+                  ObservableValue<? extends Boolean> observable,
+                  Boolean oldValue,
+                  Boolean newValue) {
+
+                if (toggleEditor.isSelected()) {
+                  LoadingNodesEdges("1");
+                } else {
+                  secondaryAnchor.getChildren().remove(0, secondaryAnchor.getChildren().size());
+                  secondaryAnchor.getChildren().add(TheMap);
+                }
+              }
+            });
+  }
+
+  private void pathListener(NodeUI N) {
+    N.getI()
+        .setOnMouseClicked(
+            (MouseEvent E) -> {
+              if (E.isSecondaryButtonDown()) {
+                String StartNode = N.getN().getNodeID();
+              }
+            });
+  }
+
+  private void hoverResize(NodeUI N) {
+    N.getI()
+      .setOnMouseEntered(
+          (MouseEvent e) -> {
+            N.getI().setFitWidth(N.getI().getFitWidth() * 2);
+            N.getI().setFitHeight(N.getI().getFitHeight() * 2);
+            N.getI().setX(N.getN().getXCoord() - N.getI().getFitWidth() / 2);
+            N.getI().setY(N.getN().getYCoord() - N.getI().getFitHeight());
+          });
+
+    N.getI()
+      .setOnMouseExited(
+          (MouseEvent e) -> {
+            N.getI().setFitWidth(N.getI().getFitWidth() / 2);
+            N.getI().setFitHeight(N.getI().getFitHeight() / 2);
+            N.getI().setX(N.getN().getXCoord() - N.getI().getFitWidth() / 2);
+            N.getI().setY(N.getN().getYCoord() - N.getI().getFitHeight());
+          });
+  }
 }
