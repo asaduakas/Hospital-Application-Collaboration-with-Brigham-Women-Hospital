@@ -6,6 +6,7 @@ import com.jfoenix.skins.JFXTextFieldSkin;
 import com.jfoenix.skins.ValidationPane;
 import com.jfoenix.validation.RequiredFieldValidator;
 import edu.wpi.teamname.App;
+import edu.wpi.teamname.views.Access.AllAccessible;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -22,7 +23,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-public class CovidSurveyController implements Initializable {
+public class CovidSurveyController implements Initializable, AllAccessible {
 
   @FXML private JFXButton submitButton;
   @FXML private JFXButton cancelButton;
@@ -257,15 +258,8 @@ public class CovidSurveyController implements Initializable {
         new EventHandler<ActionEvent>() {
           @Override
           public void handle(ActionEvent event) {
-            if (InitPageController.popup != null) {
-              InitPageController.popup.hide();
-            }
-            if (HomeController.popup != null) {
-              HomeController.popup.hide();
-            }
-            App.getPrimaryStage().getScene().getRoot().setEffect(null);
-
             submitDia.close();
+            ControllerManager.exitPopup();
           }
         });
     yesBtn.setStyle("-fx-background-color: #cdcdcd;");

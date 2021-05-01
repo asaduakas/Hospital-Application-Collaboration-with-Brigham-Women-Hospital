@@ -43,7 +43,6 @@ public class App extends Application {
         fxmlLoader -> {
           Pane root = (Pane) fxmlLoader.getRoot();
           List<Node> childrenList = root.getChildren();
-          primaryStage.setMaximized(true);
           primaryStage.setMinHeight(135 * 4);
           primaryStage.setMinWidth(240 * 4);
           Scene scene = primaryStage.getScene();

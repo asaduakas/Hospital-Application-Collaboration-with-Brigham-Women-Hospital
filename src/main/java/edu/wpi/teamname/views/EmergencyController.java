@@ -7,18 +7,15 @@ import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.base.IFXLabelFloatControl;
 import com.jfoenix.skins.JFXTextFieldSkin;
 import com.jfoenix.skins.ValidationPane;
-import edu.wpi.teamname.App;
-import edu.wpi.teamname.views.ServiceRequests.SRControllers.*;
+import edu.wpi.teamname.views.Access.AllAccessible;
 import java.io.IOException;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 
-public class EmergencyController {
+public class EmergencyController implements AllAccessible {
   @FXML JFXButton yesBtn;
   @FXML JFXButton noBtn;
   @FXML StackPane stackPane;
@@ -29,8 +26,8 @@ public class EmergencyController {
   }
 
   @FXML
-  public void popupYes(ActionEvent event) throws IOException {
-    popupWarning(event, "HELP IS ON YOUR WAY!");
+  public void popupYes() throws IOException {
+    popupWarning("HELP IS ON YOUR WAY!");
   }
 
   @FXML
@@ -39,64 +36,11 @@ public class EmergencyController {
   }
 
   public void closePopup() {
-    if (InitPageController.popup != null) {
-      InitPageController.popup.hide();
-    }
-    if (SecurityServicesController.popup != null) {
-      HomeController.mainButtons.setVisible(true);
-      SecurityServicesController.popup.hide();
-    }
-    if (AVRequestController.popup != null) {
-      HomeController.mainButtons.setVisible(true);
-      AVRequestController.popup.hide();
-    }
-    if (ComputerServiceController.popup != null) {
-      HomeController.mainButtons.setVisible(true);
-      ComputerServiceController.popup.hide();
-    }
-    if (ExternalTransportationController.popup != null) {
-      HomeController.mainButtons.setVisible(true);
-      ExternalTransportationController.popup.hide();
-    }
-    if (FacilitiesMaintenanceController.popup != null) {
-      HomeController.mainButtons.setVisible(true);
-      FacilitiesMaintenanceController.popup.hide();
-    }
-    if (FloralDeliveryController.popup != null) {
-      HomeController.mainButtons.setVisible(true);
-      FloralDeliveryController.popup.hide();
-    }
-    if (FoodDeliveryController.popup != null) {
-      HomeController.mainButtons.setVisible(true);
-      FoodDeliveryController.popup.hide();
-    }
-    if (InternalTransportationController.popup != null) {
-      HomeController.mainButtons.setVisible(true);
-      InternalTransportationController.popup.hide();
-    }
-    if (LanguageInterpreterController.popup != null) {
-      HomeController.mainButtons.setVisible(true);
-      LanguageInterpreterController.popup.hide();
-    }
-    if (LaundryController.popup != null) {
-      HomeController.mainButtons.setVisible(true);
-      LaundryController.popup.hide();
-    }
-    if (MedicineDeliveryController.popup != null) {
-      HomeController.mainButtons.setVisible(true);
-      MedicineDeliveryController.popup.hide();
-    }
-    if (SanitationServiceController.popup != null) {
-      HomeController.mainButtons.setVisible(true);
-      SanitationServiceController.popup.hide();
-    }
-    if (HomeController.popup != null) {
-      HomeController.popup.hide();
-    }
-    App.getPrimaryStage().getScene().getRoot().setEffect(null);
+    if (HomeController.mainButtons != null) HomeController.mainButtons.setVisible(true);
+    ControllerManager.exitPopup();
   }
 
-  void popupWarning(ActionEvent event, String text) throws IOException {
+  void popupWarning(String text) throws IOException {
 
     JFXDialogLayout warningLayout = new JFXDialogLayout();
     warningLayout.setBody(new Text(text));
@@ -105,12 +49,9 @@ public class EmergencyController {
     JFXButton okBtn = new JFXButton("Close");
     okBtn.setStyle("-fx-background-color: #cdcdcd;");
     okBtn.setOnAction(
-        new EventHandler<ActionEvent>() {
-          @Override
-          public void handle(ActionEvent event) {
-            closePopup();
-            warningDia.close();
-          }
+        event -> {
+          closePopup();
+          warningDia.close();
         });
     warningLayout.setActions(okBtn);
     warningDia.show();

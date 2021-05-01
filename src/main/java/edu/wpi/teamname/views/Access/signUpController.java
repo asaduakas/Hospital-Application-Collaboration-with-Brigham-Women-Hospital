@@ -3,6 +3,7 @@ package edu.wpi.teamname.views.Access;
 import com.jfoenix.controls.*;
 import edu.wpi.teamname.App;
 import edu.wpi.teamname.Ddb.GlobalDb;
+import edu.wpi.teamname.views.ControllerManager;
 import edu.wpi.teamname.views.InitPageController;
 import java.io.IOException;
 import java.sql.Connection;
@@ -89,14 +90,16 @@ public class signUpController implements AllAccessible {
   }
 
   @FXML
-  public void takeToLogin() throws IOException {
-
+  public void takeToLogin() {
+    /*
     FXMLLoader fxmlLoader =
         new FXMLLoader(getClass().getClassLoader().getResource("LoginView.fxml"));
     Parent root = fxmlLoader.load();
     InitPageController.popup.hide();
     InitPageController.popup.getContent().addAll(root.getChildrenUnmodifiable());
     InitPageController.popup.show(App.getPrimaryStage());
+    */
+    ControllerManager.attemptLoadPopup("LoginView.fxml");
   }
 
   @FXML
@@ -125,9 +128,6 @@ public class signUpController implements AllAccessible {
 
   @FXML
   private void exit(ActionEvent event) {
-    if (event.getSource() == exitButton) {
-      InitPageController.popup.hide();
-      App.getPrimaryStage().getScene().getRoot().setEffect(null);
-    }
+    ControllerManager.exitPopup();
   }
 }

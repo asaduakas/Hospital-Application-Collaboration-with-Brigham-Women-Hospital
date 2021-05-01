@@ -50,14 +50,19 @@ public class ControllerManager {
     }
   }
 
+  public static void exitPopup() {
+    if (popup == null) return;
+    App.getPrimaryStage().getScene().getRoot().setEffect(null);
+    popup.hide();
+    popup = null;
+  }
+
   public static void attemptLoadPage(String fxmlName, Consumer<FXMLLoader> tasks) {
     FXMLLoader fxmlLoader = getLoader(fxmlName);
     if (!isPermissible(fxmlLoader.getController().getClass())) return;
-    if (popup != null) {
-      popup.hide();
-      popup = null;
-    }
+    exitPopup();
     App.getPrimaryStage().setScene(new Scene(fxmlLoader.getRoot()));
+    App.getPrimaryStage().setMaximized(true);
     App.getPrimaryStage().show();
     tasks.accept(fxmlLoader); // Run additional tasks that were passed in
   }
@@ -76,18 +81,19 @@ public class ControllerManager {
     tasks.accept(fxmlLoader); // Run additional tasks that were passed in
   }
 
-  public static void attemptLoadPopup(
-      String fxmlName, boolean applyBlur, Consumer<FXMLLoader> tasks) {
+  public static void attemptLoadPopupBlur(String fxmlName, Consumer<FXMLLoader> tasks) {
     attemptLoadPopup(
         fxmlName,
-        !applyBlur
-            ? tasks
-            : tasks.andThen(
-                fxmlLoader ->
-                    App.getPrimaryStage().getScene().getRoot().setEffect(new GaussianBlur(25))));
+        tasks.andThen(
+            fxmlLoader ->
+                App.getPrimaryStage().getScene().getRoot().setEffect(new GaussianBlur(25))));
   }
 
-  public static void attemptLoadPopup(String fxmlName, boolean applyBlur) {
-    attemptLoadPopup(fxmlName, true, fxmlLoader -> {});
+  public static void attemptLoadPopupBlur(String fxmlName) {
+    attemptLoadPopupBlur(fxmlName, fxmlLoader -> {});
+  }
+
+  public static void attemptLoadPopup(String fxmlName) {
+    attemptLoadPopup(fxmlName, fxmlLoader -> {});
   }
 }

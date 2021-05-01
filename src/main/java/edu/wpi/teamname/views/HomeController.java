@@ -3,12 +3,8 @@ package edu.wpi.teamname.views;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import edu.wpi.teamname.App;
-import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.Access.*;
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -298,48 +294,6 @@ public class HomeController extends Application {
           "The controller " + controllerName + " does not implement permissions! PLEASE FIX");
       return true; // Because I don't want to break people's code
     } catch (ClassNotFoundException e) {
-      e.printStackTrace();
-      return false;
-    }
-  }
-
-  public boolean validateUser(String username, String password) {
-    HomeController.username = username;
-    HomeController.password = password;
-    System.out.println(username + "in validateUser");
-    System.out.println(password + "password in validateUser");
-
-    try {
-      GlobalDb.establishCon();
-      Statement statement = GlobalDb.getConnection().createStatement();
-      String query = "SELECT category, password FROM Users WHERE id = '" + username + "'";
-      statement.executeQuery(query);
-      ResultSet rs = statement.getResultSet();
-
-      if (rs.next()) { // If there is a user
-        String pw = rs.getString("password");
-        System.out.println(pw + " this is rs");
-        if (!password.equals(pw)) {
-          return false;
-        } else {
-          switch (rs.getString("category")) {
-            case "patient":
-              userTypeEnum = UserCategory.Patient;
-              break;
-            case "employee":
-              userTypeEnum = UserCategory.Employee;
-              break;
-            case "admin":
-              userTypeEnum = UserCategory.Admin;
-              break;
-          }
-        }
-      } else {
-        System.out.println("User not found in database!");
-        return false;
-      }
-      return true;
-    } catch (SQLException e) {
       e.printStackTrace();
       return false;
     }
