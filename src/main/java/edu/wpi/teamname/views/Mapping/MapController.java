@@ -168,8 +168,6 @@ public class MapController implements AdminAccessible {
         if (initialData.getNodeByID(E.getStartNodeID()).getFloor().equals(currentFloor)
             && initialData.getNodeByID(E.getEndNodeID()).getFloor().equals(currentFloor)) {
           EdgeUI EUI = getEdgeUIByID(E.getEdgeID());
-          System.out.println(!secondaryAnchor.getChildren().contains(EUI));
-          System.out.println(EUI.getE().getEdgeID());
           if (!secondaryAnchor.getChildren().contains(EUI)) addEdgeUI(EUI);
         }
       }
@@ -245,8 +243,6 @@ public class MapController implements AdminAccessible {
   }
 
   public void runPathFindingClick() {
-    Path test = algorithm.multiSearch(initialData, Targets);
-    test.printPath();
     thePath = algorithm.multiSearch(initialData, Targets).getPathEdges();
     showPath();
   }
