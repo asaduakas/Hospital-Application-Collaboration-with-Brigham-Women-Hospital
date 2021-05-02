@@ -26,13 +26,13 @@
             </AnchorPane>
          </content>
       </ScrollPane>
-      <JFXHamburger fx:id="mapHam" layoutX="1.0" layoutY="-1.0" prefHeight="49.0" prefWidth="59.0" />
       <Label layoutX="52.0" layoutY="13.0" text="MENU">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
       <JFXDrawer fx:id="mapDrawer" prefHeight="644.0" prefWidth="263.0" />
+      <JFXHamburger fx:id="mapHam" layoutX="1.0" layoutY="-1.0" prefHeight="49.0" prefWidth="59.0" />
 
    </children>
 </AnchorPane>

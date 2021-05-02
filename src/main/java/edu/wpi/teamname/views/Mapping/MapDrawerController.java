@@ -1,10 +1,15 @@
 package edu.wpi.teamname.views.Mapping;
 
+import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeTableColumn;
+import javafx.util.Callback;
 
 public class MapDrawerController {
   @FXML private JFXTreeTableView directoryTreeTable;
@@ -24,6 +29,18 @@ public class MapDrawerController {
   TreeItem<String> service = new TreeItem<>("Service");
 
   public void initialize(URL url, ResourceBundle rb) {
+    JFXTreeTableColumn<String, String> column = new JFXTreeTableColumn<>();
+    column.setPrefWidth(248);
+
+    column.setCellValueFactory(
+        new Callback<TreeTableColumn.CellDataFeatures<String, String>, ObservableValue<String>>() {
+          @Override
+          public ObservableValue<String> call(
+              TreeTableColumn.CellDataFeatures<String, String> param) {
+            return new SimpleStringProperty(param.getValue().getValue());
+          }
+        });
+
     directory
         .getChildren()
         .setAll(
@@ -38,5 +55,6 @@ public class MapDrawerController {
             exit,
             retail,
             service);
+    directoryTreeTable.setRoot(directory);
   }
 }
