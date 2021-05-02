@@ -1,25 +1,30 @@
 package edu.wpi.teamname.Ddb;
 
+import edu.wpi.teamname.Astar.Edge;
+import edu.wpi.teamname.Astar.Node;
+
 import java.io.File;
 import java.sql.*;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 public class EdgesTable extends AbsTables {
 
-  public EdgesTable() {}
+  public EdgesTable() {
+  }
 
   public void createTable(Connection conn) {
     Statement stmt = null;
     try {
       stmt = conn.createStatement();
       String query =
-          "CREATE TABLE Edges("
-              + "edgeID VARCHAR(100) NOT NULL,"
-              + "startNode VARCHAR(100) NOT NULL,"
-              + "endNode VARCHAR(100) NOT NULL, "
-              + "PRIMARY KEY(edgeID),"
-              + "CONSTRAINT EDGE_startNode_FK FOREIGN KEY (startNode) REFERENCES Nodes(nodeID) ON DELETE CASCADE,"
-              + "CONSTRAINT EDGE_endNode_FK FOREIGN KEY (endNode) REFERENCES Nodes(nodeID) ON DELETE CASCADE)";
+              "CREATE TABLE Edges("
+                      + "edgeID VARCHAR(100) NOT NULL,"
+                      + "startNode VARCHAR(100) NOT NULL,"
+                      + "endNode VARCHAR(100) NOT NULL, "
+                      + "PRIMARY KEY(edgeID),"
+                      + "CONSTRAINT EDGE_startNode_FK FOREIGN KEY (startNode) REFERENCES Nodes(nodeID) ON DELETE CASCADE,"
+                      + "CONSTRAINT EDGE_endNode_FK FOREIGN KEY (endNode) REFERENCES Nodes(nodeID) ON DELETE CASCADE)";
       stmt.executeUpdate(query);
       conn.commit();
       System.out.println("Edges table created");
@@ -43,16 +48,16 @@ public class EdgesTable extends AbsTables {
         try {
           String[] row = sc.nextLine().split(",");
           String query =
-              "INSERT INTO Edges VALUES("
-                  + "'"
-                  + row[0]
-                  + "',"
-                  + "'"
-                  + row[1]
-                  + "',"
-                  + "'"
-                  + row[2]
-                  + "')";
+                  "INSERT INTO Edges VALUES("
+                          + "'"
+                          + row[0]
+                          + "',"
+                          + "'"
+                          + row[1]
+                          + "',"
+                          + "'"
+                          + row[2]
+                          + "')";
           stmt.execute(query);
           conn.commit();
         } catch (Exception e) {
@@ -136,11 +141,11 @@ public class EdgesTable extends AbsTables {
       while (rs.next()) {
         // edgeID, startNode, endNode
         System.out.println(
-            rs.getString("edgeID")
-                + " \t"
-                + rs.getString("startNode")
-                + " \t"
-                + rs.getString("endNode"));
+                rs.getString("edgeID")
+                        + " \t"
+                        + rs.getString("startNode")
+                        + " \t"
+                        + rs.getString("endNode"));
         System.out.println(" ");
       }
     } catch (SQLException throwables) {
@@ -163,16 +168,16 @@ public class EdgesTable extends AbsTables {
         try {
           String[] row = sc.nextLine().split(",");
           String query =
-              "INSERT INTO Edges VALUES("
-                  + "'"
-                  + row[0]
-                  + "',"
-                  + "'"
-                  + row[1]
-                  + "',"
-                  + "'"
-                  + row[2]
-                  + "')";
+                  "INSERT INTO Edges VALUES("
+                          + "'"
+                          + row[0]
+                          + "',"
+                          + "'"
+                          + row[1]
+                          + "',"
+                          + "'"
+                          + row[2]
+                          + "')";
           stmt.execute(query);
         } catch (Exception e) {
           System.out.println("Edges table did not populate");
@@ -187,4 +192,61 @@ public class EdgesTable extends AbsTables {
       return;
     }
   }
+
+  public LinkedList<Edge> convertEdgesToLL(Connection conn, LinkedList<Node> graphInfo) {
+    // load edges
+    LinkedList<Edge> listOfEdges = new LinkedList<Edge>();
+    LinkedList<Edge> edges = new LinkedList<Edge>();
+    try {
+      for (Node entry : graphInfo) {
+        PreparedStatement prepStmt = null;
+        String nodeID = entry.getNodeID();
+        prepStmt = conn.prepareStatement("SELECT * FROM Edges WHERE startNode = ?");
+        prepStmt.setString(1, nodeID);
+        ResultSet rsP = prepStmt.executeQuery();
+        while (rsP.next()) {
+          if (graphInfo.contains(entry)
+                  && graphInfo.contains(this.getNodeByID(rsP.getString("endNode"), graphInfo))) {
+            double cost =
+                    this.getNodeByID(rsP.getString("startNode"), graphInfo)
+                            .getMeasuredDistance(this.getNodeByID(rsP.getString("endNode"), graphInfo));
+            Edge edge =
+                    new Edge(
+                            this.getNodeByID(rsP.getString("startNode"), graphInfo),
+                            this.getNodeByID(rsP.getString("endNode"), graphInfo),
+                            cost);
+            Edge edge1 =
+                    new Edge(
+                            this.getNodeByID(rsP.getString("endNode"), graphInfo),
+                            this.getNodeByID(rsP.getString("startNode"), graphInfo),
+                            cost);
+            entry.getEdges().add(edge);
+            getNodeByID(rsP.getString("endNode"), graphInfo).getEdges().add(edge1);
+            listOfEdges.add(edge);
+          }
+        }
+      } // end of for loop
+      // cleanup?
+      edges = null;
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return listOfEdges;
+      /*
+      selecting elements/nodes (start nodes and the end nodes) from the edges list of string arrays
+      mapping them with the list of nodes
+      storing them in the dictionary as parent:child node
+       */
+  }
+
+  public Node getNodeByID(String nodeID, LinkedList<Node> graphInfo) {
+    for (Node node : graphInfo) {
+      if (nodeID.equals(node.getNodeID())) {
+        return node;
+      }
+    }
+    System.out.printf("Node %s not found in data\n", nodeID);
+    return null;
+  }
 }
+

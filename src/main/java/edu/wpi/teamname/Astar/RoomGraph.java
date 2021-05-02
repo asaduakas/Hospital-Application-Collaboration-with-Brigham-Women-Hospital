@@ -1,5 +1,7 @@
 package edu.wpi.teamname.Astar;
 
+import edu.wpi.teamname.Ddb.FDatabaseTables;
+
 import java.io.IOException;
 import java.sql.*;
 import java.util.*;
@@ -28,7 +30,9 @@ public class RoomGraph {
     this.edgesFile = "Database";
     this.nodesFile = "Database";
     this.graphInfo = new LinkedList<Node>();
-    convertDatabaseToRoomGraph(conn);
+    //new reference to convert database to RoomGraph:
+    FDatabaseTables.getNodeTable().convertNodesToLL(conn);
+    //old reference: convertDatabaseToRoomGraph(conn);
   }
 
   // {Parent Node : [{start1, end1, cost1}, {start2, end2, cost2}, {start3, end3, cost3}, ...]}
@@ -60,74 +64,6 @@ public class RoomGraph {
     nodes = null;
     edges = null;
 
-    return graphInfo;
-  }
-
-  private LinkedList<Node> convertDatabaseToRoomGraph(Connection conn) {
-    Statement stmt = null;
-
-    try {
-      stmt = conn.createStatement();
-      // load nodes
-      String query = "SELECT * FROM Nodes";
-      ResultSet rs = stmt.executeQuery(query);
-      while (rs.next()) {
-        String nodeID = rs.getString("nodeID");
-        Node node =
-            new Node(
-                nodeID,
-                rs.getInt("xcoord"),
-                rs.getInt("ycoord"),
-                rs.getString("floor"),
-                rs.getString("building"),
-                rs.getString("nodeType"),
-                rs.getString("longName"),
-                rs.getString("shortName"));
-        graphInfo.add(node);
-      }
-
-      // load edges
-      LinkedList<Edge> edges = new LinkedList<Edge>();
-      for (Node entry : graphInfo) {
-        PreparedStatement prepStmt = null;
-        String nodeID = entry.getNodeID();
-        prepStmt = conn.prepareStatement("SELECT * FROM Edges WHERE startNode = ?");
-        prepStmt.setString(1, nodeID);
-        ResultSet rsP = prepStmt.executeQuery();
-        while (rsP.next()) {
-          if (graphInfo.contains(entry)
-              && graphInfo.contains(this.getNodeByID(rsP.getString("endNode")))) {
-            double cost =
-                this.getNodeByID(rsP.getString("startNode"))
-                    .getMeasuredDistance(this.getNodeByID(rsP.getString("endNode")));
-            Edge edge =
-                new Edge(
-                    this.getNodeByID(rsP.getString("startNode")),
-                    this.getNodeByID(rsP.getString("endNode")),
-                    cost);
-            Edge edge1 =
-                new Edge(
-                    this.getNodeByID(rsP.getString("endNode")),
-                    this.getNodeByID(rsP.getString("startNode")),
-                    cost);
-            entry.getEdges().add(edge);
-            getNodeByID(rsP.getString("endNode")).getEdges().add(edge1);
-            listOfEdges.add(edge);
-          }
-        }
-      } // end of for loop
-
-      // cleanup?
-      edges = null;
-
-      /*
-      selecting elements/nodes (start nodes and the end nodes) from the edges list of string arrays
-      mapping them with the list of nodes
-      storing them in the dictionary as parent:child node
-       */
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
     return graphInfo;
   }
 
