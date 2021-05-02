@@ -12,9 +12,14 @@ public class NodeUI {
   private SimpleDoubleProperty simpXcoord;
   private SimpleDoubleProperty simpYcoord;
 
-  public NodeUI(Node n, ImageView i) {
+  private double sizeHeight;
+  private double sizeWidth;
+
+  public NodeUI(Node n, ImageView i, double sizeWidth, double sizeHeight) {
     N = n;
     INode = i;
+    this.sizeHeight = sizeHeight;
+    this.sizeWidth = sizeWidth;
     this.simpXcoord = new SimpleDoubleProperty(N.getXCoord());
     this.simpYcoord = new SimpleDoubleProperty(N.getYCoord());
   }
@@ -57,6 +62,22 @@ public class NodeUI {
 
   public void setSimpYcoord(double simpYcoord) {
     this.simpYcoord.set(simpYcoord);
+  }
+
+  public double getSizeHeight() {
+    return sizeHeight;
+  }
+
+  public void setSizeHeight(double sizeHeight) {
+    this.sizeHeight = sizeHeight;
+  }
+
+  public double getSizeWidth() {
+    return sizeWidth;
+  }
+
+  public void setSizeWidth(double sizeWidth) {
+    this.sizeWidth = sizeWidth;
   }
 
   public void setNodeCoord(int x, int y) {

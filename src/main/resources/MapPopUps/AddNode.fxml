@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.effect.Glow?>
@@ -31,22 +32,14 @@
                   <Glow level="0.5" />
                </effect>
             </JFXTextField>
-            <JFXTextField fx:id="floor" promptText="Floor">
-               <effect>
-                  <Glow level="0.5" />
-               </effect>
-            </JFXTextField>
-            <JFXTextField fx:id="nodeType" promptText="Node Type">
+            <JFXComboBox fx:id="FloorBox" prefHeight="25.0" prefWidth="242.0" promptText="Floor" />
+            <JFXComboBox fx:id="NodeType" prefHeight="25.0" prefWidth="232.0" promptText="Node Type" />
+            <JFXTextField fx:id="shortName" promptText="Short Name">
                <effect>
                   <Glow level="0.5" />
                </effect>
             </JFXTextField>
             <JFXTextField fx:id="longName" promptText="LongName">
-               <effect>
-                  <Glow level="0.5" />
-               </effect>
-            </JFXTextField>
-            <JFXTextField fx:id="shortName" promptText="Short Name">
                <effect>
                   <Glow level="0.5" />
                </effect>

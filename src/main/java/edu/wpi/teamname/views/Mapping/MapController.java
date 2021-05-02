@@ -33,28 +33,30 @@ import javafx.stage.Popup;
 public class MapController implements AllAccessible {
 
   private RoomGraph initialData = new RoomGraph(GlobalDb.getConnection());
-  private LinkedList<NodeUI> NODES = new LinkedList<>();
-  private LinkedList<EdgeUI> EDGES = new LinkedList<>();
+  public static LinkedList<NodeUI> NODES = new LinkedList<>();
+  private static LinkedList<EdgeUI> EDGES = new LinkedList<>();
   private PathAlgoPicker algorithm = new PathAlgoPicker(new aStar());
   private LinkedList<Edge> thePath = new LinkedList<Edge>();
   private LinkedList<Node> Targets = new LinkedList<Node>();
+  public static final double nodeNormalHeight = 30;
+  public static final double nodeNormalWidth = 30;
   private String userCategory = "admin";
-  private String currentFloor = "1";
+  public static String currentFloor = "1";
 
-  private Image I = new Image("Images/274px-Google_Maps_pin.svg.png");
-  private Image Exit = new Image("Images/exit.png");
-  private Image F1 = new Image("01_thefirstfloor.png");
-  private Image PARK = new Image("Images/parkingpin.png");
-  private Image ELEV = new Image("Images/elevatorpin.png");
-  private Image REST = new Image("Images/restroompins.png");
-  private Image STAI = new Image("Images/stairspin.png");
-  private Image DEPT = new Image("Images/deptpins.png");
-  private Image LABS = new Image("Images/labspin.png");
-  private Image INFO = new Image("Images/infopin.png");
-  private Image CONF = new Image("Images/conferencepin.png");
-  private Image EXIT = new Image("Images/exitpin.png");
-  private Image RETL = new Image("Images/retailpin.png");
-  private Image SERV = new Image("Images/service.png");
+  private final Image Exit = new Image("Images/exit.png");
+  private final Image F1 = new Image("01_thefirstfloor.png");
+  public static final Image I = new Image("Images/274px-Google_Maps_pin.svg.png");
+  public static final Image PARK = new Image("Images/parkingpin.png");
+  public static final Image ELEV = new Image("Images/elevatorpin.png");
+  public static final Image REST = new Image("Images/restroompins.png");
+  public static final Image STAI = new Image("Images/stairspin.png");
+  public static final Image DEPT = new Image("Images/deptpins.png");
+  public static final Image LABS = new Image("Images/labspin.png");
+  public static final Image INFO = new Image("Images/infopin.png");
+  public static final Image CONF = new Image("Images/conferencepin.png");
+  public static final Image EXIT = new Image("Images/exitpin.png");
+  public static final Image RETL = new Image("Images/retailpin.png");
+  public static final Image SERV = new Image("Images/service.png");
 
   @FXML private JFXToggleButton toggleEditor;
   @FXML private AnchorPane mainAnchor;
@@ -130,15 +132,13 @@ public class MapController implements AllAccessible {
   }
 
   private void initializeNodes() {
-    double markerX = 30;
-    double markerY = 30;
 
     for (Node N : initialData.getGraphInfo()) {
       ImageView Marker = new ImageView();
-      Marker.setFitWidth(markerX);
-      Marker.setFitHeight(markerY);
-      Marker.setX(N.getXCoord() - markerX / 2);
-      Marker.setY(N.getYCoord() - markerY);
+      Marker.setFitWidth(nodeNormalWidth);
+      Marker.setFitHeight(nodeNormalHeight);
+      Marker.setX(N.getXCoord() - nodeNormalWidth / 2);
+      Marker.setY(N.getYCoord() - nodeNormalHeight);
 
       switch (N.getNodeType()) {
         case "PARK":
@@ -174,6 +174,8 @@ public class MapController implements AllAccessible {
         case "SERV":
           Marker.setImage(SERV);
           break;
+        default:
+          break;
       }
 
       Marker.setOnMouseClicked(
@@ -181,9 +183,10 @@ public class MapController implements AllAccessible {
             disableListener(e);
           }); // TODO ACTION
 
-      NodeUI Temp = new NodeUI(N, Marker);
+      NodeUI Temp = new NodeUI(N, Marker, nodeNormalWidth, nodeNormalHeight);
       pathListener(Temp);
       hoverResize(Temp);
+      setupDraggableNodeUI(Temp);
       NODES.add(Temp);
     }
   }
@@ -191,12 +194,12 @@ public class MapController implements AllAccessible {
   private void initializeEdges() {
 
     for (Edge E : initialData.getListOfEdges()) {
-      Line L =
-          new Line(
-              getNodeUIByID(E.getStartNodeID()).getSimpXcoord(),
-              getNodeUIByID(E.getStartNodeID()).getSimpYcoord(),
-              getNodeUIByID(E.getEndNodeID()).getSimpXcoord(),
-              getNodeUIByID(E.getEndNodeID()).getSimpYcoord());
+      Line L = new Line();
+      L.startXProperty().bind(getNodeUIByID(E.getStartNodeID()).simpXcoordProperty());
+      L.startYProperty().bind(getNodeUIByID(E.getStartNodeID()).simpYcoordProperty());
+      L.endXProperty().bind(getNodeUIByID(E.getEndNodeID()).simpXcoordProperty());
+      L.endYProperty().bind(getNodeUIByID(E.getEndNodeID()).simpYcoordProperty());
+
       L.setOnMouseClicked(
           (MouseEvent e) -> {
             disableListener(e);
@@ -291,6 +294,7 @@ public class MapController implements AllAccessible {
             0);
     pathListener(N);
     hoverResize(N);
+    setupDraggableNodeUI(N);
     initialData.getGraphInfo().add(N.getN());
     NODES.add(N);
     addNodeUI(N);
@@ -402,14 +406,17 @@ public class MapController implements AllAccessible {
   }
 
   public void resizeNodeUI(NodeUI N, double factor) {
-    N.getI().setFitWidth(N.getI().getFitWidth() * factor);
-    N.getI().setFitHeight(N.getI().getFitHeight() * factor);
-    N.getI().setX(N.getN().getXCoord() - N.getI().getFitWidth() / 2);
-    N.getI().setY(N.getN().getYCoord() - N.getI().getFitHeight());
+    if ((N.getI().getFitHeight() < 2 * N.getSizeHeight() && factor > 1)
+        || (N.getI().getFitHeight() > .5 * N.getSizeHeight() && factor < 1)) {
+      N.getI().setFitWidth(N.getI().getFitWidth() * factor);
+      N.getI().setFitHeight(N.getI().getFitHeight() * factor);
+      N.getI().setX(N.getN().getXCoord() - N.getI().getFitWidth() / 2);
+      N.getI().setY(N.getN().getYCoord() - N.getI().getFitHeight());
+    }
   }
 
   // ___________________________________Getter and Setter_____________________________________
-  public NodeUI getNodeUIByID(String NodeID) {
+  public static NodeUI getNodeUIByID(String NodeID) {
     for (NodeUI theNode : NODES) {
       if (theNode.getN().getNodeID().equals(NodeID)) {
         return theNode;
@@ -419,7 +426,7 @@ public class MapController implements AllAccessible {
     return null;
   }
 
-  private EdgeUI getEdgeUIByID(String EdgeID) {
+  private static EdgeUI getEdgeUIByID(String EdgeID) {
     for (EdgeUI theEdge : EDGES) {
       if (theEdge.getE().getEdgeID().equals(EdgeID)) {
         return theEdge;
@@ -474,5 +481,36 @@ public class MapController implements AllAccessible {
             mouseLocation.set(new Point2D(x, y));
           }
         });
+  }
+
+  public void setupDraggableNodeUI(NodeUI NUI) {
+
+
+    NUI.getI()
+        .setOnMouseDragged(
+            event -> {
+              movingMap.setPannable(false);
+              Double x = event.getX();
+              Double y = event.getY();
+              NUI.getI().setX(x - NUI.getI().getFitWidth() / 2);
+              NUI.getI().setY(y - NUI.getI().getFitHeight());
+              NUI.setNodeCoord(x.intValue(), y.intValue());
+              resizeNodeUI(NUI, 2);
+            });
+
+    NUI.getI()
+        .setOnMouseReleased(
+            event -> {
+              Double x = event.getX();
+              Double y = event.getY();
+              GlobalDb.getTables()
+                  .getNodeTable()
+                  .updateNodeXCoord(GlobalDb.getConnection(), NUI.getN().getNodeID(), x.intValue());
+              GlobalDb.getTables()
+                  .getNodeTable()
+                  .updateNodeYCoord(GlobalDb.getConnection(), NUI.getN().getNodeID(), y.intValue());
+              movingMap.setPannable(true);
+              resizeNodeUI(NUI, .5);
+            });
   }
 }
