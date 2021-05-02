@@ -1,7 +1,10 @@
 package edu.wpi.teamname.Ddb;
 
+import edu.wpi.teamname.views.ServiceRequests.NodeInfo.ExtTransNodeInfo;
+import java.io.IOException;
 import java.sql.*;
 import java.util.Scanner;
+import javafx.collections.ObservableList;
 
 public class ExtTransRequestTable extends AbsTables {
   // id,serviceType,pFirstName,pLastName,contactInfo,location,transType,assignedTo,status
@@ -125,5 +128,52 @@ public class ExtTransRequestTable extends AbsTables {
     } catch (SQLException throwables) {
       throwables.printStackTrace();
     }
+  }
+
+  public void addIntoExTransDataList(ObservableList<ExtTransNodeInfo> ExTransData)
+      throws IOException {
+    // ExTransData = FXCollections.observableArrayList();
+    try {
+      String query = "SELECT * FROM ExternalTransRequests";
+      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      while (rs.next()) {
+        ExTransData.add(
+            new ExtTransNodeInfo(
+                rs.getString("id"),
+                rs.getString("serviceType"),
+                rs.getString("pFirstName"),
+                rs.getString("pLastName"),
+                rs.getString("contactInfo"),
+                rs.getString("location"),
+                rs.getString("transType"),
+                rs.getString("assignedTo"),
+                rs.getString("status")));
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    // return ExTransData;
+  }
+
+  public ObservableList<ExtTransNodeInfo> changeExTransData(
+      ObservableList<ExtTransNodeInfo> ExTransData) {
+    for (ExtTransNodeInfo info : ExTransData) {
+      if (!(info.getStatus().isEmpty())) {
+        PreparedStatement stmt = null;
+        try {
+          stmt =
+              GlobalDb.getConnection()
+                  .prepareStatement(
+                      "UPDATE ExternalTransRequests SET status = ?, assignedTo = ? WHERE id=?");
+          stmt.setString(1, info.getStatus());
+          stmt.setString(2, info.getAssignedTo());
+          stmt.setString(3, info.getId());
+          stmt.executeUpdate();
+        } catch (SQLException throwables) {
+          throwables.printStackTrace();
+        }
+      }
+    }
+    return ExTransData;
   }
 }

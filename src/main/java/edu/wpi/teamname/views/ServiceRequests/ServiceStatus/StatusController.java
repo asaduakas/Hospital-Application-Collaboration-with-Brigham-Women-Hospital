@@ -90,7 +90,7 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
 
   private ObservableList<LangInterpNodeInfo> langInterpData;
 
-  private ObservableList<LaundryNodeInfo> laundryData;
+  public ObservableList<LaundryNodeInfo> laundryData;
 
   private ObservableList<MedDelivNodeInfo> medDelivData;
 
@@ -246,7 +246,6 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
   }
 
   public void changeTable(String servType) {
-    // Tables.dispExTransRequestsTable(GlobalDb.getConnection());
     switch (servType) {
       case "External Transportation":
         try {
@@ -509,28 +508,36 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
     }
   }
 
+  //  private ObservableList<ExtTransNodeInfo> getExTransData() throws IOException {
+  //
+  //    ExTransData = FXCollections.observableArrayList();
+  //    try {
+  //      String query = "SELECT * FROM ExternalTransRequests";
+  //      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+  //      while (rs.next()) {
+  //        ExTransData.add(
+  //            new ExtTransNodeInfo(
+  //                rs.getString("id"),
+  //                rs.getString("serviceType"),
+  //                rs.getString("pFirstName"),
+  //                rs.getString("pLastName"),
+  //                rs.getString("contactInfo"),
+  //                rs.getString("location"),
+  //                rs.getString("transType"),
+  //                rs.getString("assignedTo"),
+  //                rs.getString("status")));
+  //      }
+  //    } catch (SQLException throwables) {
+  //      throwables.printStackTrace();
+  //    }
+  //    return ExTransData;
+  //  }
+
   private ObservableList<ExtTransNodeInfo> getExTransData() throws IOException {
 
     ExTransData = FXCollections.observableArrayList();
-    try {
-      String query = "SELECT * FROM ExternalTransRequests";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
-      while (rs.next()) {
-        ExTransData.add(
-            new ExtTransNodeInfo(
-                rs.getString("id"),
-                rs.getString("serviceType"),
-                rs.getString("pFirstName"),
-                rs.getString("pLastName"),
-                rs.getString("contactInfo"),
-                rs.getString("location"),
-                rs.getString("transType"),
-                rs.getString("assignedTo"),
-                rs.getString("status")));
-      }
-    } catch (SQLException throwables) {
-      throwables.printStackTrace();
-    }
+    FDatabaseTables.getExternalTransportTable().addIntoExTransDataList(ExTransData);
+
     return ExTransData;
   }
 
@@ -814,23 +821,25 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
   public void changeData(String ServeType) {
     switch (ServeType) {
       case "External Transportation":
-        for (ExtTransNodeInfo info : ExTransData) {
-          if (!(info.getStatus().isEmpty())) {
-            PreparedStatement stmt = null;
-            try {
-              stmt =
-                  GlobalDb.getConnection()
-                      .prepareStatement(
-                          "UPDATE ExternalTransRequests SET status = ?, assignedTo = ? WHERE id=?");
-              stmt.setString(1, info.getStatus());
-              stmt.setString(2, info.getAssignedTo());
-              stmt.setString(3, info.getId());
-              stmt.executeUpdate();
-            } catch (SQLException throwables) {
-              throwables.printStackTrace();
-            }
-          }
-        }
+        //        for (ExtTransNodeInfo info : ExTransData) {
+        //          if (!(info.getStatus().isEmpty())) {
+        //            PreparedStatement stmt = null;
+        //            try {
+        //              stmt =
+        //                  GlobalDb.getConnection()
+        //                      .prepareStatement(
+        //                          "UPDATE ExternalTransRequests SET status = ?, assignedTo = ?
+        // WHERE id=?");
+        //              stmt.setString(1, info.getStatus());
+        //              stmt.setString(2, info.getAssignedTo());
+        //              stmt.setString(3, info.getId());
+        //              stmt.executeUpdate();
+        //            } catch (SQLException throwables) {
+        //              throwables.printStackTrace();
+        //            }
+        //          }
+        //        }
+        FDatabaseTables.getExternalTransportTable().changeExTransData(ExTransData);
         break;
       case "Food Delivery":
         for (FoodDelivNodeInfo foodInfo : foodData) {

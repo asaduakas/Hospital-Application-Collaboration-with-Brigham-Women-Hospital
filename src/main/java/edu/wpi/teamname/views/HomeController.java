@@ -303,7 +303,7 @@ public class HomeController extends Application {
 
   public boolean validateUser(String username, String password) {
     if ((FDatabaseTables.getUserTable()
-            .validateTheUser(GlobalDb.getConnection(), username, password))) {
+        .validateTheUser(GlobalDb.getConnection(), username, password))) {
       return true;
     } else {
       return false;
