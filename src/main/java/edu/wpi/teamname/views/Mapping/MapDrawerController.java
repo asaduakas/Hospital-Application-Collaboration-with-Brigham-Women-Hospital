@@ -13,7 +13,6 @@ import javafx.util.Callback;
 
 public class MapDrawerController {
   @FXML private JFXTreeTableView directoryTreeTable;
-  @FXML private JFXTreeTableView directionTreeTable;
 
   TreeItem<String> directory = new TreeItem<>("Directory");
   TreeItem<String> parking = new TreeItem<>("Parking");
@@ -29,8 +28,10 @@ public class MapDrawerController {
   TreeItem<String> service = new TreeItem<>("Service");
 
   public void initialize(URL url, ResourceBundle rb) {
-    JFXTreeTableColumn<String, String> column = new JFXTreeTableColumn<>();
+    JFXTreeTableColumn column = new JFXTreeTableColumn();
     column.setPrefWidth(248);
+
+    directoryTreeTable.getColumns().add(column);
 
     column.setCellValueFactory(
         new Callback<TreeTableColumn.CellDataFeatures<String, String>, ObservableValue<String>>() {
