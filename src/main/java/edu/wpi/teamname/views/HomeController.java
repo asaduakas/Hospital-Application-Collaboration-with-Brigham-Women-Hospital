@@ -1,7 +1,6 @@
 package edu.wpi.teamname.views;
 
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXTextArea;
 import edu.wpi.teamname.App;
 import edu.wpi.teamname.views.Access.*;
 import java.io.IOException;
@@ -180,9 +179,9 @@ public class HomeController extends Application implements AllAccessible {
     }
     cancelButton.setLayoutY(exitBtn.getLayoutY());
 
-    JFXTextArea textArea = (JFXTextArea) nodeList.get(7);
-    textArea.setLayoutX(App.getPrimaryStage().getScene().getWidth() - textArea.getWidth());
-    textArea.setLayoutY(exitBtn.getLayoutY() - textArea.getHeight() - 80);
+    //    JFXTextArea textArea = (JFXTextArea) nodeList.get(7);
+    //    textArea.setLayoutX(App.getPrimaryStage().getScene().getWidth() - textArea.getWidth());
+    //    textArea.setLayoutY(exitBtn.getLayoutY() - textArea.getHeight() - 80);
 
     JFXButton downloadButton = (JFXButton) nodeList.get(6);
     downloadButton.setLayoutX(mapScrollPane.getLayoutX());

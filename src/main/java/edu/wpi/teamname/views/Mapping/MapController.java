@@ -155,6 +155,7 @@ public class MapController implements AllAccessible {
       NodeUI Temp = new NodeUI(N, Marker, nodeNormalWidth, nodeNormalHeight);
       pathListener(Temp);
       hoverResize(Temp);
+      setupDraggableNodeUI(Temp);
       NODES.add(Temp);
     }
   }
@@ -162,12 +163,12 @@ public class MapController implements AllAccessible {
   private void initializeEdges() {
 
     for (Edge E : initialData.getListOfEdges()) {
-      Line L =
-          new Line(
-              getNodeUIByID(E.getStartNodeID()).getSimpXcoord(),
-              getNodeUIByID(E.getStartNodeID()).getSimpYcoord(),
-              getNodeUIByID(E.getEndNodeID()).getSimpXcoord(),
-              getNodeUIByID(E.getEndNodeID()).getSimpYcoord());
+      Line L = new Line();
+      L.startXProperty().bind(getNodeUIByID(E.getStartNodeID()).simpXcoordProperty());
+      L.startYProperty().bind(getNodeUIByID(E.getStartNodeID()).simpYcoordProperty());
+      L.endXProperty().bind(getNodeUIByID(E.getEndNodeID()).simpXcoordProperty());
+      L.endYProperty().bind(getNodeUIByID(E.getEndNodeID()).simpYcoordProperty());
+
       L.setOnMouseClicked(
           (MouseEvent e) -> {
             disableListener(e);
@@ -262,6 +263,7 @@ public class MapController implements AllAccessible {
             0);
     pathListener(N);
     hoverResize(N);
+    setupDraggableNodeUI(N);
     initialData.getGraphInfo().add(N.getN());
     NODES.add(N);
     addNodeUI(N);
@@ -448,5 +450,36 @@ public class MapController implements AllAccessible {
             mouseLocation.set(new Point2D(x, y));
           }
         });
+  }
+
+  public void setupDraggableNodeUI(NodeUI NUI) {
+
+
+    NUI.getI()
+        .setOnMouseDragged(
+            event -> {
+              movingMap.setPannable(false);
+              Double x = event.getX();
+              Double y = event.getY();
+              NUI.getI().setX(x - NUI.getI().getFitWidth() / 2);
+              NUI.getI().setY(y - NUI.getI().getFitHeight());
+              NUI.setNodeCoord(x.intValue(), y.intValue());
+              resizeNodeUI(NUI, 2);
+            });
+
+    NUI.getI()
+        .setOnMouseReleased(
+            event -> {
+              Double x = event.getX();
+              Double y = event.getY();
+              GlobalDb.getTables()
+                  .getNodeTable()
+                  .updateNodeXCoord(GlobalDb.getConnection(), NUI.getN().getNodeID(), x.intValue());
+              GlobalDb.getTables()
+                  .getNodeTable()
+                  .updateNodeYCoord(GlobalDb.getConnection(), NUI.getN().getNodeID(), y.intValue());
+              movingMap.setPannable(true);
+              resizeNodeUI(NUI, .5);
+            });
   }
 }
