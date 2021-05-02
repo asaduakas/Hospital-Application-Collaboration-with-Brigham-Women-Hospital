@@ -1,7 +1,10 @@
 package edu.wpi.teamname.views.Mapping;
 
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXDrawer;
+import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.controls.JFXToggleButton;
+import com.jfoenix.transitions.hamburger.HamburgerSlideCloseTransition;
 import edu.wpi.teamname.App;
 import edu.wpi.teamname.Astar.*;
 import edu.wpi.teamname.Ddb.GlobalDb;
@@ -60,6 +63,8 @@ public class MapController implements AllAccessible {
   @FXML private AnchorPane secondaryAnchor;
   @FXML private ImageView TheMap;
   @FXML public static Popup popup;
+  @FXML private JFXHamburger mapHam;
+  @FXML private JFXDrawer mapDrawer;
 
   @FXML
   private void initialize() {
@@ -75,6 +80,32 @@ public class MapController implements AllAccessible {
     movingMap.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
     ToggleListener();
     nodeAddListener();
+
+    mapDrawer.setPickOnBounds(false);
+
+    try {
+      AnchorPane menuBtns =
+          FXMLLoader.load(getClass().getClassLoader().getResource("MapDrawerView.fxml"));
+      mapDrawer.setSidePane(menuBtns);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    HamburgerSlideCloseTransition burgerTask = new HamburgerSlideCloseTransition(mapHam);
+    burgerTask.setRate(-1);
+    mapHam.addEventHandler(
+        MouseEvent.MOUSE_PRESSED,
+        (e) -> {
+          burgerTask.setRate(burgerTask.getRate() * -1);
+          burgerTask.play();
+          if (mapDrawer.isOpened()) {
+            mapDrawer.close();
+            TheMap.setLayoutX(0);
+          } else {
+            mapDrawer.open();
+            TheMap.setLayoutX(263);
+          }
+        });
   }
 
   // _______________________________________SET UP________________________________________
