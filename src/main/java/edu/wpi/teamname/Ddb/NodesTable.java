@@ -1,7 +1,6 @@
 package edu.wpi.teamname.Ddb;
 
 import edu.wpi.teamname.Astar.Node;
-
 import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,25 +9,24 @@ import java.util.Scanner;
 
 public class NodesTable extends AbsTables {
 
-  public NodesTable() {
-  }
+  public NodesTable() {}
 
   public void createTable(Connection conn) {
     Statement stmt = null;
     try {
       stmt = conn.createStatement();
       String query =
-              "CREATE TABLE Nodes("
-                      + "nodeID VARCHAR(100) NOT NULL,"
-                      + "xcoord INT NOT NULL,"
-                      + "ycoord INT NOT NULL,"
-                      + "floor VARCHAR(200) NOT NULL,"
-                      + "building VARCHAR(100) NOT NULL,"
-                      + "nodeType VARCHAR(400) NOT NULL,"
-                      + "longName VARCHAR(450) NOT NULL,"
-                      + "shortName VARCHAR(250) NOT NULL,"
-                      + "favN INT NOT NULL,"
-                      + "PRIMARY KEY(nodeID))";
+          "CREATE TABLE Nodes("
+              + "nodeID VARCHAR(100) NOT NULL,"
+              + "xcoord INT NOT NULL,"
+              + "ycoord INT NOT NULL,"
+              + "floor VARCHAR(200) NOT NULL,"
+              + "building VARCHAR(100) NOT NULL,"
+              + "nodeType VARCHAR(400) NOT NULL,"
+              + "longName VARCHAR(450) NOT NULL,"
+              + "shortName VARCHAR(250) NOT NULL,"
+              + "favN INT NOT NULL,"
+              + "PRIMARY KEY(nodeID))";
       stmt.executeUpdate(query);
       System.out.println("Nodes table created");
     } catch (Exception e) {
@@ -58,29 +56,29 @@ public class NodesTable extends AbsTables {
       try {
         stmt = conn.createStatement();
         String query =
-                "INSERT INTO Nodes VALUES("
-                        + "'"
-                        + row[0]
-                        + "', "
-                        + Integer.parseInt(row[1])
-                        + ", "
-                        + Integer.parseInt(row[2])
-                        + ", "
-                        + "'"
-                        + row[3]
-                        + "', "
-                        + "'"
-                        + row[4]
-                        + "', "
-                        + "'"
-                        + row[5]
-                        + "', "
-                        + "'"
-                        + row[6]
-                        + "', "
-                        + "'"
-                        + row[7]
-                        + "' ,0)";
+            "INSERT INTO Nodes VALUES("
+                + "'"
+                + row[0]
+                + "', "
+                + Integer.parseInt(row[1])
+                + ", "
+                + Integer.parseInt(row[2])
+                + ", "
+                + "'"
+                + row[3]
+                + "', "
+                + "'"
+                + row[4]
+                + "', "
+                + "'"
+                + row[5]
+                + "', "
+                + "'"
+                + row[6]
+                + "', "
+                + "'"
+                + row[7]
+                + "' ,0)";
 
         int num = stmt.executeUpdate(query);
       } catch (SQLException e) {
@@ -113,29 +111,29 @@ public class NodesTable extends AbsTables {
       try {
         stmt = conn.createStatement();
         String query =
-                "INSERT into Nodes VALUES("
-                        + "'"
-                        + row[0]
-                        + "', "
-                        + Integer.parseInt(row[1])
-                        + ", "
-                        + Integer.parseInt(row[2])
-                        + ", "
-                        + "'"
-                        + row[3]
-                        + "', "
-                        + "'"
-                        + row[4]
-                        + "', "
-                        + "'"
-                        + row[5]
-                        + "', "
-                        + "'"
-                        + row[6]
-                        + "', "
-                        + "'"
-                        + row[7]
-                        + "' ,0)";
+            "INSERT into Nodes VALUES("
+                + "'"
+                + row[0]
+                + "', "
+                + Integer.parseInt(row[1])
+                + ", "
+                + Integer.parseInt(row[2])
+                + ", "
+                + "'"
+                + row[3]
+                + "', "
+                + "'"
+                + row[4]
+                + "', "
+                + "'"
+                + row[5]
+                + "', "
+                + "'"
+                + row[6]
+                + "', "
+                + "'"
+                + row[7]
+                + "' ,0)";
 
         int num = stmt.executeUpdate(query);
       } catch (SQLException e) {
@@ -159,16 +157,16 @@ public class NodesTable extends AbsTables {
   }
 
   public void addEntity(
-          Connection conn,
-          String nID,
-          int xc,
-          int yc,
-          String f,
-          String b,
-          String nType,
-          String ln,
-          String sn,
-          int favN) {
+      Connection conn,
+      String nID,
+      int xc,
+      int yc,
+      String f,
+      String b,
+      String nType,
+      String ln,
+      String sn,
+      int favN) {
     try {
       PreparedStatement stmt = conn.prepareStatement("INSERT INTO Nodes VALUES(?,?,?,?,?,?,?,?,?)");
       stmt.setString(1, nID);
@@ -190,10 +188,10 @@ public class NodesTable extends AbsTables {
     try {
       Statement stmt = conn.createStatement();
       String query =
-              "CREATE TABLE FavoriteNodes("
-                      + "name VARCHAR(50) NOT NULL,"
-                      + "nodeID VARCHAR(100) NOT NULL,"
-                      + "CONSTRAINT nodeID_FK FOREIGN KEY (nodeID) REFERENCES Nodes(nodeID))";
+          "CREATE TABLE FavoriteNodes("
+              + "name VARCHAR(50) NOT NULL,"
+              + "nodeID VARCHAR(100) NOT NULL,"
+              + "CONSTRAINT nodeID_FK FOREIGN KEY (nodeID) REFERENCES Nodes(nodeID))";
       stmt.executeUpdate(query);
       System.out.println("Favorite node table created");
     } catch (Exception e) {
@@ -214,7 +212,7 @@ public class NodesTable extends AbsTables {
         try {
           String[] row = sc.nextLine().split(",");
           String query =
-                  "INSERT INTO FavoriteNodes VALUES(" + "'" + row[0] + "'," + "'" + row[1] + "')";
+              "INSERT INTO FavoriteNodes VALUES(" + "'" + row[0] + "'," + "'" + row[1] + "')";
           stmt.execute(query);
         } catch (Exception e) {
           System.out.println("Favorite node table did not populate");
@@ -350,13 +348,13 @@ public class NodesTable extends AbsTables {
 
       // print new coord
       System.out.println(
-              "New xcoord ("
-                      + userXCoord
-                      + ") and ycoord ("
-                      + userYCoord
-                      + ") of nodeID "
-                      + userNodeID
-                      + " has been updated.");
+          "New xcoord ("
+              + userXCoord
+              + ") and ycoord ("
+              + userYCoord
+              + ") of nodeID "
+              + userNodeID
+              + " has been updated.");
 
     } catch (SQLException throwables) {
       throwables.printStackTrace();
@@ -383,7 +381,7 @@ public class NodesTable extends AbsTables {
 
       // print new coord
       System.out.println(
-              "New longName (" + userLongName + ") of nodeID " + userNodeID + " has been updated.");
+          "New longName (" + userLongName + ") of nodeID " + userNodeID + " has been updated.");
 
     } catch (SQLException throwables) {
       throwables.printStackTrace();
@@ -398,25 +396,25 @@ public class NodesTable extends AbsTables {
       String query = "SELECT * FROM Nodes";
       ResultSet rs = stmt.executeQuery(query);
       System.out.println(
-              "NodeID \txcoord \tycoord \tfloor \tbuilding \tnodeType \tlongName \tshortName");
+          "NodeID \txcoord \tycoord \tfloor \tbuilding \tnodeType \tlongName \tshortName");
       while (rs.next()) {
         // nodeID, xcoord, ycoord, floor, building, nodeType, longName, shortName
         System.out.println(
-                rs.getString("nodeID")
-                        + " \t"
-                        + rs.getInt("xcoord")
-                        + " \t"
-                        + rs.getInt("ycoord")
-                        + " \t"
-                        + rs.getString("floor")
-                        + " \t"
-                        + rs.getString("building")
-                        + " \t"
-                        + rs.getString("nodeType")
-                        + " \t"
-                        + rs.getString("longName")
-                        + " \t"
-                        + rs.getString("shortName"));
+            rs.getString("nodeID")
+                + " \t"
+                + rs.getInt("xcoord")
+                + " \t"
+                + rs.getInt("ycoord")
+                + " \t"
+                + rs.getString("floor")
+                + " \t"
+                + rs.getString("building")
+                + " \t"
+                + rs.getString("nodeType")
+                + " \t"
+                + rs.getString("longName")
+                + " \t"
+                + rs.getString("shortName"));
         System.out.println(" ");
       }
     } catch (SQLException throwables) {
@@ -436,15 +434,15 @@ public class NodesTable extends AbsTables {
       while (rs.next()) {
         String nodeID = rs.getString("nodeID");
         Node node =
-                new Node(
-                        nodeID,
-                        rs.getInt("xcoord"),
-                        rs.getInt("ycoord"),
-                        rs.getString("floor"),
-                        rs.getString("building"),
-                        rs.getString("nodeType"),
-                        rs.getString("longName"),
-                        rs.getString("shortName"));
+            new Node(
+                nodeID,
+                rs.getInt("xcoord"),
+                rs.getInt("ycoord"),
+                rs.getString("floor"),
+                rs.getString("building"),
+                rs.getString("nodeType"),
+                rs.getString("longName"),
+                rs.getString("shortName"));
         graphInfo.add(node);
       }
     } catch (SQLException e) {
@@ -452,5 +450,4 @@ public class NodesTable extends AbsTables {
     }
     return graphInfo;
   }
-
 }

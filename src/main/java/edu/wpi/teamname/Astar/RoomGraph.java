@@ -1,7 +1,6 @@
 package edu.wpi.teamname.Astar;
 
 import edu.wpi.teamname.Ddb.FDatabaseTables;
-
 import java.io.IOException;
 import java.sql.*;
 import java.util.*;
@@ -30,9 +29,9 @@ public class RoomGraph {
     this.edgesFile = "Database";
     this.nodesFile = "Database";
     this.graphInfo = new LinkedList<Node>();
-    //new reference to convert database to RoomGraph:
+    // new reference to convert database to RoomGraph:
     FDatabaseTables.getNodeTable().convertNodesToLL(conn);
-    //old reference: convertDatabaseToRoomGraph(conn);
+    // old reference: convertDatabaseToRoomGraph(conn);
   }
 
   // {Parent Node : [{start1, end1, cost1}, {start2, end2, cost2}, {start3, end3, cost3}, ...]}

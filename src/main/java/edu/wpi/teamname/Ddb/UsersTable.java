@@ -121,6 +121,28 @@ public class UsersTable extends AbsTables {
     return employees;
   }
 
+  public String getCategoryofUser(Connection conn, String username) {
+    Statement stmt = null;
+    ResultSet rs = null;
+    String category = null;
+    try {
+      stmt = conn.createStatement();
+      String query = "SELECT category FROM Users WHERE id = '" + username + "' ";
+      rs = stmt.executeQuery(query);
+
+      while (rs.next()) {
+        category = rs.getString("category");
+        if (rs.getString("username") == null) {
+          category = "Guest";
+        }
+      }
+
+    } catch (SQLException e) {
+
+    }
+    return category;
+  }
+
   // TODO: implement this function
   public static void updateUserPassword(Connection conn, String id, String password) {}
 }
