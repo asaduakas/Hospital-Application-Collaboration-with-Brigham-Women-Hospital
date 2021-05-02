@@ -3,12 +3,10 @@ package edu.wpi.teamname.views;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import edu.wpi.teamname.App;
+import edu.wpi.teamname.Ddb.FDatabaseTables;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.Access.*;
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -39,7 +37,7 @@ public class HomeController extends Application {
   @FXML public static Popup popup;
   @FXML public static VBox mainButtons;
 
-  private static UserCategory userTypeEnum;
+  public static UserCategory userTypeEnum;
   public static String username = null;
   public static String password = null;
   private static String userCategory;
@@ -304,42 +302,10 @@ public class HomeController extends Application {
   }
 
   public boolean validateUser(String username, String password) {
-    HomeController.username = username;
-    HomeController.password = password;
-    System.out.println(username + "in validateUser");
-    System.out.println(password + "password in validateUser");
-
-    try {
-      Statement statement = GlobalDb.getConnection().createStatement();
-      String query = "SELECT category, password FROM Users WHERE id = '" + username + "'";
-      statement.executeQuery(query);
-      ResultSet rs = statement.getResultSet();
-
-      if (rs.next()) { // If there is a user
-        String pw = rs.getString("password");
-        System.out.println(pw + " this is rs");
-        if (!password.equals(pw)) {
-          return false;
-        } else {
-          switch (rs.getString("category")) {
-            case "patient":
-              userTypeEnum = UserCategory.Patient;
-              break;
-            case "employee":
-              userTypeEnum = UserCategory.Employee;
-              break;
-            case "admin":
-              userTypeEnum = UserCategory.Admin;
-              break;
-          }
-        }
-      } else {
-        System.out.println("User not found in database!");
-        return false;
-      }
+    if ((FDatabaseTables.getUserTable()
+            .validateTheUser(GlobalDb.getConnection(), username, password))) {
       return true;
-    } catch (SQLException e) {
-      e.printStackTrace();
+    } else {
       return false;
     }
   }
@@ -348,6 +314,51 @@ public class HomeController extends Application {
     return userCategory;
   }
 
+  public static UserCategory getUserTypeEnum() {
+    return userTypeEnum;
+  }
+
   @Override
   public void start(Stage primaryStage) throws Exception {}
 }
+
+  //  public boolean validateUser(String username, String password) {
+  //    HomeController.username = username;
+  //    HomeController.password = password;
+  //    System.out.println(username + " in validateUser");
+  //    System.out.println(password + " password in validateUser");
+  //
+  //    try {
+  //      Statement statement = GlobalDb.getConnection().createStatement();
+  //      String query = "SELECT category, password FROM Users WHERE id = '" + username + "'";
+  //      statement.executeQuery(query);
+  //      ResultSet rs = statement.getResultSet();
+  //
+  //      if (rs.next()) { // If there is a user
+  //        String pw = rs.getString("password");
+  //        System.out.println(pw + " this is rs");
+  //        if (!password.equals(pw)) {
+  //          return false;
+  //        } else {
+  //          switch (rs.getString("category")) {
+  //            case "patient":
+  //              userTypeEnum = UserCategory.Patient;
+  //              break;
+  //            case "employee":
+  //              userTypeEnum = UserCategory.Employee;
+  //              break;
+  //            case "admin":
+  //              userTypeEnum = UserCategory.Admin;
+  //              break;
+  //          }
+  //        }
+  //      } else {
+  //        System.out.println("User not found in database!");
+  //        return false;
+  //      }
+  //      return true;
+  //    } catch (SQLException e) {
+  //      e.printStackTrace();
+  //      return false;
+  //    }
+  //  }
