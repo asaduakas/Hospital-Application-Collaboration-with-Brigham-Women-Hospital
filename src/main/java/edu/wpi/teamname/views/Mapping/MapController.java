@@ -485,7 +485,6 @@ public class MapController implements AllAccessible {
 
   public void setupDraggableNodeUI(NodeUI NUI) {
 
-
     NUI.getI()
         .setOnMouseDragged(
             event -> {
