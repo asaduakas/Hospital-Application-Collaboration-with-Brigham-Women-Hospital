@@ -7,6 +7,7 @@ import edu.wpi.teamname.Astar.*;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.Access.AllAccessible;
 import edu.wpi.teamname.views.Mapping.Popup.Edit.AddNodeController;
+import java.awt.*;
 import java.io.IOException;
 import java.util.*;
 import javafx.beans.property.ObjectProperty;
@@ -40,6 +41,17 @@ public class MapController implements AllAccessible {
   private Image I = new Image("Images/274px-Google_Maps_pin.svg.png");
   private Image Exit = new Image("Images/exit.png");
   private Image F1 = new Image("01_thefirstfloor.png");
+  private Image PARK = new Image("Images/parkingpin.png");
+  private Image ELEV = new Image("Images/elevatorpin.png");
+  private Image REST = new Image("Images/restroompins.png");
+  private Image STAI = new Image("Images/stairspin.png");
+  private Image DEPT = new Image("Images/deptpins.png");
+  private Image LABS = new Image("Images/labspin.png");
+  private Image INFO = new Image("Images/infopin.png");
+  private Image CONF = new Image("Images/conferencepin.png");
+  private Image EXIT = new Image("Images/exitpin.png");
+  private Image RETL = new Image("Images/retailpin.png");
+  private Image SERV = new Image("Images/service.png");
 
   @FXML private JFXToggleButton toggleEditor;
   @FXML private AnchorPane mainAnchor;
@@ -87,19 +99,50 @@ public class MapController implements AllAccessible {
   }
 
   private void initializeNodes() {
-    double markerX = 15;
-    double markerY = 26.25;
+    double markerX = 30;
+    double markerY = 30;
 
     for (Node N : initialData.getGraphInfo()) {
-      ImageView Marker = new ImageView(I);
+      ImageView Marker = new ImageView();
       Marker.setFitWidth(markerX);
       Marker.setFitHeight(markerY);
       Marker.setX(N.getXCoord() - markerX / 2);
       Marker.setY(N.getYCoord() - markerY);
 
       switch (N.getNodeType()) {
+        case "PARK":
+          Marker.setImage(PARK);
+          break;
+        case "ELEV":
+          Marker.setImage(ELEV);
+          break;
         case "REST":
-          Marker.setImage(null);
+          Marker.setImage(REST);
+          break;
+        case "STAI":
+          Marker.setImage(STAI);
+          break;
+        case "DEPT":
+          Marker.setImage(DEPT);
+          break;
+        case "LABS":
+          Marker.setImage(LABS);
+          break;
+        case "INFO":
+          Marker.setImage(INFO);
+          break;
+        case "CONF":
+          Marker.setImage(CONF);
+          break;
+        case "EXIT":
+          Marker.setImage(EXIT);
+          break;
+        case "RETL":
+          Marker.setImage(RETL);
+          break;
+        case "SERV":
+          Marker.setImage(SERV);
+          break;
       }
 
       Marker.setOnMouseClicked(
@@ -215,14 +258,10 @@ public class MapController implements AllAccessible {
             N.getN().getLongName(),
             N.getN().getShortName(),
             0);
-
     pathListener(N);
     hoverResize(N);
-
     initialData.getGraphInfo().add(N.getN());
-
     NODES.add(N);
-
     addNodeUI(N);
   }
 
@@ -332,15 +371,10 @@ public class MapController implements AllAccessible {
   }
 
   public void resizeNodeUI(NodeUI N, double factor) {
-    if ((N.getI().getFitWidth() <= 40 && factor > 1)
-        || (N.getI().getFitWidth() > 40 && factor < 1)
-        || (N.getI().getFitWidth() <= 20 && factor > 1)
-        || (N.getI().getFitWidth() > 20 && factor < 1)) {
-      N.getI().setFitWidth(N.getI().getFitWidth() * factor);
-      N.getI().setFitHeight(N.getI().getFitHeight() * factor);
-      N.getI().setX(N.getN().getXCoord() - N.getI().getFitWidth() / 2);
-      N.getI().setY(N.getN().getYCoord() - N.getI().getFitHeight());
-    }
+    N.getI().setFitWidth(N.getI().getFitWidth() * factor);
+    N.getI().setFitHeight(N.getI().getFitHeight() * factor);
+    N.getI().setX(N.getN().getXCoord() - N.getI().getFitWidth() / 2);
+    N.getI().setY(N.getN().getYCoord() - N.getI().getFitHeight());
   }
 
   // ___________________________________Getter and Setter_____________________________________
