@@ -2,16 +2,20 @@ package edu.wpi.teamname.views.Mapping;
 
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXToggleButton;
+import edu.wpi.teamname.App;
 import edu.wpi.teamname.Astar.*;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.Access.AllAccessible;
-import edu.wpi.teamname.views.Access.AdminAccessible;
-import java.awt.*;
+import edu.wpi.teamname.views.Mapping.Popup.Edit.AddNodeController;
 import java.io.IOException;
 import java.util.*;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Point2D;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -20,6 +24,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.stage.Popup;
 
 public class MapController implements AllAccessible {
 
@@ -42,6 +47,7 @@ public class MapController implements AllAccessible {
   @FXML private ScrollPane movingMap;
   @FXML private AnchorPane secondaryAnchor;
   @FXML private ImageView TheMap;
+  @FXML public static Popup popup;
 
   @FXML
   private void initialize() {
@@ -56,6 +62,7 @@ public class MapController implements AllAccessible {
     movingMap.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
     movingMap.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
     ToggleListener();
+    nodeAddListener();
   }
 
   // _______________________________________SET UP________________________________________
@@ -193,7 +200,8 @@ public class MapController implements AllAccessible {
     EDGES.remove(E);
   }
 
-  private void addNode(NodeUI N) {
+  public void addNode(NodeUI N) {
+
     GlobalDb.getTables()
         .getNodeTable()
         .addEntity(
@@ -207,8 +215,15 @@ public class MapController implements AllAccessible {
             N.getN().getLongName(),
             N.getN().getShortName(),
             0);
-    addNodeUI(N);
+
+    pathListener(N);
+    hoverResize(N);
+
+    initialData.getGraphInfo().add(N.getN());
+
     NODES.add(N);
+
+    addNodeUI(N);
   }
 
   private void addEdge(EdgeUI E) {
@@ -270,6 +285,24 @@ public class MapController implements AllAccessible {
             });
   }
 
+  private void nodeAddListener() {
+    secondaryAnchor.setOnMouseClicked(
+        (MouseEvent E) -> {
+          if (E.isAltDown()) {
+            try {
+              FXMLLoader temp = loadPopup("MapPopUps/AddNode.fxml");
+              AddNodeController popupController = temp.getController();
+              popupController.setMapController(this);
+              popupController.setNX(E.getX());
+              popupController.setNY(E.getY());
+            } catch (IOException e) {
+              e.printStackTrace();
+            }
+          }
+          // NodeUI NUI = new NodeUI();
+        });
+  }
+
   private void pathListener(NodeUI N) {
     N.getI()
         .setOnMouseClicked(
@@ -277,7 +310,6 @@ public class MapController implements AllAccessible {
               if (E.getButton() == MouseButton.SECONDARY) {
                 Targets.add(N.getN());
                 resizeNodeUI(N, 2);
-
                 if (Targets.size() >= 2) {
                   runPathFindingClick();
                 }
@@ -299,7 +331,7 @@ public class MapController implements AllAccessible {
             });
   }
 
-  private void resizeNodeUI(NodeUI N, double factor) {
+  public void resizeNodeUI(NodeUI N, double factor) {
     if ((N.getI().getFitWidth() <= 40 && factor > 1)
         || (N.getI().getFitWidth() > 40 && factor < 1)
         || (N.getI().getFitWidth() <= 20 && factor > 1)
@@ -332,5 +364,50 @@ public class MapController implements AllAccessible {
     }
     System.out.println("This Edge doesn't exist.");
     return null;
+  }
+
+  // _____________________________________Directions__________________________________________
+
+  // Regan this is spot for direction
+
+  // ______________________________________Popups_____________________________________________
+
+  private FXMLLoader loadPopup(String fxml) throws IOException {
+    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource(fxml));
+    Pane root = (Pane) fxmlLoader.load();
+
+    setupDraggablePopUp(root);
+
+    this.popup = new Popup();
+    this.popup.getContent().addAll(root);
+    popup.show(App.getPrimaryStage());
+
+    return fxmlLoader;
+  }
+
+  public void setupDraggablePopUp(Pane container) {
+    ObjectProperty<Point2D> mouseLocation = new SimpleObjectProperty<>();
+
+    container.setOnMousePressed(
+        event -> mouseLocation.set(new Point2D(event.getScreenX(), event.getScreenY())));
+
+    container.setOnMouseDragged(
+        event -> {
+          if (mouseLocation.get() != null) {
+            double x = event.getScreenX();
+            double deltaX = x - mouseLocation.get().getX();
+            double y = event.getScreenY();
+            double deltaY = y - mouseLocation.get().getY();
+            // in case of 2 or more computer screens this help me to avoid get stuck on 1 screen
+            if (Math.abs(popup.getX() - x) > popup.getWidth()) {
+              popup.setX(x);
+              popup.setY(y);
+            } else {
+              popup.setX(popup.getX() + deltaX);
+              popup.setY(popup.getY() + deltaY);
+            }
+            mouseLocation.set(new Point2D(x, y));
+          }
+        });
   }
 }

@@ -258,7 +258,6 @@ public class HomeController extends Application implements AllAccessible {
 
     this.popup = new Popup();
     this.popup.getContent().addAll(root);
-
     popup.show(App.getPrimaryStage());
   }
 
