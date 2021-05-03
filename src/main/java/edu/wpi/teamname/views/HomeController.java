@@ -306,15 +306,6 @@ public class HomeController extends Application implements AllAccessible {
     }
   }
 
-  public boolean validateUser(String username, String password) {
-    if ((FDatabaseTables.getUserTable()
-        .validateTheUser(GlobalDb.getConnection(), username, password))) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   public static String getUserCategory() {
     return userCategory;
   }

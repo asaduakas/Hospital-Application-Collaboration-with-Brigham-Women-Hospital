@@ -5,14 +5,12 @@ import edu.wpi.teamname.App;
 import edu.wpi.teamname.Ddb.FDatabaseTables;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.ControllerManager;
-import edu.wpi.teamname.views.HomeController;
 import edu.wpi.teamname.views.SceneSizeChangeListener;
 import java.io.IOException;
 import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -43,58 +41,18 @@ public class LoginController implements AllAccessible {
 
   @FXML
   private void login(ActionEvent event) throws IOException {
-
-    FXMLLoader fxmlLoader =
-        new FXMLLoader(getClass().getClassLoader().getResource("HomeView.fxml"));
-    Pane root = (Pane) fxmlLoader.load();
     if (usernameField.getText().isEmpty() || passwordField.getText().isEmpty()) {
       popupWarning(event, "Please fill out the required fields.");
-    } else if (!fxmlLoader
-        .<HomeController>getController()
-        .validateUser(usernameField.getText(), passwordField.getText().toString())) {
-      // TODO: Add prompt about login failing
+    } else if (!FDatabaseTables.getUserTable()
+        .validateTheUser(
+            GlobalDb.getConnection(), usernameField.getText(), passwordField.getText())) {
       popupWarning(event, "Incorrect username or password, please try again!");
     } else {
       this.userCategory =
           FDatabaseTables.getUserTable()
               .getCategoryofUser(GlobalDb.getConnection(), usernameField.getText());
-      start(root, userCategory);
+      ControllerManager.attemptLoadPage("HomeView.fxml", fxmlLoader -> start(fxmlLoader.getRoot()));
     }
-  }
-
-  public void start(Pane root, String userCategory) {
-
-    if (!userCategory.equalsIgnoreCase("Guest")) {
-      ControllerManager.exitPopup();
-    }
-
-    App.getPrimaryStage().close();
-
-    Text userType = new Text("You are logged in as : " + userCategory);
-
-    userType.setFill(Color.WHITE);
-    userType.setStyle("-fx-font-size: 20px; -fx-font-weight: Bold");
-    root.getChildren().add(userType);
-
-    List<Node> childrenList = root.getChildrenUnmodifiable();
-
-    Scene scene = new Scene(root);
-
-    App.getPrimaryStage().setScene(scene);
-    App.getPrimaryStage().setMaximized(true);
-    App.getPrimaryStage().show();
-
-    changeChildrenHomePage(childrenList);
-    SceneSizeChangeListener sizeListener =
-        new SceneSizeChangeListener(scene, root, childrenList) {
-          @Override
-          public void changeChildren(List<Node> nodeList) {
-            changeChildrenHomePage(childrenList);
-          }
-        };
-
-    scene.widthProperty().addListener(sizeListener);
-    scene.heightProperty().addListener(sizeListener);
   }
 
   public static void start(Pane root) {
@@ -112,7 +70,7 @@ public class LoginController implements AllAccessible {
     Scene scene = App.getPrimaryStage().getScene();
 
     // App.getPrimaryStage().setScene(scene);
-    // App.getPrimaryStage().setMaximized(true);
+    App.getPrimaryStage().setMaximized(true);
     // App.getPrimaryStage().show();
 
     changeChildrenHomePage(childrenList);
