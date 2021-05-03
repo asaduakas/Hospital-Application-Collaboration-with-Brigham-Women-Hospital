@@ -53,6 +53,9 @@ public class Path {
     for (Node node : this.path) {
       aPath.getPath().add(node);
     }
+    for (Edge edge : this.pathEdges) {
+      aPath.getPathEdges().add(edge);
+    }
     aPath.setCost(aPath.getCost() + cost);
     return aPath;
   }
@@ -64,6 +67,18 @@ public class Path {
       System.out.println("NodeIDs: ");
       for (Node node : path) {
         System.out.print(node.getNodeID() + "\t");
+      }
+      System.out.println("Cost:" + this.cost);
+    }
+  }
+
+  public void printPathEdges() {
+    if (this.pathEdges.isEmpty()) {
+      System.out.println("Path doesn't exist");
+    } else {
+      System.out.println("EdgeIDs: ");
+      for (Edge edge : pathEdges) {
+        System.out.print(edge.getEdgeID() + "\t");
       }
       System.out.println("Cost:" + this.cost);
     }

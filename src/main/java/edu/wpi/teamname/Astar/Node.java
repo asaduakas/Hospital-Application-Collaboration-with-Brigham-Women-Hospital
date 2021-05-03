@@ -1,6 +1,6 @@
 package edu.wpi.teamname.Astar;
 
-import javafx.beans.property.SimpleDoubleProperty;
+import java.util.LinkedList;
 
 public class Node {
   private String nodeID;
@@ -11,10 +11,7 @@ public class Node {
   private String nodeType;
   private String longName;
   private String shortName;
-
-  // For UI
-  private SimpleDoubleProperty simpXcoord;
-  private SimpleDoubleProperty simpYcoord;
+  private LinkedList<Edge> edges;
 
   public Node(
       String nodeID,
@@ -33,8 +30,7 @@ public class Node {
     this.nodeType = nodeType;
     this.longName = longName;
     this.shortName = shortName;
-    this.simpXcoord = new SimpleDoubleProperty(xcoord);
-    this.simpYcoord = new SimpleDoubleProperty(ycoord);
+    this.edges = new LinkedList<Edge>();
   }
 
   public Node() {
@@ -46,8 +42,7 @@ public class Node {
     this.nodeType = "nodeType";
     this.longName = "longName";
     this.shortName = "shortName";
-    this.simpXcoord = new SimpleDoubleProperty(xcoord);
-    this.simpYcoord = new SimpleDoubleProperty(ycoord);
+    this.edges = new LinkedList<Edge>();
   }
 
   public double getMeasuredDistance(Node child) {
@@ -139,27 +134,15 @@ public class Node {
     this.shortName = shortName;
   }
 
-  public double getSimpXcoord() {
-    return simpXcoord.get();
+  public LinkedList<Edge> getEdges() {
+    return edges;
   }
 
-  public SimpleDoubleProperty simpXcoordProperty() {
-    return simpXcoord;
+  public void setEdges(LinkedList<Edge> edges) {
+    this.edges = edges;
   }
 
-  public void setSimpXcoord(double simpXcoord) {
-    this.simpXcoord.set(simpXcoord);
-  }
-
-  public double getSimpYcoord() {
-    return simpYcoord.get();
-  }
-
-  public SimpleDoubleProperty simpYcoordProperty() {
-    return simpYcoord;
-  }
-
-  public void setSimpYcoord(double simpYcoord) {
-    this.simpYcoord.set(simpYcoord);
+  public void addEdge(Edge edge) {
+    this.edges.add(edge);
   }
 }

@@ -2,11 +2,9 @@ package edu.wpi.teamname.views.ServiceRequests.SRControllers;
 
 import com.jfoenix.controls.*;
 import com.jfoenix.validation.RequiredFieldValidator;
+import edu.wpi.teamname.Ddb.FDatabaseTables;
 import edu.wpi.teamname.Ddb.GlobalDb;
-import edu.wpi.teamname.Ddb.Tables;
 import edu.wpi.teamname.views.Access.EmployeeAccessible;
-import edu.wpi.teamname.views.HomeController;
-import edu.wpi.teamname.views.ServiceRequests.ServicePageController;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -32,8 +30,8 @@ public class LanguageInterpreterController extends AbsRequest
   @FXML
   public void popUpAction() throws IOException {
     popup = new Popup();
-    ServicePageController.popup.hide();
-    super.popUpAction("Emergency.fxml", popup, disableRequestStatus);
+    // ServicePageController.popup.hide();
+    super.popUpAction("Emergency.fxml");
   }
 
   @FXML
@@ -99,9 +97,9 @@ public class LanguageInterpreterController extends AbsRequest
           new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-              ServicePageController.popup.hide();
+              // ServicePageController.popup.hide();
               try {
-                popUpAction("ServicePageView.fxml", HomeController.popup, disableRequestStatus);
+                popUpAction("ServicePageView.fxml");
               } catch (IOException e) {
                 e.printStackTrace();
               }
@@ -191,11 +189,13 @@ public class LanguageInterpreterController extends AbsRequest
               if (!newVal) super.contactInfo.validate();
             });
 
-    ObservableList<String> employeeList = Tables.fetchEmployee(GlobalDb.getConnection());
+    ObservableList<String> employeeList =
+        FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
     employeeList.sort(String::compareToIgnoreCase);
     staffAssigned.getItems().addAll(employeeList);
 
-    ArrayList<String> longNameList = Tables.fetchLongName(GlobalDb.getConnection());
+    ArrayList<String> longNameList =
+        FDatabaseTables.getNodeTable().fetchLongName(GlobalDb.getConnection());
     longNameList.sort(String::compareToIgnoreCase);
     locationBox.getItems().addAll(longNameList);
   }

@@ -66,4 +66,10 @@ public class COVID19SurveyTable extends AbsTables {
       e.printStackTrace();
     }
   }
+
+  public void sendEmail(Connection conn, String id) {
+    // use id to get email
+    // if any constraint is checked, send email of STAY TF HOME
+    // if all good is checked, send email of GO ON PEASANT
+  }
 }

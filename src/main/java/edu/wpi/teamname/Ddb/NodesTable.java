@@ -202,7 +202,7 @@ public class NodesTable extends AbsTables {
   public void populateFavoriteNodeTable(Connection conn, String filePath) {
     if (filePath.isEmpty()) filePath = "FavoriteNodes.csv";
     try {
-      Scanner sc = new Scanner(Tables.class.getResourceAsStream("/csv/" + filePath));
+      Scanner sc = new Scanner(NodesTable.class.getResourceAsStream("/csv/" + filePath));
       Statement stmt = conn.createStatement();
 
       sc.nextLine();
@@ -225,6 +225,8 @@ public class NodesTable extends AbsTables {
       return;
     }
   }
+
+  public void getCategory(Connection conn, String id) {}
 
   public void updateNodeXCoord(Connection conn, String nID, int xc) {
     try {

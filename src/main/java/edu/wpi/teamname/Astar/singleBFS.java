@@ -4,7 +4,7 @@ package edu.wpi.teamname.Astar;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-public class singleBFS implements IPathFinding {
+public class singleBFS extends IntermediaryAlgo implements IPathFinding {
 
   private Path nodeTo; // visited nodes (in order) that are part of the final path
   private boolean hasPath; // to stop search if path is found
@@ -14,7 +14,7 @@ public class singleBFS implements IPathFinding {
     this.hasPath = false;
   }
 
-  public void search(RoomGraph data, Node start, Node target) {
+  public Path search(RoomGraph data, Node start, Node target) {
     if (start != null && target != null) {
       // reinitialize
       this.nodeTo = new Path();
@@ -30,9 +30,9 @@ public class singleBFS implements IPathFinding {
       searchQueue.add(start);
       while (!searchQueue.isEmpty()) {
         Node node = searchQueue.removeFirst();
-        LinkedList<Edge> edges = (LinkedList<Edge>) data.getGraphInfo().get(node);
+        LinkedList<Edge> edges = (LinkedList<Edge>) data.getNode(node).getEdges();
         for (Edge edge : edges) { // for each edge connected to node
-          Node child = edge.getEndNode();
+          Node child = data.getNodeByID(edge.getEndNodeID());
           if (child == target) hasPath = true;
           if (!visited.contains(child)) { // if we haven't visited child, enqueue
             searchQueue.add(child);
@@ -47,7 +47,7 @@ public class singleBFS implements IPathFinding {
         Node node = target;
         nodeTo.getPath().addFirst(node);
         while (node != start) {
-          Node parent = nodesTo.get(node).getStartNode();
+          Node parent = data.getNodeByID(nodesTo.get(node).getStartNodeID());
           nodeTo.getPath().addFirst(parent);
           nodeTo.getPathEdges().addFirst(nodesTo.get(node));
           nodeTo.setCost(nodeTo.getCost() + nodesTo.get(node).getCost());
@@ -55,6 +55,7 @@ public class singleBFS implements IPathFinding {
         }
       }
     }
+    return nodeTo;
   }
 
   public Path shortestPath() {

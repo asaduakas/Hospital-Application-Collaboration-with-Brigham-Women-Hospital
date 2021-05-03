@@ -3,8 +3,8 @@ package edu.wpi.teamname.views.Access;
 import com.jfoenix.controls.*;
 import edu.wpi.teamname.App;
 import edu.wpi.teamname.Ddb.GlobalDb;
+import edu.wpi.teamname.views.ControllerManager;
 import edu.wpi.teamname.views.HomeController;
-import edu.wpi.teamname.views.InitPageController;
 import edu.wpi.teamname.views.SceneSizeChangeListener;
 import java.io.IOException;
 import java.sql.Connection;
@@ -15,9 +15,7 @@ import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
@@ -31,7 +29,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javax.swing.*;
 
-public class LoginController {
+public class LoginController implements AllAccessible {
 
   @FXML Button exitButton;
   @FXML Button loginButton;
@@ -47,30 +45,64 @@ public class LoginController {
 
   @FXML
   private void login(ActionEvent event) throws IOException {
-
-    FXMLLoader fxmlLoader =
-        new FXMLLoader(getClass().getClassLoader().getResource("HomeView.fxml"));
-    Pane root = (Pane) fxmlLoader.load();
     if (usernameField.getText().isEmpty() || passwordField.getText().isEmpty()) {
       popupWarning(event, "Please fill out the required fields.");
-    } else if (!fxmlLoader
-        .<HomeController>getController()
-        .validateUser(usernameField.getText(), passwordField.getText().toString())) {
-      // TODO: Add prompt about login failing
+    } else if (!validateUser(usernameField.getText(), passwordField.getText())) {
       popupWarning(event, "Incorrect username or password, please try again!");
     } else {
       this.userCategory = readFromDataBase(GlobalDb.getConnection(), usernameField.getText());
-      start(root, userCategory);
+      ControllerManager.attemptLoadPage("HomeView.fxml", fxmlLoader -> start(fxmlLoader.getRoot()));
     }
   }
 
-  public void start(Pane root, String userCategory) {
+  public boolean validateUser(String username, String password) {
+    HomeController.username = username;
+    HomeController.password = password;
+    System.out.println(username + "in validateUser");
+    System.out.println(password + "password in validateUser");
 
-    if (!userCategory.equalsIgnoreCase("Guest")) {
-      InitPageController.popup.hide();
+    try {
+      GlobalDb.establishCon();
+      Statement statement = GlobalDb.getConnection().createStatement();
+      String query = "SELECT category, password FROM Users WHERE id = '" + username + "'";
+      statement.executeQuery(query);
+      ResultSet rs = statement.getResultSet();
+
+      if (rs.next()) { // If there is a user
+        String pw = rs.getString("password");
+        System.out.println(pw + " this is rs");
+        if (!password.equals(pw)) {
+          return false;
+        }
+        /*
+        else {
+          switch (rs.getString("category")) {
+            case "patient":
+              userTypeEnum = UserCategory.Patient;
+              break;
+            case "employee":
+              userTypeEnum = UserCategory.Employee;
+              break;
+            case "admin":
+              userTypeEnum = UserCategory.Admin;
+              break;
+          }
+        }
+        */
+      } else {
+        System.out.println("User not found in database!");
+        return false;
+      }
+      return true;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
     }
+  }
 
-    App.getPrimaryStage().close();
+  public static void start(Pane root) {
+
+    // App.getPrimaryStage().close();
 
     Text userType = new Text("You are logged in as : " + userCategory);
 
@@ -80,11 +112,11 @@ public class LoginController {
 
     List<Node> childrenList = root.getChildrenUnmodifiable();
 
-    Scene scene = new Scene(root);
+    Scene scene = App.getPrimaryStage().getScene();
 
-    App.getPrimaryStage().setScene(scene);
-    App.getPrimaryStage().setMaximized(true);
-    App.getPrimaryStage().show();
+    // App.getPrimaryStage().setScene(scene);
+    // App.getPrimaryStage().setMaximized(true);
+    // App.getPrimaryStage().show();
 
     changeChildrenHomePage(childrenList);
     SceneSizeChangeListener sizeListener =
@@ -99,7 +131,7 @@ public class LoginController {
     scene.heightProperty().addListener(sizeListener);
   }
 
-  public void changeChildrenHomePage(List<Node> nodeList) {
+  public static void changeChildrenHomePage(List<Node> nodeList) {
 
     HBox topButtons = (HBox) nodeList.get(4);
     topButtons.setLayoutX(
@@ -170,14 +202,16 @@ public class LoginController {
   }
 
   @FXML
-  public void takeToSignUp() throws IOException {
-
+  public void takeToSignUp() {
+    /*
     FXMLLoader fxmlLoader =
         new FXMLLoader(getClass().getClassLoader().getResource("signUpView.fxml"));
     Parent root = fxmlLoader.load();
     InitPageController.popup.hide();
     InitPageController.popup.getContent().addAll(root.getChildrenUnmodifiable());
     InitPageController.popup.show(App.getPrimaryStage());
+     */
+    ControllerManager.attemptLoadPopup("signUpView.fxml");
   }
 
   @FXML
@@ -206,10 +240,7 @@ public class LoginController {
 
   @FXML
   private void exit(ActionEvent event) {
-    if (event.getSource() == exitButton) {
-      InitPageController.popup.hide();
-      App.getPrimaryStage().getScene().getRoot().setEffect(null);
-    }
+    ControllerManager.exitPopup();
   }
 
   public static String getUserCategory() {

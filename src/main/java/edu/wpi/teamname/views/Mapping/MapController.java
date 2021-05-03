@@ -1,1008 +1,462 @@
 package edu.wpi.teamname.views.Mapping;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDialog;
-import com.jfoenix.controls.JFXDialogLayout;
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXDrawer;
+import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.controls.JFXToggleButton;
+import com.jfoenix.transitions.hamburger.HamburgerSlideCloseTransition;
 import edu.wpi.teamname.App;
 import edu.wpi.teamname.Astar.*;
 import edu.wpi.teamname.Ddb.GlobalDb;
-import edu.wpi.teamname.views.Access.AdminAccessible;
-import edu.wpi.teamname.views.Access.LoginController;
-import edu.wpi.teamname.views.HomeController;
-import java.io.FileWriter;
+import edu.wpi.teamname.views.Access.AllAccessible;
+import edu.wpi.teamname.views.Mapping.Popup.Edit.AddNodeController;
+import java.awt.*;
 import java.io.IOException;
-import java.sql.*;
 import java.util.*;
-import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
-import javafx.geometry.Pos;
-import javafx.scene.control.*;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Slider;
-import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
-import javafx.scene.transform.Scale;
 import javafx.stage.Popup;
 
-public class MapController implements AdminAccessible {
+public class MapController implements AllAccessible {
+
+  private RoomGraph initialData = new RoomGraph(GlobalDb.getConnection());
+  public static LinkedList<NodeUI> NODES = new LinkedList<>();
+  private static LinkedList<EdgeUI> EDGES = new LinkedList<>();
+  private PathAlgoPicker algorithm = new PathAlgoPicker(new aStar());
+  private LinkedList<Edge> thePath = new LinkedList<Edge>();
+  private LinkedList<Node> Targets = new LinkedList<Node>();
+  public static final double nodeNormalHeight = 30;
+  public static final double nodeNormalWidth = 30;
+  private String userCategory = "admin";
+  public static String currentFloor = "1";
+
+  private final Image Exit = new Image("Images/exit.png");
+  private final Image F1 = new Image("01_thefirstfloor.png");
+  public static final Image I = new Image("Images/274px-Google_Maps_pin.svg.png");
+  public static final Image PARK = new Image("Images/parkingpin.png");
+  public static final Image ELEV = new Image("Images/elevatorpin.png");
+  public static final Image REST = new Image("Images/restroompins.png");
+  public static final Image STAI = new Image("Images/stairspin.png");
+  public static final Image DEPT = new Image("Images/deptpins.png");
+  public static final Image LABS = new Image("Images/labspin.png");
+  public static final Image INFO = new Image("Images/infopin.png");
+  public static final Image CONF = new Image("Images/conferencepin.png");
+  public static final Image EXIT = new Image("Images/exitpin.png");
+  public static final Image RETL = new Image("Images/retailpin.png");
+  public static final Image SERV = new Image("Images/service.png");
 
   @FXML private AnchorPane mainAnchor;
+  @FXML private JFXComboBox FloorOption;
   @FXML private ScrollPane movingMap;
   @FXML private AnchorPane secondaryAnchor;
   @FXML private ImageView TheMap;
-  @FXML private ComboBox<String> FloorOption;
-  @FXML private ComboBox<String> algoVersion;
-  @FXML private JFXToggleButton toggleEditor; // TODO: worry about visibility for admin only
-  @FXML private JFXButton formBtn;
-  @FXML private JFXButton exitBtn;
-  @FXML private JFXButton cancelBtn;
   @FXML public static Popup popup;
-  @FXML public Slider slider;
-  private boolean iseditedge = false;
-  private RoomGraph data = new RoomGraph(GlobalDb.getConnection());
-
-  private static String userCategory;
-
-  private PathAlgoPicker algorithm = new PathAlgoPicker(new aStar()); // Strategy Pattern
-  private boolean isMapEditing = false; // so we can choose what happens when
-  private String currentFloor = "1"; // so we can redraw edges when swapping modes
-  private LinkedList<Edge> thePath = new LinkedList<Edge>(); // holds path created by algo
-
-  public enum edgeNodeSelection {
-    STARTSELECT,
-    ENDSELECT,
-    NONE
-  }
-
-  private edgeNodeSelection mode = edgeNodeSelection.NONE;
-
-  private Node simpleStartNode = null; // Start node selected for simple navigation
-  private Line TempL = null; // Line being edited
-  private Edge edgeEdited = null; // Edge being edited
-  private Node TempN = null; // Line being edited
-  private Edge TempE = null;
+  @FXML private JFXHamburger mapHam;
+  @FXML private JFXDrawer mapDrawer;
+  @FXML private JFXToggleButton toggleEditor;
 
   @FXML
-  private void initialize() throws IOException {
-    this.userCategory = HomeController.getUserCategory();
+  private void initialize() {
 
-    GlobalDb.getTables().getNodeTable().dispAll(GlobalDb.getConnection());
-    resetData();
-    isMapEditing = false;
-    mode = edgeNodeSelection.NONE;
-    algoVersion.setDisable(true);
-    algoVersion.setVisible(false);
+    TheMap.setImage(F1);
+    initializeNodes();
+    initializeEdges();
+
+    drawNodeFloor("1");
 
     movingMap.setPannable(true);
     movingMap.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
     movingMap.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+    ToggleListener();
+    nodeAddListener();
 
-    FloorOption.getItems().addAll("L2", "L1", "1", "2", "3");
-    FloorOption.getSelectionModel()
-        .selectedItemProperty()
-        .addListener(
-            new ChangeListener<String>() {
-              @Override
-              public void changed(
-                  ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                currentFloor = newValue;
-                changeFloor(newValue);
-              }
-            });
-    algoVersion.getItems().addAll("A*", "BFS", "DFS");
-    algoVersion
-        .getSelectionModel()
-        .selectedItemProperty()
-        .addListener(
-            new ChangeListener<String>() {
-              @Override
-              public void changed(
-                  ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                changePathFinderAlgo(newValue);
-              }
-            });
-    if (this.userCategory.equalsIgnoreCase("Admin")) {
-      toggleEditor.setVisible(true);
-      toggleEditor.setDisable(false);
-      toggleEditor
-          .selectedProperty()
-          .addListener(
-              new ChangeListener<Boolean>() {
-                @Override
-                public void changed(
-                    ObservableValue<? extends Boolean> observable,
-                    Boolean oldValue,
-                    Boolean newValue) {
-                  if (toggleEditor.isSelected()) {
-                    toggleEditor.setText("Map Editor");
-                    algoVersion.setDisable(false);
-                    algoVersion.setVisible(true);
-                    changeToMapEditor();
-                  } else {
-                    toggleEditor.setText("Path Finding");
-                    algoVersion.setDisable(true);
-                    algoVersion.setVisible(false);
-                    changeToPathFinding();
-                  }
-                }
-              });
-    } else {
-      toggleEditor.setVisible(false);
-      toggleEditor.setDisable(true);
+    mapDrawer.setPickOnBounds(false);
+
+    try {
+      AnchorPane menuBtns =
+          FXMLLoader.load(getClass().getClassLoader().getResource("MapDrawerView.fxml"));
+      mapDrawer.setSidePane(menuBtns);
+    } catch (IOException e) {
+      e.printStackTrace();
     }
 
-    Image ImageMap = new Image("01_thefirstfloor.png");
-    TheMap.setImage(ImageMap);
-    prepareSlider();
-    slider
-        .valueProperty()
-        .addListener(
-            new ChangeListener<Number>() {
-              @Override
-              public void changed(
-                  ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                Scale scale = new Scale((Double) newValue, (Double) newValue);
-                double ratio = (Double) newValue / (Double) oldValue;
-                movingMap.setHvalue(movingMap.getHvalue() * ratio);
-                movingMap.setVvalue(movingMap.getVvalue() * ratio);
-                movingMap.setHmax(movingMap.getHmax() * ratio);
-                movingMap.setVmax(movingMap.getVmax() * ratio);
-                scale.setPivotX(
-                    secondaryAnchor.getWidth() * movingMap.getHvalue() / movingMap.getHmax());
-                scale.setPivotY(
-                    secondaryAnchor.getHeight() * movingMap.getVvalue() / movingMap.getVmax());
-                secondaryAnchor.getTransforms().setAll(scale);
-              }
-            });
-
-    //    mainAnchor.getChildren().add(slider);
-
-    // setUpThePath();
-    showPath();
-    cancelBtn.setVisible(false);
-    cancelBtn.setDisable(true);
-    initialNodes();
+    HamburgerSlideCloseTransition burgerTask = new HamburgerSlideCloseTransition(mapHam);
+    burgerTask.setRate(-1);
+    mapHam.addEventHandler(
+        MouseEvent.MOUSE_PRESSED,
+        (e) -> {
+          burgerTask.setRate(burgerTask.getRate() * -1);
+          burgerTask.play();
+          if (mapDrawer.isOpened()) {
+            mapDrawer.close();
+            TheMap.setLayoutX(0);
+            mapDrawer.setLayoutX(-132);
+          } else {
+            mapDrawer.open();
+            TheMap.setLayoutX(263);
+            mapDrawer.setLayoutX(0);
+          }
+        });
   }
 
-  public void resetData() {
-    data = null;
-    data = new RoomGraph(GlobalDb.getConnection());
+  // _______________________________________SET UP________________________________________
+
+  private void LoadMap(Image floor, String floorNum) {
+    TheMap.setImage(floor);
+    LoadingNodesEdges(floorNum);
   }
 
-  /*----------------------------- BUTTON FUNCTIONS ---------------------------*/
-  @FXML
-  public void goToForm() throws IOException {
-    searchPopUpAction();
-  }
-
-  @FXML
-  public void exitMap() throws IOException {
-    App.getPrimaryStage().close();
-    Pane root = (Pane) FXMLLoader.load(getClass().getClassLoader().getResource("HomeView.fxml"));
-    LoginController loginController = new LoginController();
-    loginController.start(root, userCategory);
-  }
-
-  @FXML
-  private void ResetTheMap() {
-    GlobalDb.getTables().getNodeTable().clearTable(GlobalDb.getConnection(), "Nodes");
-    GlobalDb.getTables().getEdgeTable().clearTable(GlobalDb.getConnection(), "Edges");
-    GlobalDb.getTables().createNodesTable();
-    GlobalDb.getTables().createEdgesTable();
-    redrawMap();
-  }
-
-  public void searchPopUpAction() throws IOException {
-    GaussianBlur blur = new GaussianBlur(25);
-    App.getPrimaryStage().getScene().getRoot().setEffect(blur);
-
-    FXMLLoader fxmlLoader =
-        new FXMLLoader(getClass().getClassLoader().getResource("AstarPopupView.fxml"));
-
-    Pane root = (Pane) fxmlLoader.load();
-    root.setStyle("-fx-background-color: #FFFFFF");
-
-    setupDraggablePopUp(root);
-
-    // tie this controller to popup for easy access of functions like pathfinding
-    AstarPopupController popupController = fxmlLoader.getController();
-    popupController.setMapController(this);
-
-    this.popup = new Popup();
-    popup.getContent().addAll(root);
-    popup.isAutoFix();
-    popup.show(App.getPrimaryStage());
-  }
-
-  // Cancel button for simple nav amd Edge Edit
-  @FXML
-  public void cancelSimple() {
-    cancelBtn.setVisible(false);
-    cancelBtn.setDisable(true);
-    simpleStartNode = null;
-    TempL = null;
-    thePath = new LinkedList<>();
-    redrawMap();
-  }
-
-  /*----------------------------------  ALGO ---------------------------------*/
-
-  public void runPathFinding(String startNode, String targetNode) throws IOException {
-    Node start = data.getNode(startNode);
-    Node target = data.getNode(targetNode);
-
-    algorithm.search(data, start, target);
-    algorithm.printPathTo();
-    algorithm.printEdgeTo();
-    thePath = algorithm.getShortestPath().getPathEdges();
-    redrawMap();
-    getDirections(thePath);
-  }
-
-  public void changePathFinderAlgo(String algo) {
-    if (algo.equals("BFS")) algorithm.setAlgorithm(new singleBFS());
-    else if (algo.equals("DFS")) algorithm.setAlgorithm(new singleDFS());
-    else algorithm.setAlgorithm(new aStar());
-  }
-
-  /*------------------------------ MAP REDRAW ----------------------*/
-
-  private void clearSecondaryAnchorPane() {
-    secondaryAnchor
-        .getChildren()
-        .removeIf(
-            (n) -> {
-              ImageView image = new ImageView();
-              if (n.getClass() == image.getClass()) return false;
-              else return true;
-            });
-  }
-
-  private void changeToMapEditor() {
-    isMapEditing = true;
-    cancelSimple();
-    secondaryAnchor.setOnMouseClicked(new addNodeEventHandler());
-    redrawMap();
-  }
-
-  private void changeToPathFinding() {
-    isMapEditing = false;
-    secondaryAnchor.setOnMouseClicked(null);
-    redrawMap();
-  }
-
-  private void changeFloor(String floor) {
-    clearSecondaryAnchorPane();
-    Image ImageMap;
-    if (floor.equals("L2")) {
-      ImageMap = new Image("00_thelowerlevel2.png");
-    } else if (floor.equals("L1")) {
-      ImageMap = new Image("00_thelowerlevel1.png");
-    } else if (floor.equals("2")) {
-      ImageMap = new Image("02_thesecondfloor.png");
-    } else if (floor.equals("3")) {
-      ImageMap = new Image("03_thethirdfloor.png");
-    } else {
-      ImageMap = new Image("01_thefirstfloor.png");
-    }
-    TheMap.setImage(ImageMap);
-
-    if (isMapEditing) {
-      for (Edge N : data.getListOfEdges()) {
-        if (N.getStartNode().getFloor().equals(floor) && N.getEndNode().getFloor().equals(floor))
-          drawEdge(N);
+  private void LoadingNodesEdges(String Floor) {
+    for (EdgeUI EUI : EDGES) {
+      if (initialData.getNodeByID(EUI.getE().getStartNodeID()).getFloor().equals(Floor)
+          || initialData.getNodeByID(EUI.getE().getEndNodeID()).getFloor().equals(Floor)) {
+        addEdgeUI(EUI);
       }
-    } else {
-      showPath();
     }
-
-    for (Map.Entry<String, Node> N : data.getNodes().entrySet()) {
-      if (N.getValue().getFloor().equals(floor)) drawNode(N.getValue());
-    }
-  }
-
-  public void redrawMap() {
-    changeFloor(currentFloor);
-  }
-
-  /*------------------------- PREP --------------------------*/
-
-  private void prepareSlider() {
-    //    Slider slider = new Slider();
-    slider.setMax(1);
-    slider.setMin(.2);
-    slider.setPrefWidth(300);
-    slider.setPrefHeight(-200);
-    slider.setLayoutX(350);
-    slider.setLayoutY(600);
-    slider.setValue(1);
-    //    return slider;
-  }
-
-  private int xOffset = 0;
-  private int yOffset = 18;
-
-  private void ScaleDown(Node N) {
-    int xCoord = N.getXCoord();
-    int yCoord = N.getYCoord();
-    N.setCoords(xCoord / 4 + xOffset, yCoord / 4 + yOffset);
-  }
-
-  private void initialNodes() {
-    for (Map.Entry<String, Node> N : data.getNodes().entrySet()) {
-      if (N.getValue().getFloor().equals("1")) drawNode(N.getValue());
+    for (NodeUI NUI : NODES) {
+      if (NUI.getN().getFloor().equals(Floor)) {
+        addNodeUI(NUI);
+      }
     }
   }
 
-  /*------------------------------Editing-------------------------*/
+  private void initializeNodes() {
 
-  public void deleteNode(Node N, Circle C) {
-    secondaryAnchor.getChildren().remove(C);
+    for (Node N : initialData.getGraphInfo()) {
+      ImageView Marker = new ImageView();
+      Marker.setFitWidth(nodeNormalWidth);
+      Marker.setFitHeight(nodeNormalHeight);
+      Marker.setX(N.getXCoord() - nodeNormalWidth / 2);
+      Marker.setY(N.getYCoord() - nodeNormalHeight);
 
-    GlobalDb.getTables()
-        .getNodeTable()
-        .deleteEntity(GlobalDb.getConnection(), "Nodes", N.getNodeID());
-    C.centerXProperty().setValue(null);
-    C.centerYProperty().setValue(null);
+      switch (N.getNodeType()) {
+        case "PARK":
+          Marker.setImage(PARK);
+          break;
+        case "ELEV":
+          Marker.setImage(ELEV);
+          break;
+        case "REST":
+          Marker.setImage(REST);
+          break;
+        case "STAI":
+          Marker.setImage(STAI);
+          break;
+        case "DEPT":
+          Marker.setImage(DEPT);
+          break;
+        case "LABS":
+          Marker.setImage(LABS);
+          break;
+        case "INFO":
+          Marker.setImage(INFO);
+          break;
+        case "CONF":
+          Marker.setImage(CONF);
+          break;
+        case "EXIT":
+          Marker.setImage(EXIT);
+          break;
+        case "RETL":
+          Marker.setImage(RETL);
+          break;
+        case "SERV":
+          Marker.setImage(SERV);
+          break;
+        default:
+          break;
+      }
 
-    // GlobalDb.getTables().getEdgeTable().getEdgeInfo(GlobalDb.getConnection());
-  }
+      Marker.setOnMouseClicked(
+          (MouseEvent e) -> {
+            disableListener(e);
+          }); // TODO ACTION
 
-  public void deleteEdge(Edge E, Line L) {
-    secondaryAnchor.getChildren().remove(L);
-    GlobalDb.getTables()
-        .getEdgeTable()
-        .deleteEntity(GlobalDb.getConnection(), "Edges", E.getEdgeID());
-  }
-
-  public void updateNode(
-      Node N,
-      String nodeID,
-      String floor,
-      String building,
-      String nodeType,
-      String longName,
-      String shortName) {
-
-    if (N.getNodeID().equals("NEWNODE")) {
-      GlobalDb.getTables()
-          .getNodeTable()
-          .addEntity(
-              GlobalDb.getConnection(),
-              nodeID,
-              N.getXCoord(),
-              N.getYCoord(),
-              currentFloor,
-              building,
-              nodeType,
-              longName,
-              shortName,
-              0);
-      GlobalDb.getTables().getNodeTable().dispAll(GlobalDb.getConnection());
-    } else {
-      GlobalDb.getTables()
-          .getNodeTable()
-          .updateNodeFloor(GlobalDb.getConnection(), N.getNodeID(), floor);
-      GlobalDb.getTables()
-          .getNodeTable()
-          .updateNodeBuilding(GlobalDb.getConnection(), N.getNodeID(), building);
-      GlobalDb.getTables()
-          .getNodeTable()
-          .updateNodeType(GlobalDb.getConnection(), N.getNodeID(), nodeType);
-      GlobalDb.getTables()
-          .getNodeTable()
-          .updateNodeLongName(GlobalDb.getConnection(), N.getNodeID(), longName);
-      GlobalDb.getTables()
-          .getNodeTable()
-          .updateNodeShortName(GlobalDb.getConnection(), N.getNodeID(), shortName);
+      NodeUI Temp = new NodeUI(N, Marker, nodeNormalWidth, nodeNormalHeight);
+      pathListener(Temp);
+      hoverResize(Temp);
+      setupDraggableNodeUI(Temp);
+      NODES.add(Temp);
     }
-
-    N.setNodeID(nodeID);
-    N.setFloor(floor);
-    N.setBuilding(building);
-    N.setNodeType(nodeType);
-    N.setLongName(longName);
-    N.setShortName(shortName);
   }
 
-  public void editEdgeStart(Node N) {
-    TempL.startXProperty().unbind();
-    TempL.startYProperty().unbind();
-    TempL.startXProperty().bind(N.simpXcoordProperty());
-    TempL.startYProperty().bind(N.simpYcoordProperty());
-  }
+  private void initializeEdges() {
 
-  public void editEdgeEnd(Node N) {
-    TempL.endXProperty().unbind();
-    TempL.endYProperty().unbind();
-    TempL.endXProperty().bind(N.simpXcoordProperty());
-    TempL.endYProperty().bind(N.simpYcoordProperty());
-  }
-  /*--------------------------------- DRAW ----------------------*/
-  private Circle drawNode(Node N) {
-    Circle Temp = new Circle();
-    LinkedList<String> favNodeList =
-        getFav(GlobalDb.getConnection()); // update from database everytime we click
+    for (Edge E : initialData.getListOfEdges()) {
+      Line L = new Line();
+      L.startXProperty().bind(getNodeUIByID(E.getStartNodeID()).simpXcoordProperty());
+      L.startYProperty().bind(getNodeUIByID(E.getStartNodeID()).simpYcoordProperty());
+      L.endXProperty().bind(getNodeUIByID(E.getEndNodeID()).simpXcoordProperty());
+      L.endYProperty().bind(getNodeUIByID(E.getEndNodeID()).simpYcoordProperty());
 
-    if (!(favNodeList.contains(N.getNodeID()))) {
-      Temp.setRadius(8.0);
-      Temp.setStroke(Color.RED);
-      Temp.setFill(Color.RED);
-    } else {
-      Temp.setRadius(10.0);
-      Temp.setStroke(Color.BLUE);
-      Temp.setFill(Color.BLUE);
+      L.setOnMouseClicked(
+          (MouseEvent e) -> {
+            disableListener(e);
+          }); // TODO ACTION
+      L.setStrokeWidth(3.0);
+      L.setStroke(Color.BLACK);
+      EdgeUI Temp = new EdgeUI(E, L);
+      EDGES.add(Temp);
     }
-    Temp.centerXProperty().bindBidirectional(N.simpXcoordProperty());
-    Temp.centerYProperty().bindBidirectional(N.simpYcoordProperty());
-    Temp.setOnMouseClicked(new nodeEventHandler(N, Temp));
-    secondaryAnchor.getChildren().add(Temp);
-    return Temp;
   }
 
-  public Line drawEdge(Edge E) {
-    Line TempE = new Line();
-    TempE.startXProperty().bind(E.getStartNode().simpXcoordProperty());
-    TempE.startYProperty().bind(E.getStartNode().simpYcoordProperty());
-    TempE.endXProperty().bind(E.getEndNode().simpXcoordProperty());
-    TempE.endYProperty().bind(E.getEndNode().simpYcoordProperty());
-    TempE.startXProperty().addListener(new invalidateLine(TempE));
-    TempE.startYProperty().addListener(new invalidateLine(TempE));
-    TempE.endXProperty().addListener(new invalidateLine(TempE));
-    TempE.endYProperty().addListener(new invalidateLine(TempE));
-    TempE.setStrokeWidth(4.0);
-    TempE.setStroke(Color.RED);
-    TempE.setId(E.getStartNode().getNodeID() + "_" + E.getEndNode().getNodeID());
-    TempE.setOnMouseClicked(new edgeEventHandler(E, TempE));
-    secondaryAnchor.getChildren().add(TempE);
-    return TempE;
+  // _______________________________________Draw________________________________________
+
+  private void addNodeUI(NodeUI NUI) {
+    secondaryAnchor.getChildren().add(NUI.getI());
   }
 
-  public void deleteLine(Line line) {
-    secondaryAnchor.getChildren().remove(line);
+  private void addEdgeUI(EdgeUI EUI) {
+    secondaryAnchor.getChildren().add(EUI.getL());
   }
 
-  public void deleteCircle(Circle circle) {
-    secondaryAnchor.getChildren().remove(circle);
+  private void drawNodeFloor(String Floor) {
+    for (NodeUI NUI : NODES) {
+      if (NUI.getN().getFloor().equals(Floor)) {
+        addNodeUI(NUI);
+      }
+    }
   }
 
-  @FXML
+  private void drawEdgeFloor(String Floor) {
+    for (EdgeUI EUI : EDGES) {
+      if (getNodeUIByID(EUI.getE().getStartNodeID()).getN().getFloor().equals(Floor)) {
+        addEdgeUI(EUI);
+      }
+    }
+  }
+
+  private void clearMap() {
+    secondaryAnchor.getChildren().remove(0, secondaryAnchor.getChildren().size());
+    secondaryAnchor.getChildren().add(TheMap);
+  }
+
   public void showPath() {
     if (thePath.isEmpty()) {
       System.out.println("No path to show!");
     } else {
       System.out.println("Path Exists!");
-      for (Edge N : thePath) {
-        if (N.getStartNode().getFloor().equals(currentFloor)
-            && N.getEndNode().getFloor().equals(currentFloor)) drawEdge(N);
-      }
-    }
-  }
-
-  /*--------------------------------- HANDLE FAVORITES --------------------------------------------*/
-  public LinkedList<String> getFav(Connection conn) {
-    Statement stmt = null;
-    LinkedList<String> favNodeList = new LinkedList<String>();
-    try {
-      stmt = conn.createStatement();
-      String query =
-          "SELECT nodeID FROM FavoriteNodes WHERE name = '" + HomeController.username + "'";
-      ResultSet rs = stmt.executeQuery(query);
-
-      while (rs.next()) {
-        favNodeList.add(rs.getString("nodeID"));
-      }
-    } catch (SQLException throwables) {
-      throwables.printStackTrace();
-    }
-    return favNodeList;
-  }
-
-  public void updateFavorite(Connection conn, String nID, int setFavorite) {
-    PreparedStatement stmt = null;
-    try {
-      if (setFavorite == 1) {
-        stmt = conn.prepareStatement("INSERT INTO FavoriteNodes VALUES (?, ?)");
-      } else if (setFavorite == 0) {
-        stmt = conn.prepareStatement("DELETE FROM FavoriteNodes WHERE name = ? AND nodeID = ?");
-      }
-
-      stmt.setString(1, HomeController.username);
-      stmt.setString(2, nID);
-
-      stmt.executeUpdate();
-
-      if (setFavorite == 1) {
-        System.out.println("the node with nodeID " + nID + " is now a favorite");
-      } else {
-        System.out.println("the node with nodeID " + nID + " is now NOT a favorite");
-      }
-
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-  }
-
-  @FXML Button dirBtn;
-  @FXML TextArea dirText;
-  private String endLocation = "";
-
-  private void setEnd(String end) {
-    endLocation = end;
-  }
-
-  private String getEnd() {
-    return endLocation;
-  }
-
-  @FXML
-  public void getDirections(LinkedList<Edge> edges) {
-
-    if (edges.isEmpty()) {
-      System.out.println("No Directions to Give!");
-      return;
-    }
-    ScaleDown(edges.getFirst().getStartNode());
-
-    dirText.clear();
-
-    dirText.appendText(
-        "Directions from "
-            + edges.getFirst().getStartNode().getLongName()
-            + " to "
-            + edges.getLast().getEndNode().getLongName()
-            + ":\n");
-    setEnd(edges.getLast().getEndNode().getShortName());
-
-    ScaleDown(edges.getFirst().getEndNode());
-    String initialDirection =
-        firstMove(
-            edges.getFirst().getStartNode().getXCoord(),
-            edges.getFirst().getStartNode().getYCoord(),
-            edges.getFirst().getEndNode().getXCoord(),
-            edges.getFirst().getEndNode().getYCoord(),
-            edges.getFirst().getStartNode(),
-            edges.getFirst().getEndNode()); // removed directions
-
-    // used to skip first edge
-    int skip = 0;
-    for (Edge N : edges) {
-      if (skip == 0) {
-        skip++;
-        continue;
-      }
-      ScaleDown(N.getEndNode());
-      String newDirection =
-          evalTurn(
-              initialDirection,
-              N.getStartNode().getXCoord(),
-              N.getStartNode().getYCoord(),
-              N.getEndNode().getXCoord(),
-              N.getEndNode().getYCoord(),
-              N.getStartNode(),
-              N.getEndNode());
-      initialDirection = newDirection;
-    }
-    dirText.appendText("\nWelcome to " + edges.getLast().getEndNode().getLongName() + "\n");
-  }
-
-  public String evalTurn(
-      String currentDirection,
-      int startX,
-      int startY,
-      int endX,
-      int endY,
-      Node startNode,
-      Node endNode) {
-    String newDirection = "";
-    int deltaX = endX - startX;
-    int deltaY = endY - startY;
-
-    System.out.println("start type: " + startNode.getNodeType());
-    System.out.println("end type: " + endNode.getNodeType());
-
-    // add handling for changing floors
-    if (startNode.getNodeType().equals("ELEV") && endNode.getNodeType().equals("ELEV")) {
-      dirText.appendText("Take the elevator towards floor " + endNode.getFloor() + "\n");
-      return "In elevator";
-
-    } else if (startNode.getNodeType().equals("ELEV") && !endNode.getNodeType().equals("ELEV")) {
-      newDirection = firstMove(startX, startY, endX, endY, startNode, endNode);
-      return newDirection;
-    } else if (startNode.getNodeType().equals("STAI") && endNode.getNodeType().equals("STAI")) {
-      dirText.appendText("Take the stairs towards floor " + endNode.getFloor() + "\n");
-      return "In stairs";
-    } else if (startNode.getNodeType().equals("STAI") && !endNode.getNodeType().equals("STAI")) {
-      newDirection = firstMove(startX, startY, endX, endY, startNode, endNode);
-      return newDirection;
-    }
-
-    // North
-    if ((deltaY < 0) && (Math.abs(deltaY) > Math.abs(deltaX))) {
-      newDirection = "North";
-    }
-    // South
-    else if ((deltaY > 0) && (deltaY > Math.abs(deltaX))) {
-      newDirection = "South";
-    }
-    // East
-    else if ((deltaX > 0) && (deltaX > Math.abs(deltaY))) {
-      newDirection = "East";
-    }
-    // West
-    else if ((deltaX < 0) && (Math.abs(deltaX) > Math.abs(deltaY))) {
-      newDirection = "West";
-    } else {
-      newDirection = "Error";
-    }
-
-    // Turn Left
-    if ((currentDirection.equals("North") && newDirection.equals("West"))
-        || (currentDirection.equals("East") && newDirection.equals("North"))
-        || (currentDirection.equals("South") && newDirection.equals("East"))
-        || (currentDirection.equals("West") && newDirection.equals("South"))) {
-      dirText.appendText("Turn Left towards " + endNode.getLongName() + "\n");
-
-    }
-    // Turn Right
-    else if ((currentDirection.equals("North") && newDirection.equals("East"))
-        || (currentDirection.equals("East") && newDirection.equals("South"))
-        || (currentDirection.equals("South") && newDirection.equals("West"))
-        || (currentDirection.equals("West") && newDirection.equals("North"))) {
-      dirText.appendText("Turn Right towards " + endNode.getLongName() + "\n");
-    }
-    // Continue Straight
-    else if (currentDirection.equals(newDirection)) {
-      if (!(startNode.getNodeType().equals("HALL") && endNode.getNodeType().equals("HALL"))) {
-        dirText.appendText("Continue Straight towards " + endNode.getLongName() + "\n");
-      }
-    }
-
-    return newDirection;
-  }
-
-  public String firstMove(
-      int startX, int startY, int endX, int endY, Node startNode, Node endNode) {
-    int deltaX = endX - startX;
-    int deltaY = endY - startY;
-
-    // add handling for changing floors
-    if (startNode.getNodeType().equals("ELEV") && endNode.getNodeType().equals("ELEV")) {
-      dirText.appendText("Take the elevator towards floor " + endNode.getFloor() + "\n");
-      return "In elevator";
-    } else if (startNode.getNodeType().equals("STAI") && endNode.getNodeType().equals("STAI")) {
-      dirText.appendText("Take the stairs towards floor " + endNode.getFloor() + "\n");
-      return "In stairs";
-    } else {
-      // North
-      if ((deltaY < 0) && (Math.abs(deltaY) > Math.abs(deltaX))) {
-        System.out.println("Head North towards " + endNode.getLongName());
-        dirText.appendText("Head North towards " + endNode.getLongName() + "\n");
-        return "North";
-      }
-      // South
-      else if ((deltaY > 0) && (deltaY > Math.abs(deltaX))) {
-        System.out.println("Head South towards " + endNode.getLongName());
-        dirText.appendText("Head South towards " + endNode.getLongName() + "\n");
-        return "South";
-      }
-      // East
-      else if ((deltaX > 0) && (deltaX > Math.abs(deltaY))) {
-        System.out.println("Head East towards " + endNode.getLongName());
-        dirText.appendText("Head East towards " + endNode.getLongName() + "\n");
-        return "East";
-      }
-      // West
-      else if ((deltaX < 0) && (Math.abs(deltaX) > Math.abs(deltaY))) {
-        System.out.println("Head West towards " + endNode.getLongName());
-        dirText.appendText("Head West towards " + endNode.getLongName() + "\n");
-        return "West";
-      } else {
-        System.out.println("Error determining turn direction towards " + endNode.getLongName());
-        return "Direction Error";
-      }
-    }
-  }
-
-  @FXML
-  public void downloadDirections(ActionEvent event) {
-    if (event.getSource() == dirBtn) {
-
-      String name = getEnd().replaceAll(" ", "") + "Directions.txt";
-
-      try {
-        FileWriter directions = new FileWriter(name);
-
-        directions.write(dirText.getText());
-        directions.close();
-
-        String DialogText = "";
-        if (getEnd().equals("")) {
-          DialogText = "Select a Start and End Before Downloading Directions";
-        } else {
-          DialogText = "Your Directions Have Been Downloaded";
+      for (Edge E : thePath) {
+        if (initialData.getNodeByID(E.getStartNodeID()).getFloor().equals(currentFloor)
+            && initialData.getNodeByID(E.getEndNodeID()).getFloor().equals(currentFloor)) {
+          EdgeUI EUI = getEdgeUIByID(E.getEdgeID());
+          if (!secondaryAnchor.getChildren().contains(EUI.getL())) addEdgeUI(EUI);
         }
-        Text header = new Text(DialogText);
-        header.setFont(Font.font("System", FontWeight.BOLD, 18));
+      }
+    }
+  }
 
-        JFXDialogLayout layout = new JFXDialogLayout();
-        layout.setHeading(header);
-        layout.setBody(new Text(""));
+  private void disableListener(MouseEvent e) {}
 
-        StackPane downloadedStackPane = new StackPane();
-        mainAnchor.getChildren().add(downloadedStackPane);
-        StackPane.setAlignment(downloadedStackPane, Pos.TOP_RIGHT);
-        downloadedStackPane.setLayoutY(245);
-        downloadedStackPane.setLayoutX(300);
-        JFXDialog submitDia =
-            new JFXDialog(downloadedStackPane, layout, JFXDialog.DialogTransition.CENTER);
+  // _______________________________________EDITOR FEATURES________________________________________
 
-        JFXButton downloadedBtn = new JFXButton("Close");
-        downloadedBtn.setPrefHeight(60);
-        downloadedBtn.setPrefWidth(120);
-        downloadedBtn.setId("downloadedBtn");
-        downloadedBtn.setButtonType(JFXButton.ButtonType.FLAT);
-        downloadedBtn.setStyle("-fx-background-color: #cdcdcd;");
+  private void deleteNode(NodeUI N) {
+    GlobalDb.getTables()
+        .getNodeTable()
+        .deleteEntity(GlobalDb.getConnection(), "Nodes", N.getN().getNodeID());
+    secondaryAnchor.getChildren().remove(N.getI());
+    NODES.remove(N);
+  }
 
-        downloadedBtn.setOnAction(
-            new EventHandler<ActionEvent>() {
+  private void deleteEdge(EdgeUI E) {
+    GlobalDb.getTables()
+        .getEdgeTable()
+        .deleteEntity(GlobalDb.getConnection(), "Tables", E.getE().getEdgeID());
+    secondaryAnchor.getChildren().remove(E.getL());
+    EDGES.remove(E);
+  }
+
+  public void addNode(NodeUI N) {
+
+    GlobalDb.getTables()
+        .getNodeTable()
+        .addEntity(
+            GlobalDb.getConnection(),
+            N.getN().getNodeID(),
+            N.getN().getXCoord(),
+            N.getN().getYCoord(),
+            N.getN().getFloor(),
+            N.getN().getBuilding(),
+            N.getN().getNodeType(),
+            N.getN().getLongName(),
+            N.getN().getShortName(),
+            0);
+    pathListener(N);
+    hoverResize(N);
+    setupDraggableNodeUI(N);
+    initialData.getGraphInfo().add(N.getN());
+    NODES.add(N);
+    addNodeUI(N);
+  }
+
+  private void addEdge(EdgeUI E) {
+    GlobalDb.getTables()
+        .getEdgeTable()
+        .addEntity(
+            GlobalDb.getConnection(),
+            E.getE().getEdgeID(),
+            E.getE().getStartNodeID(),
+            E.getE().getEndNodeID());
+    addEdgeUI(E);
+    EDGES.add(E);
+  }
+
+  private void editNode() {} // TODO Implement edit nodes
+
+  private void editEdge() {} // TODO Implement edit edges
+
+  // _______________________________________Path Finding____________________________________________
+
+  // For Directory
+  public void runPathFindingDirectory(String startNode, String targetNode) throws IOException {
+    Node start = initialData.getNodeByID(startNode);
+    Node target = initialData.getNodeByID(targetNode);
+
+    algorithm.search(initialData, start, target);
+    algorithm.printPathTo();
+    algorithm.printEdgeTo();
+    thePath = algorithm.getShortestPath().getPathEdges();
+    // getDirections(thePath);
+  }
+
+  public void runPathFindingClick() {
+    thePath = algorithm.multiSearch(initialData, Targets).getPathEdges();
+    showPath();
+  }
+
+  // _______________________________________Event Handeler_________________________________________
+
+  private void ToggleListener() {
+    toggleEditor
+        .selectedProperty()
+        .addListener(
+            new ChangeListener<Boolean>() {
               @Override
-              public void handle(ActionEvent event) {
-                submitDia.close();
+              public void changed(
+                  ObservableValue<? extends Boolean> observable,
+                  Boolean oldValue,
+                  Boolean newValue) {
+
+                if (toggleEditor.isSelected()) {
+                  clearMap();
+                  LoadingNodesEdges("1");
+                } else {
+                  clearMap();
+                  drawNodeFloor("1");
+                }
               }
             });
-
-        layout.setActions(downloadedBtn);
-        submitDia.show();
-
-      } catch (IOException e) {
-        System.out.println("Unable to write to directions output file");
-      }
-    }
   }
 
-  /*----------------------------- EVENT HANDLERS ------------------------------*/
-
-  private class addNodeEventHandler implements EventHandler<MouseEvent> {
-
-    public addNodeEventHandler() {}
-
-    @Override
-    public void handle(MouseEvent eventM) {
-      try {
-        addNewNode(eventM);
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
-  }
-
-  public void addNewNode(MouseEvent Event) throws IOException {
-    if (Event.isControlDown()) {
-
-      Node temp = new Node();
-      temp.setNodeID("NEWNODE");
-      temp.setXcoord((int) Event.getX());
-      temp.setYcoord((int) Event.getY());
-      temp.setSimpXcoord(Event.getX());
-      temp.setSimpYcoord(Event.getY());
-      Circle circle = drawNode(temp);
-
-      FXMLLoader fxmlLoader =
-          new FXMLLoader(getClass().getClassLoader().getResource("EditProperties.fxml"));
-
-      Pane root = fxmlLoader.load();
-      root.setStyle("-fx-background-color: #FFFFFF");
-
-      setupDraggablePopUp(root);
-
-      // tie this controller to popup for easy access of functions like pathfinding
-      EditPropertiesController popupController = fxmlLoader.getController();
-      popupController.setMapController(this);
-
-      this.popup = new Popup();
-      popupController.setAdd(true);
-      popupController.setCircle(circle);
-      popupController.setNode(temp);
-      popup.getContent().addAll(root);
-      popup.show(App.getPrimaryStage());
-    }
-  }
-
-  private class edgeEventHandler implements EventHandler<MouseEvent> {
-
-    private Edge E;
-    private Line L;
-
-    public edgeEventHandler(Edge E, Line L) {
-      this.E = E;
-      this.L = L;
-    }
-
-    @Override
-    public void handle(MouseEvent event) {
-      try {
-        if (isMapEditing) {
-          if (mode == edgeNodeSelection.NONE) {
-            edgePopUpAction(E, L);
-            TempE = E;
+  private void nodeAddListener() {
+    secondaryAnchor.setOnMouseClicked(
+        (MouseEvent E) -> {
+          if (E.isAltDown()) {
+            try {
+              FXMLLoader temp = loadPopup("MapPopUps/AddNode.fxml");
+              AddNodeController popupController = temp.getController();
+              popupController.setMapController(this);
+              popupController.setNX(E.getX());
+              popupController.setNY(E.getY());
+            } catch (IOException e) {
+              e.printStackTrace();
+            }
           }
-        }
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+          // NodeUI NUI = new NodeUI();
+        });
+  }
+
+  private void pathListener(NodeUI N) {
+    N.getI()
+        .setOnMouseClicked(
+            (MouseEvent E) -> {
+              if (E.getButton() == MouseButton.SECONDARY) {
+                Targets.add(N.getN());
+                resizeNodeUI(N, 2);
+                if (Targets.size() >= 2) {
+                  runPathFindingClick();
+                }
+              }
+            });
+  }
+
+  private void hoverResize(NodeUI N) {
+    N.getI()
+        .setOnMouseEntered(
+            (MouseEvent e) -> {
+              resizeNodeUI(N, 2);
+            });
+
+    N.getI()
+        .setOnMouseExited(
+            (MouseEvent e) -> {
+              resizeNodeUI(N, .5);
+            });
+  }
+
+  public void resizeNodeUI(NodeUI N, double factor) {
+    if ((N.getI().getFitHeight() < 2 * N.getSizeHeight() && factor > 1)
+        || (N.getI().getFitHeight() > .5 * N.getSizeHeight() && factor < 1)) {
+      N.getI().setFitWidth(N.getI().getFitWidth() * factor);
+      N.getI().setFitHeight(N.getI().getFitHeight() * factor);
+      N.getI().setX(N.getN().getXCoord() - N.getI().getFitWidth() / 2);
+      N.getI().setY(N.getN().getYCoord() - N.getI().getFitHeight());
     }
   }
 
-  private class nodeEventHandler implements EventHandler<MouseEvent> {
-
-    private Node N;
-    private Circle C;
-
-    public nodeEventHandler(Node N, Circle C) {
-      this.N = N;
-      this.C = C;
-    }
-
-    @Override
-    public void handle(MouseEvent event) {
-      try {
-        if (simpleStartNode != null) {
-          if (N != simpleStartNode) runPathFinding(simpleStartNode.getNodeID(), N.getNodeID());
-          return;
-        }
-        if (mode == edgeNodeSelection.STARTSELECT) {
-          editEdgeStart(N);
-          TempN = N;
-          if (!iseditedge) {
-            GlobalDb.getTables()
-                .getEdgeTable()
-                .updateEdgeStartNode(GlobalDb.getConnection(), "NEWEDGE", N.getNodeID());
-          } else {
-            GlobalDb.getTables()
-                .getEdgeTable()
-                .updateEdgeStartNode(GlobalDb.getConnection(), TempE.getEdgeID(), N.getNodeID());
-          }
-
-          EdgeEditPopup();
-          mode = edgeNodeSelection.NONE;
-          return;
-        }
-        if (mode == edgeNodeSelection.ENDSELECT) {
-          editEdgeEnd(N);
-          mode = edgeNodeSelection.NONE;
-
-          if (!iseditedge) {
-            GlobalDb.getTables()
-                .getEdgeTable()
-                .updateEdgeEndNode(GlobalDb.getConnection(), "NEWEDGE", N.getNodeID());
-            GlobalDb.getTables()
-                .getEdgeTable()
-                .updateEdgeID(
-                    GlobalDb.getConnection(), "NEWEDGE", TempN.getNodeID() + "_" + N.getNodeID());
-          } else {
-            GlobalDb.getTables()
-                .getEdgeTable()
-                .updateEdgeEndNode(GlobalDb.getConnection(), TempE.getEdgeID(), N.getNodeID());
-            GlobalDb.getTables()
-                .getEdgeTable()
-                .updateEdgeID(
-                    GlobalDb.getConnection(),
-                    TempE.getEdgeID(),
-                    TempN.getNodeID() + "_" + N.getNodeID());
-          }
-
-          TempL = null;
-          TempN = null;
-          edgeEdited = null;
-          return;
-        }
-        nodePopUpAction(N, C);
-      } catch (IOException e) {
-        e.printStackTrace();
+  // ___________________________________Getter and Setter_____________________________________
+  public static NodeUI getNodeUIByID(String NodeID) {
+    for (NodeUI theNode : NODES) {
+      if (theNode.getN().getNodeID().equals(NodeID)) {
+        return theNode;
       }
     }
+    System.out.println("This node doesn't exist.");
+    return null;
   }
 
-  public void nodePopUpAction(Node N, Circle C) throws IOException {
-    GaussianBlur blur = new GaussianBlur(25);
-    App.getPrimaryStage().getScene().getRoot().setEffect(blur);
-    FXMLLoader fxmlLoader;
-    if (!isMapEditing) {
-      fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("NodePopup.fxml"));
-    } else {
-      fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("NodeEditPopup.fxml"));
+  private static EdgeUI getEdgeUIByID(String EdgeID) {
+    for (EdgeUI theEdge : EDGES) {
+      if (theEdge.getE().getEdgeID().equals(EdgeID)) {
+        return theEdge;
+      } else if (theEdge.getE().getReverseEdgeID().equals(EdgeID)) {
+        return theEdge;
+      }
     }
+    System.out.println("This Edge doesn't exist.");
+    return null;
+  }
 
+  // _____________________________________Directions__________________________________________
+
+  // Regan this is spot for direction
+
+  // ______________________________________Popups_____________________________________________
+
+  private FXMLLoader loadPopup(String fxml) throws IOException {
+    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource(fxml));
     Pane root = (Pane) fxmlLoader.load();
-    root.setStyle("-fx-background-color: #FFFFFF");
 
     setupDraggablePopUp(root);
 
-    // tie this controller to popup for easy access of functions like pathfinding
-    if (!isMapEditing) {
-      NodePopup popupController = fxmlLoader.getController();
-      popupController.setMapController(this);
-      popupController.setNode(N);
-      popupController.setNodeName(N.getLongName());
-    } else {
-      NodeEditPopup popupController = fxmlLoader.getController();
-      popupController.setMapController(this);
-      popupController.setNode(N);
-      popupController.setCricle(C);
-      popupController.setNodeName(N.getLongName());
-    }
-
     this.popup = new Popup();
-
-    popup.getContent().addAll(root);
-    popup.isAutoFix();
+    this.popup.getContent().addAll(root);
     popup.show(App.getPrimaryStage());
-  }
 
-  public void edgePopUpAction(Edge E, Line L) throws IOException {
-    FXMLLoader fxmlLoader =
-        new FXMLLoader(getClass().getClassLoader().getResource("EdgeEditPopup.fxml"));
-
-    Pane root = fxmlLoader.load();
-    root.setStyle("-fx-background-color: #FFFFFF");
-
-    setupDraggablePopUp(root);
-
-    // tie this controller to popup for easy access of functions like pathfinding
-    EdgePopupController popupController = fxmlLoader.getController();
-    popupController.setMapController(this);
-    popupController.setEdge(E);
-    popupController.setline(L);
-
-    this.popup = new Popup();
-    popup.getContent().addAll(root);
-    popup.show(App.getPrimaryStage());
-  }
-
-  public void EdgeEditPopup() throws IOException {
-    GaussianBlur blur = new GaussianBlur(25);
-    App.getPrimaryStage().getScene().getRoot().setEffect(blur);
-
-    FXMLLoader fxmlLoader =
-        new FXMLLoader(getClass().getClassLoader().getResource("EdgeEditNodes.fxml"));
-
-    Pane root = (Pane) fxmlLoader.load();
-    root.setStyle("-fx-background-color: #FFFFFF");
-
-    setupDraggablePopUp(root);
-
-    // tie this controller to popup for easy access of functions like pathfinding
-    EdgeEditNodes popupController = fxmlLoader.getController();
-    popupController.setMapController(this);
-
-    this.popup = new Popup();
-    popupController.setEdge(edgeEdited);
-    popupController.setline(TempL);
-    popupController.setN(TempN);
-    popupController.disableCancel();
-    popup.getContent().addAll(root);
-    popup.isAutoFix();
-    popup.show(App.getPrimaryStage());
+    return fxmlLoader;
   }
 
   public void setupDraggablePopUp(Pane container) {
@@ -1029,76 +483,35 @@ public class MapController implements AdminAccessible {
             mouseLocation.set(new Point2D(x, y));
           }
         });
-
-    container.setOnMouseReleased(event -> mouseLocation.set(null));
   }
 
-  private class invalidateLine implements InvalidationListener {
-    private Line line;
+  public void setupDraggableNodeUI(NodeUI NUI) {
 
-    public invalidateLine(Line line) {
-      this.line = line;
-    }
+    NUI.getI()
+        .setOnMouseDragged(
+            event -> {
+              movingMap.setPannable(false);
+              Double x = event.getX();
+              Double y = event.getY();
+              NUI.getI().setX(x - NUI.getI().getFitWidth() / 2);
+              NUI.getI().setY(y - NUI.getI().getFitHeight());
+              NUI.setNodeCoord(x.intValue(), y.intValue());
+              resizeNodeUI(NUI, 2);
+            });
 
-    @Override
-    public void invalidated(javafx.beans.Observable observable) {
-      if (TempL == null) secondaryAnchor.getChildren().remove(line);
-    }
-  }
-
-  /*----------------------- GETTERS AND SETTERS -------------------------*/
-
-  public Line getTempL() {
-    return TempL;
-  }
-
-  public void setTempL(Line tempL) {
-    TempL = tempL;
-  }
-
-  public Edge getEdgeEdited() {
-    return edgeEdited;
-  }
-
-  public void setEdgeEdited(Edge edgeEdited) {
-    this.edgeEdited = edgeEdited;
-  }
-
-  public void setSimpleStartNode(Node n) {
-    simpleStartNode = n;
-    cancelBtn.setVisible(true);
-    cancelBtn.setDisable(false);
-  }
-
-  public edgeNodeSelection getMode() {
-    return mode;
-  }
-
-  public void setMode(edgeNodeSelection mode) {
-    this.mode = mode;
-  }
-
-  public boolean isIseditedge() {
-    return iseditedge;
-  }
-
-  public void setIseditedge(boolean iseditedge) {
-    this.iseditedge = iseditedge;
-  }
-
-  public Node getTempN() {
-    return TempN;
-  }
-
-  public void setTempN(Node tempN) {
-    TempN = tempN;
-  }
-
-  public Edge getTempE() {
-    return TempE;
-  }
-
-  public void setTempE(Edge tempE) {
-    TempE = tempE;
+    NUI.getI()
+        .setOnMouseReleased(
+            event -> {
+              Double x = event.getX();
+              Double y = event.getY();
+              GlobalDb.getTables()
+                  .getNodeTable()
+                  .updateNodeXCoord(GlobalDb.getConnection(), NUI.getN().getNodeID(), x.intValue());
+              GlobalDb.getTables()
+                  .getNodeTable()
+                  .updateNodeYCoord(GlobalDb.getConnection(), NUI.getN().getNodeID(), y.intValue());
+              movingMap.setPannable(true);
+              resizeNodeUI(NUI, .5);
+            });
   }
 }

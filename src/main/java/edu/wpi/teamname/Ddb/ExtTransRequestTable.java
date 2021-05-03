@@ -38,7 +38,7 @@ public class ExtTransRequestTable extends AbsTables {
   public void populateTable(Connection conn, String filePath) {
     if (filePath.isEmpty()) filePath = "Users.csv";
     try {
-      Scanner sc = new Scanner(Tables.class.getResourceAsStream("/csv/" + filePath));
+      Scanner sc = new Scanner(ExtTransRequestTable.class.getResourceAsStream("/csv/" + filePath));
       Statement stmt = conn.createStatement();
 
       sc.nextLine();

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXTreeTableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="644.0" prefWidth="263.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.teamname.views.Mapping.MapDrawerController">
+   <children>
+      <JFXTreeTableView fx:id="directoryTreeTable" layoutY="236.0" prefHeight="333.0" prefWidth="263.0" />
+      <JFXButton fx:id="findPathButton" layoutX="184.0" layoutY="131.0" style="-fx-background-color: #366CDB; -fx-background-radius: 6px;" text="Find Path" textFill="WHITE" />
+      <JFXTextField fx:id="startField" layoutX="33.0" layoutY="34.0" prefHeight="25.0" prefWidth="210.0" promptText="Start Location:" />
+      <JFXTextField fx:id="endField" layoutX="33.0" layoutY="87.0" prefHeight="25.0" prefWidth="210.0" promptText="End Location:" />
+      <JFXTextField fx:id="apiStart" layoutX="33.0" layoutY="162.0" prefHeight="25.0" prefWidth="210.0" promptText="API Start Location:" />
+      <JFXButton fx:id="apiButton" layoutX="123.0" layoutY="193.0" style="-fx-background-color: #366CDB; -fx-background-radius: 6px;" text="Get Google Maps Direction" textFill="WHITE" />
+   </children>
+</AnchorPane>

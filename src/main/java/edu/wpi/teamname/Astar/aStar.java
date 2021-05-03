@@ -2,37 +2,37 @@ package edu.wpi.teamname.Astar;
 
 import java.util.*;
 
-public class aStar implements IPathFinding {
+public class aStar extends IntermediaryAlgo implements IPathFinding {
 
   private Path nodeTo; // visited nodes (in order) that are part of the final path
   private boolean hasPath; // to stop search if path is found
-  private HashMap<Node, Double> scores =
-      new HashMap<Node, Double>(); // key = node, value = score of node = cost + heuristic
+  private HashMap<String, Double> scores =
+      new HashMap<String, Double>(); // key = node, value = score of node = cost + heuristic
 
   public aStar() {
     this.nodeTo = new Path();
     this.hasPath = false;
   }
 
-  public void search(RoomGraph data, Node start, Node target) {
+  public Path search(RoomGraph data, Node start, Node target) {
     if (start != null && target != null) {
       // reinitialize
       this.nodeTo = new Path();
-      this.scores = new HashMap<Node, Double>();
+      this.scores = new HashMap<String, Double>();
       hasPath = false;
 
       LinkedList<Node> closedList =
           new LinkedList<Node>(); // nodes we don't want to consider anymore
       LinkedList<Node> openList = new LinkedList<Node>(); // nodes queued for search
 
-      HashMap<Node, Edge> nodesTo =
-          new HashMap<Node, Edge>(); // key = node, value = edge leading to node, holds parent
-      HashMap<Node, Double> costs =
-          new HashMap<Node, Double>(); // key = node, value = accumulated cost to get to node
+      HashMap<String, Edge> nodesTo =
+          new HashMap<String, Edge>(); // key = node, value = edge leading to node, holds parent
+      HashMap<String, Double> costs =
+          new HashMap<String, Double>(); // key = node, value = accumulated cost to get to node
 
       // initialize at start
-      costs.put(start, 0.0);
-      scores.put(start, calculateHeuristic(start, target));
+      costs.put(start.getNodeID(), 0.0);
+      scores.put(start.getNodeID(), calculateHeuristic(start, target));
       openList.add(start);
 
       while (!openList.isEmpty()) { // until queue is empty
@@ -45,27 +45,32 @@ public class aStar implements IPathFinding {
 
         LinkedList<Edge> edges =
             (LinkedList<Edge>)
-                data.getGraphInfo().get(current); // get edges with this node as start
+                data.getNode(current).getEdges(); // get edges with this node as start
 
         if (edges != null) {
           for (Edge edge : edges) { // iterate through each edge
-            Node child = edge.getEndNode();
+            Node child = data.getNodeByID(edge.getEndNodeID());
             double totalWeight =
-                costs.get(edge.getStartNode())
+                costs.get(edge.getStartNodeID())
                     + edge.getCost(); // calculate cost to get to this node
 
             if (!openList.contains(child)
                 && !closedList.contains(child)) { // if neither list contain, put into queue
-              nodesTo.put(child, edge);
-              costs.put(child, totalWeight);
-              scores.put(child, costs.get(child) + calculateHeuristic(child, target));
+              nodesTo.put(child.getNodeID(), edge);
+              costs.put(child.getNodeID(), totalWeight);
+              scores.put(
+                  child.getNodeID(),
+                  costs.get(child.getNodeID()) + calculateHeuristic(child, target));
               openList.add(child);
             } else {
               if (totalWeight
-                  < costs.get(child)) { // if this cost is smaller than previous recorded cost
-                nodesTo.put(child, edge);
-                costs.put(child, totalWeight);
-                scores.put(child, costs.get(child) + calculateHeuristic(child, target));
+                  < costs.get(
+                      child.getNodeID())) { // if this cost is smaller than previous recorded cost
+                nodesTo.put(child.getNodeID(), edge);
+                costs.put(child.getNodeID(), totalWeight);
+                scores.put(
+                    child.getNodeID(),
+                    costs.get(child.getNodeID()) + calculateHeuristic(child, target));
 
                 if (closedList.contains(child)) { // move back from closed list to open list
                   closedList.remove(child);
@@ -86,21 +91,23 @@ public class aStar implements IPathFinding {
         Node node = target;
         nodeTo.getPath().addFirst(node);
         while (node != start) {
-          Node parent = nodesTo.get(node).getStartNode();
+          Node parent = data.getNodeByID(nodesTo.get(node.getNodeID()).getStartNodeID());
           nodeTo.getPath().addFirst(parent);
-          nodeTo.getPathEdges().addFirst(nodesTo.get(node));
-          nodeTo.setCost(nodeTo.getCost() + nodesTo.get(node).getCost());
+          nodeTo.getPathEdges().addFirst(nodesTo.get(node.getNodeID()));
+          nodeTo.setCost(nodeTo.getCost() + nodesTo.get(node.getNodeID()).getCost());
           node = parent;
         }
       }
     }
+    return nodeTo;
   }
 
   private void insertionSortScore(List<Node> nodes) { // sort edges by cost
     int N = nodes.size();
     for (int i = 1; i < N; i++) { // move down the list starting from left to right
       for (int j = i;
-          j > 0 && (scores.get(nodes.get(j)) < scores.get(nodes.get(j - 1)));
+          j > 0
+              && (scores.get(nodes.get(j).getNodeID()) < scores.get(nodes.get(j - 1).getNodeID()));
           j--) { // exchange edges if previous is smaller
         Node temp = nodes.get(j - 1);
         Node temp2 = nodes.get(j);
