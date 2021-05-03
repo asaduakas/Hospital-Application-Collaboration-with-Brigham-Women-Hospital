@@ -8,6 +8,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
@@ -38,29 +39,29 @@ public class App extends Application {
     GlobalDb.getTables().getUserTable().dispUsers(GlobalDb.getConnection());
     App.primaryStage = primaryStage;
 
-    ControllerManager.attemptLoadPage(
-        "initPageView.fxml",
-        fxmlLoader -> {
-          Pane root = (Pane) fxmlLoader.getRoot();
-          List<Node> childrenList = root.getChildren();
-          primaryStage.setMinHeight(135 * 4);
-          primaryStage.setMinWidth(240 * 4);
-          Scene scene = primaryStage.getScene();
-          changeChildrenInitPage(childrenList);
-          // Overriding the method inside the object of fullScreenListener
-          SceneSizeChangeListener listener =
-              new SceneSizeChangeListener(scene, root, childrenList) {
-                @Override
-                public void changeChildren(List<Node> nodeList) {
-                  changeChildrenInitPage(childrenList);
-                }
-              };
-          scene.widthProperty().addListener(listener);
-          scene.heightProperty().addListener(listener);
-        });
+    ControllerManager.attemptLoadPage("initPageView.fxml", fxmlLoader -> initLoader(fxmlLoader));
   }
 
-  public void changeChildrenInitPage(List<Node> nodeList) {
+  public static void initLoader(FXMLLoader fxmlLoader) {
+    Pane root = fxmlLoader.getRoot();
+    List<Node> childrenList = root.getChildren();
+    primaryStage.setMinHeight(135 * 4);
+    primaryStage.setMinWidth(240 * 4);
+    Scene scene = primaryStage.getScene();
+    changeChildrenInitPage(childrenList);
+    // Overriding the method inside the object of fullScreenListener
+    SceneSizeChangeListener listener =
+        new SceneSizeChangeListener(scene, root, childrenList) {
+          @Override
+          public void changeChildren(List<Node> nodeList) {
+            changeChildrenInitPage(childrenList);
+          }
+        };
+    scene.widthProperty().addListener(listener);
+    scene.heightProperty().addListener(listener);
+  }
+
+  public static void changeChildrenInitPage(List<Node> nodeList) {
 
     HBox topButtons = (HBox) nodeList.get(4);
     topButtons.setLayoutX(primaryStage.getScene().getWidth() - (topButtons.getWidth() + 26));

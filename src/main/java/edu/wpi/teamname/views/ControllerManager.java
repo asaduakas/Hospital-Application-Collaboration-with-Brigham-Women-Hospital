@@ -58,10 +58,12 @@ public class ControllerManager {
   }
 
   public static void attemptLoadPage(String fxmlName, Consumer<FXMLLoader> tasks) {
+    App.getPrimaryStage().close();
     FXMLLoader fxmlLoader = getLoader(fxmlName);
     if (!isPermissible(fxmlLoader.getController().getClass())) return;
     exitPopup();
     App.getPrimaryStage().setScene(new Scene(fxmlLoader.getRoot()));
+    App.getPrimaryStage().setMaximized(true); // UI rescale can't handle starting without this
     App.getPrimaryStage().show();
     tasks.accept(fxmlLoader); // Run additional tasks that were passed in
   }

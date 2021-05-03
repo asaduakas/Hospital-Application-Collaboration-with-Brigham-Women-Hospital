@@ -2,15 +2,11 @@ package edu.wpi.teamname.views.Access;
 
 import com.jfoenix.controls.*;
 import edu.wpi.teamname.App;
+import edu.wpi.teamname.Ddb.FDatabaseTables;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.ControllerManager;
-import edu.wpi.teamname.views.HomeController;
 import edu.wpi.teamname.views.SceneSizeChangeListener;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -47,56 +43,15 @@ public class LoginController implements AllAccessible {
   private void login(ActionEvent event) throws IOException {
     if (usernameField.getText().isEmpty() || passwordField.getText().isEmpty()) {
       popupWarning(event, "Please fill out the required fields.");
-    } else if (!validateUser(usernameField.getText(), passwordField.getText())) {
+    } else if (!FDatabaseTables.getUserTable()
+        .validateTheUser(
+            GlobalDb.getConnection(), usernameField.getText(), passwordField.getText())) {
       popupWarning(event, "Incorrect username or password, please try again!");
     } else {
-      this.userCategory = readFromDataBase(GlobalDb.getConnection(), usernameField.getText());
+      this.userCategory =
+          FDatabaseTables.getUserTable()
+              .getCategoryofUser(GlobalDb.getConnection(), usernameField.getText());
       ControllerManager.attemptLoadPage("HomeView.fxml", fxmlLoader -> start(fxmlLoader.getRoot()));
-    }
-  }
-
-  public boolean validateUser(String username, String password) {
-    HomeController.username = username;
-    HomeController.password = password;
-    System.out.println(username + "in validateUser");
-    System.out.println(password + "password in validateUser");
-
-    try {
-      GlobalDb.establishCon();
-      Statement statement = GlobalDb.getConnection().createStatement();
-      String query = "SELECT category, password FROM Users WHERE id = '" + username + "'";
-      statement.executeQuery(query);
-      ResultSet rs = statement.getResultSet();
-
-      if (rs.next()) { // If there is a user
-        String pw = rs.getString("password");
-        System.out.println(pw + " this is rs");
-        if (!password.equals(pw)) {
-          return false;
-        }
-        /*
-        else {
-          switch (rs.getString("category")) {
-            case "patient":
-              userTypeEnum = UserCategory.Patient;
-              break;
-            case "employee":
-              userTypeEnum = UserCategory.Employee;
-              break;
-            case "admin":
-              userTypeEnum = UserCategory.Admin;
-              break;
-          }
-        }
-        */
-      } else {
-        System.out.println("User not found in database!");
-        return false;
-      }
-      return true;
-    } catch (SQLException e) {
-      e.printStackTrace();
-      return false;
     }
   }
 
@@ -177,28 +132,6 @@ public class LoginController implements AllAccessible {
     Text userType = (Text) nodeList.get(nodeList.size() - 1);
     userType.setX(exitButton.getLayoutX() - 170);
     userType.setY(App.getPrimaryStage().getScene().getHeight() - 25);
-  }
-
-  public static String readFromDataBase(Connection conn, String username) {
-    Statement stmt = null;
-    ResultSet rs = null;
-    String category = null;
-    try {
-      stmt = conn.createStatement();
-      String query = "SELECT category FROM Users WHERE id = '" + username + "' ";
-      rs = stmt.executeQuery(query);
-
-      while (rs.next()) {
-        category = rs.getString("category");
-        if (rs.getString("username") == null) {
-          category = "Guest";
-        }
-      }
-
-    } catch (SQLException e) {
-
-    }
-    return category;
   }
 
   @FXML
