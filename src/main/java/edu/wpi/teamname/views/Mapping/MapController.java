@@ -5,10 +5,9 @@ import com.jfoenix.controls.JFXToggleButton;
 import edu.wpi.teamname.Astar.*;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.Access.AllAccessible;
-import edu.wpi.teamname.views.Access.AdminAccessible;
-import java.awt.*;
 import java.io.IOException;
 import java.util.*;
+import javafx.animation.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -20,6 +19,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.util.Duration;
 
 public class MapController implements AllAccessible {
 
@@ -35,6 +35,7 @@ public class MapController implements AllAccessible {
   private Image I = new Image("Images/274px-Google_Maps_pin.svg.png");
   private Image Exit = new Image("Images/exit.png");
   private Image F1 = new Image("01_thefirstfloor.png");
+  private Image up = new Image("Images/up-arrow.png");
 
   @FXML private JFXToggleButton toggleEditor;
   @FXML private AnchorPane mainAnchor;
@@ -244,6 +245,8 @@ public class MapController implements AllAccessible {
   public void runPathFindingClick() {
     thePath = algorithm.multiSearch(initialData, Targets).getPathEdges();
     showPath();
+    animateEdges();
+    animateElevators();
   }
 
   // _______________________________________Event Handeler_________________________________________
@@ -277,7 +280,6 @@ public class MapController implements AllAccessible {
               if (E.getButton() == MouseButton.SECONDARY) {
                 Targets.add(N.getN());
                 resizeNodeUI(N, 2);
-
                 if (Targets.size() >= 2) {
                   runPathFindingClick();
                 }
@@ -310,6 +312,55 @@ public class MapController implements AllAccessible {
       N.getI().setY(N.getN().getYCoord() - N.getI().getFitHeight());
     }
   }
+
+  // ---------------------------------------Animation------------------------------------------
+
+  @FXML
+  private void animateEdges() {
+    for (Edge e : thePath) {
+      EdgeUI edgeUi = getEdgeUIByID(e.getEdgeID());
+      Line line = edgeUi.getL();
+
+      line.getStrokeDashArray().setAll(25d, 10d);
+      line.setStrokeWidth(2);
+
+      final double maxOffset = line.getStrokeDashArray().stream().reduce(0d, (a, b) -> a + b);
+
+      Timeline timeline =
+          new Timeline(
+              new KeyFrame(
+                  Duration.ZERO,
+                  new KeyValue(line.strokeDashOffsetProperty(), 0, Interpolator.LINEAR)),
+              new KeyFrame(
+                  Duration.seconds(2),
+                  new KeyValue(line.strokeDashOffsetProperty(), maxOffset, Interpolator.LINEAR)));
+      timeline.setCycleCount(Timeline.INDEFINITE);
+      timeline.play();
+    }
+  }
+
+  @FXML
+  private void animateElevators() {
+    for (Node n : Targets) {
+      if (n.getNodeType().equals("ELEV")) {
+        ImageView empty = new ImageView();
+        ImageView imageView = new ImageView(up);
+        imageView.setFitHeight(20);
+        imageView.setFitWidth(20);
+        imageView.setX(n.getXCoord() - 10);
+        imageView.setY(n.getYCoord() - 10);
+        secondaryAnchor.getChildren().add(imageView);
+        //TODO: if clicked on image, take to according floor
+        //maybe get rid of old node image
+
+        ScaleTransition st = new ScaleTransition(Duration.seconds(1), imageView);
+        st.setByX(1.5f);
+        st.setByY(1.5f);
+        st.setCycleCount(Animation.INDEFINITE);
+        st.setAutoReverse(true);
+        st.play();
+      }
+    }
 
   // ___________________________________Getter and Setter_____________________________________
   public NodeUI getNodeUIByID(String NodeID) {

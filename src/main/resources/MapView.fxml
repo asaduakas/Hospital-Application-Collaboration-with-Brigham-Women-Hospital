@@ -47,6 +47,5 @@
       <JFXButton fx:id="cancelBtn" layoutX="816.0" layoutY="603.0" prefHeight="33.0" prefWidth="74.0" style="-fx-font-weight: Bold; -fx-background-color: #1a479a;" text="Cancel" textFill="WHITE" />
       <JFXButton fx:id="dirBtn" layoutX="6.0" layoutY="545.0" prefHeight="41.0" prefWidth="168.0" text="Download Directions" />
       <JFXTextArea fx:id="dirText" layoutX="791.0" layoutY="365.0" prefHeight="208.0" prefWidth="180.0" unFocusColor="#b9b9b9" />
-
    </children>
 </AnchorPane>
