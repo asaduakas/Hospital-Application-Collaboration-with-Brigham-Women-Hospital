@@ -52,6 +52,10 @@ public class MapController implements AllAccessible {
   private boolean isEditor;
 
   private final Image F1 = new Image("01_thefirstfloor.png");
+  private final Image F2 = new Image("02_thesecondfloor.png");
+  private final Image F3 = new Image("03_thethirdfloor.png");
+  //  private final Image FL1 = new Image("00_thelowerlevel1.png");
+  //  private final Image FL2 = new Image("00_thelowerlevel2.png");
   public static final Image DEFAULT = new Image("Images/274px-Google_Maps_pin.svg.png");
   public static final Image PARK = new Image("Images/parkingpin.png");
   public static final Image ELEV = new Image("Images/elevatorpin.png");
@@ -100,6 +104,8 @@ public class MapController implements AllAccessible {
     } catch (IOException e) {
       e.printStackTrace();
     }
+
+    initializeFloorList();
 
     HamburgerSlideCloseTransition burgerTask = new HamburgerSlideCloseTransition(mapHam);
     burgerTask.setRate(-1);
@@ -222,6 +228,57 @@ public class MapController implements AllAccessible {
     }
   }
 
+  private void initializeFloorList() {
+    JFXButton ChooseFloorBtn = new JFXButton("Choose Floor");
+    ChooseFloorBtn.setButtonType(JFXButton.ButtonType.RAISED);
+
+    JFXButton Floor1Btn = new JFXButton("Floor 1");
+    Floor1Btn.setButtonType(JFXButton.ButtonType.RAISED);
+    Floor1Btn.setOnAction(
+        (e) -> {
+          switchFloor("1");
+        });
+
+    JFXButton Floor2Btn = new JFXButton("Floor 2");
+    Floor2Btn.setButtonType(JFXButton.ButtonType.RAISED);
+    Floor2Btn.setOnAction(
+        (e) -> {
+          switchFloor("2");
+        });
+
+    JFXButton Floor3Btn = new JFXButton("Floor 3");
+    Floor3Btn.setButtonType(JFXButton.ButtonType.RAISED);
+    Floor3Btn.setOnAction(
+        (e) -> {
+          switchFloor("3");
+        });
+
+    JFXButton FloorL1Btn = new JFXButton("Floor L1");
+    FloorL1Btn.setButtonType(JFXButton.ButtonType.RAISED);
+    FloorL1Btn.setOnAction(
+        (e) -> {
+          switchFloor("L1");
+        });
+
+    JFXButton FloorL2Btn = new JFXButton("Floor L2");
+    FloorL2Btn.setButtonType(JFXButton.ButtonType.RAISED);
+    FloorL2Btn.setOnAction(
+        (e) -> {
+          switchFloor("L2");
+        });
+
+    JFXNodesList nodeList = new JFXNodesList();
+    nodeList.addAnimatedNode(ChooseFloorBtn);
+    nodeList.addAnimatedNode(FloorL2Btn);
+    nodeList.addAnimatedNode(FloorL1Btn);
+    nodeList.addAnimatedNode(Floor1Btn);
+    nodeList.addAnimatedNode(Floor2Btn);
+    nodeList.addAnimatedNode(Floor3Btn);
+    nodeList.setSpacing(20d);
+
+    mainAnchor.getChildren().add(nodeList);
+  }
+
   // _______________________________________Draw________________________________________
 
   private void addNodeUI(NodeUI NUI) {
@@ -247,6 +304,38 @@ public class MapController implements AllAccessible {
       if (getNodeUIByID(EUI.getE().getStartNodeID()).getN().getFloor().equals(Floor)) {
         addEdgeUI(EUI);
       }
+    }
+  }
+
+  private void switchFloor(String floor) {
+    clearMap();
+    switch (floor) {
+      case "2":
+        currentFloor = "2";
+        TheMap.setImage(F2);
+        break;
+      case "3":
+        currentFloor = "3";
+        //        TheMap.setImage(F3);
+        break;
+      case "L2":
+        currentFloor = "L2";
+        //        TheMap.setImage(FL2);
+        break;
+      case "L1":
+        currentFloor = "L1";
+        //        TheMap.setImage(FL1);
+        break;
+      default:
+        currentFloor = "1";
+        TheMap.setImage(F1);
+        break;
+    }
+    drawNodeFloor(floor);
+    if (isEditor) {
+      drawEdgeFloor(floor);
+    } else {
+      showPath();
     }
   }
 
