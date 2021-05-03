@@ -1,6 +1,9 @@
 package edu.wpi.teamname.Ddb;
 
+import edu.wpi.teamname.views.ServiceRequests.NodeInfo.FoodDelivNodeInfo;
+import java.io.IOException;
 import java.sql.*;
+import javafx.collections.ObservableList;
 
 public class FoodDeliveryRequestTable extends AbsTables {
   // id,type,status,pFirstName,pLastName,contactInfo,location,specialNeeds
@@ -116,5 +119,51 @@ public class FoodDeliveryRequestTable extends AbsTables {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  public void addIntoFoodDelivDataList(ObservableList<FoodDelivNodeInfo> foodData)
+      throws IOException {
+    try {
+      String query = "SELECT * FROM FoodDeliveryServiceRequest";
+      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      while (rs.next()) {
+        foodData.add(
+            new FoodDelivNodeInfo(
+                rs.getString("id"),
+                rs.getString("status"),
+                rs.getString("firstName"),
+                rs.getString("lastName"),
+                rs.getString("contactInfo"),
+                rs.getString("location"),
+                rs.getString("assignedEmployee"),
+                rs.getString("specialNeeds")));
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+  }
+
+  public ObservableList<FoodDelivNodeInfo> changeFoodDelivData(
+      ObservableList<FoodDelivNodeInfo> foodData) {
+    for (FoodDelivNodeInfo foodInfo : foodData) {
+      if (!(foodInfo.getStatus().isEmpty())) {
+        PreparedStatement stmt = null;
+        try {
+          stmt =
+              GlobalDb.getConnection()
+                  .prepareStatement(
+                      "UPDATE FoodDeliveryServiceRequest SET status = ?, assignedEmployee = ?, specialNeeds = ? WHERE id=?");
+          stmt.setString(1, foodInfo.getStatus());
+          stmt.setString(2, foodInfo.getAssignedEmployee());
+          stmt.setString(3, foodInfo.getSpecialNeeds());
+          stmt.setString(4, foodInfo.getId());
+          stmt.executeUpdate();
+
+        } catch (SQLException throwables) {
+          throwables.printStackTrace();
+        }
+      }
+    }
+    return foodData;
   }
 }

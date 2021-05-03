@@ -1,8 +1,9 @@
 package edu.wpi.teamname.Ddb;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
+import edu.wpi.teamname.views.ServiceRequests.NodeInfo.AudVisNodeInfo;
+import java.io.IOException;
+import java.sql.*;
+import javafx.collections.ObservableList;
 
 public class AudVisRequestTable extends AbsTables {
   // id,status,firstName,lastName,contactInfo,location,assignedEmployee,descriptionOfProblem(a very
@@ -59,5 +60,49 @@ public class AudVisRequestTable extends AbsTables {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  public void addIntoAudVisDataList(ObservableList<AudVisNodeInfo> audVisData) throws IOException {
+    try {
+      String query = "SELECT * FROM AudVisServiceRequest";
+      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      while (rs.next()) {
+        audVisData.add(
+            new AudVisNodeInfo(
+                rs.getString("id"),
+                rs.getString("status"),
+                rs.getString("firstName"),
+                rs.getString("lastName"),
+                rs.getString("contactInfo"),
+                rs.getString("location"),
+                rs.getString("assignedEmployee"),
+                rs.getString("descriptionOfProblem")));
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+  }
+
+  public ObservableList<AudVisNodeInfo> changeAudVisData(
+      ObservableList<AudVisNodeInfo> audVisData) {
+    for (AudVisNodeInfo audVisInfo : audVisData) {
+      if (!(audVisInfo.getStatus().isEmpty())) {
+        PreparedStatement stmt = null;
+        try {
+          stmt =
+              GlobalDb.getConnection()
+                  .prepareStatement(
+                      "UPDATE AudVisServiceRequest SET status = ?, assignedEmployee = ? WHERE id=?");
+          stmt.setString(1, audVisInfo.getStatus());
+          stmt.setString(2, audVisInfo.getAssignedEmployee());
+          stmt.setString(3, audVisInfo.getId());
+          stmt.executeUpdate();
+
+        } catch (SQLException throwables) {
+          throwables.printStackTrace();
+        }
+      }
+    }
+    return audVisData;
   }
 }
