@@ -7,7 +7,6 @@ import edu.wpi.teamname.Astar.*;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.Access.AllAccessible;
 import edu.wpi.teamname.views.Mapping.Popup.Edit.AddNodeController;
-import edu.wpi.teamname.views.Mapping.Popup.Edit.EditNodeController;
 import java.awt.*;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -90,6 +89,7 @@ public class MapController implements AllAccessible {
     ToggleListener();
     nodeAddListener();
     cancelListener();
+    getNodesToAlignListener();
 
     mapDrawer.setPickOnBounds(false);
 
@@ -198,6 +198,7 @@ public class MapController implements AllAccessible {
       deleteNodeListener(Temp);
       setupDraggableNodeUI(Temp);
       NODES.add(Temp);
+      // getNodesToAlignListener(Temp);
     }
   }
 
@@ -364,6 +365,7 @@ public class MapController implements AllAccessible {
     NODES.add(N);
     addNodeUI(N);
     deleteNodeListener(N);
+    // getNodesToAlignListener(N);
   }
 
   private void addEdge(EdgeUI E) {
@@ -497,59 +499,77 @@ public class MapController implements AllAccessible {
 
   LinkedList<Node> nodesToAlign = new LinkedList<Node>();
 
-  private void getNodesToAlignListener(NodeUI N)
-  {
-    secondaryAnchor.setOnMousePressed(
-            (MouseEvent E) -> {
-              if (E.isShiftDown() && isEditor) {
-                try {
+  private void getNodesToAlignListener() {
+    mainAnchor.setOnKeyPressed(
+        (KeyEvent e) -> {
+          KeyCode key = e.getCode();
+          if (key == KeyCode.SHIFT && isEditor) {
+            System.out.println("Shift is down");
 
-                  N.getI()
-                          .addEventHandler(
-                                  MouseEvent.MOUSE_PRESSED,
-                                  (M) -> {
-                                    if (M.getButton() == MouseButton.SECONDARY) {
-                                      nodesToAlign.add(N.getN());
-                                      resizeNodeUI(N, 2);
-                                      if (nodesToAlign.size() > 2) {
-                                        alignNodes();
-                                      }
-                                    }
-                                  });
+            for (Node N : this.initialData.getGraphInfo()) {
+              NodeUI NUI = getNodeUIByID(N.getNodeID());
+              NUI.getI()
+                  .addEventHandler(
+                      MouseEvent.MOUSE_PRESSED,
+                      (M) -> {
+                        System.out.println("node clicked");
+                        nodesToAlign.add(NUI.getN());
 
-                } catch (IOException e) {
-                  e.printStackTrace();
-                }
-              }
-            });
+                        if (nodesToAlign.size() > 2) {
+                          alignNodes();
+                        }
+                      });
+            }
+          }
+        });
   }
 
-  private void alignNodes()
-  {
-    int totalX=0;
-    int totalY=0;
-    int nodeCount=0;
-    int diffX=0;
-    int diffY=0;
-    int tempX=0;
-    int tempY=0;
+  private void alignNodes() {
+    System.out.println("about to align");
 
-    for(Node node : nodesToAlign)
-    {
-      diffX=tempX-node.getXCoord();
-      diffY=tempY-node.getYCoord();
-      totalX+=node.getXCoord();
-      totalY+=node.getYCoord();
-      tempX=node.getXCoord();
-      tempY=node.getYCoord();
+    int totalX = 0;
+    int totalY = 0;
+    int nodeCount = 0;
+    int diffX = 0;
+    int diffY = 0;
+    int totalXDiff = 0;
+    int totalYDiff = 0;
+    int tempX = 0;
+    int tempY = 0;
+
+    for (Node node : nodesToAlign) {
+      System.out.println(node.getNodeID());
+      diffX = tempX - node.getXCoord();
+      diffY = tempY - node.getYCoord();
+      totalXDiff += Math.abs(diffX);
+      totalYDiff += Math.abs(diffY);
+      totalX += node.getXCoord();
+      totalY += node.getYCoord();
+      tempX = node.getXCoord();
+      tempY = node.getYCoord();
       nodeCount++;
     }
 
-    int avgX=totalX/nodeCount;
-    int avgY=totalY/nodeCount;
+    int avgX = totalX / nodeCount;
+    int avgY = totalY / nodeCount;
 
+    if (totalXDiff > totalYDiff) {
+      for (Node node : nodesToAlign) {
 
+        NodeUI NUI = getNodeUIByID(node.getNodeID());
+        NUI.getI().setX(avgX - NUI.getI().getFitWidth() / 2);
+        NUI.getI().setY(node.getYCoord() - NUI.getI().getFitHeight());
+        NUI.setNodeCoord(avgX, node.getYCoord());
+      }
+    } else {
+      for (Node node : nodesToAlign) {
 
+        NodeUI NUI = getNodeUIByID(node.getNodeID());
+        NUI.getI().setX(node.getXCoord() - NUI.getI().getFitWidth() / 2);
+        NUI.getI().setY(avgY - NUI.getI().getFitHeight());
+        NUI.setNodeCoord(node.getYCoord(), avgY);
+      }
+    }
   }
 
   private void hoverResize(NodeUI N) {
@@ -557,31 +577,33 @@ public class MapController implements AllAccessible {
         .setOnMouseEntered(
             (MouseEvent e) -> {
               resizeNodeUI(N, 2);
-              if (isEditor) {
-                try {
-                  //                  FXMLLoader temp = loadPopup("MapPopUps/AddNode.fxml");
-                  //                  AddNodeController popupController = temp.getController();
-                  //                  popupController.setMapController(this);
-                  //                  popupController.setNX(e.getX());
-                  //                  popupController.setNY(e.getY());
-                  FXMLLoader temp = loadPopup("MapPopUps/EditNode.fxml");
-                  EditNodeController editNodeController = temp.getController();
-                  editNodeController.setMapController(this);
-                  editNodeController.setTheNode(N);
-
-                } catch (IOException ioException) {
-                  ioException.printStackTrace();
-                }
-              }
+              //              if (isEditor) {
+              //                try {
+              //                  //                  FXMLLoader temp =
+              // loadPopup("MapPopUps/AddNode.fxml");
+              //                  //                  AddNodeController popupController =
+              // temp.getController();
+              //                  //                  popupController.setMapController(this);
+              //                  //                  popupController.setNX(e.getX());
+              //                  //                  popupController.setNY(e.getY());
+              //                  FXMLLoader temp = loadPopup("MapPopUps/EditNode.fxml");
+              //                  EditNodeController editNodeController = temp.getController();
+              //                  editNodeController.setMapController(this);
+              //                  editNodeController.setTheNode(N);
+              //
+              //                } catch (IOException ioException) {
+              //                  ioException.printStackTrace();
+              //                }
+              //              }
             });
 
     N.getI()
         .setOnMouseExited(
             (MouseEvent e) -> {
               if (Targets.isEmpty()) resizeNodeUI(N, .5);
-              if (isEditor) {
-                this.popup.hide();
-              }
+              //              if (isEditor) {
+              //                this.popup.hide();
+              //              }
             });
   }
 
