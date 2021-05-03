@@ -12,6 +12,7 @@ import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -42,63 +43,58 @@ public class LoginController implements AllAccessible {
 
   @FXML
   private void login(ActionEvent event) throws IOException {
+
+    FXMLLoader fxmlLoader =
+        new FXMLLoader(getClass().getClassLoader().getResource("HomeView.fxml"));
+    Pane root = (Pane) fxmlLoader.load();
     if (usernameField.getText().isEmpty() || passwordField.getText().isEmpty()) {
       popupWarning(event, "Please fill out the required fields.");
-    } else if (!validateUser(usernameField.getText(), passwordField.getText())) {
+    } else if (!fxmlLoader
+        .<HomeController>getController()
+        .validateUser(usernameField.getText(), passwordField.getText().toString())) {
+      // TODO: Add prompt about login failing
       popupWarning(event, "Incorrect username or password, please try again!");
     } else {
       this.userCategory =
           FDatabaseTables.getUserTable()
               .getCategoryofUser(GlobalDb.getConnection(), usernameField.getText());
       start(root, userCategory);
-      this.userCategory = readFromDataBase(GlobalDb.getConnection(), usernameField.getText());
-      ControllerManager.attemptLoadPage("HomeView.fxml", fxmlLoader -> start(fxmlLoader.getRoot()));
     }
   }
 
-  public boolean validateUser(String username, String password) {
-    HomeController.username = username;
-    HomeController.password = password;
-    System.out.println(username + "in validateUser");
-    System.out.println(password + "password in validateUser");
+  public void start(Pane root, String userCategory) {
 
-    try {
-      GlobalDb.establishCon();
-      Statement statement = GlobalDb.getConnection().createStatement();
-      String query = "SELECT category, password FROM Users WHERE id = '" + username + "'";
-      statement.executeQuery(query);
-      ResultSet rs = statement.getResultSet();
-
-      if (rs.next()) { // If there is a user
-        String pw = rs.getString("password");
-        System.out.println(pw + " this is rs");
-        if (!password.equals(pw)) {
-          return false;
-        }
-        /*
-        else {
-          switch (rs.getString("category")) {
-            case "patient":
-              userTypeEnum = UserCategory.Patient;
-              break;
-            case "employee":
-              userTypeEnum = UserCategory.Employee;
-              break;
-            case "admin":
-              userTypeEnum = UserCategory.Admin;
-              break;
-          }
-        }
-        */
-      } else {
-        System.out.println("User not found in database!");
-        return false;
-      }
-      return true;
-    } catch (SQLException e) {
-      e.printStackTrace();
-      return false;
+    if (!userCategory.equalsIgnoreCase("Guest")) {
+      ControllerManager.exitPopup();
     }
+
+    App.getPrimaryStage().close();
+
+    Text userType = new Text("You are logged in as : " + userCategory);
+
+    userType.setFill(Color.WHITE);
+    userType.setStyle("-fx-font-size: 20px; -fx-font-weight: Bold");
+    root.getChildren().add(userType);
+
+    List<Node> childrenList = root.getChildrenUnmodifiable();
+
+    Scene scene = new Scene(root);
+
+    App.getPrimaryStage().setScene(scene);
+    App.getPrimaryStage().setMaximized(true);
+    App.getPrimaryStage().show();
+
+    changeChildrenHomePage(childrenList);
+    SceneSizeChangeListener sizeListener =
+        new SceneSizeChangeListener(scene, root, childrenList) {
+          @Override
+          public void changeChildren(List<Node> nodeList) {
+            changeChildrenHomePage(childrenList);
+          }
+        };
+
+    scene.widthProperty().addListener(sizeListener);
+    scene.heightProperty().addListener(sizeListener);
   }
 
   public static void start(Pane root) {

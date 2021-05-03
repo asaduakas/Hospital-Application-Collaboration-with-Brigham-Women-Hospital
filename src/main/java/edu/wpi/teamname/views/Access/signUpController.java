@@ -1,7 +1,6 @@
 package edu.wpi.teamname.views.Access;
 
 import com.jfoenix.controls.*;
-import edu.wpi.teamname.App;
 import edu.wpi.teamname.Ddb.FDatabaseTables;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.ControllerManager;
