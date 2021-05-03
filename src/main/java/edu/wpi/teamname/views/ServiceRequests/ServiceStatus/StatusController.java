@@ -91,7 +91,7 @@ public class StatusController extends AbsRequest
 
   private ObservableList<LangInterpNodeInfo> langInterpData;
 
-  private ObservableList<LaundryNodeInfo> laundryData;
+  public ObservableList<LaundryNodeInfo> laundryData;
 
   private ObservableList<MedDelivNodeInfo> medDelivData;
 
@@ -125,7 +125,11 @@ public class StatusController extends AbsRequest
             "Security Service");
     typeBox.setOnAction(
         e -> {
-          changeTable(typeBox.getValue().toString());
+          try {
+            changeTable(typeBox.getValue().toString());
+          } catch (IOException ioException) {
+            ioException.printStackTrace();
+          }
         });
 
     Label av = new Label("Audio/Visual");
@@ -241,13 +245,16 @@ public class StatusController extends AbsRequest
         new EventHandler<MouseEvent>() {
           @Override
           public void handle(MouseEvent event) {
-            changeTable(listView.getSelectionModel().getSelectedItem().getText());
+            try {
+              changeTable(listView.getSelectionModel().getSelectedItem().getText());
+            } catch (IOException e) {
+              e.printStackTrace();
+            }
           }
         });
   }
 
-  public void changeTable(String servType) {
-    // Tables.dispExTransRequestsTable(GlobalDb.getConnection());
+  public void changeTable(String servType) throws IOException {
     switch (servType) {
       case "External Transportation":
         try {
@@ -510,31 +517,6 @@ public class StatusController extends AbsRequest
     }
   }
 
-  private ObservableList<ExtTransNodeInfo> getExTransData() throws IOException {
-
-    ExTransData = FXCollections.observableArrayList();
-    try {
-      String query = "SELECT * FROM ExternalTransRequests";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
-      while (rs.next()) {
-        ExTransData.add(
-            new ExtTransNodeInfo(
-                rs.getString("id"),
-                rs.getString("serviceType"),
-                rs.getString("pFirstName"),
-                rs.getString("pLastName"),
-                rs.getString("contactInfo"),
-                rs.getString("location"),
-                rs.getString("transType"),
-                rs.getString("assignedTo"),
-                rs.getString("status")));
-      }
-    } catch (SQLException throwables) {
-      throwables.printStackTrace();
-    }
-    return ExTransData;
-  }
-
   @FXML
   public void goHome(MouseEvent event) throws IOException {
     List<Node> childrenList = App.getPrimaryStage().getScene().getRoot().getChildrenUnmodifiable();
@@ -547,262 +529,77 @@ public class StatusController extends AbsRequest
     //    return ExTransData;
   }
 
-  private ObservableList<FoodDelivNodeInfo> getFoodData() {
+  private ObservableList<ExtTransNodeInfo> getExTransData() throws IOException {
+
+    ExTransData = FXCollections.observableArrayList();
+    FDatabaseTables.getExternalTransportTable().addIntoExTransDataList(ExTransData);
+
+    return ExTransData;
+  }
+
+  private ObservableList<FoodDelivNodeInfo> getFoodData() throws IOException {
     foodData = FXCollections.observableArrayList();
-    try {
-      String query = "SELECT * FROM FoodDeliveryServiceRequest";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
-      while (rs.next()) {
-        foodData.add(
-            new FoodDelivNodeInfo(
-                rs.getString("id"),
-                rs.getString("status"),
-                rs.getString("firstName"),
-                rs.getString("lastName"),
-                rs.getString("contactInfo"),
-                rs.getString("location"),
-                rs.getString("assignedEmployee"),
-                rs.getString("specialNeeds")));
-      }
-    } catch (SQLException throwables) {
-      throwables.printStackTrace();
-    }
+    FDatabaseTables.getFoodDeliveryTable().addIntoFoodDelivDataList(foodData);
     return foodData;
   }
 
-  private ObservableList<AudVisNodeInfo> getAudVisData() {
+  private ObservableList<AudVisNodeInfo> getAudVisData() throws IOException {
     audVisData = FXCollections.observableArrayList();
-    try {
-      String query = "SELECT * FROM AudVisServiceRequest";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
-      while (rs.next()) {
-        audVisData.add(
-            new AudVisNodeInfo(
-                rs.getString("id"),
-                rs.getString("status"),
-                rs.getString("firstName"),
-                rs.getString("lastName"),
-                rs.getString("contactInfo"),
-                rs.getString("location"),
-                rs.getString("assignedEmployee"),
-                rs.getString("descriptionOfProblem")));
-      }
-    } catch (SQLException throwables) {
-      throwables.printStackTrace();
-    }
+    FDatabaseTables.getAudVisTable().addIntoAudVisDataList(audVisData);
     return audVisData;
   }
 
-  private ObservableList<ComputerNodeInfo> getComputerData() {
+  private ObservableList<ComputerNodeInfo> getComputerData() throws IOException {
     computerData = FXCollections.observableArrayList();
-    try {
-      String query = "SELECT * FROM ComputerServiceRequest";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
-      while (rs.next()) {
-        computerData.add(
-            new ComputerNodeInfo(
-                rs.getString("id"),
-                rs.getString("status"),
-                rs.getString("firstName"),
-                rs.getString("lastName"),
-                rs.getString("contactInfo"),
-                rs.getString("location"),
-                rs.getString("assignedEmployee"),
-                rs.getString("descriptionOfIssue")));
-      }
-    } catch (SQLException throwables) {
-      throwables.printStackTrace();
-    }
+    FDatabaseTables.getCompRequestTable().addIntoComputerDataList(computerData);
     return computerData;
   }
 
-  private ObservableList<FacilitiesNodeInfo> getFacilitiesData() {
+  private ObservableList<FacilitiesNodeInfo> getFacilitiesData() throws IOException {
     facilitiesData = FXCollections.observableArrayList();
-    try {
-      String query = "SELECT * FROM FacilitiesServiceRequest";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
-      while (rs.next()) {
-        facilitiesData.add(
-            new FacilitiesNodeInfo(
-                rs.getString("id"),
-                rs.getString("status"),
-                rs.getString("firstName"),
-                rs.getString("lastName"),
-                rs.getString("contactInfo"),
-                rs.getString("location"),
-                rs.getString("assignedEmployee"),
-                rs.getString("urgencyLevel"),
-                rs.getString("descriptionOfIssue")));
-      }
-    } catch (SQLException throwables) {
-      throwables.printStackTrace();
-    }
+    FDatabaseTables.getFacilitiesTable().addIntoFacilitiesDataList(facilitiesData);
     return facilitiesData;
   }
 
-  private ObservableList<FloralDelivNodeInfo> getFloralData() {
+  private ObservableList<FloralDelivNodeInfo> getFloralData() throws IOException {
     floralData = FXCollections.observableArrayList();
-    try {
-      String query = "SELECT * FROM FloralRequests";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
-      while (rs.next()) {
-        floralData.add(
-            new FloralDelivNodeInfo(
-                rs.getString("id"),
-                rs.getString("status"),
-                rs.getString("pFirstName"),
-                rs.getString("pLastName"),
-                rs.getString("contactInfo"),
-                rs.getString("location"),
-                rs.getString("typeOfFlower"),
-                rs.getString("numOfFlower"),
-                rs.getString("fromFlower"),
-                rs.getString("assignedEmployee")));
-      }
-    } catch (SQLException throwables) {
-      throwables.printStackTrace();
-    }
+    FDatabaseTables.getFloralDeliveryTable().addIntoFloralDeliveryList(floralData);
     return floralData;
   }
 
-  private ObservableList<InternalTransNodeInfo> getInternalTransData() {
+  private ObservableList<InternalTransNodeInfo> getInternalTransData() throws IOException {
     internalTransData = FXCollections.observableArrayList();
-    try {
-      String query = "SELECT * FROM InternalTransReq";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
-      while (rs.next()) {
-        internalTransData.add(
-            new InternalTransNodeInfo(
-                rs.getString("id"),
-                rs.getString("status"),
-                rs.getString("firstName"),
-                rs.getString("lastName"),
-                rs.getString("contactInfo"),
-                rs.getString("destination"),
-                rs.getString("assignedEmployee"),
-                rs.getString("typeOfTransport")));
-      }
-    } catch (SQLException throwables) {
-      throwables.printStackTrace();
-    }
+    FDatabaseTables.getInternalDeliveryTable().addIntoInternalTransList(internalTransData);
     return internalTransData;
   }
 
-  private ObservableList<LangInterpNodeInfo> getLangInterpData() {
+  private ObservableList<LangInterpNodeInfo> getLangInterpData() throws IOException {
     langInterpData = FXCollections.observableArrayList();
-    try {
-      String query = "SELECT * FROM LangInterpRequest";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
-      while (rs.next()) {
-        langInterpData.add(
-            new LangInterpNodeInfo(
-                rs.getString("id"),
-                rs.getString("status"),
-                rs.getString("firstName"),
-                rs.getString("lastName"),
-                rs.getString("contactInfo"),
-                rs.getString("location"),
-                rs.getString("assignedEmployee"),
-                rs.getString("languageRequested"),
-                rs.getString("dateRequested")));
-      }
-    } catch (SQLException throwables) {
-      throwables.printStackTrace();
-    }
+    FDatabaseTables.getLangInterpreterTable().addIntoLangInterpreterList(langInterpData);
     return langInterpData;
   }
 
-  private ObservableList<LaundryNodeInfo> getLaundryData() {
+  private ObservableList<LaundryNodeInfo> getLaundryData() throws IOException {
     laundryData = FXCollections.observableArrayList();
-    try {
-      String query = "SELECT * FROM LaundryRequest";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
-      while (rs.next()) {
-        laundryData.add(
-            new LaundryNodeInfo(
-                rs.getString("id"),
-                rs.getString("status"),
-                rs.getString("firstName"),
-                rs.getString("lastName"),
-                rs.getString("contactInfo"),
-                rs.getString("location"),
-                rs.getString("assignedEmployee")));
-      }
-    } catch (SQLException throwables) {
-      throwables.printStackTrace();
-    }
+    FDatabaseTables.getLaundryRequestTable().addIntoLaundServiceList(laundryData);
     return laundryData;
   }
 
-  private ObservableList<MedDelivNodeInfo> getMedDelivData() {
+  private ObservableList<MedDelivNodeInfo> getMedDelivData() throws IOException {
     medDelivData = FXCollections.observableArrayList();
-    try {
-      String query = "SELECT * FROM MedicineDelivery";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
-      while (rs.next()) {
-        medDelivData.add(
-            new MedDelivNodeInfo(
-                rs.getString("id"),
-                rs.getString("status"),
-                rs.getString("firstName"),
-                rs.getString("lastName"),
-                rs.getString("contactInfo"),
-                rs.getString("location"),
-                rs.getString("assignedEmployee"),
-                rs.getString("typeOfMedicine"),
-                rs.getString("dropOffDate")));
-      }
-    } catch (SQLException throwables) {
-      throwables.printStackTrace();
-    }
+    FDatabaseTables.getMedDeliveryTable().addIntoMedDeliveryList(medDelivData);
     return medDelivData;
   }
 
-  private ObservableList<SanitationNodeInfo> getSanitationData() {
+  private ObservableList<SanitationNodeInfo> getSanitationData() throws IOException {
     sanitationData = FXCollections.observableArrayList();
-    try {
-      String query = "SELECT * FROM SanitationRequest";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
-      while (rs.next()) {
-        sanitationData.add(
-            new SanitationNodeInfo(
-                rs.getString("id"),
-                rs.getString("status"),
-                rs.getString("firstName"),
-                rs.getString("lastName"),
-                rs.getString("contactInfo"),
-                rs.getString("location"),
-                rs.getString("assignedEmployee"),
-                rs.getString("description"),
-                rs.getString("urgencyLevel")));
-      }
-    } catch (SQLException throwables) {
-      throwables.printStackTrace();
-    }
+    FDatabaseTables.getSanitationServiceTable().addIntoSanitationList(sanitationData);
     return sanitationData;
   }
 
-  private ObservableList<SecurityRequestNodeInfo> getSecurityData() {
+  private ObservableList<SecurityRequestNodeInfo> getSecurityData() throws IOException {
     securityData = FXCollections.observableArrayList();
-    try {
-      String query = "SELECT * FROM SecurityRequest";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
-      while (rs.next()) {
-        securityData.add(
-            new SecurityRequestNodeInfo(
-                rs.getString("id"),
-                rs.getString("status"),
-                rs.getString("firstName"),
-                rs.getString("lastName"),
-                rs.getString("contactInfo"),
-                rs.getString("location"),
-                rs.getString("assignedEmployee"),
-                rs.getString("urgencyLevel"),
-                rs.getString("description")));
-      }
-    } catch (SQLException throwables) {
-      throwables.printStackTrace();
-    }
+    FDatabaseTables.getSecurityRequestTable().addIntoSanitationList(securityData);
     return securityData;
   }
 
@@ -815,244 +612,40 @@ public class StatusController extends AbsRequest
   public void changeData(String ServeType) {
     switch (ServeType) {
       case "External Transportation":
-        for (ExtTransNodeInfo info : ExTransData) {
-          if (!(info.getStatus().isEmpty())) {
-            PreparedStatement stmt = null;
-            try {
-              stmt =
-                  GlobalDb.getConnection()
-                      .prepareStatement(
-                          "UPDATE ExternalTransRequests SET status = ?, assignedTo = ? WHERE id=?");
-              stmt.setString(1, info.getStatus());
-              stmt.setString(2, info.getAssignedTo());
-              stmt.setString(3, info.getId());
-              stmt.executeUpdate();
-            } catch (SQLException throwables) {
-              throwables.printStackTrace();
-            }
-          }
-        }
+        FDatabaseTables.getExternalTransportTable().changeExTransData(ExTransData);
         break;
       case "Food Delivery":
-        for (FoodDelivNodeInfo foodInfo : foodData) {
-          if (!(foodInfo.getStatus().isEmpty())) {
-            PreparedStatement stmt = null;
-            try {
-              stmt =
-                  GlobalDb.getConnection()
-                      .prepareStatement(
-                          "UPDATE FoodDeliveryServiceRequest SET status = ?, assignedEmployee = ?, specialNeeds = ? WHERE id=?");
-              stmt.setString(1, foodInfo.getStatus());
-              stmt.setString(2, foodInfo.getAssignedEmployee());
-              stmt.setString(3, foodInfo.getSpecialNeeds());
-              stmt.setString(4, foodInfo.getId());
-              stmt.executeUpdate();
-
-            } catch (SQLException throwables) {
-              throwables.printStackTrace();
-            }
-          }
-        }
+        FDatabaseTables.getFoodDeliveryTable().changeFoodDelivData(foodData);
         break;
       case "Audio/Visual":
-        for (AudVisNodeInfo audVisInfo : audVisData) {
-          if (!(audVisInfo.getStatus().isEmpty())) {
-            PreparedStatement stmt = null;
-            try {
-              stmt =
-                  GlobalDb.getConnection()
-                      .prepareStatement(
-                          "UPDATE AudVisServiceRequest SET status = ?, assignedEmployee = ? WHERE id=?");
-              stmt.setString(1, audVisInfo.getStatus());
-              stmt.setString(2, audVisInfo.getAssignedEmployee());
-              stmt.setString(3, audVisInfo.getId());
-              stmt.executeUpdate();
-
-            } catch (SQLException throwables) {
-              throwables.printStackTrace();
-            }
-          }
-        }
+        FDatabaseTables.getAudVisTable().changeAudVisData(audVisData);
         break;
       case "Computer Service":
-        for (ComputerNodeInfo computerInfo : computerData) {
-          if (!(computerInfo.getStatus().isEmpty())) {
-            PreparedStatement stmt = null;
-            try {
-              stmt =
-                  GlobalDb.getConnection()
-                      .prepareStatement(
-                          "UPDATE ComputerServiceRequest SET status = ?, assignedEmployee = ? WHERE id=?");
-              stmt.setString(1, computerInfo.getStatus());
-              stmt.setString(2, computerInfo.getAssignedEmployee());
-              stmt.setString(3, computerInfo.getId());
-              stmt.executeUpdate();
-
-            } catch (SQLException throwables) {
-              throwables.printStackTrace();
-            }
-          }
-        }
+        FDatabaseTables.getCompRequestTable().changeComputerData(computerData);
         break;
       case "Facilities Maintenance":
-        for (FacilitiesNodeInfo facilitiesInfo : facilitiesData) {
-          if (!(facilitiesInfo.getStatus().isEmpty())) {
-            PreparedStatement stmt = null;
-            try {
-              stmt =
-                  GlobalDb.getConnection()
-                      .prepareStatement(
-                          "UPDATE FacilitiesServiceRequest SET status = ?, assignedEmployee = ? WHERE id=?");
-              stmt.setString(1, facilitiesInfo.getStatus());
-              stmt.setString(2, facilitiesInfo.getAssignedEmployee());
-              stmt.setString(3, facilitiesInfo.getId());
-              stmt.executeUpdate();
-
-            } catch (SQLException throwables) {
-              throwables.printStackTrace();
-            }
-          }
-        }
+        FDatabaseTables.getFacilitiesTable().changeFacilitiesData(facilitiesData);
         break;
       case "Floral Delivery":
-        for (FloralDelivNodeInfo floralInfo : floralData) {
-          if (!(floralInfo.getStatus().isEmpty())) {
-            PreparedStatement stmt = null;
-            try {
-              stmt =
-                  GlobalDb.getConnection()
-                      .prepareStatement(
-                          "UPDATE FloralRequests SET status = ?, assignedEmployee = ? WHERE id=?");
-              stmt.setString(1, floralInfo.getStatus());
-              stmt.setString(2, floralInfo.getAssignedEmployee());
-              stmt.setString(3, floralInfo.getId());
-              stmt.executeUpdate();
-
-            } catch (SQLException throwables) {
-              throwables.printStackTrace();
-            }
-          }
-        }
+        FDatabaseTables.getFloralDeliveryTable().changeFloralDelivData(floralData);
         break;
       case "Internal Transportation":
-        for (InternalTransNodeInfo intTransInfo : internalTransData) {
-          if (!(intTransInfo.getStatus().isEmpty())) {
-            PreparedStatement stmt = null;
-            try {
-              stmt =
-                  GlobalDb.getConnection()
-                      .prepareStatement(
-                          "UPDATE InternalTransReq SET status = ?, assignedEmployee = ? WHERE id=?");
-              stmt.setString(1, intTransInfo.getStatus());
-              stmt.setString(2, intTransInfo.getAssignedEmployee());
-              stmt.setString(3, intTransInfo.getId());
-              stmt.executeUpdate();
-
-            } catch (SQLException throwables) {
-              throwables.printStackTrace();
-            }
-          }
-        }
+        FDatabaseTables.getInternalDeliveryTable().changeInternalTransData(internalTransData);
         break;
       case "Language Interpreter":
-        for (LangInterpNodeInfo langInterpInfo : langInterpData) {
-          if (!(langInterpInfo.getStatus().isEmpty())) {
-            PreparedStatement stmt = null;
-            try {
-              stmt =
-                  GlobalDb.getConnection()
-                      .prepareStatement(
-                          "UPDATE LangInterpRequest SET status = ?, assignedEmployee = ? WHERE id=?");
-              stmt.setString(1, langInterpInfo.getStatus());
-              stmt.setString(2, langInterpInfo.getAssignedEmployee());
-              stmt.setString(3, langInterpInfo.getId());
-              stmt.executeUpdate();
-
-            } catch (SQLException throwables) {
-              throwables.printStackTrace();
-            }
-          }
-        }
+        FDatabaseTables.getLangInterpreterTable().changeLangInterData(langInterpData);
         break;
       case "Laundry Service":
-        for (LaundryNodeInfo laundryInfo : laundryData) {
-          if (!(laundryInfo.getStatus().isEmpty())) {
-            PreparedStatement stmt = null;
-            try {
-              stmt =
-                  GlobalDb.getConnection()
-                      .prepareStatement(
-                          "UPDATE LaundryRequest SET status = ?, assignedEmployee = ? WHERE id=?");
-              stmt.setString(1, laundryInfo.getStatus());
-              stmt.setString(2, laundryInfo.getAssignedEmployee());
-              stmt.setString(3, laundryInfo.getId());
-              stmt.executeUpdate();
-
-            } catch (SQLException throwables) {
-              throwables.printStackTrace();
-            }
-          }
-        }
+        FDatabaseTables.getLaundryRequestTable().changeLaundServiceData(laundryData);
         break;
       case "Medicine Delivery":
-        for (MedDelivNodeInfo medDelInfo : medDelivData) {
-          if (!(medDelInfo.getStatus().isEmpty())) {
-            PreparedStatement stmt = null;
-            try {
-              stmt =
-                  GlobalDb.getConnection()
-                      .prepareStatement(
-                          "UPDATE MedicineDelivery SET status = ?, assignedEmployee = ? WHERE id=?");
-              stmt.setString(1, medDelInfo.getStatus());
-              stmt.setString(2, medDelInfo.getAssignedEmployee());
-              stmt.setString(3, medDelInfo.getId());
-              stmt.executeUpdate();
-
-            } catch (SQLException throwables) {
-              throwables.printStackTrace();
-            }
-          }
-        }
+        FDatabaseTables.getMedDeliveryTable().changeMedDeliveryData(medDelivData);
         break;
       case "Sanitation Service":
-        for (SanitationNodeInfo sanitationInfo : sanitationData) {
-          if (!(sanitationInfo.getStatus().isEmpty())) {
-            PreparedStatement stmt = null;
-            try {
-              stmt =
-                  GlobalDb.getConnection()
-                      .prepareStatement(
-                          "UPDATE SanitationRequest SET status = ?, assignedEmployee = ? WHERE id=?");
-              stmt.setString(1, sanitationInfo.getStatus());
-              stmt.setString(2, sanitationInfo.getAssignedEmployee());
-              stmt.setString(3, sanitationInfo.getId());
-              stmt.executeUpdate();
-
-            } catch (SQLException throwables) {
-              throwables.printStackTrace();
-            }
-          }
-        }
+        FDatabaseTables.getSanitationServiceTable().changeSanitationData(sanitationData);
         break;
       case "Security Service":
-        for (SecurityRequestNodeInfo securityInfo : securityData) {
-          if (!(securityInfo.getStatus().isEmpty())) {
-            PreparedStatement stmt = null;
-            try {
-              stmt =
-                  GlobalDb.getConnection()
-                      .prepareStatement(
-                          "UPDATE SanitationRequest SET status = ?, assignedEmployee = ? WHERE id=?");
-              stmt.setString(1, securityInfo.getStatus());
-              stmt.setString(2, securityInfo.getAssignedEmployee());
-              stmt.setString(3, securityInfo.getId());
-              stmt.executeUpdate();
-
-            } catch (SQLException throwables) {
-              throwables.printStackTrace();
-            }
-          }
-        }
+        FDatabaseTables.getSanitationServiceTable().changeSanitationData(sanitationData);
         break;
     }
   }
@@ -1550,12 +1143,12 @@ public class StatusController extends AbsRequest
         });
     statusCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn(statusList));
 
-    securityTable.setEditable(true);
+    sanitationTable.setEditable(true);
     fNCol.setEditable(false);
     lNCol.setEditable(false);
     contactInfoCol.setEditable(false);
 
-    securityTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+    sanitationTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
     sanitationTable
         .getColumns()
@@ -1568,8 +1161,7 @@ public class StatusController extends AbsRequest
             descriptCol,
             assignedCol,
             statusCol);
-
-    sanitationTable.setPlaceholder(new Label("No request of sanitation service has been made yet"));
+    sanitationTable.setPlaceholder(new Label("No request of security service has been made yet"));
   }
 
   private void medDelivTableSetup() {

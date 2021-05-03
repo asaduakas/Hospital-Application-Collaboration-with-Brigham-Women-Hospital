@@ -1,10 +1,10 @@
 package edu.wpi.teamname.Ddb;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
+import edu.wpi.teamname.views.ServiceRequests.NodeInfo.LangInterpNodeInfo;
+import java.io.IOException;
+import java.sql.*;
 import java.time.LocalDate;
+import javafx.collections.ObservableList;
 
 public class LangInterpreterRequestTable extends AbsTables {
   // id,status,firstName,lastName,contactInfo,location,assignedEmployee,languageRequested,
@@ -67,5 +67,51 @@ public class LangInterpreterRequestTable extends AbsTables {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  public void addIntoLangInterpreterList(ObservableList<LangInterpNodeInfo> langInterpData)
+      throws IOException {
+    try {
+      String query = "SELECT * FROM LangInterpRequest";
+      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      while (rs.next()) {
+        langInterpData.add(
+            new LangInterpNodeInfo(
+                rs.getString("id"),
+                rs.getString("status"),
+                rs.getString("firstName"),
+                rs.getString("lastName"),
+                rs.getString("contactInfo"),
+                rs.getString("location"),
+                rs.getString("assignedEmployee"),
+                rs.getString("languageRequested"),
+                rs.getString("dateRequested")));
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+  }
+  //
+  public ObservableList<LangInterpNodeInfo> changeLangInterData(
+      ObservableList<LangInterpNodeInfo> langInterpData) {
+    for (LangInterpNodeInfo langInterpInfo : langInterpData) {
+      if (!(langInterpInfo.getStatus().isEmpty())) {
+        PreparedStatement stmt = null;
+        try {
+          stmt =
+              GlobalDb.getConnection()
+                  .prepareStatement(
+                      "UPDATE LangInterpRequest SET status = ?, assignedEmployee = ? WHERE id=?");
+          stmt.setString(1, langInterpInfo.getStatus());
+          stmt.setString(2, langInterpInfo.getAssignedEmployee());
+          stmt.setString(3, langInterpInfo.getId());
+          stmt.executeUpdate();
+
+        } catch (SQLException throwables) {
+          throwables.printStackTrace();
+        }
+      }
+    }
+    return langInterpData;
   }
 }

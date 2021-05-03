@@ -2,6 +2,8 @@ package edu.wpi.teamname.views;
 
 import com.jfoenix.controls.JFXButton;
 import edu.wpi.teamname.App;
+import edu.wpi.teamname.Ddb.FDatabaseTables;
+import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.Access.*;
 import java.io.IOException;
 import java.util.List;
@@ -29,7 +31,7 @@ public class HomeController extends Application implements AllAccessible {
   @FXML public static Popup popup;
   @FXML public static VBox mainButtons;
 
-  private static UserCategory userTypeEnum;
+  public static UserCategory userTypeEnum;
   public static String username = null;
   public static String password = null;
   private static String userCategory;
@@ -304,8 +306,21 @@ public class HomeController extends Application implements AllAccessible {
     }
   }
 
+  public boolean validateUser(String username, String password) {
+    if ((FDatabaseTables.getUserTable()
+        .validateTheUser(GlobalDb.getConnection(), username, password))) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   public static String getUserCategory() {
     return userCategory;
+  }
+
+  public static UserCategory getUserTypeEnum() {
+    return userTypeEnum;
   }
 
   @Override

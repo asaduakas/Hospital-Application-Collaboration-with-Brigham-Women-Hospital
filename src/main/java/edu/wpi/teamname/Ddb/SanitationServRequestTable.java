@@ -1,8 +1,9 @@
 package edu.wpi.teamname.Ddb;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
+import edu.wpi.teamname.views.ServiceRequests.NodeInfo.SanitationNodeInfo;
+import java.io.IOException;
+import java.sql.*;
+import javafx.collections.ObservableList;
 
 public class SanitationServRequestTable extends AbsTables {
   // id,status,firstName,lastName,contactInfo,location,assignedEmployee,typeOfSanitation,urgencyLevel(high med low)
@@ -52,8 +53,8 @@ public class SanitationServRequestTable extends AbsTables {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
-              "INSERT INTO SecurityRequest (firstName, lastName, contactInfo,"
-                  + "location, assignedEmployee, description, urgencyLevel) VALUES(?,?,?,?,?,?,?)");
+              "INSERT INTO SanitationRequest (firstName, lastName, contactInfo,"
+                  + "location, assignedEmployee, descriptionOfIssue, urgencyLevel) VALUES(?,?,?,?,?,?,?)");
       stmt.setString(1, firstName);
       stmt.setString(2, lastName);
       stmt.setString(3, contactInfo);
@@ -65,5 +66,51 @@ public class SanitationServRequestTable extends AbsTables {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  public void addIntoSanitationList(ObservableList<SanitationNodeInfo> sanitationData)
+      throws IOException {
+    try {
+      String query = "SELECT * FROM SanitationRequest";
+      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      while (rs.next()) {
+        sanitationData.add(
+            new SanitationNodeInfo(
+                rs.getString("id"),
+                rs.getString("status"),
+                rs.getString("firstName"),
+                rs.getString("lastName"),
+                rs.getString("contactInfo"),
+                rs.getString("location"),
+                rs.getString("assignedEmployee"),
+                rs.getString("descriptionOfIssue"),
+                rs.getString("urgencyLevel")));
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+  }
+
+  public ObservableList<SanitationNodeInfo> changeSanitationData(
+      ObservableList<SanitationNodeInfo> sanitationData) {
+    for (SanitationNodeInfo sanitationInfo : sanitationData) {
+      if (!(sanitationInfo.getStatus().isEmpty())) {
+        PreparedStatement stmt = null;
+        try {
+          stmt =
+              GlobalDb.getConnection()
+                  .prepareStatement(
+                      "UPDATE SanitationRequest SET status = ?, assignedEmployee = ? WHERE id=?");
+          stmt.setString(1, sanitationInfo.getStatus());
+          stmt.setString(2, sanitationInfo.getAssignedEmployee());
+          stmt.setString(3, sanitationInfo.getId());
+          stmt.executeUpdate();
+
+        } catch (SQLException throwables) {
+          throwables.printStackTrace();
+        }
+      }
+    }
+    return sanitationData;
   }
 }
