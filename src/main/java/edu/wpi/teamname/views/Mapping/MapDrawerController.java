@@ -7,13 +7,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeTableColumn;
 
 public class MapDrawerController {
-  @FXML private JFXTreeTableView<CategoryNodeInfo> directoryTreeTable;
+  @FXML private JFXTreeTableView directoryTreeTable;
   @FXML private JFXTextField startField;
   @FXML private JFXTextField endField;
   @FXML private JFXButton findPathButton;
   @FXML private ObservableList<CategoryNodeInfo> data;
+  @FXML private TreeTableColumn column;
 
   public void initialize(URL url, ResourceBundle rb) {
 
@@ -31,20 +33,20 @@ public class MapDrawerController {
     //          }
     //        });
 
-    //    directory
-    //        .getChildren()
-    //        .setAll(
-    //            parking,
-    //            elevator,
-    //            restroom,
-    //            stairs,
-    //            department,
-    //            laboratory,
-    //            information,
-    //            conference,
-    //            exit,
-    //            retail,
-    //            service);
+    //        directory
+    //            .getChildren()
+    //            .setAll(
+    //                parking,
+    //                elevator,
+    //                restroom,
+    //                stairs,
+    //                department,
+    //                laboratory,
+    //                information,
+    //                conference,
+    //                exit,
+    //                retail,
+    //                service);
     //    TreeItem<CategoryNodeInfo> root = new RecursiveTreeItem<>(CategoryNodeInfo,
     // RecursiveTreeObject::getChildren);
   }
@@ -56,11 +58,10 @@ public class MapDrawerController {
   }
 
   public void tableSetup() {
-    JFXTreeTableColumn<CategoryNodeInfo, String> column = new JFXTreeTableColumn<>("Directory");
     column.setPrefWidth(248);
     directoryTreeTable.getColumns().setAll(column);
 
-    TreeItem<String> directory = new TreeItem<>("Directory");
+    TreeItem<String> locations = new TreeItem<>("Locations");
     TreeItem<String> parking = new TreeItem<>("Parking");
     TreeItem<String> elevator = new TreeItem<>("Elevator");
     TreeItem<String> restroom = new TreeItem<>("Restroom");
@@ -72,5 +73,22 @@ public class MapDrawerController {
     TreeItem<String> exit = new TreeItem<>("Entrance/Exit");
     TreeItem<String> retail = new TreeItem<>("Retail");
     TreeItem<String> service = new TreeItem<>("Service");
+
+    locations
+        .getChildren()
+        .setAll(
+            parking,
+            elevator,
+            restroom,
+            stairs,
+            department,
+            laboratory,
+            information,
+            conference,
+            exit,
+            retail,
+            service);
+
+    directoryTreeTable.setRoot(locations);
   }
 }
