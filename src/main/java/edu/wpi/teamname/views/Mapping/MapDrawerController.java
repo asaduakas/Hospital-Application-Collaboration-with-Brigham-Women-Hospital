@@ -7,7 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 
 public class MapDrawerController {
   @FXML private JFXTreeTableView directoryTreeTable;
@@ -15,7 +15,7 @@ public class MapDrawerController {
   @FXML private JFXTextField endField;
   @FXML private JFXButton findPathButton;
   @FXML private ObservableList<CategoryNodeInfo> data;
-  @FXML private TreeTableColumn column;
+  private JFXTreeTableColumn<String, String> column = new JFXTreeTableColumn<>("Directory");
 
   public void initialize(URL url, ResourceBundle rb) {
 
@@ -59,9 +59,11 @@ public class MapDrawerController {
 
   public void tableSetup() {
     column.setPrefWidth(248);
-    directoryTreeTable.getColumns().setAll(column);
+    directoryTreeTable.getColumns().set(0, column);
 
-    TreeItem<String> locations = new TreeItem<>("Locations");
+    column.setCellValueFactory(new TreeItemPropertyValueFactory<>("directory"));
+
+    //    TreeItem<String> locations = new TreeItem<>("Locations");
     TreeItem<String> parking = new TreeItem<>("Parking");
     TreeItem<String> elevator = new TreeItem<>("Elevator");
     TreeItem<String> restroom = new TreeItem<>("Restroom");
@@ -74,21 +76,33 @@ public class MapDrawerController {
     TreeItem<String> retail = new TreeItem<>("Retail");
     TreeItem<String> service = new TreeItem<>("Service");
 
-    locations
-        .getChildren()
-        .setAll(
-            parking,
-            elevator,
-            restroom,
-            stairs,
-            department,
-            laboratory,
-            information,
-            conference,
-            exit,
-            retail,
-            service);
+    directoryTreeTable.setRoot(parking);
+    directoryTreeTable.setRoot(elevator);
+    directoryTreeTable.setRoot(restroom);
+    directoryTreeTable.setRoot(stairs);
+    directoryTreeTable.setRoot(department);
+    directoryTreeTable.setRoot(laboratory);
+    directoryTreeTable.setRoot(information);
+    directoryTreeTable.setRoot(conference);
+    directoryTreeTable.setRoot(exit);
+    directoryTreeTable.setRoot(retail);
+    directoryTreeTable.setRoot(service);
 
-    directoryTreeTable.setRoot(locations);
+    //    locations
+    //        .getChildren()
+    //        .setAll(
+    //            parking,
+    //            elevator,
+    //            restroom,
+    //            stairs,
+    //            department,
+    //            laboratory,
+    //            information,
+    //            conference,
+    //            exit,
+    //            retail,
+    //            service);
+
+    //    directoryTreeTable.setRoot(locations);
   }
 }
