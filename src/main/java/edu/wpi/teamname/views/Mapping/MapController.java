@@ -54,8 +54,8 @@ public class MapController implements AllAccessible {
   private final Image F1 = new Image("01_thefirstfloor.png");
   private final Image F2 = new Image("02_thesecondfloor.png");
   private final Image F3 = new Image("03_thethirdfloor.png");
-  //  private final Image FL1 = new Image("00_thelowerlevel1.png");
-  //  private final Image FL2 = new Image("00_thelowerlevel2.png");
+  private final Image FL1 = new Image("00_thelowerlevel1.png");
+  private final Image FL2 = new Image("00_thelowerlevel2.png");
   public static final Image DEFAULT = new Image("Images/274px-Google_Maps_pin.svg.png");
   public static final Image PARK = new Image("Images/parkingpin.png");
   public static final Image ELEV = new Image("Images/elevatorpin.png");
@@ -316,15 +316,15 @@ public class MapController implements AllAccessible {
         break;
       case "3":
         currentFloor = "3";
-        //        TheMap.setImage(F3);
+        TheMap.setImage(F3);
         break;
       case "L2":
         currentFloor = "L2";
-        //        TheMap.setImage(FL2);
+        TheMap.setImage(FL2);
         break;
       case "L1":
         currentFloor = "L1";
-        //        TheMap.setImage(FL1);
+        TheMap.setImage(FL1);
         break;
       default:
         currentFloor = "1";
