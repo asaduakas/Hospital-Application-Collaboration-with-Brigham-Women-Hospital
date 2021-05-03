@@ -2,15 +2,12 @@ package edu.wpi.teamname.views.Access;
 
 import com.jfoenix.controls.*;
 import edu.wpi.teamname.App;
+import edu.wpi.teamname.Ddb.FDatabaseTables;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.ControllerManager;
 import edu.wpi.teamname.views.HomeController;
 import edu.wpi.teamname.views.SceneSizeChangeListener;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -50,6 +47,10 @@ public class LoginController implements AllAccessible {
     } else if (!validateUser(usernameField.getText(), passwordField.getText())) {
       popupWarning(event, "Incorrect username or password, please try again!");
     } else {
+      this.userCategory =
+          FDatabaseTables.getUserTable()
+              .getCategoryofUser(GlobalDb.getConnection(), usernameField.getText());
+      start(root, userCategory);
       this.userCategory = readFromDataBase(GlobalDb.getConnection(), usernameField.getText());
       ControllerManager.attemptLoadPage("HomeView.fxml", fxmlLoader -> start(fxmlLoader.getRoot()));
     }
@@ -177,28 +178,6 @@ public class LoginController implements AllAccessible {
     Text userType = (Text) nodeList.get(nodeList.size() - 1);
     userType.setX(exitButton.getLayoutX() - 170);
     userType.setY(App.getPrimaryStage().getScene().getHeight() - 25);
-  }
-
-  public static String readFromDataBase(Connection conn, String username) {
-    Statement stmt = null;
-    ResultSet rs = null;
-    String category = null;
-    try {
-      stmt = conn.createStatement();
-      String query = "SELECT category FROM Users WHERE id = '" + username + "' ";
-      rs = stmt.executeQuery(query);
-
-      while (rs.next()) {
-        category = rs.getString("category");
-        if (rs.getString("username") == null) {
-          category = "Guest";
-        }
-      }
-
-    } catch (SQLException e) {
-
-    }
-    return category;
   }
 
   @FXML

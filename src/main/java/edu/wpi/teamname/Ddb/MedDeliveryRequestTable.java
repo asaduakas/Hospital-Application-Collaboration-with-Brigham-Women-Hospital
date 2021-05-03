@@ -1,10 +1,10 @@
 package edu.wpi.teamname.Ddb;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
+import edu.wpi.teamname.views.ServiceRequests.NodeInfo.MedDelivNodeInfo;
+import java.io.IOException;
+import java.sql.*;
 import java.time.LocalDate;
+import javafx.collections.ObservableList;
 
 public class MedDeliveryRequestTable extends AbsTables {
   // id,status,firstName,lastName,contactInfo,location,assignedEmployee,typeOfMedicine,dropOffDate
@@ -66,5 +66,51 @@ public class MedDeliveryRequestTable extends AbsTables {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  public void addIntoMedDeliveryList(ObservableList<MedDelivNodeInfo> medDelivData)
+      throws IOException {
+    try {
+      String query = "SELECT * FROM MedicineDelivery";
+      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      while (rs.next()) {
+        medDelivData.add(
+            new MedDelivNodeInfo(
+                rs.getString("id"),
+                rs.getString("status"),
+                rs.getString("firstName"),
+                rs.getString("lastName"),
+                rs.getString("contactInfo"),
+                rs.getString("location"),
+                rs.getString("assignedEmployee"),
+                rs.getString("typeOfMedicine"),
+                rs.getString("dropOffDate")));
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+  }
+
+  public ObservableList<MedDelivNodeInfo> changeMedDeliveryData(
+      ObservableList<MedDelivNodeInfo> medDelivData) {
+    for (MedDelivNodeInfo medDelInfo : medDelivData) {
+      if (!(medDelInfo.getStatus().isEmpty())) {
+        PreparedStatement stmt = null;
+        try {
+          stmt =
+              GlobalDb.getConnection()
+                  .prepareStatement(
+                      "UPDATE MedicineDelivery SET status = ?, assignedEmployee = ? WHERE id=?");
+          stmt.setString(1, medDelInfo.getStatus());
+          stmt.setString(2, medDelInfo.getAssignedEmployee());
+          stmt.setString(3, medDelInfo.getId());
+          stmt.executeUpdate();
+
+        } catch (SQLException throwables) {
+          throwables.printStackTrace();
+        }
+      }
+    }
+    return medDelivData;
   }
 }

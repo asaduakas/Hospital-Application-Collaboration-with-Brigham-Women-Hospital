@@ -1,8 +1,9 @@
 package edu.wpi.teamname.Ddb;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
+import edu.wpi.teamname.views.ServiceRequests.NodeInfo.InternalTransNodeInfo;
+import java.io.IOException;
+import java.sql.*;
+import javafx.collections.ObservableList;
 
 public class InternalTransRequestTable extends AbsTables {
   // id,status,firstName,lastName,contactInfo,destination,assignedEmployee,typeOfTransport
@@ -61,5 +62,50 @@ public class InternalTransRequestTable extends AbsTables {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  public void addIntoInternalTransList(ObservableList<InternalTransNodeInfo> internalTransData)
+      throws IOException {
+    try {
+      String query = "SELECT * FROM InternalTransReq";
+      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      while (rs.next()) {
+        internalTransData.add(
+            new InternalTransNodeInfo(
+                rs.getString("id"),
+                rs.getString("status"),
+                rs.getString("firstName"),
+                rs.getString("lastName"),
+                rs.getString("contactInfo"),
+                rs.getString("destination"),
+                rs.getString("assignedEmployee"),
+                rs.getString("typeOfTransport")));
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+  }
+
+  public ObservableList<InternalTransNodeInfo> changeInternalTransData(
+      ObservableList<InternalTransNodeInfo> internalTransData) {
+    for (InternalTransNodeInfo intTransInfo : internalTransData) {
+      if (!(intTransInfo.getStatus().isEmpty())) {
+        PreparedStatement stmt = null;
+        try {
+          stmt =
+              GlobalDb.getConnection()
+                  .prepareStatement(
+                      "UPDATE InternalTransReq SET status = ?, assignedEmployee = ? WHERE id=?");
+          stmt.setString(1, intTransInfo.getStatus());
+          stmt.setString(2, intTransInfo.getAssignedEmployee());
+          stmt.setString(3, intTransInfo.getId());
+          stmt.executeUpdate();
+
+        } catch (SQLException throwables) {
+          throwables.printStackTrace();
+        }
+      }
+    }
+    return internalTransData;
   }
 }

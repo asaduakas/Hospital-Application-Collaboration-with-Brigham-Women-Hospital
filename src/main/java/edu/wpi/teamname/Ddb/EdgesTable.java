@@ -1,7 +1,10 @@
 package edu.wpi.teamname.Ddb;
 
+import edu.wpi.teamname.Astar.Edge;
+import edu.wpi.teamname.Astar.Node;
 import java.io.File;
 import java.sql.*;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 public class EdgesTable extends AbsTables {
@@ -186,5 +189,58 @@ public class EdgesTable extends AbsTables {
       e.printStackTrace();
       return;
     }
+  }
+
+  public LinkedList<Edge> convertEdgesToLL(Connection conn, LinkedList<Node> graphInfo) {
+    // load edges
+    LinkedList<Edge> listOfEdges = new LinkedList<Edge>();
+    try {
+      for (Node entry : graphInfo) {
+        PreparedStatement prepStmt = null;
+        String nodeID = entry.getNodeID();
+        prepStmt = conn.prepareStatement("SELECT * FROM Edges WHERE startNode = ?");
+        prepStmt.setString(1, nodeID);
+        ResultSet rsP = prepStmt.executeQuery();
+        while (rsP.next()) {
+          if (graphInfo.contains(entry)
+              && graphInfo.contains(this.getNodeByID(rsP.getString("endNode"), graphInfo))) {
+            double cost =
+                this.getNodeByID(rsP.getString("startNode"), graphInfo)
+                    .getMeasuredDistance(this.getNodeByID(rsP.getString("endNode"), graphInfo));
+            Edge edge =
+                new Edge(
+                    this.getNodeByID(rsP.getString("startNode"), graphInfo),
+                    this.getNodeByID(rsP.getString("endNode"), graphInfo),
+                    cost);
+            Edge edge1 =
+                new Edge(
+                    this.getNodeByID(rsP.getString("endNode"), graphInfo),
+                    this.getNodeByID(rsP.getString("startNode"), graphInfo),
+                    cost);
+            entry.getEdges().add(edge);
+            getNodeByID(rsP.getString("endNode"), graphInfo).getEdges().add(edge1);
+            listOfEdges.add(edge);
+          }
+        }
+      } // end of for loop
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return listOfEdges;
+    /*
+    selecting elements/nodes (start nodes and the end nodes) from the edges list of string arrays
+    mapping them with the list of nodes
+    storing them in the dictionary as parent:child node
+     */
+  }
+
+  public Node getNodeByID(String nodeID, LinkedList<Node> graphInfo) {
+    for (Node node : graphInfo) {
+      if (nodeID.equals(node.getNodeID())) {
+        return node;
+      }
+    }
+    System.out.printf("Node %s not found in data\n", nodeID);
+    return null;
   }
 }

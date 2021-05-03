@@ -1,8 +1,9 @@
 package edu.wpi.teamname.Ddb;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
+import edu.wpi.teamname.views.ServiceRequests.NodeInfo.FloralDelivNodeInfo;
+import java.io.IOException;
+import java.sql.*;
+import javafx.collections.ObservableList;
 
 public class FloralDeliveryRequestTable extends AbsTables {
   // id,type,status,pFirstName,pLastName,contactInfo,location,typeOfFlower,numOfFlower,fromFlower,assignedPerson
@@ -65,5 +66,52 @@ public class FloralDeliveryRequestTable extends AbsTables {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  public void addIntoFloralDeliveryList(ObservableList<FloralDelivNodeInfo> floralData)
+      throws IOException {
+    try {
+      String query = "SELECT * FROM FloralRequests";
+      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      while (rs.next()) {
+        floralData.add(
+            new FloralDelivNodeInfo(
+                rs.getString("id"),
+                rs.getString("status"),
+                rs.getString("pFirstName"),
+                rs.getString("pLastName"),
+                rs.getString("contactInfo"),
+                rs.getString("location"),
+                rs.getString("typeOfFlower"),
+                rs.getString("numOfFlower"),
+                rs.getString("fromFlower"),
+                rs.getString("assignedEmployee")));
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+  }
+
+  public ObservableList<FloralDelivNodeInfo> changeFloralDelivData(
+      ObservableList<FloralDelivNodeInfo> floralData) {
+    for (FloralDelivNodeInfo floralInfo : floralData) {
+      if (!(floralInfo.getStatus().isEmpty())) {
+        PreparedStatement stmt = null;
+        try {
+          stmt =
+              GlobalDb.getConnection()
+                  .prepareStatement(
+                      "UPDATE FloralRequests SET status = ?, assignedEmployee = ? WHERE id=?");
+          stmt.setString(1, floralInfo.getStatus());
+          stmt.setString(2, floralInfo.getAssignedEmployee());
+          stmt.setString(3, floralInfo.getId());
+          stmt.executeUpdate();
+
+        } catch (SQLException throwables) {
+          throwables.printStackTrace();
+        }
+      }
+    }
+    return floralData;
   }
 }

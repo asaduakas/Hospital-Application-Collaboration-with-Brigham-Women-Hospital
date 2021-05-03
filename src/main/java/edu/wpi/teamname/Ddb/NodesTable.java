@@ -1,8 +1,10 @@
 package edu.wpi.teamname.Ddb;
 
+import edu.wpi.teamname.Astar.Node;
 import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 public class NodesTable extends AbsTables {
@@ -418,5 +420,34 @@ public class NodesTable extends AbsTables {
     } catch (SQLException throwables) {
       throwables.printStackTrace();
     }
+  }
+
+  public LinkedList<Node> convertNodesToLL(Connection conn) {
+    LinkedList<Node> graphInfo = new LinkedList<>();
+    Statement stmt = null;
+
+    try {
+      stmt = conn.createStatement();
+      // load nodes
+      String query = "SELECT * FROM Nodes";
+      ResultSet rs = stmt.executeQuery(query);
+      while (rs.next()) {
+        String nodeID = rs.getString("nodeID");
+        Node node =
+            new Node(
+                nodeID,
+                rs.getInt("xcoord"),
+                rs.getInt("ycoord"),
+                rs.getString("floor"),
+                rs.getString("building"),
+                rs.getString("nodeType"),
+                rs.getString("longName"),
+                rs.getString("shortName"));
+        graphInfo.add(node);
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return graphInfo;
   }
 }
