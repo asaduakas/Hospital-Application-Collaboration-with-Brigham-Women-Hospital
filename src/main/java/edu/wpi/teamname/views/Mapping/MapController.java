@@ -198,7 +198,6 @@ public class MapController implements AllAccessible {
       deleteNodeListener(Temp);
       setupDraggableNodeUI(Temp);
       NODES.add(Temp);
-      // getNodesToAlignListener(Temp);
     }
   }
 
@@ -365,7 +364,6 @@ public class MapController implements AllAccessible {
     NODES.add(N);
     addNodeUI(N);
     deleteNodeListener(N);
-    // getNodesToAlignListener(N);
   }
 
   private void addEdge(EdgeUI E) {
@@ -459,6 +457,7 @@ public class MapController implements AllAccessible {
             clearMap();
             drawNodeFloor("1");
             nodesToAlign.clear();
+            System.out.println("Just cleared");
           }
         });
   }
@@ -506,6 +505,7 @@ public class MapController implements AllAccessible {
           KeyCode key = e.getCode();
           if (key == KeyCode.SHIFT && isEditor) {
             System.out.println("Shift is down");
+            cancelListener();
 
             for (Node N : this.initialData.getGraphInfo()) {
               NodeUI NUI = getNodeUIByID(N.getNodeID());
@@ -540,6 +540,8 @@ public class MapController implements AllAccessible {
 
     for (Node node : nodesToAlign) {
       System.out.println(node.getNodeID());
+      System.out.println("X: " + node.getXCoord());
+      System.out.println("Y: " + node.getYCoord());
       diffX = tempX - node.getXCoord();
       diffY = tempY - node.getYCoord();
       totalXDiff += Math.abs(diffX);
@@ -555,18 +557,24 @@ public class MapController implements AllAccessible {
     int avgY = totalY / nodeCount;
 
     if (totalXDiff > totalYDiff) {
+      System.out.println("Align horizontally");
       for (Node node : nodesToAlign) {
         NodeUI NUI = getNodeUIByID(node.getNodeID());
         NUI.getI().setX(node.getXCoord() - NUI.getI().getFitWidth() / 2);
         NUI.getI().setY(avgY - NUI.getI().getFitHeight());
-        NUI.setNodeCoord(node.getYCoord(), avgY);
+        NUI.setNodeCoord(node.getXCoord(), avgY);
+        System.out.println("aligned X: " + NUI.getN().getXCoord());
+        System.out.println("aligned Y: " + NUI.getN().getYCoord());
       }
     } else {
+      System.out.println("Align vertically");
       for (Node node : nodesToAlign) {
         NodeUI NUI = getNodeUIByID(node.getNodeID());
         NUI.getI().setX(avgX - NUI.getI().getFitWidth() / 2);
         NUI.getI().setY(node.getYCoord() - NUI.getI().getFitHeight());
         NUI.setNodeCoord(avgX, node.getYCoord());
+        System.out.println("aligned X: " + NUI.getN().getXCoord());
+        System.out.println("aligned Y: " + NUI.getN().getYCoord());
       }
     }
   }
