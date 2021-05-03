@@ -29,7 +29,7 @@ public class EditNodeController {
 
   @FXML
   private void initialize() {
-    FloorBox.setPromptText("Floor " + theNode.getN().getFloor());
+    FloorBox.setPromptText("Floor " + MapController.currentFloor);
     FloorBox.getItems().addAll("L2", "L1", "1", "2", "3");
     NodeType.getItems()
         .addAll(

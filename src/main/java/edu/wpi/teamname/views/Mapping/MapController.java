@@ -252,11 +252,23 @@ public class MapController implements AllAccessible {
     secondaryAnchor.getChildren().add(TheMap);
   }
 
+  private void clearEdges() {
+    Line line = new Line(); // for comparison
+    secondaryAnchor
+        .getChildren()
+        .removeIf(
+            n -> {
+              if (n.getClass() == line.getClass()) return true;
+              return false;
+            });
+  }
+
   public void showPath() {
     if (thePath.isEmpty()) {
       System.out.println("No path to show!");
     } else {
       System.out.println("Path Exists!");
+      clearEdges(); // for previous paths
       for (Edge E : thePath) {
         if (initialData.getNodeByID(E.getStartNodeID()).getFloor().equals(currentFloor)
             && initialData.getNodeByID(E.getEndNodeID()).getFloor().equals(currentFloor)) {
@@ -357,7 +369,11 @@ public class MapController implements AllAccessible {
 
   public void runPathFindingClick() {
     thePath = algorithm.multiSearch(initialData, Targets).getPathEdges();
-    showPath();
+    if (thePath.isEmpty()) {
+      Targets.clear();
+    } else {
+      showPath();
+    }
   }
 
   // _______________________________________Event Handeler_________________________________________
@@ -387,7 +403,7 @@ public class MapController implements AllAccessible {
   }
 
   private void nodeAddListener() {
-    secondaryAnchor.setOnMouseClicked(
+    secondaryAnchor.setOnMousePressed(
         (MouseEvent E) -> {
           if (E.isAltDown() && isEditor) {
             try {
@@ -405,7 +421,7 @@ public class MapController implements AllAccessible {
 
   private void deleteNodeListener(NodeUI N) {
     N.getI()
-        .setOnMouseClicked(
+        .setOnMousePressed(
             (MouseEvent E) -> {
               if (E.isControlDown() && isEditor) {
                 deleteNode(N);
@@ -415,7 +431,7 @@ public class MapController implements AllAccessible {
 
   private void deleteEdgeListener(EdgeUI E) {
     E.getL()
-        .setOnMouseClicked(
+        .setOnMousePressed(
             (MouseEvent e) -> {
               if (e.isControlDown()) {
                 deleteEdge(E);
@@ -444,6 +460,11 @@ public class MapController implements AllAccessible {
               resizeNodeUI(N, 2);
               if (isEditor) {
                 try {
+                  //                  FXMLLoader temp = loadPopup("MapPopUps/AddNode.fxml");
+                  //                  AddNodeController popupController = temp.getController();
+                  //                  popupController.setMapController(this);
+                  //                  popupController.setNX(e.getX());
+                  //                  popupController.setNY(e.getY());
                   FXMLLoader temp = loadPopup("MapPopUps/EditNode.fxml");
                   EditNodeController editNodeController = temp.getController();
                   editNodeController.setMapController(this);
@@ -776,37 +797,37 @@ public class MapController implements AllAccessible {
 
   public void setupDraggableNodeUI(NodeUI NUI) {
 
-    //    NUI.getI()
-    //        .setOnMouseDragged(
-    //            event -> {
-    //              if (isEditor) {
-    //                movingMap.setPannable(false);
-    //                Double x = event.getX();
-    //                Double y = event.getY();
-    //                NUI.getI().setX(x - NUI.getI().getFitWidth() / 2);
-    //                NUI.getI().setY(y - NUI.getI().getFitHeight());
-    //                NUI.setNodeCoord(x.intValue(), y.intValue());
-    //                resizeNodeUI(NUI, 2);
-    //              }
-    //            });
-    //
-    //    NUI.getI()
-    //        .setOnMouseReleased(
-    //            event -> {
-    //              if (isEditor) {
-    //                Double x = event.getX();
-    //                Double y = event.getY();
-    //                GlobalDb.getTables()
-    //                    .getNodeTable()
-    //                    .updateNodeXCoord(
-    //                        GlobalDb.getConnection(), NUI.getN().getNodeID(), x.intValue());
-    //                GlobalDb.getTables()
-    //                    .getNodeTable()
-    //                    .updateNodeYCoord(
-    //                        GlobalDb.getConnection(), NUI.getN().getNodeID(), y.intValue());
-    //                movingMap.setPannable(true);
-    //                resizeNodeUI(NUI, .5);
-    //              }
-    //            });
+    NUI.getI()
+        .setOnMouseDragged(
+            event -> {
+              if (isEditor) {
+                movingMap.setPannable(false);
+                Double x = event.getX();
+                Double y = event.getY();
+                NUI.getI().setX(x - NUI.getI().getFitWidth() / 2);
+                NUI.getI().setY(y - NUI.getI().getFitHeight());
+                NUI.setNodeCoord(x.intValue(), y.intValue());
+                resizeNodeUI(NUI, 2);
+              }
+            });
+
+    NUI.getI()
+        .setOnMouseReleased(
+            event -> {
+              if (isEditor) {
+                Double x = event.getX();
+                Double y = event.getY();
+                GlobalDb.getTables()
+                    .getNodeTable()
+                    .updateNodeXCoord(
+                        GlobalDb.getConnection(), NUI.getN().getNodeID(), x.intValue());
+                GlobalDb.getTables()
+                    .getNodeTable()
+                    .updateNodeYCoord(
+                        GlobalDb.getConnection(), NUI.getN().getNodeID(), y.intValue());
+                movingMap.setPannable(true);
+                resizeNodeUI(NUI, .5);
+              }
+            });
   }
 }
