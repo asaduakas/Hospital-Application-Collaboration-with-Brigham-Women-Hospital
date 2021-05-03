@@ -516,7 +516,6 @@ public class StatusController extends AbsRequest implements Initializable, IRequ
     }
   }
 
-
   @FXML
   public void goHome(MouseEvent event) throws IOException {
     List<Node> childrenList = App.getPrimaryStage().getScene().getRoot().getChildrenUnmodifiable();
