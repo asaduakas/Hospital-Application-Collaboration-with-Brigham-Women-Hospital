@@ -441,8 +441,9 @@ public class MapController implements AllAccessible {
 
   private void pathListener(NodeUI N) {
     N.getI()
-        .setOnMousePressed(
-            (MouseEvent E) -> {
+        .addEventHandler(
+            MouseEvent.MOUSE_PRESSED,
+            (E) -> {
               if (E.getButton() == MouseButton.SECONDARY) {
                 Targets.add(N.getN());
                 resizeNodeUI(N, 2);
@@ -479,7 +480,7 @@ public class MapController implements AllAccessible {
     N.getI()
         .setOnMouseExited(
             (MouseEvent e) -> {
-              resizeNodeUI(N, .5);
+              if (Targets.isEmpty()) resizeNodeUI(N, .5);
               if (isEditor) {
                 this.popup.hide();
               }
@@ -487,8 +488,8 @@ public class MapController implements AllAccessible {
   }
 
   public void resizeNodeUI(NodeUI N, double factor) {
-    if ((N.getI().getFitHeight() < 2 * N.getSizeHeight() && factor > 1)
-        || (N.getI().getFitHeight() > 1 * N.getSizeHeight() && factor < 1)) {
+    if ((N.getI().getFitHeight() * factor <= 2 * N.getSizeHeight())
+        && (N.getI().getFitHeight() * factor >= N.getSizeHeight())) {
       N.getI().setFitWidth(N.getI().getFitWidth() * factor);
       N.getI().setFitHeight(N.getI().getFitHeight() * factor);
       N.getI().setX(N.getN().getXCoord() - N.getI().getFitWidth() / 2);
