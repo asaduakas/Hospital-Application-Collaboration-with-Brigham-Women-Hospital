@@ -350,8 +350,8 @@ public class MapController implements AllAccessible {
         imageView.setX(n.getXCoord() - 10);
         imageView.setY(n.getYCoord() - 10);
         secondaryAnchor.getChildren().add(imageView);
-        //TODO: if clicked on image, take to according floor
-        //maybe get rid of old node image
+        // TODO: if clicked on image, take to according floor
+        // maybe get rid of old node image
 
         ScaleTransition st = new ScaleTransition(Duration.seconds(1), imageView);
         st.setByX(1.5f);
@@ -361,6 +361,7 @@ public class MapController implements AllAccessible {
         st.play();
       }
     }
+  }
 
   // ___________________________________Getter and Setter_____________________________________
   public NodeUI getNodeUIByID(String NodeID) {
