@@ -1,11 +1,11 @@
 package edu.wpi.teamname.Ddb;
 
-import edu.wpi.teamname.views.Mapping.CategoryNodeInfo;
+import edu.wpi.teamname.Astar.Node;
 import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Scanner;
-import javafx.collections.ObservableList;
 
 public class NodesTable extends AbsTables {
 
@@ -228,20 +228,6 @@ public class NodesTable extends AbsTables {
     }
   }
 
-  public void getCategory(Connection conn, ObservableList<CategoryNodeInfo> category, String cate) {
-    try {
-      PreparedStatement stmt =
-          conn.prepareStatement("SELECT longName FROM Nodes WHERE nodeType = ?");
-      ResultSet rs = stmt.executeQuery();
-      while (rs.next()) {
-        stmt.setString(1, cate);
-        category.add(new CategoryNodeInfo(rs.getString("longName")));
-      }
-    } catch (SQLException throwables) {
-      throwables.printStackTrace();
-    }
-  }
-
   public void updateNodeXCoord(Connection conn, String nID, int xc) {
     try {
       PreparedStatement stmt = conn.prepareStatement("UPDATE Nodes SET xCoord=? WHERE nodeID=?");
@@ -434,5 +420,34 @@ public class NodesTable extends AbsTables {
     } catch (SQLException throwables) {
       throwables.printStackTrace();
     }
+  }
+
+  public LinkedList<Node> convertNodesToLL(Connection conn) {
+    LinkedList<Node> graphInfo = new LinkedList<>();
+    Statement stmt = null;
+
+    try {
+      stmt = conn.createStatement();
+      // load nodes
+      String query = "SELECT * FROM Nodes";
+      ResultSet rs = stmt.executeQuery(query);
+      while (rs.next()) {
+        String nodeID = rs.getString("nodeID");
+        Node node =
+            new Node(
+                nodeID,
+                rs.getInt("xcoord"),
+                rs.getInt("ycoord"),
+                rs.getString("floor"),
+                rs.getString("building"),
+                rs.getString("nodeType"),
+                rs.getString("longName"),
+                rs.getString("shortName"));
+        graphInfo.add(node);
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return graphInfo;
   }
 }

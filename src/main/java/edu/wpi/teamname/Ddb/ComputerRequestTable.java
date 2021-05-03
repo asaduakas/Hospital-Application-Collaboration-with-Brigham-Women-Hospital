@@ -1,8 +1,9 @@
 package edu.wpi.teamname.Ddb;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
+import edu.wpi.teamname.views.ServiceRequests.NodeInfo.ComputerNodeInfo;
+import java.io.IOException;
+import java.sql.*;
+import javafx.collections.ObservableList;
 
 public class ComputerRequestTable extends AbsTables {
   // id,status,firstName,lastName,contactInfo,location,assignedEmployee,descriptionOfIssue(a very
@@ -59,5 +60,50 @@ public class ComputerRequestTable extends AbsTables {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  public void addIntoComputerDataList(ObservableList<ComputerNodeInfo> computerData)
+      throws IOException {
+    try {
+      String query = "SELECT * FROM ComputerServiceRequest";
+      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      while (rs.next()) {
+        computerData.add(
+            new ComputerNodeInfo(
+                rs.getString("id"),
+                rs.getString("status"),
+                rs.getString("firstName"),
+                rs.getString("lastName"),
+                rs.getString("contactInfo"),
+                rs.getString("location"),
+                rs.getString("assignedEmployee"),
+                rs.getString("descriptionOfIssue")));
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+  }
+
+  public ObservableList<ComputerNodeInfo> changeComputerData(
+      ObservableList<ComputerNodeInfo> computerData) {
+    for (ComputerNodeInfo computerInfo : computerData) {
+      if (!(computerInfo.getStatus().isEmpty())) {
+        PreparedStatement stmt = null;
+        try {
+          stmt =
+              GlobalDb.getConnection()
+                  .prepareStatement(
+                      "UPDATE ComputerServiceRequest SET status = ?, assignedEmployee = ? WHERE id=?");
+          stmt.setString(1, computerInfo.getStatus());
+          stmt.setString(2, computerInfo.getAssignedEmployee());
+          stmt.setString(3, computerInfo.getId());
+          stmt.executeUpdate();
+
+        } catch (SQLException throwables) {
+          throwables.printStackTrace();
+        }
+      }
+    }
+    return computerData;
   }
 }
