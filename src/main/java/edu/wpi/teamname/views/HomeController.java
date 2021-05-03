@@ -8,10 +8,8 @@ import java.util.List;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.effect.GaussianBlur;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
@@ -47,7 +45,8 @@ public class HomeController extends Application implements AllAccessible {
     HomeController.userCategory = null;
     LoginController.userCategory = null;
     HomeController.historyTracker = 0;
-    ControllerManager.attemptLoadPage("initPageView.fxml");
+    ControllerManager.attemptLoadPage(
+        "initPageView.fxml", fxmlLoader -> App.initLoader(fxmlLoader));
   }
 
   @FXML
@@ -239,69 +238,6 @@ public class HomeController extends Application implements AllAccessible {
             checkStatusButton.setDisable(false);
           }
         });
-  }
-
-  public void popUpAction(String fxml, Boolean isCheckRequestDisabled) throws IOException {
-
-    GaussianBlur blur = new GaussianBlur(25);
-    App.getPrimaryStage().getScene().getRoot().setEffect(blur);
-
-    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource(fxml));
-    Pane root = (Pane) fxmlLoader.load();
-
-    if (fxml.equals("servicePageView.fxml")) {
-      JFXButton checkStatusButton = (JFXButton) root.getChildren().get(2);
-      if (isCheckRequestDisabled) {
-        System.out.println("Hello 1");
-        checkStatusButton.setVisible(false);
-        checkStatusButton.setDisable(true);
-      } else {
-        System.out.println("Hello 2 ");
-        checkStatusButton.setVisible(true);
-        checkStatusButton.setDisable(false);
-      }
-    }
-
-    this.popup = new Popup();
-    this.popup.getContent().addAll(root);
-    popup.show(App.getPrimaryStage());
-  }
-
-  // TODO: Remove this function
-  public static boolean controllerPermissible(String controllerName) {
-    try {
-      Class<?> controllerClass = null;
-
-      if (controllerName == "ServicePageController") {
-        controllerClass =
-            Class.forName(
-                HomeController.class.getPackage().getName() + ".ServiceRequests." + controllerName);
-      } else if (controllerName == "MapController") {
-        controllerClass =
-            Class.forName(
-                HomeController.class.getPackage().getName() + ".Mapping." + controllerName);
-      }
-
-      if (userTypeEnum == null) {
-        System.out.println("User category is null! User data has been lost. PLEASE FIX");
-      } else if (PatientAccessible.class.isAssignableFrom(
-          controllerClass)) { // If controllerClass implements PatientAccessible
-        return true;
-      } else if (EmployeeAccessible.class.isAssignableFrom(
-          controllerClass)) { // If controllerClass implements EmployeeAccessible
-        return (userTypeEnum == userTypeEnum.Employee || userTypeEnum == userTypeEnum.Admin);
-      } else if (AdminAccessible.class.isAssignableFrom(
-          controllerClass)) { // If controllerClass implements AdminAccessible
-        return (userTypeEnum == userTypeEnum.Admin);
-      }
-      // If we haven't returned by now, the controller doesn't implement permissions correctly.
-      System.out.println(
-          "The controller " + controllerName + " does not implement permissions! PLEASE FIX");
-      return true; // Because I don't want to break people's code
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
-      return false;
-    }
   }
 
   public static String getUserCategory() {
