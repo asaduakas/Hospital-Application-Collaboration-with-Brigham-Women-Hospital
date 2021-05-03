@@ -458,6 +458,7 @@ public class MapController implements AllAccessible {
             resetData();
             clearMap();
             drawNodeFloor("1");
+            nodesToAlign.clear();
           }
         });
   }
@@ -534,8 +535,8 @@ public class MapController implements AllAccessible {
     int diffY = 0;
     int totalXDiff = 0;
     int totalYDiff = 0;
-    int tempX = 0;
-    int tempY = 0;
+    int tempX = nodesToAlign.getFirst().getXCoord();
+    int tempY = nodesToAlign.getFirst().getYCoord();
 
     for (Node node : nodesToAlign) {
       System.out.println(node.getNodeID());
@@ -555,19 +556,17 @@ public class MapController implements AllAccessible {
 
     if (totalXDiff > totalYDiff) {
       for (Node node : nodesToAlign) {
-
-        NodeUI NUI = getNodeUIByID(node.getNodeID());
-        NUI.getI().setX(avgX - NUI.getI().getFitWidth() / 2);
-        NUI.getI().setY(node.getYCoord() - NUI.getI().getFitHeight());
-        NUI.setNodeCoord(avgX, node.getYCoord());
-      }
-    } else {
-      for (Node node : nodesToAlign) {
-
         NodeUI NUI = getNodeUIByID(node.getNodeID());
         NUI.getI().setX(node.getXCoord() - NUI.getI().getFitWidth() / 2);
         NUI.getI().setY(avgY - NUI.getI().getFitHeight());
         NUI.setNodeCoord(node.getYCoord(), avgY);
+      }
+    } else {
+      for (Node node : nodesToAlign) {
+        NodeUI NUI = getNodeUIByID(node.getNodeID());
+        NUI.getI().setX(avgX - NUI.getI().getFitWidth() / 2);
+        NUI.getI().setY(node.getYCoord() - NUI.getI().getFitHeight());
+        NUI.setNodeCoord(avgX, node.getYCoord());
       }
     }
   }
