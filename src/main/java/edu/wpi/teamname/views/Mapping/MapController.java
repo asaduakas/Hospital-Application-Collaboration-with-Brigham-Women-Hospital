@@ -25,6 +25,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -87,6 +89,7 @@ public class MapController implements AllAccessible {
     movingMap.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
     ToggleListener();
     nodeAddListener();
+    cancelListener();
 
     mapDrawer.setPickOnBounds(false);
 
@@ -247,22 +250,6 @@ public class MapController implements AllAccessible {
     }
   }
 
-  private void clearMap() {
-    secondaryAnchor.getChildren().remove(0, secondaryAnchor.getChildren().size());
-    secondaryAnchor.getChildren().add(TheMap);
-  }
-
-  private void clearEdges() {
-    Line line = new Line(); // for comparison
-    secondaryAnchor
-        .getChildren()
-        .removeIf(
-            n -> {
-              if (n.getClass() == line.getClass()) return true;
-              return false;
-            });
-  }
-
   public void showPath() {
     if (thePath.isEmpty()) {
       System.out.println("No path to show!");
@@ -279,7 +266,49 @@ public class MapController implements AllAccessible {
     }
   }
 
+  public void resizeNodeUI(NodeUI N, double factor) {
+    if ((N.getI().getFitHeight() * factor <= 2 * N.getSizeHeight())
+        && (N.getI().getFitHeight() * factor >= N.getSizeHeight())) {
+      N.getI().setFitWidth(N.getI().getFitWidth() * factor);
+      N.getI().setFitHeight(N.getI().getFitHeight() * factor);
+      N.getI().setX(N.getN().getXCoord() - N.getI().getFitWidth() / 2);
+      N.getI().setY(N.getN().getYCoord() - N.getI().getFitHeight());
+    }
+  }
+
+  // ----------------------------------------RESET-----------------------------------------------
+
   private void disableListener(MouseEvent e) {}
+
+  private void clearMap() {
+    secondaryAnchor.getChildren().remove(0, secondaryAnchor.getChildren().size());
+    secondaryAnchor.getChildren().add(TheMap);
+    resetNodeSizes();
+  }
+
+  private void clearEdges() {
+    Line line = new Line(); // for comparison
+    secondaryAnchor
+        .getChildren()
+        .removeIf(
+            n -> {
+              if (n.getClass() == line.getClass()) return true;
+              return false;
+            });
+  }
+
+  private void resetData() {
+    Targets.clear();
+  }
+
+  private void resetNodeSizes() {
+    for (NodeUI N : NODES) {
+      N.getI().setFitWidth(N.getSizeWidth());
+      N.getI().setFitHeight(N.getSizeHeight());
+      N.getI().setX(N.getN().getXCoord() - N.getI().getFitWidth() / 2);
+      N.getI().setY(N.getN().getYCoord() - N.getI().getFitHeight());
+    }
+  }
 
   // _______________________________________EDITOR FEATURES________________________________________
 
@@ -419,6 +448,18 @@ public class MapController implements AllAccessible {
         });
   }
 
+  private void cancelListener() {
+    mainAnchor.setOnKeyPressed(
+        (KeyEvent e) -> {
+          KeyCode key = e.getCode();
+          if (key == KeyCode.ESCAPE) {
+            resetData();
+            clearMap();
+            drawNodeFloor("1");
+          }
+        });
+  }
+
   private void deleteNodeListener(NodeUI N) {
     N.getI()
         .setOnMousePressed(
@@ -542,16 +583,6 @@ public class MapController implements AllAccessible {
                 this.popup.hide();
               }
             });
-  }
-
-  public void resizeNodeUI(NodeUI N, double factor) {
-    if ((N.getI().getFitHeight() * factor <= 2 * N.getSizeHeight())
-        && (N.getI().getFitHeight() * factor >= N.getSizeHeight())) {
-      N.getI().setFitWidth(N.getI().getFitWidth() * factor);
-      N.getI().setFitHeight(N.getI().getFitHeight() * factor);
-      N.getI().setX(N.getN().getXCoord() - N.getI().getFitWidth() / 2);
-      N.getI().setY(N.getN().getYCoord() - N.getI().getFitHeight());
-    }
   }
 
   // ___________________________________Getter and Setter_____________________________________
