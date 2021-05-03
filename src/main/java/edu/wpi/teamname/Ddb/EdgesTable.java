@@ -194,7 +194,6 @@ public class EdgesTable extends AbsTables {
   public LinkedList<Edge> convertEdgesToLL(Connection conn, LinkedList<Node> graphInfo) {
     // load edges
     LinkedList<Edge> listOfEdges = new LinkedList<Edge>();
-    LinkedList<Edge> edges = new LinkedList<Edge>();
     try {
       for (Node entry : graphInfo) {
         PreparedStatement prepStmt = null;
@@ -224,8 +223,6 @@ public class EdgesTable extends AbsTables {
           }
         }
       } // end of for loop
-      // cleanup?
-      edges = null;
     } catch (SQLException e) {
       e.printStackTrace();
     }
