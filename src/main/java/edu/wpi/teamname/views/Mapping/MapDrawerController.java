@@ -1,7 +1,6 @@
 package edu.wpi.teamname.views.Mapping;
 
-import com.jfoenix.controls.JFXTreeTableColumn;
-import com.jfoenix.controls.JFXTreeTableView;
+import com.jfoenix.controls.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleStringProperty;
@@ -13,7 +12,9 @@ import javafx.util.Callback;
 
 public class MapDrawerController {
   @FXML private JFXTreeTableView directoryTreeTable;
-  @FXML private JFXTreeTableView directionTreeTable;
+  @FXML private JFXTextField startField;
+  @FXML private JFXTextField endField;
+  @FXML private JFXButton findPathButton;
 
   TreeItem<String> directory = new TreeItem<>("Directory");
   TreeItem<String> parking = new TreeItem<>("Parking");
@@ -29,9 +30,11 @@ public class MapDrawerController {
   TreeItem<String> service = new TreeItem<>("Service");
 
   public void initialize(URL url, ResourceBundle rb) {
+
     JFXTreeTableColumn<String, String> column = new JFXTreeTableColumn<>();
     column.setPrefWidth(248);
 
+    directoryTreeTable.getColumns().add(column);
     column.setCellValueFactory(
         new Callback<TreeTableColumn.CellDataFeatures<String, String>, ObservableValue<String>>() {
           @Override

@@ -58,7 +58,6 @@ public class MapController implements AllAccessible {
   public static final Image RETL = new Image("Images/retailpin.png");
   public static final Image SERV = new Image("Images/service.png");
 
-  @FXML private JFXToggleButton toggleEditor;
   @FXML private AnchorPane mainAnchor;
   @FXML private JFXComboBox FloorOption;
   @FXML private ScrollPane movingMap;
@@ -67,6 +66,7 @@ public class MapController implements AllAccessible {
   @FXML public static Popup popup;
   @FXML private JFXHamburger mapHam;
   @FXML private JFXDrawer mapDrawer;
+  @FXML private JFXToggleButton toggleEditor;
 
   @FXML
   private void initialize() {
