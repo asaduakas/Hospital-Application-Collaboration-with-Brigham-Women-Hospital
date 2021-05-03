@@ -70,7 +70,7 @@ public class LoginController implements AllAccessible {
     Scene scene = App.getPrimaryStage().getScene();
 
     // App.getPrimaryStage().setScene(scene);
-    App.getPrimaryStage().setMaximized(true);
+    // App.getPrimaryStage().setMaximized(true);
     // App.getPrimaryStage().show();
 
     changeChildrenHomePage(childrenList);

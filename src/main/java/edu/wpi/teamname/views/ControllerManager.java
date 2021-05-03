@@ -58,6 +58,7 @@ public class ControllerManager {
   }
 
   public static void attemptLoadPage(String fxmlName, Consumer<FXMLLoader> tasks) {
+    App.getPrimaryStage().close();
     FXMLLoader fxmlLoader = getLoader(fxmlName);
     if (!isPermissible(fxmlLoader.getController().getClass())) return;
     exitPopup();
