@@ -103,9 +103,11 @@ public class MapController implements AllAccessible {
           if (mapDrawer.isOpened()) {
             mapDrawer.close();
             TheMap.setLayoutX(0);
+            mapDrawer.setLayoutX(-132);
           } else {
             mapDrawer.open();
             TheMap.setLayoutX(263);
+            mapDrawer.setLayoutX(0);
           }
         });
   }

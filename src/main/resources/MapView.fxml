@@ -16,7 +16,6 @@
             <AnchorPane fx:id="secondaryAnchor" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="3400.0" prefWidth="5000.0">
                <children>
                   <ImageView fx:id="TheMap" fitHeight="3400.0" fitWidth="5000.0" pickOnBounds="true" preserveRatio="true" />
-                  <JFXToggleButton fx:id="toggleEditor" layoutX="853.0" layoutY="3.0" text="Pathfinding" />
 <!--                  <JFXButton fx:id="cancelBtn" layoutX="815.0" layoutY="602.0" onAction="#cancelSimple" style="-fx-background-color: #1a479a; -fx-font-weight: Bold; -fx-font-size: 15px;" text="Cancel" textFill="WHITE">-->
 <!--                     <font>-->
 <!--                        <Font size="15.0" />-->
@@ -26,13 +25,14 @@
             </AnchorPane>
          </content>
       </ScrollPane>
+      <JFXDrawer fx:id="mapDrawer" layoutX="-132" layoutY="0" prefHeight="640.0" prefWidth="263.0" />
+      <JFXHamburger fx:id="mapHam" layoutX="1.0" layoutY="1.0" prefHeight="49.0" prefWidth="59.0" />
       <Label layoutX="52.0" layoutY="13.0" text="MENU">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <JFXDrawer fx:id="mapDrawer" prefHeight="644.0" prefWidth="263.0" />
-      <JFXHamburger fx:id="mapHam" layoutX="1.0" layoutY="-1.0" prefHeight="49.0" prefWidth="59.0" />
+      <JFXToggleButton fx:id="toggleEditor" layoutX="860.0" text="Pathfinding" />
 
    </children>
 </AnchorPane>
