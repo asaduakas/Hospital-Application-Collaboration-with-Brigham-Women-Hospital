@@ -454,6 +454,63 @@ public class MapController implements AllAccessible {
             });
   }
 
+  LinkedList<Node> nodesToAlign = new LinkedList<Node>();
+
+  private void getNodesToAlignListener(NodeUI N)
+  {
+    secondaryAnchor.setOnMousePressed(
+            (MouseEvent E) -> {
+              if (E.isShiftDown() && isEditor) {
+                try {
+
+                  N.getI()
+                          .addEventHandler(
+                                  MouseEvent.MOUSE_PRESSED,
+                                  (M) -> {
+                                    if (M.getButton() == MouseButton.SECONDARY) {
+                                      nodesToAlign.add(N.getN());
+                                      resizeNodeUI(N, 2);
+                                      if (nodesToAlign.size() > 2) {
+                                        alignNodes();
+                                      }
+                                    }
+                                  });
+
+                } catch (IOException e) {
+                  e.printStackTrace();
+                }
+              }
+            });
+  }
+
+  private void alignNodes()
+  {
+    int totalX=0;
+    int totalY=0;
+    int nodeCount=0;
+    int diffX=0;
+    int diffY=0;
+    int tempX=0;
+    int tempY=0;
+
+    for(Node node : nodesToAlign)
+    {
+      diffX=tempX-node.getXCoord();
+      diffY=tempY-node.getYCoord();
+      totalX+=node.getXCoord();
+      totalY+=node.getYCoord();
+      tempX=node.getXCoord();
+      tempY=node.getYCoord();
+      nodeCount++;
+    }
+
+    int avgX=totalX/nodeCount;
+    int avgY=totalY/nodeCount;
+
+
+
+  }
+
   private void hoverResize(NodeUI N) {
     N.getI()
         .setOnMouseEntered(
