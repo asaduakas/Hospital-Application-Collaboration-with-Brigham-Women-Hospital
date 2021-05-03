@@ -28,10 +28,8 @@ public class RoomGraph {
   public RoomGraph(Connection conn) { // for database
     this.edgesFile = "Database";
     this.nodesFile = "Database";
-    this.graphInfo = new LinkedList<Node>();
-    // new reference to convert database to RoomGraph:
-    FDatabaseTables.getNodeTable().convertNodesToLL(conn);
-    // old reference: convertDatabaseToRoomGraph(conn);
+    this.graphInfo = FDatabaseTables.getNodeTable().convertNodesToLL(conn);
+    this.listOfEdges = FDatabaseTables.getEdgeTable().convertEdgesToLL(conn, this.graphInfo);
   }
 
   // {Parent Node : [{start1, end1, cost1}, {start2, end2, cost2}, {start3, end3, cost3}, ...]}
