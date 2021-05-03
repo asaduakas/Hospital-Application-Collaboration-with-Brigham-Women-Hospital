@@ -1,69 +1,45 @@
 package edu.wpi.teamname.views.Mapping;
 
 import com.jfoenix.controls.*;
+import edu.wpi.teamname.Ddb.FDatabaseTables;
+import edu.wpi.teamname.Ddb.GlobalDb;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
-import javafx.scene.control.cell.TreeItemPropertyValueFactory;
+import javafx.scene.control.TreeView;
 
-public class MapDrawerController {
-  @FXML private JFXTreeTableView directoryTreeTable;
+public class MapDrawerController implements Initializable {
+  @FXML private TreeView<String> directoryTreeView;
   @FXML private JFXTextField startField;
   @FXML private JFXTextField endField;
   @FXML private JFXButton findPathButton;
-  @FXML private ObservableList<CategoryNodeInfo> data;
-  private JFXTreeTableColumn<String, String> column = new JFXTreeTableColumn<>("Directory");
+  private ObservableList<CategoryNodeInfo> parkingData =
+      FDatabaseTables.getNodeTable().getCategory(GlobalDb.getConnection(), "PAR");
+  private ArrayList<String> parkingList =
+      FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "PARK");
 
+  TreeItem<String> parking = new TreeItem<>("Parking");
+  TreeItem<String> elevator = new TreeItem<>("Elevator");
+  TreeItem<String> restroom = new TreeItem<>("Restroom");
+  TreeItem<String> stairs = new TreeItem<>("Stairs");
+  TreeItem<String> department = new TreeItem<>("Department");
+  TreeItem<String> laboratory = new TreeItem<>("Laboratory");
+  TreeItem<String> information = new TreeItem<>("Information");
+  TreeItem<String> conference = new TreeItem<>("Conference");
+  TreeItem<String> exit = new TreeItem<>("Entrance/Exit");
+  TreeItem<String> retail = new TreeItem<>("Retail");
+  TreeItem<String> service = new TreeItem<>("Service");
+
+  @Override
   public void initialize(URL url, ResourceBundle rb) {
 
-    tableSetup();
-
-    //    JFXTreeTableCell
-
-    //    column.setCellValueFactory(
-    //        new Callback<TreeTableColumn.CellDataFeatures<String, String>,
-    // ObservableValue<String>>() {
-    //          @Override
-    //          public ObservableValue<String> call(
-    //              TreeTableColumn.CellDataFeatures<String, String> param) {
-    //            return new SimpleStringProperty(param.getValue().getValue());
-    //          }
-    //        });
-
-    //        directory
-    //            .getChildren()
-    //            .setAll(
-    //                parking,
-    //                elevator,
-    //                restroom,
-    //                stairs,
-    //                department,
-    //                laboratory,
-    //                information,
-    //                conference,
-    //                exit,
-    //                retail,
-    //                service);
-    //    TreeItem<CategoryNodeInfo> root = new RecursiveTreeItem<>(CategoryNodeInfo,
-    // RecursiveTreeObject::getChildren);
-  }
-
-  private ObservableList<CategoryNodeInfo> getData() {
-    data = FXCollections.observableArrayList();
-
-    return data;
-  }
-
-  public void tableSetup() {
-    column.setPrefWidth(248);
-    directoryTreeTable.getColumns().set(0, column);
-
-    column.setCellValueFactory(new TreeItemPropertyValueFactory<>("directory"));
-
-    //    TreeItem<String> locations = new TreeItem<>("Locations");
+    TreeItem<String> root = new TreeItem<String>("Directory");
+    directoryTreeView.setRoot(root);
     TreeItem<String> parking = new TreeItem<>("Parking");
     TreeItem<String> elevator = new TreeItem<>("Elevator");
     TreeItem<String> restroom = new TreeItem<>("Restroom");
@@ -76,33 +52,27 @@ public class MapDrawerController {
     TreeItem<String> retail = new TreeItem<>("Retail");
     TreeItem<String> service = new TreeItem<>("Service");
 
-    directoryTreeTable.setRoot(parking);
-    directoryTreeTable.setRoot(elevator);
-    directoryTreeTable.setRoot(restroom);
-    directoryTreeTable.setRoot(stairs);
-    directoryTreeTable.setRoot(department);
-    directoryTreeTable.setRoot(laboratory);
-    directoryTreeTable.setRoot(information);
-    directoryTreeTable.setRoot(conference);
-    directoryTreeTable.setRoot(exit);
-    directoryTreeTable.setRoot(retail);
-    directoryTreeTable.setRoot(service);
+    root.getChildren()
+        .addAll(
+            parking,
+            elevator,
+            restroom,
+            stairs,
+            department,
+            laboratory,
+            information,
+            conference,
+            exit,
+            retail,
+            service);
+    for (String parkingSpace : parkingList) {
+      TreeItem<String> parkingLocation = new TreeItem<String>(parkingSpace);
+      parking.getChildren().add(parkingLocation);
+    }
 
-    //    locations
-    //        .getChildren()
-    //        .setAll(
-    //            parking,
-    //            elevator,
-    //            restroom,
-    //            stairs,
-    //            department,
-    //            laboratory,
-    //            information,
-    //            conference,
-    //            exit,
-    //            retail,
-    //            service);
-
-    //    directoryTreeTable.setRoot(locations);
+    root.setExpanded(true);
+    directoryTreeView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
   }
+
+  public void tableSetup() {}
 }
