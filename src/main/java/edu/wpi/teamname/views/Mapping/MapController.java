@@ -7,6 +7,7 @@ import edu.wpi.teamname.Astar.*;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.Access.AllAccessible;
 import edu.wpi.teamname.views.Mapping.Popup.Edit.AddNodeController;
+import edu.wpi.teamname.views.Mapping.Popup.Edit.EditNodeController;
 import java.awt.*;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -46,10 +47,10 @@ public class MapController implements AllAccessible {
   public static final double nodeNormalWidth = 30;
   private String userCategory = "admin";
   public static String currentFloor = "1";
+  private boolean isEditor;
 
-  private final Image Exit = new Image("Images/exit.png");
   private final Image F1 = new Image("01_thefirstfloor.png");
-  public static final Image I = new Image("Images/274px-Google_Maps_pin.svg.png");
+  public static final Image DEFAULT = new Image("Images/274px-Google_Maps_pin.svg.png");
   public static final Image PARK = new Image("Images/parkingpin.png");
   public static final Image ELEV = new Image("Images/elevatorpin.png");
   public static final Image REST = new Image("Images/restroompins.png");
@@ -179,6 +180,7 @@ public class MapController implements AllAccessible {
           Marker.setImage(SERV);
           break;
         default:
+          Marker.setImage(DEFAULT);
           break;
       }
 
@@ -190,6 +192,7 @@ public class MapController implements AllAccessible {
       NodeUI Temp = new NodeUI(N, Marker, nodeNormalWidth, nodeNormalHeight);
       pathListener(Temp);
       hoverResize(Temp);
+      deleteNodeListener(Temp);
       setupDraggableNodeUI(Temp);
       NODES.add(Temp);
     }
@@ -212,6 +215,7 @@ public class MapController implements AllAccessible {
       L.setStroke(Color.BLACK);
       EdgeUI Temp = new EdgeUI(E, L);
       EDGES.add(Temp);
+      deleteEdgeListener(Temp);
     }
   }
 
@@ -227,7 +231,9 @@ public class MapController implements AllAccessible {
 
   private void drawNodeFloor(String Floor) {
     for (NodeUI NUI : NODES) {
-      if (NUI.getN().getFloor().equals(Floor)) {
+      if (NUI.getN().getFloor().equals(Floor)
+          && (!NUI.getN().getNodeType().equals("WALK"))
+          && (!NUI.getN().getNodeType().equals("HALL"))) {
         addNodeUI(NUI);
       }
     }
@@ -266,6 +272,20 @@ public class MapController implements AllAccessible {
   // _______________________________________EDITOR FEATURES________________________________________
 
   private void deleteNode(NodeUI N) {
+
+    LinkedList<EdgeUI> toRemove = new LinkedList<>();
+
+    for (EdgeUI E : EDGES) {
+      if (E.getE().getStartNodeID().equals(N.getN().getNodeID())
+          || E.getE().getEndNodeID().equals(N.getN().getNodeID())) {
+        toRemove.add(E);
+      }
+    }
+
+    for (EdgeUI E : toRemove) {
+      deleteEdge(E);
+    }
+
     GlobalDb.getTables()
         .getNodeTable()
         .deleteEntity(GlobalDb.getConnection(), "Nodes", N.getN().getNodeID());
@@ -302,6 +322,7 @@ public class MapController implements AllAccessible {
     initialData.getGraphInfo().add(N.getN());
     NODES.add(N);
     addNodeUI(N);
+    deleteNodeListener(N);
   }
 
   private void addEdge(EdgeUI E) {
@@ -355,9 +376,11 @@ public class MapController implements AllAccessible {
                 if (toggleEditor.isSelected()) {
                   clearMap();
                   LoadingNodesEdges("1");
+                  isEditor = true;
                 } else {
                   clearMap();
                   drawNodeFloor("1");
+                  isEditor = false;
                 }
               }
             });
@@ -366,7 +389,7 @@ public class MapController implements AllAccessible {
   private void nodeAddListener() {
     secondaryAnchor.setOnMouseClicked(
         (MouseEvent E) -> {
-          if (E.isAltDown()) {
+          if (E.isAltDown() && isEditor) {
             try {
               FXMLLoader temp = loadPopup("MapPopUps/AddNode.fxml");
               AddNodeController popupController = temp.getController();
@@ -377,11 +400,31 @@ public class MapController implements AllAccessible {
               e.printStackTrace();
             }
           }
-          // NodeUI NUI = new NodeUI();
         });
   }
 
+  private void deleteNodeListener(NodeUI N) {
+    N.getI()
+        .setOnMouseClicked(
+            (MouseEvent E) -> {
+              if (E.isControlDown() && isEditor) {
+                deleteNode(N);
+              }
+            });
+  }
+
+  private void deleteEdgeListener(EdgeUI E) {
+    E.getL()
+        .setOnMouseClicked(
+            (MouseEvent e) -> {
+              if (e.isControlDown()) {
+                deleteEdge(E);
+              }
+            });
+  }
+
   private void pathListener(NodeUI N) {
+
     N.getI()
         .setOnMouseClicked(
             (MouseEvent E) -> {
@@ -400,18 +443,32 @@ public class MapController implements AllAccessible {
         .setOnMouseEntered(
             (MouseEvent e) -> {
               resizeNodeUI(N, 2);
+              if (isEditor) {
+                try {
+                  FXMLLoader temp = loadPopup("MapPopUps/EditNode.fxml");
+                  EditNodeController editNodeController = temp.getController();
+                  editNodeController.setMapController(this);
+                  editNodeController.setTheNode(N);
+
+                } catch (IOException ioException) {
+                  ioException.printStackTrace();
+                }
+              }
             });
 
     N.getI()
         .setOnMouseExited(
             (MouseEvent e) -> {
               resizeNodeUI(N, .5);
+              if (isEditor) {
+                this.popup.hide();
+              }
             });
   }
 
   public void resizeNodeUI(NodeUI N, double factor) {
     if ((N.getI().getFitHeight() < 2 * N.getSizeHeight() && factor > 1)
-        || (N.getI().getFitHeight() > .5 * N.getSizeHeight() && factor < 1)) {
+        || (N.getI().getFitHeight() > 1 * N.getSizeHeight() && factor < 1)) {
       N.getI().setFitWidth(N.getI().getFitWidth() * factor);
       N.getI().setFitHeight(N.getI().getFitHeight() * factor);
       N.getI().setX(N.getN().getXCoord() - N.getI().getFitWidth() / 2);
@@ -723,28 +780,34 @@ public class MapController implements AllAccessible {
     NUI.getI()
         .setOnMouseDragged(
             event -> {
-              movingMap.setPannable(false);
-              Double x = event.getX();
-              Double y = event.getY();
-              NUI.getI().setX(x - NUI.getI().getFitWidth() / 2);
-              NUI.getI().setY(y - NUI.getI().getFitHeight());
-              NUI.setNodeCoord(x.intValue(), y.intValue());
-              resizeNodeUI(NUI, 2);
+              if (isEditor) {
+                movingMap.setPannable(false);
+                Double x = event.getX();
+                Double y = event.getY();
+                NUI.getI().setX(x - NUI.getI().getFitWidth() / 2);
+                NUI.getI().setY(y - NUI.getI().getFitHeight());
+                NUI.setNodeCoord(x.intValue(), y.intValue());
+                resizeNodeUI(NUI, 2);
+              }
             });
 
     NUI.getI()
         .setOnMouseReleased(
             event -> {
-              Double x = event.getX();
-              Double y = event.getY();
-              GlobalDb.getTables()
-                  .getNodeTable()
-                  .updateNodeXCoord(GlobalDb.getConnection(), NUI.getN().getNodeID(), x.intValue());
-              GlobalDb.getTables()
-                  .getNodeTable()
-                  .updateNodeYCoord(GlobalDb.getConnection(), NUI.getN().getNodeID(), y.intValue());
-              movingMap.setPannable(true);
-              resizeNodeUI(NUI, .5);
+              if (isEditor) {
+                Double x = event.getX();
+                Double y = event.getY();
+                GlobalDb.getTables()
+                    .getNodeTable()
+                    .updateNodeXCoord(
+                        GlobalDb.getConnection(), NUI.getN().getNodeID(), x.intValue());
+                GlobalDb.getTables()
+                    .getNodeTable()
+                    .updateNodeYCoord(
+                        GlobalDb.getConnection(), NUI.getN().getNodeID(), y.intValue());
+                movingMap.setPannable(true);
+                resizeNodeUI(NUI, .5);
+              }
             });
   }
 }
