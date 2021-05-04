@@ -105,8 +105,7 @@ public class MapController implements AllAccessible {
     ToggleListener();
     nodeAddListener();
     cancelListener();
-    getNodesToAlignListener();
-    recordParkingListener();
+    getNodesToAlignListener_recordParkingListener();
 
     mapDrawer.setPickOnBounds(false);
 
@@ -606,7 +605,7 @@ public class MapController implements AllAccessible {
 
   LinkedList<Node> nodesToAlign = new LinkedList<Node>();
 
-  private void getNodesToAlignListener() {
+  private void getNodesToAlignListener_recordParkingListener() {
     mainAnchor.setOnKeyPressed(
         (KeyEvent e) -> {
           KeyCode key = e.getCode();
@@ -627,6 +626,29 @@ public class MapController implements AllAccessible {
                           alignNodes();
                         }
                       });
+            }
+          }
+
+          // record parking lot
+          int saveMode = 1;
+          if (key == KeyCode.S && !isEditor) {
+            System.out.println("S is down");
+            if (saveMode == 0) {
+              saveMode += 1;
+            } else if (saveMode == 1) {
+              saveMode -= 1;
+              for (Node N : this.initialData.getGraphInfo()) {
+                if (N.getNodeType().equals("PARK")) {
+                  NodeUI NUI = getNodeUIByID(N.getNodeID());
+                  NUI.getI()
+                      .addEventHandler(
+                          MouseEvent.MOUSE_PRESSED,
+                          (M) -> {
+                            System.out.println("node clicked");
+                            saveParkingSpot(NUI);
+                          });
+                }
+              }
             }
           }
         });
@@ -684,35 +706,6 @@ public class MapController implements AllAccessible {
         System.out.println("aligned Y: " + NUI.getN().getYCoord());
       }
     }
-  }
-
-  private void recordParkingListener() {
-
-    mainAnchor.setOnKeyPressed(
-        (KeyEvent e) -> {
-          KeyCode key = e.getCode();
-          int saveMode = 1;
-          if (key == KeyCode.S && !isEditor) {
-            System.out.println("S is down");
-            if (saveMode == 0) {
-              saveMode += 1;
-            } else if (saveMode == 1) {
-              saveMode -= 1;
-              for (Node N : this.initialData.getGraphInfo()) {
-                if (N.getNodeType().equals("PARK")) {
-                  NodeUI NUI = getNodeUIByID(N.getNodeID());
-                  NUI.getI()
-                      .addEventHandler(
-                          MouseEvent.MOUSE_PRESSED,
-                          (M) -> {
-                            System.out.println("node clicked");
-                            saveParkingSpot(NUI);
-                          });
-                }
-              }
-            }
-          }
-        });
   }
 
   private void saveParkingSpot(NodeUI N) {
