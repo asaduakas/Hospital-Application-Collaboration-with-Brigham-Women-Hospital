@@ -58,6 +58,10 @@ public class MapDrawerController implements Initializable {
   @Override
   public void initialize(URL url, ResourceBundle rb) {
 
+    directoryTreeView
+        .getSelectionModel()
+        .setSelectionMode(SelectionMode.MULTIPLE); // Setting SelectionMode to MULTIPLE
+
     JFXTextArea textDirection = new JFXTextArea();
     Label textDirectionLabel = new Label("Text Direction");
 
@@ -110,9 +114,16 @@ public class MapDrawerController implements Initializable {
         case "Service":
           type = "SERV";
           break;
-        default:
+        case "Parking":
           type = "PARK";
           break;
+        default:
+          for (NodeUI nodess : mapController.NODES) {
+            if (nodess.getN().getLongName().equals(name)) {
+              mapController.clearMap();
+              mapController.addNode(nodess);
+            }
+          }
       }
       nodeRedrawing(type);
     }

@@ -177,7 +177,7 @@ public class MapController implements AllAccessible {
     JFXTreeView treeView = (JFXTreeView) nodeList.get(3);
     Label label = (Label) nodeList.get(4);
     JFXTextArea textDirection = (JFXTextArea) nodeList.get(5);
-    treeView.setMinHeight(App.getPrimaryStage().getScene().getHeight() / 2);
+    treeView.setMinHeight(App.getPrimaryStage().getScene().getHeight() / 3);
     label.setLayoutY(treeView.getLayoutY() + treeView.getMinHeight() + 10);
     label.setLayoutX(10);
     textDirection.setLayoutY(label.getLayoutY() + label.getHeight() + 30);
@@ -1201,4 +1201,23 @@ public class MapController implements AllAccessible {
               }
             });
   }
+
+  //  public void type(ActionEvent actionEvent) {
+  //    String startName = start_choice.getValue();
+  //    String endName = end_choice.getValue();
+  //    String startFavName = start_favorites.getValue();
+  //    String endFavName = end_favorites.getValue();
+  //
+  //    AutoCompleteComboBox autoStart = new AutoCompleteComboBox(this.start_choice);
+  //    autoStart.getEntries().addAll(longNames);
+  //
+  //    AutoCompleteComboBox autoEnd = new AutoCompleteComboBox(this.end_choice);
+  //    autoEnd.getEntries().addAll(longNames);
+  //
+  //    AutoCompleteComboBox autoStartFav = new AutoCompleteComboBox(this.start_favorites);
+  //    autoStartFav.getEntries().addAll(favoriteNodes);
+  //
+  //    AutoCompleteComboBox autoEndFav = new AutoCompleteComboBox(this.end_favorites);
+  //    autoEndFav.getEntries().addAll(favoriteNodes);
+  //  }
 }
