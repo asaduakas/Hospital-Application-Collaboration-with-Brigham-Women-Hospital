@@ -53,12 +53,6 @@ public class EditNodeController {
     String shortName = theNode.getN().getShortName();
     String longName = theNode.getN().getLongName();
 
-    System.out.println(building);
-    System.out.println(floor);
-    System.out.println(type);
-    System.out.println(shortName);
-    System.out.println(longName);
-
     if (!this.building.getText().isEmpty()) building = this.building.getText();
 
     if (FloorBox.getValue() != null) floor = (String) FloorBox.getValue();
@@ -73,12 +67,6 @@ public class EditNodeController {
     FDatabaseTables.getNodeTable().updateNodeType(GlobalDb.getConnection(), nID, type);
     FDatabaseTables.getNodeTable().updateNodeShortName(GlobalDb.getConnection(), nID, shortName);
     FDatabaseTables.getNodeTable().updateNodeLongName(GlobalDb.getConnection(), nID, longName);
-
-    System.out.println(building);
-    System.out.println(floor);
-    System.out.println(type);
-    System.out.println(shortName);
-    System.out.println(longName);
 
     Node node = theNode.getN();
     node.setFloor(floor);

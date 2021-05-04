@@ -46,6 +46,7 @@ public class MapController implements AllAccessible {
   private PathAlgoPicker algorithm = new PathAlgoPicker(new aStar());
   private LinkedList<Edge> thePath = new LinkedList<Edge>();
   private LinkedList<Node> Targets = new LinkedList<Node>();
+  LinkedList<NodeUI> NewEdge = new LinkedList<NodeUI>();
   public static final double nodeNormalHeight = 30;
   public static final double nodeNormalWidth = 30;
   private String userCategory = "admin";
@@ -207,11 +208,6 @@ public class MapController implements AllAccessible {
           Marker.setImage(DEFAULT);
           break;
       }
-
-      Marker.setOnMouseClicked(
-          (MouseEvent e) -> {
-            disableListener(e);
-          }); // TODO ACTION
 
       NodeUI Temp = new NodeUI(N, Marker, nodeNormalWidth, nodeNormalHeight);
       pathListener(Temp);
@@ -527,11 +523,11 @@ public class MapController implements AllAccessible {
 
                 if (toggleEditor.isSelected()) {
                   clearMap();
-                  LoadingNodesEdges("1");
+                  LoadingNodesEdges(currentFloor);
                   isEditor = true;
                 } else {
                   clearMap();
-                  drawNodeFloor("1");
+                  drawNodeFloor(currentFloor);
                   isEditor = false;
                 }
               }
@@ -593,11 +589,43 @@ public class MapController implements AllAccessible {
         .addEventHandler(
             MouseEvent.MOUSE_PRESSED,
             (E) -> {
-              if (E.getButton() == MouseButton.SECONDARY) {
+              if (E.getButton() == MouseButton.SECONDARY && !isEditor) {
                 Targets.add(N.getN());
                 resizeNodeUI(N, 2);
                 if (Targets.size() >= 2) {
                   runPathFindingClick();
+                }
+              }
+              if (E.isShiftDown() && isEditor) {
+                NewEdge.add(N);
+                if (NewEdge.size() == 2) {
+
+                  System.out.println(NewEdge.get(0).getN().getNodeID());
+                  System.out.println(NewEdge.get(1).getN().getNodeID());
+
+                  Line L = new Line();
+
+                  L.startXProperty().bind(NewEdge.get(0).simpXcoordProperty());
+                  L.startYProperty().bind(NewEdge.get(0).simpYcoordProperty());
+                  L.endXProperty().bind(NewEdge.get(1).simpXcoordProperty());
+                  L.endYProperty().bind(NewEdge.get(1).simpYcoordProperty());
+                  L.setStroke(Color.BLACK);
+                  L.setStrokeWidth(3.0);
+                  Edge edge =
+                      new Edge(
+                          NewEdge.get(0).getN(),
+                          NewEdge.get(1).getN(),
+                          NewEdge.get(0).getN().getMeasuredDistance(NewEdge.get(1).getN()));
+                  Edge edge1 =
+                      new Edge(
+                          NewEdge.get(1).getN(),
+                          NewEdge.get(0).getN(),
+                          NewEdge.get(0).getN().getMeasuredDistance(NewEdge.get(1).getN()));
+                  NewEdge.get(0).getN().addEdge(edge);
+                  NewEdge.get(1).getN().addEdge(edge1);
+                  EdgeUI temp = new EdgeUI(edge, L);
+                  addEdge(temp);
+                  NewEdge = new LinkedList<NodeUI>();
                 }
               }
             });
@@ -882,9 +910,6 @@ public class MapController implements AllAccessible {
         imageView.setX(n.getXCoord() - 10);
         imageView.setY(n.getYCoord() - 10);
         secondaryAnchor.getChildren().add(imageView);
-        // TODO: if clicked on image, take to according floor
-        // maybe get rid of old node image
-
         ScaleTransition st = new ScaleTransition(Duration.seconds(1), imageView);
         st.setByX(1.5f);
         st.setByY(1.5f);
