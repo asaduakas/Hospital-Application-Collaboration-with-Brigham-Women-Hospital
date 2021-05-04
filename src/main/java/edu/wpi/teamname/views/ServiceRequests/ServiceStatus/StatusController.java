@@ -2102,7 +2102,6 @@ public class StatusController extends AbsRequest
   }
 
   private void COVIDSurveyResultsTableSetup() {
-    FDatabaseTables.getCovid19SurveyTable().dispAll(GlobalDb.getConnection());
     JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> idCol =
         new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("User ID");
     JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> firstNameCol =

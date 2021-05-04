@@ -70,6 +70,7 @@ public class MapController implements AllAccessible {
   private SimpleBooleanProperty startPressed = new SimpleBooleanProperty();
   private SimpleBooleanProperty endPressed = new SimpleBooleanProperty();
   private EdgeUI tempEUI;
+  public static boolean mapEditorIsSelected = false;
 
   private final Image F1 = new Image("01_thefirstfloor.png");
   private final Image F2 = new Image("02_thesecondfloor.png");
@@ -172,6 +173,20 @@ public class MapController implements AllAccessible {
     mapDrawer.setSidePane(menuBtns);
     Pane root = (Pane) loader.getRoot();
     List<javafx.scene.Node> childrenList = root.getChildren();
+
+    JFXButton exportCSV = (JFXButton) childrenList.get(7);
+    JFXButton importCSV = (JFXButton) childrenList.get(8);
+    if (toggleEditor.isSelected()) {
+      exportCSV.setVisible(false);
+      exportCSV.setDisable(true);
+      importCSV.setVisible(false);
+      importCSV.setDisable(true);
+    } else {
+      exportCSV.setVisible(true);
+      exportCSV.setDisable(false);
+      importCSV.setVisible(true);
+      importCSV.setDisable(false);
+    }
     System.out.println("this is childrenList of the drawer " + childrenList);
     root.setMinHeight(App.getPrimaryStage().getScene().getHeight());
     Scene scene = App.getPrimaryStage().getScene();
@@ -190,11 +205,11 @@ public class MapController implements AllAccessible {
   }
 
   public void changeChildrenMapView(List<javafx.scene.Node> nodeList) {
-    JFXButton findPath = (JFXButton) nodeList.get(0);
     JFXTreeView treeView = (JFXTreeView) nodeList.get(1);
     Label label = (Label) nodeList.get(2);
     JFXTextArea textDirection = (JFXTextArea) nodeList.get(3);
     JFXButton dirBtn = (JFXButton) nodeList.get(9);
+
     treeView.setPrefHeight(App.getPrimaryStage().getScene().getHeight() / 2.5);
     label.setLayoutY(treeView.getLayoutY() + treeView.getPrefHeight() + 10);
     label.setLayoutX(10);
@@ -741,8 +756,22 @@ public class MapController implements AllAccessible {
     N.getI()
         .setOnMousePressed(
             (MouseEvent E) -> {
-              if (E.isControlDown() && isEditor) {
-                deleteNode(N);
+              if (isEditor) {
+                if (E.isControlDown()) {
+                  deleteNode(N);
+                }
+                if (isEditStart) {
+                  editEdgeStart(tempEUI.getE(), N.getN());
+                  tempEUI.getL().setStroke(Color.BLACK);
+                  tempEUI = null;
+                  isEditStart = false;
+                }
+                if (isEditEnd) {
+                  editEdgeEnd(tempEUI.getE(), N.getN());
+                  tempEUI.getL().setStroke(Color.BLACK);
+                  tempEUI = null;
+                  isEditEnd = false;
+                }
               }
             });
   }
@@ -1039,19 +1068,6 @@ public class MapController implements AllAccessible {
             ioException.printStackTrace();
           }
         } // end of edit node popup stuff
-
-        if (isEditStart) {
-          editEdgeStart(tempEUI.getE(), N.getN());
-          tempEUI.getL().setStroke(Color.BLACK);
-          tempEUI = null;
-          isEditStart = false;
-        }
-        if (isEditEnd) {
-          editEdgeEnd(tempEUI.getE(), N.getN());
-          tempEUI.getL().setStroke(Color.BLACK);
-          tempEUI = null;
-          isEditEnd = false;
-        }
       } // end of isEditor
     }
   }
