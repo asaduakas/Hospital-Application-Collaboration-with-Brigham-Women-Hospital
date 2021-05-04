@@ -195,8 +195,8 @@ public class FloralDeliveryController extends AbsRequest
         .addListener(
             (o, oldVal, newVal) -> {
               if (!newVal) numberFlower.validate();
+              numberFlowerValid.setMessage("Please enter number of flowers");
             });
-    numberFlowerValid.setMessage("Please enter numbers");
     numberFlower.getValidators().add(numberFlowerValid);
     numberFlower
         .textProperty()
@@ -207,6 +207,7 @@ public class FloralDeliveryController extends AbsRequest
                   ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 if (!newValue.matches("\\d*")) {
                   numberFlower.setText(newValue.replaceAll("[^\\d]", ""));
+                  numberFlowerValid.setMessage("Please enter numbers");
                 }
               }
             });
