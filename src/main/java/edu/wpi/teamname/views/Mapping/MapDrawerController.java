@@ -245,6 +245,9 @@ public class MapDrawerController implements Initializable {
       System.out.println("Node click: " + name);
       String type = "PARK";
       switch (name) {
+        case "Directory":
+          type = "ALL";
+          break;
         case "Elevator":
           type = "ELEV";
           break;
@@ -286,10 +289,19 @@ public class MapDrawerController implements Initializable {
   private void nodeRedrawing(String type) {
     mapController.clearMap();
 
-    for (NodeUI NUI : mapController.NODES) {
-      if (NUI.getN().getFloor().equals(mapController.currentFloor)
-          && (NUI.getN().getNodeType().equals(type))) {
-        mapController.addNodeUI(NUI);
+    if (type.equals("ALL")) {
+      for (NodeUI NUI : mapController.NODES) {
+        if (NUI.getN().getFloor().equals(mapController.currentFloor)) {
+          mapController.addNodeUI(NUI);
+        }
+      }
+    }
+    else {
+      for (NodeUI NUI : mapController.NODES) {
+        if (NUI.getN().getFloor().equals(mapController.currentFloor)
+            && (NUI.getN().getNodeType().equals(type))) {
+          mapController.addNodeUI(NUI);
+        }
       }
     }
   }
