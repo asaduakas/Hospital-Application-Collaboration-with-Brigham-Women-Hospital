@@ -8,7 +8,6 @@ import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.SelectionMode;
@@ -22,36 +21,36 @@ public class MapDrawerController implements Initializable {
   @FXML private JFXTextField startField;
   @FXML private JFXTextField endField;
   @FXML private JFXButton findPathButton;
-//  private ObservableList<CategoryNodeInfo> parkingData =
-//      FDatabaseTables.getNodeTable().getCategory(GlobalDb.getConnection(), "PAR");
+  //  private ObservableList<CategoryNodeInfo> parkingData =
+  //      FDatabaseTables.getNodeTable().getCategory(GlobalDb.getConnection(), "PAR");
 
   private ArrayList<String> parkingList =
       FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "PARK");
   private ArrayList<String> elevList =
       FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "ELEV");
   private ArrayList<String> restroomList =
-          FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "REST");
+      FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "REST");
   private ArrayList<String> stairsList =
-          FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "STAI");
+      FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "STAI");
   private ArrayList<String> departmentList =
-          FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "DEPT");
+      FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "DEPT");
   private ArrayList<String> labList =
-          FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "LABS");
+      FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "LABS");
   private ArrayList<String> informationList =
-          FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "INFO");
+      FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "INFO");
   private ArrayList<String> conferenceList =
-          FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "CONF");
+      FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "CONF");
   private ArrayList<String> exitList =
-          FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "EXIT");
+      FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "EXIT");
   private ArrayList<String> retailList =
-          FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "RETL");
+      FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "RETL");
   private ArrayList<String> serviceList =
-          FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "SERV");
+      FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "SERV");
 
   @Override
   public void initialize(URL url, ResourceBundle rb) {
 
-    TreeItem<String> root = new TreeItem<String>("Directory");
+    TreeItem<String> root = new TreeItem<>("Directory");
     directoryTreeView.setRoot(root);
     TreeItem<String> parking = new TreeItem<>("Parking");
     TreeItem<String> elevator = new TreeItem<>("Elevator");
@@ -172,8 +171,47 @@ public class MapDrawerController implements Initializable {
       stairs.getChildren().add(stairLocation);
     }
 
+    for (String dept : departmentList) {
+      TreeItem<String> deptLocation = new TreeItem<String>(dept);
+      department.getChildren().add(deptLocation);
+    }
+
+    for (String lab : labList) {
+      TreeItem<String> labLocation = new TreeItem<String>(lab);
+      laboratory.getChildren().add(labLocation);
+    }
+
+    for (String info : informationList) {
+      TreeItem<String> infoLocation = new TreeItem<String>(info);
+      information.getChildren().add(infoLocation);
+    }
+
+    for (String conf : conferenceList) {
+      TreeItem<String> confLocation = new TreeItem<String>(conf);
+      conference.getChildren().add(confLocation);
+    }
+
+    for (String exits : exitList) {
+      TreeItem<String> exitLocation = new TreeItem<String>(exits);
+      exit.getChildren().add(exitLocation);
+    }
+
+    for (String ret : retailList) {
+      TreeItem<String> retailLocation = new TreeItem<String>(ret);
+      retail.getChildren().add(retailLocation);
+    }
+
+    for (String serv : serviceList) {
+      TreeItem<String> serviceLocation = new TreeItem<String>(serv);
+      service.getChildren().add(serviceLocation);
+    }
+
     root.setExpanded(true);
     directoryTreeView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+
+//    if (parking.isExpanded()) {
+//      MapController.NODES.
+//    }
   }
 
   public void tableSetup() {}
