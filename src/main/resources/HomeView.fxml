@@ -36,8 +36,21 @@
             <Image url="@Images/careers.aan.png" />
          </image>
       </ImageView>
-      <HBox layoutX="690.0" layoutY="24.0" spacing="20.0">
+      <HBox layoutX="550.0" layoutY="24.0" spacing="20.0">
          <children>
+            <JFXButton fx:id="usersBtn" onAction="#usersView" style="-fx-font-weight: Bold; -fx-font-size: 14;" text="Users Table">
+               <graphic>
+                  <ImageView fitHeight="47.0" fitWidth="47.0">
+                     <image>
+                        <Image url="@Images/userIcon.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </JFXButton>
+            <Line endX="-4.0" endY="-8.0" startX="-4.0" startY="37.0" translateX="5.0" translateY="5.0" />
             <JFXButton fx:id="covidButton" onAction="#covidSurvey" style="-fx-font-weight: Bold;" text="COVID-19 Survey">
                <graphic>
                   <ImageView fitHeight="47.0" fitWidth="47.0">

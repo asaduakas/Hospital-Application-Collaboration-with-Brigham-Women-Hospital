@@ -7,14 +7,19 @@ import edu.wpi.teamname.Astar.*;
 import edu.wpi.teamname.Ddb.FDatabaseTables;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.Access.AllAccessible;
+import edu.wpi.teamname.views.Access.LoginController;
+import edu.wpi.teamname.views.ControllerManager;
 import edu.wpi.teamname.views.Mapping.Popup.Edit.AddNodeController;
-import java.awt.*;
+import edu.wpi.teamname.views.Mapping.Popup.Edit.EditNodeController;
+import edu.wpi.teamname.views.SceneSizeChangeListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 import javafx.animation.*;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
@@ -25,6 +30,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -43,17 +50,26 @@ import javafx.util.Duration;
 
 public class MapController implements AllAccessible {
 
+  private int index = 0;
+  String toggleText[] = {"Pathfinding", "Map Editor"};
   private RoomGraph initialData = new RoomGraph(GlobalDb.getConnection());
   public static LinkedList<NodeUI> NODES = new LinkedList<>();
   private static LinkedList<EdgeUI> EDGES = new LinkedList<>();
-  private PathAlgoPicker algorithm = new PathAlgoPicker(new aStar());
+  public PathAlgoPicker algorithm = new PathAlgoPicker(new aStar());
   private LinkedList<Edge> thePath = new LinkedList<Edge>();
   private LinkedList<Node> Targets = new LinkedList<Node>();
+  LinkedList<NodeUI> NewEdge = new LinkedList<NodeUI>();
   public static final double nodeNormalHeight = 30;
   public static final double nodeNormalWidth = 30;
   private String userCategory = "admin";
   public static String currentFloor = "1";
-  private boolean isEditor;
+  private boolean isEditor = false;
+  public boolean isEditNodeProperties = false;
+  private boolean isEditStart = false;
+  private boolean isEditEnd = false;
+  private SimpleBooleanProperty startPressed = new SimpleBooleanProperty();
+  private SimpleBooleanProperty endPressed = new SimpleBooleanProperty();
+  private EdgeUI tempEUI;
 
   private final Image F1 = new Image("01_thefirstfloor.png");
   private final Image F2 = new Image("02_thesecondfloor.png");
@@ -76,23 +92,22 @@ public class MapController implements AllAccessible {
   private Image down = new Image("Images/redArrow.png");
   private Image endImage = new Image("Images/endingIcon_white.png");
   private Image startImage = new Image("Images/walkingStartIcon_black.png");
+  public static SceneSizeChangeListener sizeListener;
 
   @FXML private AnchorPane mainAnchor;
-  @FXML private JFXComboBox FloorOption;
   private MapScrollPane mapScrollPane;
   private AnchorPane secondaryAnchor;
-  @FXML private ImageView TheMap;
   @FXML public static Popup popup;
   @FXML private JFXHamburger mapHam;
   @FXML private JFXDrawer mapDrawer;
   @FXML private JFXToggleButton toggleEditor;
+  @FXML private JFXButton floorBtn;
   @FXML private StackPane stackPane;
   private SimpleStringProperty simpleFloor = new SimpleStringProperty("Floor " + currentFloor);
   private JFXButton ChooseFloorBtn = new JFXButton("Floor 1");
 
   @FXML
   private void initialize() {
-
     mapScrollPane = new MapScrollPane(F1);
     mainAnchor.getChildren().add(mapScrollPane);
     AnchorPane.setTopAnchor(mapScrollPane, 0.0);
@@ -107,24 +122,15 @@ public class MapController implements AllAccessible {
 
     drawNodeFloor("1");
 
-    // mapScrollPane.setPannable(true);
-    // mapScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-    // mapScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
     ToggleListener();
     nodeAddListener();
     cancelListener();
-    getNodesToAlignListener();
-    recordParkingListener();
+    getNodesToAlignListener_recordParkingListener();
 
     mapDrawer.setPickOnBounds(false);
 
     try {
-      FXMLLoader loader =
-          new FXMLLoader(getClass().getClassLoader().getResource("MapDrawerView.fxml"));
-      AnchorPane menuBtns = loader.load();
-      MapDrawerController drawer = loader.getController();
-      drawer.setMapController(this);
-      mapDrawer.setSidePane(menuBtns);
+      mapDrawerView();
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -140,12 +146,70 @@ public class MapController implements AllAccessible {
           burgerTask.play();
           if (mapDrawer.isOpened()) {
             mapDrawer.close();
-            mapDrawer.setLayoutX(-132);
+            mapDrawer.setLayoutX(-270);
           } else {
             mapDrawer.open();
             mapDrawer.setLayoutX(0);
           }
         });
+
+    toggleEditor.setOnAction(
+        (ActionEvent e) -> {
+          index++;
+          if (index >= toggleText.length) {
+            index = 0;
+          }
+          toggleEditor.setText(toggleText[index]);
+        });
+  }
+
+  public void mapDrawerView() throws IOException {
+    FXMLLoader loader =
+        new FXMLLoader(getClass().getClassLoader().getResource("MapDrawerView.fxml"));
+    AnchorPane menuBtns = loader.load();
+    MapDrawerController drawer = loader.getController();
+    drawer.setMapController(this);
+    mapDrawer.setSidePane(menuBtns);
+    Pane root = (Pane) loader.getRoot();
+    List<javafx.scene.Node> childrenList = root.getChildren();
+    System.out.println("this is childrenList of the drawer " + childrenList);
+    root.setMinHeight(App.getPrimaryStage().getScene().getHeight());
+    Scene scene = App.getPrimaryStage().getScene();
+    changeChildrenMapView(childrenList);
+    sizeListener =
+        new SceneSizeChangeListener(scene, root, childrenList) {
+          @Override
+          public void changeChildren(List<javafx.scene.Node> nodeList) {
+            for (javafx.scene.Node node : nodeList)
+              if (node instanceof MapScrollPane) ((MapScrollPane) node).updateScaleRange();
+            changeChildrenMapView(childrenList);
+          }
+        };
+    scene.widthProperty().addListener(sizeListener);
+    scene.heightProperty().addListener(sizeListener);
+  }
+
+  public void changeChildrenMapView(List<javafx.scene.Node> nodeList) {
+    JFXButton findPath = (JFXButton) nodeList.get(0);
+    JFXTreeView treeView = (JFXTreeView) nodeList.get(1);
+    Label label = (Label) nodeList.get(2);
+    JFXTextArea textDirection = (JFXTextArea) nodeList.get(3);
+    JFXButton dirBtn = (JFXButton) nodeList.get(9);
+    treeView.setPrefHeight(App.getPrimaryStage().getScene().getHeight() / 2.5);
+    label.setLayoutY(treeView.getLayoutY() + treeView.getPrefHeight() + 10);
+    label.setLayoutX(10);
+    textDirection.setLayoutY(label.getLayoutY() + label.getHeight() + 30);
+    dirBtn.setLayoutY(textDirection.getLayoutY() + textDirection.getPrefHeight() + 20);
+    System.out.println(
+        "This is textArea layout stuff "
+            + textDirection.getLayoutY()
+            + " this is height "
+            + textDirection.getPrefHeight());
+  }
+
+  public void goHome() {
+    ControllerManager.attemptLoadPage(
+        "HomeView.fxml", fxmlLoader -> LoginController.start(fxmlLoader.getRoot()));
   }
 
   // _______________________________________SET UP________________________________________
@@ -217,13 +281,8 @@ public class MapController implements AllAccessible {
           break;
       }
 
-      Marker.setOnMouseClicked(
-          (MouseEvent e) -> {
-            disableListener(e);
-          }); // TODO ACTION
-
       NodeUI Temp = new NodeUI(N, Marker, nodeNormalWidth, nodeNormalHeight);
-      pathListener(Temp);
+      pathListener_AddEdge(Temp);
       hoverResize(Temp);
       deleteNodeListener(Temp);
       setupDraggableNodeUI(Temp);
@@ -244,64 +303,77 @@ public class MapController implements AllAccessible {
           (MouseEvent e) -> {
             disableListener(e);
           }); // TODO ACTION
-      L.setStrokeWidth(3.0);
+      L.setStrokeWidth(5);
       L.setStroke(Color.BLACK);
       EdgeUI Temp = new EdgeUI(E, L);
       EDGES.add(Temp);
       deleteEdgeListener(Temp);
+      editEdgeListener(Temp);
     }
   }
 
   private void initializeFloorList() {
-    ChooseFloorBtn.setButtonType(JFXButton.ButtonType.RAISED);
-    ChooseFloorBtn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 20px");
+    //    ChooseFloorBtn.setButtonType(JFXButton.ButtonType.RAISED);
+    //    ChooseFloorBtn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 20px");
 
-    JFXButton Floor1Btn = new JFXButton("Floor 1");
-    Floor1Btn.setButtonType(JFXButton.ButtonType.RAISED);
+    JFXButton Floor1Btn = new JFXButton("Fl 1");
+    Floor1Btn.setButtonType(JFXButton.ButtonType.FLAT);
+    Floor1Btn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50px");
+    Floor1Btn.setPrefHeight(50);
+    Floor1Btn.setPrefWidth(50);
     Floor1Btn.setOnAction(
         (e) -> {
           switchFloor("1");
         });
 
-    JFXButton Floor2Btn = new JFXButton("Floor 2");
-    Floor2Btn.setButtonType(JFXButton.ButtonType.RAISED);
+    JFXButton Floor2Btn = new JFXButton("Fl 2");
+    Floor2Btn.setButtonType(JFXButton.ButtonType.FLAT);
+    Floor2Btn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50px");
+    Floor2Btn.setPrefHeight(50);
+    Floor2Btn.setPrefWidth(50);
     Floor2Btn.setOnAction(
         (e) -> {
           switchFloor("2");
         });
 
-    JFXButton Floor3Btn = new JFXButton("Floor 3");
-    Floor3Btn.setButtonType(JFXButton.ButtonType.RAISED);
+    JFXButton Floor3Btn = new JFXButton("Fl 3");
+    Floor3Btn.setButtonType(JFXButton.ButtonType.FLAT);
+    Floor3Btn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50px");
+    Floor3Btn.setPrefHeight(50);
+    Floor3Btn.setPrefWidth(50);
     Floor3Btn.setOnAction(
         (e) -> {
           switchFloor("3");
         });
 
-    JFXButton FloorL1Btn = new JFXButton("Floor L1");
-    FloorL1Btn.setButtonType(JFXButton.ButtonType.RAISED);
+    JFXButton FloorL1Btn = new JFXButton("Fl L1");
+    FloorL1Btn.setButtonType(JFXButton.ButtonType.FLAT);
+    FloorL1Btn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50px");
+    FloorL1Btn.setPrefHeight(50);
+    FloorL1Btn.setPrefWidth(50);
     FloorL1Btn.setOnAction(
         (e) -> {
           switchFloor("L1");
         });
 
-    JFXButton FloorL2Btn = new JFXButton("Floor L2");
-    FloorL2Btn.setButtonType(JFXButton.ButtonType.RAISED);
+    JFXButton FloorL2Btn = new JFXButton("Fl L2");
+    FloorL2Btn.setButtonType(JFXButton.ButtonType.FLAT);
+    FloorL2Btn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50px");
+    FloorL2Btn.setPrefHeight(50);
+    FloorL2Btn.setPrefWidth(50);
     FloorL2Btn.setOnAction(
         (e) -> {
           switchFloor("L2");
         });
 
     JFXNodesList nodeList = new JFXNodesList();
-    nodeList.addAnimatedNode(ChooseFloorBtn);
-    nodeList.addAnimatedNode(FloorL2Btn);
-    nodeList.addAnimatedNode(FloorL1Btn);
+    nodeList.addAnimatedNode(floorBtn);
     nodeList.addAnimatedNode(Floor1Btn);
     nodeList.addAnimatedNode(Floor2Btn);
     nodeList.addAnimatedNode(Floor3Btn);
+    nodeList.addAnimatedNode(FloorL2Btn);
+    nodeList.addAnimatedNode(FloorL1Btn);
     nodeList.setSpacing(20d);
-    nodeList.setLayoutX(280);
-    nodeList.setLayoutY(10);
-
     mainAnchor.getChildren().add(nodeList);
   }
 
@@ -317,7 +389,7 @@ public class MapController implements AllAccessible {
     secondaryAnchor.getChildren().add(EUI.getL());
   }
 
-  private void drawNodeFloor(String Floor) {
+  public void drawNodeFloor(String Floor) {
     for (NodeUI NUI : NODES) {
       if (NUI.getN().getFloor().equals(Floor)
           && (!NUI.getN().getNodeType().equals("WALK"))
@@ -400,7 +472,7 @@ public class MapController implements AllAccessible {
       endPin.setFitWidth(30);
       endPin.setFitHeight(30);
       endPin.setX(endNode.getSimpXcoord() - 15);
-      endPin.setY(endNode.getSimpYcoord() - 15);
+      endPin.setY(endNode.getSimpYcoord() - 30);
 
       if (startNode.getN().getFloor().equals(currentFloor)) {
         secondaryAnchor.getChildren().add(startPin);
@@ -442,14 +514,17 @@ public class MapController implements AllAccessible {
 
   private void resetData() {
     Targets.clear();
+    nodesToAlign.clear();
   }
 
   private void resetNodeSizes() {
     for (NodeUI N : NODES) {
-      N.getI().setFitWidth(N.getSizeWidth());
-      N.getI().setFitHeight(N.getSizeHeight());
-      N.getI().setX(N.getN().getXCoord() - N.getI().getFitWidth() / 2);
-      N.getI().setY(N.getN().getYCoord() - N.getI().getFitHeight());
+      if (!Targets.contains(N.getN())) {
+        N.getI().setFitWidth(N.getSizeWidth());
+        N.getI().setFitHeight(N.getSizeHeight());
+        N.getI().setX(N.getN().getXCoord() - N.getI().getFitWidth() / 2);
+        N.getI().setY(N.getN().getYCoord() - N.getI().getFitHeight());
+      }
     }
   }
 
@@ -500,7 +575,7 @@ public class MapController implements AllAccessible {
             N.getN().getLongName(),
             N.getN().getShortName(),
             0);
-    pathListener(N);
+    pathListener_AddEdge(N);
     hoverResize(N);
     setupDraggableNodeUI(N);
     initialData.getGraphInfo().add(N.getN());
@@ -521,31 +596,59 @@ public class MapController implements AllAccessible {
     EDGES.add(E);
   }
 
-  private void editNode() {} // TODO Implement edit nodes
+  private void editEdgeStart(Edge E, Node N) {
+    String newID = N.getNodeID() + "_" + E.getEndNodeID();
+    FDatabaseTables.getEdgeTable()
+        .updateEdgeStartNode(GlobalDb.getConnection(), E.getEdgeID(), N.getNodeID());
+    FDatabaseTables.getEdgeTable().updateEdgeID(GlobalDb.getConnection(), E.getEdgeID(), newID);
 
-  private void editEdge() {} // TODO Implement edit edges
+    EdgeUI edgeUI = getEdgeUIByID(E.getEdgeID());
+    NodeUI nodeUI = getNodeUIByID(N.getNodeID());
+    edgeUI.getL().startXProperty().unbind();
+    edgeUI.getL().startXProperty().bind(nodeUI.simpXcoordProperty());
+    edgeUI.getL().startYProperty().unbind();
+    edgeUI.getL().startYProperty().bind(nodeUI.simpYcoordProperty());
+  }
+
+  private void editEdgeEnd(Edge E, Node N) {
+    String newID = E.getStartNodeID() + "_" + N.getNodeID();
+    FDatabaseTables.getEdgeTable()
+        .updateEdgeEndNode(GlobalDb.getConnection(), E.getEdgeID(), N.getNodeID());
+    FDatabaseTables.getEdgeTable().updateEdgeID(GlobalDb.getConnection(), E.getEdgeID(), newID);
+
+    EdgeUI edgeUI = getEdgeUIByID(E.getEdgeID());
+    NodeUI nodeUI = getNodeUIByID(N.getNodeID());
+    edgeUI.getL().endXProperty().unbind();
+    edgeUI.getL().endXProperty().bind(nodeUI.simpXcoordProperty());
+    edgeUI.getL().endYProperty().unbind();
+    edgeUI.getL().endYProperty().bind(nodeUI.simpYcoordProperty());
+  }
 
   // _______________________________________Path Finding____________________________________________
 
   // For Directory
-  public void runPathFindingDirectory(String startNode, String targetNode) throws IOException {
-    Node start = initialData.getNodeByID(startNode);
-    Node target = initialData.getNodeByID(targetNode);
+  public LinkedList<Edge> runPathFindingDirectory(LinkedList<Node> DirectoryTargets)
+      throws IOException {
+    thePath = algorithm.multiSearch(initialData, DirectoryTargets).getPathEdges();
+    if (thePath.isEmpty()) {
+      Targets.clear();
+    } else {
+      showPath();
+      algorithm.multiSearch(initialData, DirectoryTargets).printPathEdges();
+    }
 
-    algorithm.search(initialData, start, target);
-    algorithm.printPathTo();
-    algorithm.printEdgeTo();
-    thePath = algorithm.getShortestPath().getPathEdges();
-    getDirections(thePath);
+    return thePath;
   }
 
   public void runPathFindingClick() {
     thePath = algorithm.multiSearch(initialData, Targets).getPathEdges();
     if (thePath.isEmpty()) {
-      Targets.clear();
+      resetData();
+      clearMap();
+      drawNodeFloor(currentFloor);
     } else {
       showPath();
-      algorithm.multiSearch(initialData, Targets).printPathEdges();
+      // algorithm.multiSearch(initialData, Targets).printPathEdges();
     }
   }
 
@@ -564,11 +667,11 @@ public class MapController implements AllAccessible {
 
                 if (toggleEditor.isSelected()) {
                   clearMap();
-                  LoadingNodesEdges("1");
+                  LoadingNodesEdges(currentFloor);
                   isEditor = true;
                 } else {
                   clearMap();
-                  drawNodeFloor("1");
+                  drawNodeFloor(currentFloor);
                   isEditor = false;
                 }
               }
@@ -593,17 +696,19 @@ public class MapController implements AllAccessible {
   }
 
   private void cancelListener() {
+
     mapScrollPane.setOnKeyPressed(
         (KeyEvent e) -> {
           KeyCode key = e.getCode();
-          if (key == KeyCode.ESCAPE) {
-            resetData();
-            clearMap();
-            drawNodeFloor("1");
-            nodesToAlign.clear();
-            System.out.println("Just cleared");
+          if (!isEditor) {
+            if (key == KeyCode.ESCAPE) {
+              resetData();
+              clearMap();
+              drawNodeFloor(currentFloor);
+              System.out.println("Just cleared");
+            }
+            return;
           }
-          if (!isEditor) return;
           switch (key) {
             case R:
               resetCSV();
@@ -615,6 +720,20 @@ public class MapController implements AllAccessible {
               exportCSV();
               break;
           }
+          if (key == KeyCode.COMMA) {
+            startPressed.setValue(true);
+            endPressed.setValue(false);
+          }
+          if (key == KeyCode.PERIOD) {
+            endPressed.setValue(true);
+            startPressed.setValue(false);
+          }
+        });
+
+    mapScrollPane.setOnKeyReleased(
+        (event) -> {
+          startPressed.setValue(false);
+          endPressed.setValue(false);
         });
   }
 
@@ -632,22 +751,89 @@ public class MapController implements AllAccessible {
     E.getL()
         .setOnMousePressed(
             (MouseEvent e) -> {
-              if (e.isControlDown()) {
+              if (e.isControlDown() && isEditor) {
                 deleteEdge(E);
               }
             });
   }
 
-  private void pathListener(NodeUI N) {
+  private void editEdgeListener(EdgeUI E) {
+
+    E.getL()
+        .setOnMouseClicked(
+            new EventHandler<MouseEvent>() {
+              @Override
+              public void handle(MouseEvent event) {
+                if (startPressed.get()) {
+                  isEditStart = true;
+                  isEditEnd = false;
+                  tempEUI = E;
+                  E.getL().setStroke(Color.ROYALBLUE);
+                }
+                if (endPressed.get()) {
+                  isEditEnd = true;
+                  isEditStart = false;
+                  tempEUI = E;
+                  E.getL().setStroke(Color.ORANGERED);
+                }
+              }
+            });
+
+    E.getL()
+        .setOnMouseEntered(
+            (MouseEvent e) -> {
+              if (!isEditStart && !isEditEnd && isEditor) E.getL().setStroke(Color.DARKORANGE);
+            });
+
+    E.getL()
+        .setOnMouseExited(
+            (MouseEvent e) -> {
+              if (!isEditStart && !isEditEnd) E.getL().setStroke(Color.BLACK);
+            });
+  }
+
+  private void pathListener_AddEdge(NodeUI N) {
     N.getI()
         .addEventHandler(
             MouseEvent.MOUSE_PRESSED,
             (E) -> {
-              if (E.getButton() == MouseButton.SECONDARY) {
+              if (E.getButton() == MouseButton.SECONDARY && !isEditor) {
                 Targets.add(N.getN());
                 resizeNodeUI(N, 2);
                 if (Targets.size() >= 2) {
                   runPathFindingClick();
+                }
+              }
+              if (E.isShiftDown() && isEditor) {
+                NewEdge.add(N);
+                if (NewEdge.size() == 2) {
+
+                  System.out.println(NewEdge.get(0).getN().getNodeID());
+                  System.out.println(NewEdge.get(1).getN().getNodeID());
+
+                  Line L = new Line();
+
+                  L.startXProperty().bind(NewEdge.get(0).simpXcoordProperty());
+                  L.startYProperty().bind(NewEdge.get(0).simpYcoordProperty());
+                  L.endXProperty().bind(NewEdge.get(1).simpXcoordProperty());
+                  L.endYProperty().bind(NewEdge.get(1).simpYcoordProperty());
+                  L.setStroke(Color.BLACK);
+                  L.setStrokeWidth(5.0);
+                  Edge edge =
+                      new Edge(
+                          NewEdge.get(0).getN(),
+                          NewEdge.get(1).getN(),
+                          NewEdge.get(0).getN().getMeasuredDistance(NewEdge.get(1).getN()));
+                  Edge edge1 =
+                      new Edge(
+                          NewEdge.get(1).getN(),
+                          NewEdge.get(0).getN(),
+                          NewEdge.get(0).getN().getMeasuredDistance(NewEdge.get(1).getN()));
+                  NewEdge.get(0).getN().addEdge(edge);
+                  NewEdge.get(1).getN().addEdge(edge1);
+                  EdgeUI temp = new EdgeUI(edge, L);
+                  addEdge(temp);
+                  NewEdge = new LinkedList<NodeUI>();
                 }
               }
             });
@@ -655,7 +841,7 @@ public class MapController implements AllAccessible {
 
   LinkedList<Node> nodesToAlign = new LinkedList<Node>();
 
-  private void getNodesToAlignListener() {
+  private void getNodesToAlignListener_recordParkingListener() {
     mainAnchor.setOnKeyPressed(
         (KeyEvent e) -> {
           KeyCode key = e.getCode();
@@ -676,6 +862,29 @@ public class MapController implements AllAccessible {
                           alignNodes();
                         }
                       });
+            }
+          }
+
+          // record parking lot
+          int saveMode = 1;
+          if (key == KeyCode.S && !isEditor) {
+            System.out.println("S is down");
+            if (saveMode == 0) {
+              saveMode += 1;
+            } else if (saveMode == 1) {
+              saveMode -= 1;
+              for (Node N : this.initialData.getGraphInfo()) {
+                if (N.getNodeType().equals("PARK")) {
+                  NodeUI NUI = getNodeUIByID(N.getNodeID());
+                  NUI.getI()
+                      .addEventHandler(
+                          MouseEvent.MOUSE_PRESSED,
+                          (M) -> {
+                            System.out.println("node clicked");
+                            saveParkingSpot(NUI);
+                          });
+                }
+              }
             }
           }
         });
@@ -735,35 +944,6 @@ public class MapController implements AllAccessible {
     }
   }
 
-  private void recordParkingListener() {
-
-    mainAnchor.setOnKeyPressed(
-        (KeyEvent e) -> {
-          KeyCode key = e.getCode();
-          int saveMode = 1;
-          if (key == KeyCode.S && !isEditor) {
-            System.out.println("S is down");
-            if (saveMode == 0) {
-              saveMode += 1;
-            } else if (saveMode == 1) {
-              saveMode -= 1;
-              for (Node N : this.initialData.getGraphInfo()) {
-                if (N.getNodeType().equals("PARK")) {
-                  NodeUI NUI = getNodeUIByID(N.getNodeID());
-                  NUI.getI()
-                      .addEventHandler(
-                          MouseEvent.MOUSE_PRESSED,
-                          (M) -> {
-                            System.out.println("node clicked");
-                            saveParkingSpot(NUI);
-                          });
-                }
-              }
-            }
-          }
-        });
-  }
-
   private void saveParkingSpot(NodeUI N) {
     System.out.println("Saving spot");
     System.out.println(N.getSizeHeight());
@@ -779,39 +959,138 @@ public class MapController implements AllAccessible {
   }
 
   private void hoverResize(NodeUI N) {
-    N.getI()
-        .setOnMouseEntered(
-            (MouseEvent e) -> {
-              resizeNodeUI(N, 2);
-              //              if (isEditor) {
-              //                try {
-              //                  //                  FXMLLoader temp =
-              // loadPopup("MapPopUps/AddNode.fxml");
-              //                  //                  AddNodeController popupController =
-              // temp.getController();
-              //                  //                  popupController.setMapController(this);
-              //                  //                  popupController.setNX(e.getX());
-              //                  //                  popupController.setNY(e.getY());
-              //                  FXMLLoader temp = loadPopup("MapPopUps/EditNode.fxml");
-              //                  EditNodeController editNodeController = temp.getController();
-              //                  editNodeController.setMapController(this);
-              //                  editNodeController.setTheNode(N);
-              //
-              //                } catch (IOException ioException) {
-              //                  ioException.printStackTrace();
-              //                }
-              //              }
-            });
+    N.getI().setOnMouseEntered(new NodeEnterHandler(N, this));
 
     N.getI()
         .setOnMouseExited(
             (MouseEvent e) -> {
-              if (Targets.isEmpty()) resizeNodeUI(N, .5);
-              //              if (isEditor) {
-              //                this.popup.hide();
-              //              }
+              resetNodeSizes();
+              if (isEditor) {
+                if (!isEditNodeProperties) {
+                  this.popup.hide();
+                }
+              }
             });
   }
+
+  private class NodeEnterHandler implements EventHandler<MouseEvent> {
+    private NodeUI N;
+    private MapController mapController;
+
+    NodeEnterHandler(NodeUI N, MapController mapController) {
+      this.N = N;
+      this.mapController = mapController;
+    }
+
+    @Override
+    public void handle(MouseEvent event) {
+      resizeNodeUI(N, 2);
+      if (isEditor) {
+        if (!isEditNodeProperties && !(isEditEnd || isEditStart)) {
+          try {
+            FXMLLoader temp = loadPopup("MapPopUps/EditNode.fxml");
+            EditNodeController editNodeController = temp.getController();
+            editNodeController.setMapController(mapController);
+            editNodeController.setTheNode(N);
+            Pane root = (Pane) temp.getRoot();
+            popup.addEventHandler(
+                KeyEvent.KEY_PRESSED,
+                (KeyEvent k) -> {
+                  KeyCode key = k.getCode();
+                  if (key == KeyCode.SEMICOLON) {
+                    isEditNodeProperties = true;
+                  }
+                });
+
+            // remove node listeners
+            root.addEventHandler(
+                MouseEvent.MOUSE_ENTERED,
+                (MouseEvent e1) -> {
+                  for (NodeUI node : NODES) {
+                    node.getI().setOnMouseEntered(mapController::disableListener);
+                    node.getI().setOnMouseExited(mapController::disableListener);
+                  }
+                });
+
+            // return node listeners
+            root.addEventHandler(
+                MouseEvent.MOUSE_EXITED,
+                (MouseEvent e1) -> {
+                  mapController.resetNodeSizes();
+                  if (!isEditNodeProperties) {
+                    popup.hide();
+                  }
+                  for (NodeUI node : NODES) {
+                    // here's that recursive calling
+                    node.getI().setOnMouseEntered(new NodeEnterHandler(node, mapController));
+                    node.getI()
+                        .setOnMouseExited(
+                            (MouseEvent e2) -> {
+                              mapController.resetNodeSizes();
+                              if (isEditor) {
+                                if (!isEditNodeProperties) {
+                                  mapController.popup.hide();
+                                }
+                              }
+                            });
+                  }
+                });
+          } catch (IOException ioException) {
+            ioException.printStackTrace();
+          }
+        } // end of edit node popup stuff
+
+        if (isEditStart) {
+          editEdgeStart(tempEUI.getE(), N.getN());
+          tempEUI.getL().setStroke(Color.BLACK);
+          tempEUI = null;
+          isEditStart = false;
+        }
+        if (isEditEnd) {
+          editEdgeEnd(tempEUI.getE(), N.getN());
+          tempEUI.getL().setStroke(Color.BLACK);
+          tempEUI = null;
+          isEditEnd = false;
+        }
+      } // end of isEditor
+    }
+  }
+
+  //  public void setupDraggableNodeUI(NodeUI NUI) {
+  //
+  //    NUI.getI()
+  //        .setOnMouseDragged(
+  //            event -> {
+  //              if (isEditor) {
+  //                mapScrollPane.setPannable(false);
+  //                Double x = event.getX();
+  //                Double y = event.getY();
+  //                NUI.getI().setX(x - NUI.getI().getFitWidth() / 2);
+  //                NUI.getI().setY(y - NUI.getI().getFitHeight());
+  //                NUI.setNodeCoord(x.intValue(), y.intValue());
+  //                resizeNodeUI(NUI, 2);
+  //              }
+  //            });
+  //
+  //    NUI.getI()
+  //        .setOnMouseReleased(
+  //            event -> {
+  //              if (isEditor) {
+  //                Double x = event.getX();
+  //                Double y = event.getY();
+  //                GlobalDb.getTables()
+  //                    .getNodeTable()
+  //                    .updateNodeXCoord(
+  //                        GlobalDb.getConnection(), NUI.getN().getNodeID(), x.intValue());
+  //                GlobalDb.getTables()
+  //                    .getNodeTable()
+  //                    .updateNodeYCoord(
+  //                        GlobalDb.getConnection(), NUI.getN().getNodeID(), y.intValue());
+  //                mapScrollPane.setPannable(true);
+  //                resizeNodeUI(NUI, .5);
+  //              }
+  //            });
+  //  }
 
   // ---------------------------------------Animation------------------------------------------
 
@@ -822,7 +1101,7 @@ public class MapController implements AllAccessible {
       Line line = edgeUi.getL();
 
       line.getStrokeDashArray().setAll(25d, 10d);
-      line.setStrokeWidth(2);
+      line.setStrokeWidth(5);
 
       final double maxOffset = line.getStrokeDashArray().stream().reduce(0d, (a, b) -> a + b);
 
@@ -953,6 +1232,16 @@ public class MapController implements AllAccessible {
     return null;
   }
 
+  public static NodeUI getNodeUIByLongName(String NodeLongName) {
+    for (NodeUI theNode : NODES) {
+      if (theNode.getN().getLongName().equals(NodeLongName)) {
+        return theNode;
+      }
+    }
+    System.out.println("This node doesn't exist.");
+    return null;
+  }
+
   private static EdgeUI getEdgeUIByID(String EdgeID) {
     for (EdgeUI theEdge : EDGES) {
       if (theEdge.getE().getEdgeID().equals(EdgeID)) {
@@ -965,10 +1254,14 @@ public class MapController implements AllAccessible {
     return null;
   }
 
+  public String getCurrentFloor() {
+    return currentFloor;
+  }
+
   // _____________________________________Directions__________________________________________
 
-  @FXML Button dirBtn;
-  @FXML TextArea dirText;
+  @FXML JFXButton dirBtn;
+  @FXML JFXTextArea dirText;
   private String endLocation = "";
 
   private void setEnd(String end) {

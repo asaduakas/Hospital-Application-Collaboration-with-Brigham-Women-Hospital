@@ -67,6 +67,8 @@ public class StatusController extends AbsRequest
 
   @FXML private JFXTreeTableView<SecurityRequestNodeInfo> securityTable;
 
+  @FXML private JFXTreeTableView<COVIDSurveyResultsNodeInfo> COVIDResultsTableView;
+
   @FXML private JFXTreeTableView<ComputerNodeInfo> comTableView;
 
   @FXML private JFXComboBox<String> typeBox;
@@ -99,6 +101,8 @@ public class StatusController extends AbsRequest
 
   private ObservableList<SecurityRequestNodeInfo> securityData;
 
+  private ObservableList<COVIDSurveyResultsNodeInfo> COVIDSurveyData;
+
   // Pane pane = (Pane) FXMLLoader.load(getClass().getClassLoader().getResource("StatusView"));
 
   private ObservableList<Node> tables = FXCollections.observableArrayList();
@@ -122,7 +126,8 @@ public class StatusController extends AbsRequest
             "Laundry Service",
             "Medicine Delivery",
             "Sanitation Service",
-            "Security Service");
+            "Security Service",
+            "Hospital Entry Request");
     typeBox.setOnAction(
         e -> {
           try {
@@ -144,6 +149,8 @@ public class StatusController extends AbsRequest
     Label med = new Label("Medicine Delivery");
     Label sanitize = new Label("Sanitation Service");
     Label security = new Label("Security Service");
+    Label covid = new Label("Hospital Entry Request");
+
     try {
       ImageView avImage =
           new ImageView(
@@ -153,8 +160,7 @@ public class StatusController extends AbsRequest
       av.setGraphic(avImage);
 
       ImageView csImage =
-          new ImageView(
-              new Image(new FileInputStream("src/main/resources/Images/Computer_colored.png")));
+          new ImageView(new Image(new FileInputStream("src/main/resources/Images/Computer.png")));
       csImage.setFitWidth(40);
       csImage.setFitHeight(40);
       cs.setGraphic(csImage);
@@ -222,6 +228,12 @@ public class StatusController extends AbsRequest
       securityImage.setFitHeight(40);
       security.setGraphic(securityImage);
 
+      ImageView covidImage =
+          new ImageView(new Image(new FileInputStream("src/main/resources/Images/covid.png")));
+      covidImage.setFitWidth(40);
+      covidImage.setFitHeight(40);
+      covid.setGraphic(covidImage);
+
       listView
           .getItems()
           .addAll(
@@ -236,7 +248,8 @@ public class StatusController extends AbsRequest
               laundry,
               med,
               sanitize,
-              security);
+              security,
+              covid);
       listView.setStyle("-fx-padding: 0; -fx-background-insets: 0");
     } catch (FileNotFoundException e) {
       e.printStackTrace();
@@ -278,6 +291,7 @@ public class StatusController extends AbsRequest
         medDelivTable.setVisible(false);
         sanitationTable.setVisible(false);
         securityTable.setVisible(false);
+        COVIDResultsTableView.setVisible(false);
         tableView.setVisible(true);
         ExTransTableSetup();
         break;
@@ -299,6 +313,7 @@ public class StatusController extends AbsRequest
         medDelivTable.setVisible(false);
         sanitationTable.setVisible(false);
         securityTable.setVisible(false);
+        COVIDResultsTableView.setVisible(false);
         foodTable.setVisible(true);
         foodDeliTableSetup();
         break;
@@ -320,6 +335,7 @@ public class StatusController extends AbsRequest
         medDelivTable.setVisible(false);
         sanitationTable.setVisible(false);
         securityTable.setVisible(false);
+        COVIDResultsTableView.setVisible(false);
         audVisTable.setVisible(true);
         audVisTableSetup();
         break;
@@ -341,6 +357,7 @@ public class StatusController extends AbsRequest
         medDelivTable.setVisible(false);
         sanitationTable.setVisible(false);
         securityTable.setVisible(false);
+        COVIDResultsTableView.setVisible(false);
         computerTable.setVisible(true);
         computerTableSetup();
         break;
@@ -362,6 +379,7 @@ public class StatusController extends AbsRequest
         sanitationTable.setVisible(false);
         securityTable.setVisible(false);
         computerTable.setVisible(false);
+        COVIDResultsTableView.setVisible(false);
         facilitiesTable.setVisible(true);
         facilitiesTableSetup();
         break;
@@ -383,6 +401,7 @@ public class StatusController extends AbsRequest
         securityTable.setVisible(false);
         computerTable.setVisible(false);
         facilitiesTable.setVisible(false);
+        COVIDResultsTableView.setVisible(false);
         floralTable.setVisible(true);
         floralTableSetup();
         break;
@@ -404,6 +423,7 @@ public class StatusController extends AbsRequest
         computerTable.setVisible(false);
         facilitiesTable.setVisible(false);
         floralTable.setVisible(false);
+        COVIDResultsTableView.setVisible(false);
         internalTransTable.setVisible(true);
         internalTransTableSetup();
         break;
@@ -425,6 +445,7 @@ public class StatusController extends AbsRequest
         facilitiesTable.setVisible(false);
         floralTable.setVisible(false);
         internalTransTable.setVisible(false);
+        COVIDResultsTableView.setVisible(false);
         langInterpTable.setVisible(true);
         langInterpTableSetup();
         break;
@@ -446,6 +467,7 @@ public class StatusController extends AbsRequest
         floralTable.setVisible(false);
         internalTransTable.setVisible(false);
         langInterpTable.setVisible(false);
+        COVIDResultsTableView.setVisible(false);
         laundryTable.setVisible(true);
         laundryTableSetup();
         break;
@@ -467,6 +489,7 @@ public class StatusController extends AbsRequest
         internalTransTable.setVisible(false);
         langInterpTable.setVisible(false);
         laundryTable.setVisible(false);
+        COVIDResultsTableView.setVisible(false);
         medDelivTable.setVisible(true);
         medDelivTableSetup();
         break;
@@ -488,6 +511,7 @@ public class StatusController extends AbsRequest
         langInterpTable.setVisible(false);
         laundryTable.setVisible(false);
         medDelivTable.setVisible(false);
+        COVIDResultsTableView.setVisible(false);
         sanitationTable.setVisible(true);
         sanitationTableSetup();
         break;
@@ -509,8 +533,32 @@ public class StatusController extends AbsRequest
         laundryTable.setVisible(false);
         medDelivTable.setVisible(false);
         sanitationTable.setVisible(false);
+        COVIDResultsTableView.setVisible(false);
         securityTable.setVisible(true);
         securityTableSetup();
+        break;
+      case "Hospital Entry Request":
+        getCOVIDSurveyData();
+        TreeItem<COVIDSurveyResultsNodeInfo> root13 =
+            new RecursiveTreeItem<>(COVIDSurveyData, RecursiveTreeObject::getChildren);
+        root13.setExpanded(true);
+        COVIDResultsTableView.setRoot(root13);
+        COVIDResultsTableView.setShowRoot(false);
+        securityTable.setShowRoot(false);
+        audVisTable.setVisible(false);
+        tableView.setVisible(false);
+        foodTable.setVisible(false);
+        computerTable.setVisible(false);
+        facilitiesTable.setVisible(false);
+        floralTable.setVisible(false);
+        internalTransTable.setVisible(false);
+        langInterpTable.setVisible(false);
+        laundryTable.setVisible(false);
+        medDelivTable.setVisible(false);
+        sanitationTable.setVisible(false);
+        securityTable.setVisible(false);
+        COVIDResultsTableView.setVisible(true);
+        COVIDSurveyResultsTableSetup();
         break;
       default:
         tableView.showRootProperty();
@@ -530,10 +578,8 @@ public class StatusController extends AbsRequest
   }
 
   private ObservableList<ExtTransNodeInfo> getExTransData() throws IOException {
-
     ExTransData = FXCollections.observableArrayList();
     FDatabaseTables.getExternalTransportTable().addIntoExTransDataList(ExTransData);
-
     return ExTransData;
   }
 
@@ -603,6 +649,13 @@ public class StatusController extends AbsRequest
     return securityData;
   }
 
+  private ObservableList<COVIDSurveyResultsNodeInfo> getCOVIDSurveyData() throws IOException {
+    COVIDSurveyData = FXCollections.observableArrayList();
+    //    FDatabaseTables.getCovid19SurveyTable().addIntoCOVIDSurveyList(COVIDSurveyData);
+    //    return COVIDSurveyData;
+    return FDatabaseTables.getCovid19SurveyTable().addIntoCOVIDSurveyList(COVIDSurveyData);
+  }
+
   @FXML
   public void saveData(ActionEvent event) {
     //    changeData(typeBox.getValue().toString());
@@ -645,7 +698,10 @@ public class StatusController extends AbsRequest
         FDatabaseTables.getSanitationServiceTable().changeSanitationData(sanitationData);
         break;
       case "Security Service":
-        FDatabaseTables.getSanitationServiceTable().changeSanitationData(sanitationData);
+        FDatabaseTables.getSecurityRequestTable().changeSecurityData(securityData);
+        break;
+      case "Hospital Entry Request":
+        FDatabaseTables.getCovid19SurveyTable().changeCOVIDSurveyData(COVIDSurveyData);
         break;
     }
   }
@@ -2043,5 +2099,186 @@ public class StatusController extends AbsRequest
 
     facilitiesTable.setPlaceholder(
         new Label("No request of facilities maintenance service has been made yet"));
+  }
+
+  private void COVIDSurveyResultsTableSetup() {
+    FDatabaseTables.getCovid19SurveyTable().dispAll(GlobalDb.getConnection());
+    JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> idCol =
+        new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("User ID");
+    JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> firstNameCol =
+        new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("User First Name");
+    JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> lastNameCol =
+        new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("User Last Name");
+    JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> contactInfoCol =
+        new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("Contact Information");
+    JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> assignedCol =
+        new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("Assigned To");
+
+    JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> positiveTestCheckCol =
+        new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("positiveTestCheck");
+    JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> symptomCheckCol =
+        new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("symptomCheck");
+    JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> closeContactCheckCol =
+        new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("closeContactCheck");
+    JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> selfIsolateCol =
+        new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("selfIsolateCheck");
+    JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> feelGoodCheckCol =
+        new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("feelGoodCheck");
+    JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> statusCol =
+        new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("Status");
+
+    //        JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, Integer> positiveTestCheckCol =
+    //                new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo,
+    // Integer>("positiveTestCheck");
+    //        JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, Integer> symptomCheckCol =
+    //                new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, Integer>("symptomCheck");
+    //        JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, Integer> closeContactCheckCol =
+    //                new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo,
+    // Integer>("closeContactCheck");
+    //        JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, Integer> selfIsolateCol =
+    //                new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo,
+    // Integer>("selfIsolateCheck");
+    //        JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, Integer> feelGoodCheckCol =
+    //                new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, Integer>("feelGoodCheck");
+
+    idCol.setCellValueFactory(
+        (TreeTableColumn.CellDataFeatures<COVIDSurveyResultsNodeInfo, String> p) -> {
+          if (idCol.validateValue(p)) {
+            return p.getValue().getValue().id;
+          } else {
+            return idCol.getComputedValue(p);
+          }
+        });
+
+    firstNameCol.setCellValueFactory(
+        (TreeTableColumn.CellDataFeatures<COVIDSurveyResultsNodeInfo, String> p) -> {
+          if (firstNameCol.validateValue(p)) {
+            return p.getValue().getValue().firstName;
+          } else {
+            return firstNameCol.getComputedValue(p);
+          }
+        });
+    lastNameCol.setCellValueFactory(
+        (TreeTableColumn.CellDataFeatures<COVIDSurveyResultsNodeInfo, String> p) -> {
+          if (lastNameCol.validateValue(p)) {
+            return p.getValue().getValue().lastName;
+          } else {
+            return lastNameCol.getComputedValue(p);
+          }
+        });
+    contactInfoCol.setCellValueFactory(
+        (TreeTableColumn.CellDataFeatures<COVIDSurveyResultsNodeInfo, String> p) -> {
+          if (contactInfoCol.validateValue(p)) {
+            return p.getValue().getValue().contactInfo;
+          } else {
+            return contactInfoCol.getComputedValue(p);
+          }
+        });
+
+    ObservableList<String> emloyeeList =
+        FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
+    //    JFXComboBox<String> emList = new JFXComboBox<String>();
+    assignedCol.setCellValueFactory(
+        (JFXTreeTableColumn.CellDataFeatures<COVIDSurveyResultsNodeInfo, String> p) -> {
+          if (assignedCol.validateValue(p)) {
+            return p.getValue().getValue().assignedEmployee;
+          } else {
+            return assignedCol.getComputedValue(p);
+          }
+        });
+    assignedCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn(emloyeeList));
+
+    positiveTestCheckCol.setCellValueFactory(
+        (TreeTableColumn.CellDataFeatures<COVIDSurveyResultsNodeInfo, String> p) -> {
+          if (positiveTestCheckCol.validateValue(p)) {
+            // return p.getTreeTableColumn().getCellObservableValue(6);
+            return p.getValue().getValue().positiveTestCheck;
+          } else {
+            return positiveTestCheckCol.getComputedValue(p);
+          }
+        });
+
+    symptomCheckCol.setCellValueFactory(
+        (TreeTableColumn.CellDataFeatures<COVIDSurveyResultsNodeInfo, String> p) -> {
+          if (symptomCheckCol.validateValue(p)) {
+            // return p.getTreeTableColumn().getCellObservableValue(7);
+            return p.getValue().getValue().symptomCheck;
+          } else {
+            return symptomCheckCol.getComputedValue(p);
+          }
+        });
+
+    closeContactCheckCol.setCellValueFactory(
+        (TreeTableColumn.CellDataFeatures<COVIDSurveyResultsNodeInfo, String> p) -> {
+          if (closeContactCheckCol.validateValue(p)) {
+            // return p.getTreeTableColumn().getCellObservableValue(6);
+            return p.getValue().getValue().closeContactCheck;
+          } else {
+            return closeContactCheckCol.getComputedValue(p);
+          }
+        });
+
+    selfIsolateCol.setCellValueFactory(
+        (TreeTableColumn.CellDataFeatures<COVIDSurveyResultsNodeInfo, String> p) -> {
+          if (selfIsolateCol.validateValue(p)) {
+            // return p.getTreeTableColumn().getCellObservableValue(7);
+            return p.getValue().getValue().selfIsolateCheck;
+          } else {
+            return selfIsolateCol.getComputedValue(p);
+          }
+        });
+
+    feelGoodCheckCol.setCellValueFactory(
+        (TreeTableColumn.CellDataFeatures<COVIDSurveyResultsNodeInfo, String> p) -> {
+          if (feelGoodCheckCol.validateValue(p)) {
+            // return p.getTreeTableColumn().getCellObservableValue(8);
+            return p.getValue().getValue().feelGoodCheck;
+          } else {
+            return feelGoodCheckCol.getComputedValue(p);
+          }
+        });
+
+    ObservableList<String> statusList = FXCollections.observableArrayList();
+    statusList.addAll("Approved", "Disapproved", "Inconclusive");
+    statusCol.setCellValueFactory(
+        (JFXTreeTableColumn.CellDataFeatures<COVIDSurveyResultsNodeInfo, String> p) -> {
+          if (statusCol.validateValue(p)) {
+            return p.getValue().getValue().status;
+          } else {
+            return statusCol.getComputedValue(p);
+          }
+        });
+    statusCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn(statusList));
+
+    COVIDResultsTableView.setEditable(true);
+    idCol.setEditable(false);
+    firstNameCol.setEditable(false);
+    lastNameCol.setEditable(false);
+    contactInfoCol.setEditable(false);
+    assignedCol.setEditable(true);
+    statusCol.setEditable(true);
+    positiveTestCheckCol.setEditable(false);
+    symptomCheckCol.setEditable(false);
+    closeContactCheckCol.setEditable(false);
+    selfIsolateCol.setEditable(false);
+    feelGoodCheckCol.setEditable(false);
+
+    COVIDResultsTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+    COVIDResultsTableView.getColumns()
+        .setAll(
+            idCol,
+            firstNameCol,
+            lastNameCol,
+            contactInfoCol,
+            assignedCol,
+            statusCol,
+            positiveTestCheckCol,
+            symptomCheckCol,
+            closeContactCheckCol,
+            selfIsolateCol,
+            feelGoodCheckCol);
+
+    COVIDResultsTableView.setPlaceholder(new Label("No COVID-19 surveys have been made yet"));
   }
 }
