@@ -44,6 +44,8 @@ import javafx.util.Duration;
 
 public class MapController implements AllAccessible {
 
+  private int index = 0;
+  String toggleText[] = {"Pathfinding", "Map Editor"};
   private RoomGraph initialData = new RoomGraph(GlobalDb.getConnection());
   public static LinkedList<NodeUI> NODES = new LinkedList<>();
   private static LinkedList<EdgeUI> EDGES = new LinkedList<>();
@@ -132,6 +134,15 @@ public class MapController implements AllAccessible {
             mapDrawer.open();
             mapDrawer.setLayoutX(0);
           }
+        });
+
+    toggleEditor.setOnAction(
+        (ActionEvent e) -> {
+          index++;
+          if (index >= toggleText.length) {
+            index = 0;
+          }
+          toggleEditor.setText(toggleText[index]);
         });
   }
 
