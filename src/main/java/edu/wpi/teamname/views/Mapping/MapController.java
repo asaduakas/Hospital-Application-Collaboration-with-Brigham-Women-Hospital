@@ -16,6 +16,7 @@ import java.util.*;
 import javafx.animation.*;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -86,6 +87,8 @@ public class MapController implements AllAccessible {
   @FXML private JFXDrawer mapDrawer;
   @FXML private JFXToggleButton toggleEditor;
   @FXML private StackPane stackPane;
+  private SimpleStringProperty simpleFloor = new SimpleStringProperty("Floor " + currentFloor);
+  private JFXButton ChooseFloorBtn = new JFXButton("Floor 1");
 
   @FXML
   private void initialize() {
@@ -250,8 +253,8 @@ public class MapController implements AllAccessible {
   }
 
   private void initializeFloorList() {
-    JFXButton ChooseFloorBtn = new JFXButton("Choose Floor");
     ChooseFloorBtn.setButtonType(JFXButton.ButtonType.RAISED);
+    ChooseFloorBtn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 20px");
 
     JFXButton Floor1Btn = new JFXButton("Floor 1");
     Floor1Btn.setButtonType(JFXButton.ButtonType.RAISED);
@@ -295,7 +298,6 @@ public class MapController implements AllAccessible {
     nodeList.addAnimatedNode(Floor1Btn);
     nodeList.addAnimatedNode(Floor2Btn);
     nodeList.addAnimatedNode(Floor3Btn);
-    ChooseFloorBtn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 20px");
     nodeList.setSpacing(20d);
     nodeList.setLayoutX(280);
     nodeList.setLayoutY(10);
@@ -363,6 +365,7 @@ public class MapController implements AllAccessible {
         break;
     }
     drawNodeFloor(floor);
+    ChooseFloorBtn.setText("Floor " + currentFloor);
     if (isEditor) {
       drawEdgeFloor(floor);
     } else {
@@ -383,34 +386,33 @@ public class MapController implements AllAccessible {
           if (!secondaryAnchor.getChildren().contains(EUI.getL())) addEdgeUI(EUI);
         }
       }
+      // Making different icons for starting and ending nodes
+
+      NodeUI startNode = getNodeUIByID(thePath.get(0).getStartNodeID());
+      ImageView startPin = new ImageView(startImage);
+      startPin.setFitWidth(45);
+      startPin.setFitHeight(45);
+      startPin.setX(startNode.getSimpXcoord() - 22.5);
+      startPin.setY(startNode.getSimpYcoord() - 22.5);
+
+      NodeUI endNode = getNodeUIByID(thePath.get(thePath.size() - 1).getEndNodeID());
+      ImageView endPin = new ImageView(endImage);
+      endPin.setFitWidth(30);
+      endPin.setFitHeight(30);
+      endPin.setX(endNode.getSimpXcoord() - 15);
+      endPin.setY(endNode.getSimpYcoord() - 15);
+
+      if (startNode.getN().getFloor().equals(currentFloor)) {
+        secondaryAnchor.getChildren().add(startPin);
+      }
+      if (endNode.getN().getFloor().equals(currentFloor)) {
+        secondaryAnchor.getChildren().add(endPin);
+        scaleAnimation(
+            secondaryAnchor.getChildren().get(secondaryAnchor.getChildren().indexOf(endPin)));
+      }
+      animateEdges();
+      animateElevators();
     }
-
-    // Making different icons for starting and ending nodes
-
-    NodeUI startNode = getNodeUIByID(thePath.get(0).getStartNodeID());
-    ImageView startPin = new ImageView(startImage);
-    startPin.setFitWidth(45);
-    startPin.setFitHeight(45);
-    startPin.setX(startNode.getSimpXcoord() - 22.5);
-    startPin.setY(startNode.getSimpYcoord() - 22.5);
-
-    NodeUI endNode = getNodeUIByID(thePath.get(thePath.size() - 1).getEndNodeID());
-    ImageView endPin = new ImageView(endImage);
-    endPin.setFitWidth(30);
-    endPin.setFitHeight(30);
-    endPin.setX(endNode.getSimpXcoord() - 15);
-    endPin.setY(endNode.getSimpYcoord() - 15);
-
-    if (startNode.getN().getFloor().equals(currentFloor)) {
-      secondaryAnchor.getChildren().add(startPin);
-    }
-    if (endNode.getN().getFloor().equals(currentFloor)) {
-      secondaryAnchor.getChildren().add(endPin);
-      scaleAnimation(
-          secondaryAnchor.getChildren().get(secondaryAnchor.getChildren().indexOf(endPin)));
-    }
-    animateEdges();
-    animateElevators();
   }
 
   public void resizeNodeUI(NodeUI N, double factor) {
