@@ -12,12 +12,14 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 public class MapDrawerController implements Initializable {
@@ -25,8 +27,7 @@ public class MapDrawerController implements Initializable {
   @FXML private JFXTextField startField;
   @FXML private JFXTextField endField;
   @FXML private JFXButton findPathButton;
-  //  private ObservableList<CategoryNodeInfo> parkingData =
-  //      FDatabaseTables.getNodeTable().getCategory(GlobalDb.getConnection(), "PAR");
+  @FXML private VBox vBox;
 
   private MapController mapController;
 
@@ -57,9 +58,84 @@ public class MapDrawerController implements Initializable {
   @Override
   public void initialize(URL url, ResourceBundle rb) {
 
-    TreeItem<String> dummyRoot = new TreeItem<>();
+    JFXTextArea textDirection = new JFXTextArea();
+    Label textDirectionLabel = new Label("Text Direction");
+
+    treeViewSetup();
+
+    EventHandler<MouseEvent> mouseEventHandle =
+        (MouseEvent event) -> {
+          handleMouseClicked(event);
+        };
+
+    directoryTreeView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEventHandle);
+  }
+
+  private void handleMouseClicked(MouseEvent event) {
+    Node node = event.getPickResult().getIntersectedNode();
+    // Accept clicks only on node cells, and not on empty spaces of the TreeView
+    if (node instanceof Text || (node instanceof TreeCell && ((TreeCell) node).getText() != null)) {
+      String name =
+          (String) ((TreeItem) directoryTreeView.getSelectionModel().getSelectedItem()).getValue();
+      System.out.println("Node click: " + name);
+      String type = "PARK";
+      switch (name) {
+        case "Elevator":
+          type = "ELEV";
+          break;
+        case "Restroom":
+          type = "REST";
+          break;
+        case "Stairs":
+          type = "STAI";
+          break;
+        case "Department":
+          type = "DEPT";
+          break;
+        case "Laboratory":
+          type = "LABS";
+          break;
+        case "Information":
+          type = "INFO";
+          break;
+        case "Conference":
+          type = "CONF";
+          break;
+        case "Entrance/Exit":
+          type = "EXIT";
+          break;
+        case "Retail":
+          type = "RETL";
+          break;
+        case "Service":
+          type = "SERV";
+          break;
+        default:
+          type = "PARK";
+          break;
+      }
+      nodeRedrawing(type);
+    }
+  }
+
+  private void nodeRedrawing(String type) {
+    mapController.clearMap();
+
+    for (NodeUI NUI : mapController.NODES) {
+      if (NUI.getN().getFloor().equals(mapController.currentFloor)
+          && (NUI.getN().getNodeType().equals(type))) {
+        mapController.addNodeUI(NUI);
+      }
+    }
+  }
+
+  public void setMapController(MapController mapController) {
+    this.mapController = mapController;
+  }
+
+  public void treeViewSetup() {
+
     TreeItem<String> directoryRoot = new TreeItem<>("Directory");
-    TreeItem<String> textRoot = new TreeItem<>("Text Direction");
     TreeItem<String> parking = new TreeItem<>("Parking");
     TreeItem<String> elevator = new TreeItem<>("Elevator");
     TreeItem<String> restroom = new TreeItem<>("Restroom");
@@ -71,11 +147,7 @@ public class MapDrawerController implements Initializable {
     TreeItem<String> exit = new TreeItem<>("Entrance/Exit");
     TreeItem<String> retail = new TreeItem<>("Retail");
     TreeItem<String> service = new TreeItem<>("Service");
-    dummyRoot.getChildren().addAll(directoryRoot, textRoot);
-    directoryTreeView.setRoot(dummyRoot);
-    directoryTreeView.setShowRoot(false);
-
-    textRoot.setGraphic(textDirection);
+    directoryTreeView.setRoot(directoryRoot);
 
     try {
       ImageView parkImage =
@@ -224,79 +296,6 @@ public class MapDrawerController implements Initializable {
     directoryRoot.setExpanded(true);
     directoryTreeView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
-    //    if (parking.isExpanded()) {
-    //      MapController.NODES.
-    //    }
-
-    EventHandler<MouseEvent> mouseEventHandle =
-        (MouseEvent event) -> {
-          handleMouseClicked(event);
-        };
-
-    directoryTreeView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEventHandle);
+    directoryTreeView.setStyle("-fx-padding: 0; -fx-background-insets: 0");
   }
-
-  private void handleMouseClicked(MouseEvent event) {
-    Node node = event.getPickResult().getIntersectedNode();
-    // Accept clicks only on node cells, and not on empty spaces of the TreeView
-    if (node instanceof Text || (node instanceof TreeCell && ((TreeCell) node).getText() != null)) {
-      String name =
-          (String) ((TreeItem) directoryTreeView.getSelectionModel().getSelectedItem()).getValue();
-      System.out.println("Node click: " + name);
-      String type = "PARK";
-      switch (name) {
-        case "Elevator":
-          type = "ELEV";
-          break;
-        case "Restroom":
-          type = "REST";
-          break;
-        case "Stairs":
-          type = "STAI";
-          break;
-        case "Department":
-          type = "DEPT";
-          break;
-        case "Laboratory":
-          type = "LABS";
-          break;
-        case "Information":
-          type = "INFO";
-          break;
-        case "Conference":
-          type = "CONF";
-          break;
-        case "Entrance/Exit":
-          type = "EXIT";
-          break;
-        case "Retail":
-          type = "RETL";
-          break;
-        case "Service":
-          type = "SERV";
-          break;
-        default:
-          type = "PARK";
-          break;
-      }
-      nodeRedrawing(type);
-    }
-  }
-
-  private void nodeRedrawing(String type) {
-    mapController.clearMap();
-
-    for (NodeUI NUI : mapController.NODES) {
-      if (NUI.getN().getFloor().equals(mapController.currentFloor)
-          && (NUI.getN().getNodeType().equals(type))) {
-        mapController.addNodeUI(NUI);
-      }
-    }
-  }
-
-  public void setMapController(MapController mapController) {
-    this.mapController = mapController;
-  }
-
-  public void tableSetup() {}
 }

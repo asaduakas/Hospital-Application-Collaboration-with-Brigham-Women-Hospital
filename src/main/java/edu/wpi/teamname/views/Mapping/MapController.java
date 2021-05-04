@@ -6,11 +6,14 @@ import edu.wpi.teamname.App;
 import edu.wpi.teamname.Astar.*;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.Access.AllAccessible;
+import edu.wpi.teamname.views.Access.LoginController;
+import edu.wpi.teamname.views.ControllerManager;
 import edu.wpi.teamname.views.Mapping.Popup.Edit.AddNodeController;
-import java.awt.*;
+import edu.wpi.teamname.views.SceneSizeChangeListener;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 import javafx.animation.*;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -22,6 +25,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -69,16 +74,16 @@ public class MapController implements AllAccessible {
   public static final Image RETL = new Image("Images/retailpin.png");
   public static final Image SERV = new Image("Images/service.png");
   private Image up = new Image("Images/up-arrow.png");
+  public static SceneSizeChangeListener sizeListener;
 
   @FXML private AnchorPane mainAnchor;
-  @FXML private JFXComboBox FloorOption;
   private MapScrollPane mapScrollPane;
   private AnchorPane secondaryAnchor;
-  @FXML private ImageView TheMap;
   @FXML public static Popup popup;
   @FXML private JFXHamburger mapHam;
   @FXML private JFXDrawer mapDrawer;
   @FXML private JFXToggleButton toggleEditor;
+  @FXML private JFXButton floorBtn;
 
   @FXML
   private void initialize() {
@@ -97,9 +102,6 @@ public class MapController implements AllAccessible {
 
     drawNodeFloor("1");
 
-    // mapScrollPane.setPannable(true);
-    // mapScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-    // mapScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
     ToggleListener();
     nodeAddListener();
     cancelListener();
@@ -109,12 +111,7 @@ public class MapController implements AllAccessible {
     mapDrawer.setPickOnBounds(false);
 
     try {
-      FXMLLoader loader =
-          new FXMLLoader(getClass().getClassLoader().getResource("MapDrawerView.fxml"));
-      AnchorPane menuBtns = loader.load();
-      MapDrawerController drawer = loader.getController();
-      drawer.setMapController(this);
-      mapDrawer.setSidePane(menuBtns);
+      mapDrawerView();
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -130,12 +127,54 @@ public class MapController implements AllAccessible {
           burgerTask.play();
           if (mapDrawer.isOpened()) {
             mapDrawer.close();
-            mapDrawer.setLayoutX(-132);
+            mapDrawer.setLayoutX(-270);
           } else {
             mapDrawer.open();
             mapDrawer.setLayoutX(0);
           }
         });
+  }
+
+  public void mapDrawerView() throws IOException {
+    FXMLLoader loader =
+        new FXMLLoader(getClass().getClassLoader().getResource("MapDrawerView.fxml"));
+    AnchorPane menuBtns = loader.load();
+    MapDrawerController drawer = loader.getController();
+    drawer.setMapController(this);
+    mapDrawer.setSidePane(menuBtns);
+    Pane root = (Pane) loader.getRoot();
+    List<javafx.scene.Node> childrenList = root.getChildren();
+    System.out.println("this is childrenList " + childrenList);
+    root.setMinHeight(App.getPrimaryStage().getScene().getHeight());
+    Scene scene = App.getPrimaryStage().getScene();
+    changeChildrenMapView(childrenList);
+    sizeListener =
+        new SceneSizeChangeListener(scene, root, childrenList) {
+          @Override
+          public void changeChildren(List<javafx.scene.Node> nodeList) {
+            for (javafx.scene.Node node : nodeList)
+              if (node instanceof MapScrollPane) ((MapScrollPane) node).updateScaleRange();
+            changeChildrenMapView(childrenList);
+          }
+        };
+    scene.widthProperty().addListener(sizeListener);
+    scene.heightProperty().addListener(sizeListener);
+  }
+
+  public void changeChildrenMapView(List<javafx.scene.Node> nodeList) {
+    JFXButton findPath = (JFXButton) nodeList.get(0);
+    JFXTreeView treeView = (JFXTreeView) nodeList.get(3);
+    Label label = (Label) nodeList.get(4);
+    JFXTextArea textDirection = (JFXTextArea) nodeList.get(5);
+    treeView.setMinHeight(App.getPrimaryStage().getScene().getHeight() / 2);
+    label.setLayoutY(treeView.getLayoutY() + treeView.getMinHeight() + 10);
+    label.setLayoutX(10);
+    textDirection.setLayoutY(label.getLayoutY() + label.getHeight() + 30);
+  }
+
+  public void goHome() {
+    ControllerManager.attemptLoadPage(
+        "HomeView.fxml", fxmlLoader -> LoginController.start(fxmlLoader.getRoot()));
   }
 
   // _______________________________________SET UP________________________________________
@@ -243,8 +282,8 @@ public class MapController implements AllAccessible {
   }
 
   private void initializeFloorList() {
-    JFXButton ChooseFloorBtn = new JFXButton("Choose Floor");
-    ChooseFloorBtn.setButtonType(JFXButton.ButtonType.RAISED);
+    //    JFXButton ChooseFloorBtn = new JFXButton("Choose Floor");
+    //    ChooseFloorBtn.setButtonType(JFXButton.ButtonType.RAISED);
 
     JFXButton Floor1Btn = new JFXButton("Floor 1");
     Floor1Btn.setButtonType(JFXButton.ButtonType.RAISED);
@@ -282,16 +321,13 @@ public class MapController implements AllAccessible {
         });
 
     JFXNodesList nodeList = new JFXNodesList();
-    nodeList.addAnimatedNode(ChooseFloorBtn);
+    nodeList.addAnimatedNode(floorBtn);
     nodeList.addAnimatedNode(FloorL2Btn);
     nodeList.addAnimatedNode(FloorL1Btn);
     nodeList.addAnimatedNode(Floor1Btn);
     nodeList.addAnimatedNode(Floor2Btn);
     nodeList.addAnimatedNode(Floor3Btn);
-    ChooseFloorBtn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 20px");
     nodeList.setSpacing(20d);
-    nodeList.setLayoutX(280);
-    nodeList.setLayoutY(10);
 
     mainAnchor.getChildren().add(nodeList);
   }
@@ -845,8 +881,8 @@ public class MapController implements AllAccessible {
 
   // _____________________________________Directions__________________________________________
 
-  @FXML Button dirBtn;
-  @FXML TextArea dirText;
+  @FXML JFXButton dirBtn;
+  @FXML JFXTextArea dirText;
   private String endLocation = "";
 
   private void setEnd(String end) {

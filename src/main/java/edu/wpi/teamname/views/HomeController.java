@@ -1,6 +1,8 @@
 package edu.wpi.teamname.views;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXNodesList;
+import com.jfoenix.controls.JFXToggleButton;
 import edu.wpi.teamname.App;
 import edu.wpi.teamname.views.Access.*;
 import edu.wpi.teamname.views.Mapping.MapScrollPane;
@@ -79,6 +81,7 @@ public class HomeController extends Application implements AllAccessible {
         fxmlLoader -> {
           Pane root = (Pane) fxmlLoader.getRoot();
           List<Node> childrenList = root.getChildren();
+          System.out.println("this is childrenList " + childrenList);
           Scene scene = App.getPrimaryStage().getScene();
           changeChildrenMapView(childrenList);
           this.sizeListener =
@@ -98,104 +101,16 @@ public class HomeController extends Application implements AllAccessible {
 
   public void changeChildrenMapView(List<Node> nodeList) {
 
-    //    ScrollPane mapScrollPane = (ScrollPane) nodeList.get(0);
-    //
-    //    HBox topButtons = (HBox) nodeList.get(1);
-    //    topButtons.setAlignment(Pos.TOP_CENTER);
-    //    topButtons.setPrefWidth(App.getPrimaryStage().getScene().getWidth() - 20);
-    //
-    //    mapScrollPane.setMaxHeight(App.getPrimaryStage().getScene().getHeight() - 50);
-    //    mapScrollPane.setMaxWidth(App.getPrimaryStage().getScene().getWidth());
-    //    double mapPaneRatio = mapScrollPane.getWidth() / mapScrollPane.getHeight();
-    //    mapScrollPane.setFitToWidth(true);
-    //    mapScrollPane.setFitToHeight(true);
-    //    mapScrollPane.setPrefHeight(App.getPrimaryStage().getScene().getWindow().getHeight());
-    //    mapScrollPane.setPrefWidth(
-    //        App.getPrimaryStage().getScene().getWindow().getHeight() * mapPaneRatio);
-    //    if (mapScrollPane.getPrefWidth() <
-    // App.getPrimaryStage().getScene().getWindow().getWidth()) {
-    //      mapScrollPane.setLayoutX(
-    //          (App.getPrimaryStage().getScene().getWindow().getWidth() -
-    // mapScrollPane.getPrefWidth())
-    //              / 2);
-    //    } else {
-    //      mapScrollPane.setLayoutX(0);
-    //    }
-    //
-    //    JFXButton findBtn = (JFXButton) nodeList.get(2);
-    //    findBtn.setLayoutY(
-    //        App.getPrimaryStage().getScene().getWindow().getHeight() - findBtn.getHeight() - 60);
-    //    if (mapScrollPane.getPrefWidth() <
-    // App.getPrimaryStage().getScene().getWindow().getWidth()) {
-    //      findBtn.setLayoutX(
-    //          ((App.getPrimaryStage().getScene().getWindow().getWidth() -
-    // mapScrollPane.getPrefWidth())
-    //                  / 2)
-    //              + 25);
-    //    } else {
-    //      findBtn.setLayoutX(25);
-    //    }
-    //
-    //    JFXButton exitBtn = (JFXButton) nodeList.get(3);
-    //    exitBtn.setLayoutY(
-    //        App.getPrimaryStage().getScene().getWindow().getHeight() - exitBtn.getHeight() - 60);
-    //
-    //    if (mapScrollPane.getPrefWidth() <
-    // App.getPrimaryStage().getScene().getWindow().getWidth()) {
-    //      exitBtn.setLayoutX(
-    //          ((App.getPrimaryStage().getScene().getWindow().getWidth() -
-    // mapScrollPane.getPrefWidth())
-    //                  / 2)
-    //              + mapScrollPane.getPrefWidth()
-    //              - exitBtn.getWidth()
-    //              - 20);
-    //    } else {
-    //      exitBtn.setLayoutX(
-    //          App.getPrimaryStage().getScene().getWindow().getWidth() - exitBtn.getWidth() - 30);
-    //    }
-    //
-    //    Slider slider = (Slider) nodeList.get(4);
-    //    //    slider.setLayoutX(App.getPrimaryStage().getScene().getWidth() - exitBtn.getWidth() -
-    // 100);
-    //    slider.setLayoutY(exitBtn.getLayoutY());
-    //
-    //    if (mapScrollPane.getPrefWidth() <
-    // App.getPrimaryStage().getScene().getWindow().getWidth()) {
-    //      slider.setLayoutX(
-    //          ((App.getPrimaryStage().getScene().getWindow().getWidth() - slider.getWidth()) /
-    // 2));
-    //    } else {
-    //      slider.setLayoutX(
-    //          (App.getPrimaryStage().getScene().getWindow().getWidth() - slider.getWidth()) / 2);
-    //    }
-    //
-    //    JFXButton cancelButton = (JFXButton) nodeList.get(5);
-    //    if (mapScrollPane.getPrefWidth() <
-    // App.getPrimaryStage().getScene().getWindow().getWidth()) {
-    //      cancelButton.setLayoutX(
-    //          ((App.getPrimaryStage().getScene().getWindow().getWidth() -
-    // mapScrollPane.getPrefWidth())
-    //                  / 2)
-    //              + mapScrollPane.getPrefWidth()
-    //              - exitBtn.getWidth()
-    //              - cancelButton.getWidth()
-    //              - 50);
-    //    } else {
-    //      cancelButton.setLayoutX(
-    //          App.getPrimaryStage().getScene().getWindow().getWidth()
-    //              - exitBtn.getWidth()
-    //              - cancelButton.getWidth()
-    //              - 50);
-    //    }
-    //    cancelButton.setLayoutY(exitBtn.getLayoutY());
-    //
-    //    JFXTextArea textArea = (JFXTextArea) nodeList.get(7);
-    //    textArea.setLayoutX(App.getPrimaryStage().getScene().getWidth() - textArea.getWidth());
-    //    textArea.setLayoutY(exitBtn.getLayoutY() - textArea.getHeight() - 80);
-    //
-    //    JFXButton downloadButton = (JFXButton) nodeList.get(6);
-    //    downloadButton.setLayoutX(mapScrollPane.getLayoutX());
-    //    downloadButton.setLayoutY(findBtn.getLayoutY() - 80);
+    JFXToggleButton mapEditorBtn = (JFXToggleButton) nodeList.get(4);
+
+    JFXButton exitBtn = (JFXButton) nodeList.get(5);
+    exitBtn.setLayoutY(
+        App.getPrimaryStage().getScene().getWindow().getHeight() - exitBtn.getHeight() - 60);
+    exitBtn.setLayoutX(App.getPrimaryStage().getScene().getWidth() - exitBtn.getWidth() - 50);
+
+    JFXNodesList btns = (JFXNodesList) nodeList.get(6);
+    btns.setLayoutY(20);
+    btns.setLayoutX(App.getPrimaryStage().getScene().getWidth() - btns.getWidth() - 50);
   }
 
   @FXML
