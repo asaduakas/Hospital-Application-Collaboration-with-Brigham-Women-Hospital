@@ -22,7 +22,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -65,8 +64,8 @@ public class MapController implements AllAccessible {
 
   @FXML private AnchorPane mainAnchor;
   @FXML private JFXComboBox FloorOption;
-  @FXML private ScrollPane movingMap;
-  @FXML private AnchorPane secondaryAnchor;
+  private MapScrollPane mapScrollPane;
+  private AnchorPane secondaryAnchor;
   @FXML private ImageView TheMap;
   @FXML public static Popup popup;
   @FXML private JFXHamburger mapHam;
@@ -76,15 +75,29 @@ public class MapController implements AllAccessible {
   @FXML
   private void initialize() {
 
-    TheMap.setImage(F1);
+    double minScale =
+        Math.max(
+            App.getPrimaryStage().getScene().getWidth() / F1.getWidth(),
+            App.getPrimaryStage().getScene().getHeight() / F1.getHeight());
+    double maxScale = minScale * 10;
+
+    mapScrollPane = new MapScrollPane(minScale, maxScale, F1);
+    mainAnchor.getChildren().add(mapScrollPane);
+    AnchorPane.setTopAnchor(mapScrollPane, 0.0);
+    AnchorPane.setBottomAnchor(mapScrollPane, 0.0);
+    AnchorPane.setLeftAnchor(mapScrollPane, 0.0);
+    AnchorPane.setRightAnchor(mapScrollPane, 0.0);
+    secondaryAnchor = mapScrollPane.mapAnchor;
+    mapScrollPane.toBack();
+
     initializeNodes();
     initializeEdges();
 
     drawNodeFloor("1");
 
-    movingMap.setPannable(true);
-    movingMap.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-    movingMap.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+    // mapScrollPane.setPannable(true);
+    // mapScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+    // mapScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
     ToggleListener();
     nodeAddListener();
 
@@ -120,7 +133,7 @@ public class MapController implements AllAccessible {
   // _______________________________________SET UP________________________________________
 
   private void LoadMap(Image floor, String floorNum) {
-    TheMap.setImage(floor);
+    mapScrollPane.setMapImage(floor);
     LoadingNodesEdges(floorNum);
   }
 
@@ -783,7 +796,7 @@ public class MapController implements AllAccessible {
         .setOnMouseDragged(
             event -> {
               if (isEditor) {
-                movingMap.setPannable(false);
+                mapScrollPane.setPannable(false);
                 Double x = event.getX();
                 Double y = event.getY();
                 NUI.getI().setX(x - NUI.getI().getFitWidth() / 2);
@@ -807,7 +820,7 @@ public class MapController implements AllAccessible {
                     .getNodeTable()
                     .updateNodeYCoord(
                         GlobalDb.getConnection(), NUI.getN().getNodeID(), y.intValue());
-                movingMap.setPannable(true);
+                mapScrollPane.setPannable(true);
                 resizeNodeUI(NUI, .5);
               }
             });
