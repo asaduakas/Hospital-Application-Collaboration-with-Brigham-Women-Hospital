@@ -89,7 +89,14 @@ public class HomeController extends Application implements AllAccessible {
         fxmlLoader -> {
           Pane root = (Pane) fxmlLoader.getRoot();
           List<Node> childrenList = root.getChildren();
-          System.out.println("this is childrenList " + childrenList);
+          System.out.println("this is childrenList of the map" + childrenList);
+
+          if (!userCategory.equalsIgnoreCase("admin")) {
+            JFXToggleButton mapEditing = (JFXToggleButton) childrenList.get(4);
+            mapEditing.setVisible(false);
+            mapEditing.setDisable(true);
+          }
+
           Scene scene = App.getPrimaryStage().getScene();
           changeChildrenMapView(childrenList);
           this.sizeListener =
