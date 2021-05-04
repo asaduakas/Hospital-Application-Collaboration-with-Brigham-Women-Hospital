@@ -160,8 +160,7 @@ public class StatusController extends AbsRequest
       av.setGraphic(avImage);
 
       ImageView csImage =
-          new ImageView(
-              new Image(new FileInputStream("src/main/resources/Images/Computer_colored.png")));
+          new ImageView(new Image(new FileInputStream("src/main/resources/Images/Computer.png")));
       csImage.setFitWidth(40);
       csImage.setFitHeight(40);
       cs.setGraphic(csImage);
