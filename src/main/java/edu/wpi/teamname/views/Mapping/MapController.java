@@ -69,6 +69,7 @@ public class MapController implements AllAccessible {
   public static final Image RETL = new Image("Images/retailpin.png");
   public static final Image SERV = new Image("Images/service.png");
   private Image up = new Image("Images/up-arrow.png");
+  private Image down = new Image("Images/redArrow.png");
   private Image endImage = new Image("Images/endingIcon_white.png");
   private Image startImage = new Image("Images/walkingStartIcon_black.png");
 
@@ -402,7 +403,6 @@ public class MapController implements AllAccessible {
       scaleAnimation(
           secondaryAnchor.getChildren().get(secondaryAnchor.getChildren().indexOf(endPin)));
     }
-
     animateEdges();
     animateElevators();
   }
@@ -843,6 +843,12 @@ public class MapController implements AllAccessible {
   private void goUp() {
     String temp = null;
     switch (currentFloor) {
+      case "L2":
+        temp = "L1";
+        break;
+      case "L1":
+        temp = "1";
+        break;
       case "1":
         temp = "2";
         break;
@@ -865,6 +871,12 @@ public class MapController implements AllAccessible {
       case "2":
         temp = "1";
         break;
+      case "1":
+        temp = "L1";
+        break;
+      case "L1":
+        temp = "L2";
+        break;
       default:
         temp = "1";
         break;
@@ -874,24 +886,26 @@ public class MapController implements AllAccessible {
 
   @FXML
   private void animateElevators() {
+    Node endNode = getNodeUIByID(thePath.get(thePath.size() - 1).getEndNodeID()).getN();
     for (int i = 0; i < thePath.size() - 1; i++) {
       Node n = initialData.getNodeByID(thePath.get(i).getStartNodeID());
       Node nodeNext = initialData.getNodeByID(thePath.get(i + 1).getStartNodeID());
 
-      if (n.getNodeType().equals("ELEV") && n.getFloor().equals(currentFloor)) {
+      if ((n.getNodeType().equals("ELEV") || n.getNodeType().equals("STAI"))
+          && n.getFloor().equals(currentFloor)) {
         ImageView imageView = new ImageView(up);
         imageView.setFitHeight(20);
         imageView.setFitWidth(20);
         imageView.setX(n.getXCoord() - 10);
         imageView.setY(n.getYCoord() - 10);
-        ;
 
         if (n.compareFloor(nodeNext) >= 1) {
+          imageView.setImage(down);
           secondaryAnchor.getChildren().add(imageView);
-          imageView.setOnMousePressed(event -> goDown());
+          imageView.setOnMousePressed(event -> switchFloor(nodeNext.getFloor()));
         } else if (n.compareFloor(nodeNext) <= -1) {
           secondaryAnchor.getChildren().add(imageView);
-          imageView.setOnMousePressed(event -> goUp());
+          imageView.setOnMousePressed(event -> switchFloor(nodeNext.getFloor()));
         }
 
         ScaleTransition st = new ScaleTransition(Duration.seconds(1), imageView);

@@ -22,5 +22,9 @@ public class NodeTest {
     n.setFloor("3");
     n1.setFloor("2");
     assertEquals(n.compareFloor(n1), 1);
+
+    n.setFloor("1");
+    n1.setFloor("3");
+    assertEquals(n.compareFloor(n1), 1);
   }
 }
