@@ -1,10 +1,8 @@
 package edu.wpi.teamname.Testing;
 
 import edu.wpi.teamname.Astar.*;
+import edu.wpi.teamname.Ddb.GlobalDb;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -192,14 +190,8 @@ public class PathfindingTest {
 
   @Test
   public void databaseConversionTest() {
-    Connection connection = null;
-    try {
-      connection =
-          DriverManager.getConnection("jdbc:derby:myDB;create=true;username=Admin;password=Admin");
-      RoomGraph graph = new RoomGraph(connection);
-      graph.printGraph();
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
+    GlobalDb.establishCon();
+    RoomGraph graph = new RoomGraph(GlobalDb.getConnection());
+    graph.printGraph();
   }
 }

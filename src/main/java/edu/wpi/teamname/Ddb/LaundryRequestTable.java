@@ -1,6 +1,9 @@
 package edu.wpi.teamname.Ddb;
 
+import edu.wpi.teamname.views.ServiceRequests.NodeInfo.LaundryNodeInfo;
+import java.io.IOException;
 import java.sql.*;
+import javafx.collections.ObservableList;
 
 public class LaundryRequestTable extends AbsTables {
   // id,status,firstName,lastName,contactInfo,location,assignedEmployee
@@ -88,5 +91,49 @@ public class LaundryRequestTable extends AbsTables {
     } catch (SQLException throwables) {
       throwables.printStackTrace();
     }
+  }
+
+  public void addIntoLaundServiceList(ObservableList<LaundryNodeInfo> laundryData)
+      throws IOException {
+    try {
+      String query = "SELECT * FROM LaundryRequest";
+      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      while (rs.next()) {
+        laundryData.add(
+            new LaundryNodeInfo(
+                rs.getString("id"),
+                rs.getString("status"),
+                rs.getString("firstName"),
+                rs.getString("lastName"),
+                rs.getString("contactInfo"),
+                rs.getString("location"),
+                rs.getString("assignedEmployee")));
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+  }
+
+  public ObservableList<LaundryNodeInfo> changeLaundServiceData(
+      ObservableList<LaundryNodeInfo> laundryData) {
+    for (LaundryNodeInfo laundryInfo : laundryData) {
+      if (!(laundryInfo.getStatus().isEmpty())) {
+        PreparedStatement stmt = null;
+        try {
+          stmt =
+              GlobalDb.getConnection()
+                  .prepareStatement(
+                      "UPDATE LaundryRequest SET status = ?, assignedEmployee = ? WHERE id=?");
+          stmt.setString(1, laundryInfo.getStatus());
+          stmt.setString(2, laundryInfo.getAssignedEmployee());
+          stmt.setString(3, laundryInfo.getId());
+          stmt.executeUpdate();
+
+        } catch (SQLException throwables) {
+          throwables.printStackTrace();
+        }
+      }
+    }
+    return laundryData;
   }
 }

@@ -25,14 +25,14 @@
             </AnchorPane>
          </content>
       </ScrollPane>
-      <JFXDrawer fx:id="mapDrawer" layoutX="-132" layoutY="0" prefHeight="640.0" prefWidth="263.0" />
-      <JFXHamburger fx:id="mapHam" layoutX="1.0" layoutY="1.0" prefHeight="49.0" prefWidth="59.0" />
       <Label layoutX="52.0" layoutY="13.0" text="MENU">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <JFXToggleButton fx:id="toggleEditor" layoutX="860.0" text="Pathfinding" />
+      <JFXDrawer fx:id="mapDrawer" prefHeight="644.0" prefWidth="263.0" />
+      <JFXHamburger fx:id="mapHam" layoutX="1.0" layoutY="-1.0" prefHeight="49.0" prefWidth="59.0" />
+      <JFXToggleButton fx:id="toggleEditor" layoutX="836.0" prefHeight="58.0" prefWidth="164.0" />
 
    </children>
 </AnchorPane>
