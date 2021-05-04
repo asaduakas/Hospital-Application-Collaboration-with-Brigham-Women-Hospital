@@ -5,11 +5,11 @@ import edu.wpi.teamname.App;
 import edu.wpi.teamname.Ddb.FDatabaseTables;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.ControllerManager;
+import edu.wpi.teamname.views.DialogFactory;
 import edu.wpi.teamname.views.SceneSizeChangeListener;
 import java.io.IOException;
 import java.util.List;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -20,8 +20,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javax.swing.*;
 
@@ -34,8 +32,11 @@ public class LoginController implements AllAccessible {
   @FXML StackPane loginStackPane;
   public static String userCategory;
 
+  private DialogFactory dialogFactory;
+
   @FXML
   public void initialize() {
+    dialogFactory = new DialogFactory(loginStackPane);
     loginStackPane.setPickOnBounds(false);
   }
 
@@ -164,39 +165,12 @@ public class LoginController implements AllAccessible {
 
   @FXML
   public void takeToSignUp() {
-    /*
-    FXMLLoader fxmlLoader =
-        new FXMLLoader(getClass().getClassLoader().getResource("signUpView.fxml"));
-    Parent root = fxmlLoader.load();
-    InitPageController.popup.hide();
-    InitPageController.popup.getContent().addAll(root.getChildrenUnmodifiable());
-    InitPageController.popup.show(App.getPrimaryStage());
-     */
     ControllerManager.attemptLoadPopup("signUpView.fxml");
   }
 
   @FXML
   void popupWarning(ActionEvent event, String text) throws IOException {
-    Text header = new Text("Error");
-    header.setFont(Font.font("System", FontWeight.BOLD, 18));
-
-    JFXDialogLayout warningLayout = new JFXDialogLayout();
-    warningLayout.setHeading(header);
-    warningLayout.setBody(new Text(text));
-
-    JFXDialog warningDia =
-        new JFXDialog(loginStackPane, warningLayout, JFXDialog.DialogTransition.CENTER);
-    JFXButton okBtn = new JFXButton("Close");
-    okBtn.setStyle("-fx-background-color: #cdcdcd;");
-    okBtn.setOnAction(
-        new EventHandler<ActionEvent>() {
-          @Override
-          public void handle(ActionEvent event) {
-            warningDia.close();
-          }
-        });
-    warningLayout.setActions(okBtn);
-    warningDia.show();
+    dialogFactory.createOneButtonDialog("Error", text, "Close", () -> {});
   }
 
   @FXML

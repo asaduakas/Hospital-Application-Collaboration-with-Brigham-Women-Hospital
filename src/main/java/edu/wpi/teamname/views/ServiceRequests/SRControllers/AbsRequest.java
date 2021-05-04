@@ -11,22 +11,20 @@ import edu.wpi.teamname.views.Access.AllAccessible;
 import edu.wpi.teamname.views.Access.LoginController;
 import edu.wpi.teamname.views.AutoCompleteComboBox;
 import edu.wpi.teamname.views.ControllerManager;
+import edu.wpi.teamname.views.DialogFactory;
 import edu.wpi.teamname.views.InitPageController;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 
 public abstract class AbsRequest implements AllAccessible {
 
@@ -39,6 +37,17 @@ public abstract class AbsRequest implements AllAccessible {
   @FXML JFXButton helpButton;
   private static String userCategory;
   public static Boolean disableRequestStatus = false;
+
+  protected DialogFactory dialogFactory;
+
+  public void initDialogFactory() {
+    dialogFactory = new DialogFactory(stackPane1);
+  }
+
+  @FXML
+  public void initialize() {
+    initDialogFactory();
+  }
 
   public void goHome() {
     List<Node> childrenList = App.getPrimaryStage().getScene().getRoot().getChildrenUnmodifiable();
@@ -88,31 +97,8 @@ public abstract class AbsRequest implements AllAccessible {
 
   @FXML
   void popupWarning(ActionEvent event) throws IOException {
-    Text header = new Text("Error");
-    header.setFont(Font.font("System", FontWeight.BOLD, 18));
-
-    JFXDialogLayout warningLayout = new JFXDialogLayout();
-    warningLayout.setHeading(header);
-    warningLayout.setBody(new Text("Please fill out the required fields."));
-    JFXDialog warningDia =
-        new JFXDialog(stackPane1, warningLayout, JFXDialog.DialogTransition.CENTER);
-    JFXButton okBtn = new JFXButton("Close");
-    okBtn.setStyle("-fx-background-color: #cdcdcd;");
-    okBtn.setOnAction(
-        new EventHandler<ActionEvent>() {
-          @Override
-          public void handle(ActionEvent event) {
-            // ServicePageController.popup.hide();
-            //            try {
-            //              popUpAction("ServicePageView.fxml");
-            //            } catch (IOException e) {
-            //              e.printStackTrace();
-            //            }
-            warningDia.close();
-          }
-        });
-    warningLayout.setActions(okBtn);
-    warningDia.show();
+    dialogFactory.createOneButtonDialog(
+        "Error", "Please fill out the required fields.", "Close", () -> {});
   }
 
   <T extends JFXTextField & IFXLabelFloatControl> void validationPaneFormatter(T jfxTextField) {
@@ -141,49 +127,24 @@ public abstract class AbsRequest implements AllAccessible {
 
   @FXML
   void cancelPage(ActionEvent event) throws IOException {
-    Text header = new Text("Exit form?");
-    header.setFont(Font.font("System", FontWeight.BOLD, 18));
-
-    JFXDialogLayout layout = new JFXDialogLayout();
-    layout.setHeading(header);
-    layout.setBody(new Text("This will bring you back to the service" + "\n" + "requests page."));
-    JFXDialog submitDia = new JFXDialog(stackPane1, layout, JFXDialog.DialogTransition.CENTER);
-
-    JFXButton yesBtn = new JFXButton("Yes");
-    yesBtn.setPrefHeight(20);
-    yesBtn.setPrefWidth(60);
-    yesBtn.setId("yesBtn");
-    yesBtn.setButtonType(JFXButton.ButtonType.FLAT);
-    yesBtn.setOnAction(
-        new EventHandler<ActionEvent>() {
-          @Override
-          public void handle(ActionEvent event) {
-            List<Node> childrenList =
-                App.getPrimaryStage().getScene().getRoot().getChildrenUnmodifiable();
-            VBox buttonBox = (VBox) childrenList.get(2);
-            buttonBox.setVisible(false);
-            // ServicePageController.popup.hide();
-            try {
-              popUpAction("ServicePageView.fxml");
-            } catch (IOException e) {
-              e.printStackTrace();
-            }
-            submitDia.close();
+    dialogFactory.createTwoButtonDialog(
+        "Exit form?",
+        "This will bring you back to the service" + "\n" + "requests page.",
+        "Yes",
+        () -> {
+          List<Node> childrenList =
+              App.getPrimaryStage().getScene().getRoot().getChildrenUnmodifiable();
+          VBox buttonBox = (VBox) childrenList.get(2);
+          buttonBox.setVisible(false);
+          // ServicePageController.popup.hide();
+          try {
+            popUpAction("ServicePageView.fxml");
+          } catch (IOException e) {
+            e.printStackTrace();
           }
-        });
-    yesBtn.setStyle("-fx-background-color: #cdcdcd;");
-
-    JFXButton noBtn = new JFXButton("No");
-    noBtn.setPrefHeight(20);
-    noBtn.setPrefWidth(60);
-    noBtn.setId("noBtn");
-    noBtn.setButtonType(JFXButton.ButtonType.FLAT);
-    noBtn.setOnAction(e -> submitDia.close());
-    noBtn.setStyle("-fx-background-color: #cdcdcd;");
-
-    layout.setActions(yesBtn, noBtn);
-
-    submitDia.show();
+        },
+        "No",
+        () -> {});
   }
 
   public void type(ActionEvent actionEvent) {
@@ -191,5 +152,20 @@ public abstract class AbsRequest implements AllAccessible {
     ArrayList<String> longNameList =
         FDatabaseTables.getNodeTable().fetchLongName(GlobalDb.getConnection());
     locationAutoComplete.getEntries().addAll(longNameList);
+  }
+
+  @FXML
+  public void loadDialog(MouseEvent Event) {
+    dialogFactory.createOneButtonDialogWhite(
+        "More Information",
+        "All fields must be filled out before submitting"
+            + "\n"
+            + "the form. For further assistance, contact IT at"
+            + "\n"
+            + "123-456- 7890. Questions can also be sent to"
+            + "\n"
+            + "diamonddragonsIT@gmail.com. ",
+        "Close",
+        () -> {});
   }
 }

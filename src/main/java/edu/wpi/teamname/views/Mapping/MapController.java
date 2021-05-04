@@ -1589,6 +1589,7 @@ public class MapController implements AllAccessible {
   }
 
   private void resetCSV() {
+    /* ------------- OLD VERSION WITH DIALOGS ---------------------------
     if (resetOpen) return;
     resetOpen = true;
 
@@ -1638,6 +1639,13 @@ public class MapController implements AllAccessible {
     layout.setActions(subBtn, canBtn);
 
     submitDia.show();
+     */
+
+    FDatabaseTables.getNodeTable().clearTable(GlobalDb.getConnection(), "Nodes");
+    FDatabaseTables.getEdgeTable().clearTable(GlobalDb.getConnection(), "Edges");
+    FDatabaseTables.getNodeTable().populateTable(GlobalDb.getConnection(), "");
+    FDatabaseTables.getEdgeTable().populateTable(GlobalDb.getConnection(), "");
+    updateMapFromDB();
   }
 
   private void importCSV() {
