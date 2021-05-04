@@ -11,6 +11,8 @@ import edu.wpi.teamname.views.Access.AllAccessible;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -244,13 +246,26 @@ public class CovidSurveyController implements Initializable, AllAccessible {
             });
 
     RequiredFieldValidator phoneNumValid = new RequiredFieldValidator();
-    phoneNumValid.setMessage("Enter phone number");
-    phoneNumber.getValidators().add(phoneNumValid);
     phoneNumber
         .focusedProperty()
         .addListener(
             (o, oldVal, newVal) -> {
               if (!newVal) phoneNumber.validate();
+              phoneNumValid.setMessage("Enter phone number");
+            });
+    phoneNumber.getValidators().add(phoneNumValid);
+    phoneNumber
+        .textProperty()
+        .addListener(
+            new ChangeListener<String>() {
+              @Override
+              public void changed(
+                  ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                  phoneNumber.setText(newValue.replaceAll("[^\\d]", ""));
+                  phoneNumValid.setMessage("Please enter number");
+                }
+              }
             });
 
     RequiredFieldValidator emailValid = new RequiredFieldValidator();
