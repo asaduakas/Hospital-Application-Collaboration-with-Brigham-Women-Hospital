@@ -605,11 +605,6 @@ public class MapController implements AllAccessible {
 
                   Line L = new Line();
 
-                  System.out.println(NewEdge.get(0).simpXcoordProperty());
-                  System.out.println(NewEdge.get(0).simpYcoordProperty());
-                  System.out.println(NewEdge.get(1).simpXcoordProperty());
-                  System.out.println(NewEdge.get(1).simpYcoordProperty());
-
                   L.startXProperty().bind(NewEdge.get(0).simpXcoordProperty());
                   L.startYProperty().bind(NewEdge.get(0).simpYcoordProperty());
                   L.endXProperty().bind(NewEdge.get(1).simpXcoordProperty());
@@ -869,9 +864,6 @@ public class MapController implements AllAccessible {
         imageView.setX(n.getXCoord() - 10);
         imageView.setY(n.getYCoord() - 10);
         secondaryAnchor.getChildren().add(imageView);
-        // TODO: if clicked on image, take to according floor
-        // maybe get rid of old node image
-
         ScaleTransition st = new ScaleTransition(Duration.seconds(1), imageView);
         st.setByX(1.5f);
         st.setByY(1.5f);
