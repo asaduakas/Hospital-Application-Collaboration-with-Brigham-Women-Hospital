@@ -22,10 +22,31 @@ public class MapDrawerController implements Initializable {
   @FXML private JFXTextField startField;
   @FXML private JFXTextField endField;
   @FXML private JFXButton findPathButton;
-  private ObservableList<CategoryNodeInfo> parkingData =
-      FDatabaseTables.getNodeTable().getCategory(GlobalDb.getConnection(), "PAR");
+//  private ObservableList<CategoryNodeInfo> parkingData =
+//      FDatabaseTables.getNodeTable().getCategory(GlobalDb.getConnection(), "PAR");
+
   private ArrayList<String> parkingList =
       FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "PARK");
+  private ArrayList<String> elevList =
+      FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "ELEV");
+  private ArrayList<String> restroomList =
+          FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "REST");
+  private ArrayList<String> stairsList =
+          FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "STAI");
+  private ArrayList<String> departmentList =
+          FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "DEPT");
+  private ArrayList<String> labList =
+          FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "LABS");
+  private ArrayList<String> informationList =
+          FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "INFO");
+  private ArrayList<String> conferenceList =
+          FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "CONF");
+  private ArrayList<String> exitList =
+          FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "EXIT");
+  private ArrayList<String> retailList =
+          FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "RETL");
+  private ArrayList<String> serviceList =
+          FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "SERV");
 
   @Override
   public void initialize(URL url, ResourceBundle rb) {
@@ -134,6 +155,21 @@ public class MapDrawerController implements Initializable {
     for (String parkingSpace : parkingList) {
       TreeItem<String> parkingLocation = new TreeItem<String>(parkingSpace);
       parking.getChildren().add(parkingLocation);
+    }
+
+    for (String elevs : elevList) {
+      TreeItem<String> elevLocation = new TreeItem<String>(elevs);
+      elevator.getChildren().add(elevLocation);
+    }
+
+    for (String rests : restroomList) {
+      TreeItem<String> restLocation = new TreeItem<String>(rests);
+      restroom.getChildren().add(restLocation);
+    }
+
+    for (String stair : stairsList) {
+      TreeItem<String> stairLocation = new TreeItem<String>(stair);
+      stairs.getChildren().add(stairLocation);
     }
 
     root.setExpanded(true);
