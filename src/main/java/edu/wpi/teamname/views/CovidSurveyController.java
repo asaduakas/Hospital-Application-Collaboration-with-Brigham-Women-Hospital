@@ -109,24 +109,9 @@ public class CovidSurveyController implements Initializable, AllAccessible {
         popupWarningCovid(event);
       } else {
         goodBool = 1;
-        Text submitText =
-            new Text(
-                "Your COVID-19 survey is submitted." + "\n" + "Press OK to return to home screen.");
-        JFXDialogLayout layout = new JFXDialogLayout();
-        layout.setHeading(new Text("Submitted!"));
-        layout.setBody(submitText);
-        JFXDialog submitDia = new JFXDialog(stackPane1, layout, JFXDialog.DialogTransition.CENTER);
-        JFXButton noBtn = new JFXButton("OK");
-        noBtn.setPrefHeight(20);
-        noBtn.setPrefWidth(60);
-        noBtn.setId("noBtn");
-        noBtn.setButtonType(JFXButton.ButtonType.FLAT);
-        noBtn.setOnAction(e -> ControllerManager.exitPopup());
-        noBtn.setStyle("-fx-background-color: #cdcdcd;");
-
-        layout.setActions(noBtn);
-
-        submitDia.show();
+        dialogFactory.createOneButtonDialog("Submitted!",
+                "Your COVID-19 survey is submitted." + "\n" + "Press OK to return to home screen.",
+                "OK", ControllerManager::exitPopup);
       }
     }
 
