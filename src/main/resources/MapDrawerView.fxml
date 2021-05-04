@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXToggleButton?>
-<?import com.jfoenix.controls.JFXTreeTableView?>
-<?import javafx.scene.control.Label?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane prefHeight="644.0" prefWidth="263.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.teamname.views.Mapping.MapDrawerController">
    <children>
-      <JFXTreeTableView fx:id="directoryTreeTable" layoutY="174.0" prefHeight="333.0" prefWidth="263.0" />
-      <Label layoutX="21.0" layoutY="34.0" prefHeight="25.0" prefWidth="135.0" text="Start Node:" underline="true" />
-      <Label layoutX="21.0" layoutY="73.0" prefHeight="25.0" prefWidth="135.0" text="End Node:" underline="true" />
-      <JFXButton layoutX="176.0" layoutY="123.0" style="-fx-background-color: #366CDB; -fx-border-radius: 6px;" text="Find Path" textFill="WHITE" />
-      <JFXToggleButton fx:id="toggleEditor" layoutY="586.0" prefHeight="58.0" prefWidth="135.0" text="Pathfinding" />
+      <JFXButton fx:id="findPathButton" layoutX="184.0" layoutY="131.0" style="-fx-background-color: #366CDB; -fx-background-radius: 6px;" text="Find Path" textFill="WHITE" />
+      <JFXTextField fx:id="startField" layoutX="33.0" layoutY="34.0" prefHeight="25.0" prefWidth="210.0" promptText="Start Location:" />
+      <JFXTextField fx:id="endField" layoutX="33.0" layoutY="87.0" prefHeight="25.0" prefWidth="210.0" promptText="End Location:" />
+      <TreeView fx:id="directoryTreeView" layoutY="187.0" prefHeight="400.0" prefWidth="263.0" />
    </children>
 </AnchorPane>
