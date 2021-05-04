@@ -4,9 +4,11 @@ import com.jfoenix.controls.*;
 import com.jfoenix.transitions.hamburger.HamburgerSlideCloseTransition;
 import edu.wpi.teamname.App;
 import edu.wpi.teamname.Astar.*;
+import edu.wpi.teamname.Ddb.FDatabaseTables;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.Access.AllAccessible;
 import edu.wpi.teamname.views.Mapping.Popup.Edit.AddNodeController;
+import edu.wpi.teamname.views.Mapping.Popup.Edit.EditNodeController;
 import java.awt.*;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -391,12 +393,6 @@ public class MapController implements AllAccessible {
 
   private void disableListener(MouseEvent e) {}
 
-  //  public void clearMap() {
-  //    secondaryAnchor.getChildren().remove(0, secondaryAnchor.getChildren().size());
-  //    secondaryAnchor.getChildren().add(TheMap);
-  //    resetNodeSizes();
-  //  }
-
   private void clearEdges() {
     Line line = new Line(); // for comparison
     secondaryAnchor
@@ -410,6 +406,7 @@ public class MapController implements AllAccessible {
 
   private void resetData() {
     Targets.clear();
+    nodesToAlign.clear();
   }
 
   private void resetNodeSizes() {
@@ -489,8 +486,6 @@ public class MapController implements AllAccessible {
     EDGES.add(E);
   }
 
-  private void editNode() {} // TODO Implement edit nodes
-
   private void editEdge() {} // TODO Implement edit edges
 
   // _______________________________________Path Finding____________________________________________
@@ -562,14 +557,13 @@ public class MapController implements AllAccessible {
   }
 
   private void cancelListener() {
-    mainAnchor.setOnKeyPressed(
+    mapScrollPane.setOnKeyPressed(
         (KeyEvent e) -> {
           KeyCode key = e.getCode();
           if (key == KeyCode.ESCAPE) {
             resetData();
             clearMap();
             drawNodeFloor("1");
-            nodesToAlign.clear();
             System.out.println("Just cleared");
           }
         });
@@ -740,33 +734,69 @@ public class MapController implements AllAccessible {
         .setOnMouseEntered(
             (MouseEvent e) -> {
               resizeNodeUI(N, 2);
-              //              if (isEditor) {
-              //                try {
-              //                  //                  FXMLLoader temp =
-              // loadPopup("MapPopUps/AddNode.fxml");
-              //                  //                  AddNodeController popupController =
-              // temp.getController();
-              //                  //                  popupController.setMapController(this);
-              //                  //                  popupController.setNX(e.getX());
-              //                  //                  popupController.setNY(e.getY());
-              //                  FXMLLoader temp = loadPopup("MapPopUps/EditNode.fxml");
-              //                  EditNodeController editNodeController = temp.getController();
-              //                  editNodeController.setMapController(this);
-              //                  editNodeController.setTheNode(N);
-              //
-              //                } catch (IOException ioException) {
-              //                  ioException.printStackTrace();
-              //                }
-              //              }
+              if (isEditor) {
+                try {
+                  //                  FXMLLoader temp =
+                  //               loadPopup("MapPopUps/AddNode.fxml");
+                  //                  AddNodeController popupController =
+                  //               temp.getController();
+                  //                  popupController.setMapController(this);
+                  //                  popupController.setNX(e.getX());
+                  //                  popupController.setNY(e.getY());
+                  FXMLLoader temp = loadPopup("MapPopUps/EditNode.fxml");
+                  EditNodeController editNodeController = temp.getController();
+                  editNodeController.setMapController(this);
+                  editNodeController.setTheNode(N);
+
+                } catch (IOException ioException) {
+                  ioException.printStackTrace();
+                }
+              }
             });
 
     N.getI()
         .setOnMouseExited(
             (MouseEvent e) -> {
-              if (Targets.isEmpty()) resizeNodeUI(N, .5);
-              //              if (isEditor) {
-              //                this.popup.hide();
-              //              }
+              if (!Targets.contains(N.getN())) resizeNodeUI(N, .5);
+              if (isEditor) {
+                this.popup.hide();
+              }
+            });
+  }
+
+  public void setupDraggableNodeUI(NodeUI NUI) {
+
+    NUI.getI()
+        .setOnMouseDragged(
+            event -> {
+              if (isEditor) {
+                mapScrollPane.setPannable(false);
+                Double x = event.getX();
+                Double y = event.getY();
+                NUI.getI().setX(x - NUI.getI().getFitWidth() / 2);
+                NUI.getI().setY(y - NUI.getI().getFitHeight());
+                NUI.setNodeCoord(x.intValue(), y.intValue());
+                resizeNodeUI(NUI, 2);
+              }
+            });
+
+    NUI.getI()
+        .setOnMouseReleased(
+            event -> {
+              if (isEditor) {
+                Double x = event.getX();
+                Double y = event.getY();
+                GlobalDb.getTables()
+                    .getNodeTable()
+                    .updateNodeXCoord(
+                        GlobalDb.getConnection(), NUI.getN().getNodeID(), x.intValue());
+                GlobalDb.getTables()
+                    .getNodeTable()
+                    .updateNodeYCoord(
+                        GlobalDb.getConnection(), NUI.getN().getNodeID(), y.intValue());
+                mapScrollPane.setPannable(true);
+                resizeNodeUI(NUI, .5);
+              }
             });
   }
 
@@ -1117,41 +1147,5 @@ public class MapController implements AllAccessible {
             mouseLocation.set(new Point2D(x, y));
           }
         });
-  }
-
-  public void setupDraggableNodeUI(NodeUI NUI) {
-
-    NUI.getI()
-        .setOnMouseDragged(
-            event -> {
-              if (isEditor) {
-                mapScrollPane.setPannable(false);
-                Double x = event.getX();
-                Double y = event.getY();
-                NUI.getI().setX(x - NUI.getI().getFitWidth() / 2);
-                NUI.getI().setY(y - NUI.getI().getFitHeight());
-                NUI.setNodeCoord(x.intValue(), y.intValue());
-                resizeNodeUI(NUI, 2);
-              }
-            });
-
-    NUI.getI()
-        .setOnMouseReleased(
-            event -> {
-              if (isEditor) {
-                Double x = event.getX();
-                Double y = event.getY();
-                GlobalDb.getTables()
-                    .getNodeTable()
-                    .updateNodeXCoord(
-                        GlobalDb.getConnection(), NUI.getN().getNodeID(), x.intValue());
-                GlobalDb.getTables()
-                    .getNodeTable()
-                    .updateNodeYCoord(
-                        GlobalDb.getConnection(), NUI.getN().getNodeID(), y.intValue());
-                mapScrollPane.setPannable(true);
-                resizeNodeUI(NUI, .5);
-              }
-            });
   }
 }
