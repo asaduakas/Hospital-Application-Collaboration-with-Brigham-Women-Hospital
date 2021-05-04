@@ -13,16 +13,12 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 
 public class CovidSurveyController implements Initializable, AllAccessible {
 
@@ -49,23 +45,6 @@ public class CovidSurveyController implements Initializable, AllAccessible {
 
   @FXML
   public void loadDialog(MouseEvent Event) {
-    /*
-    JFXDialogLayout content = new JFXDialogLayout();
-    content.setHeading(new Text("More Information"));
-    content.setBody(
-        new Text(
-            "For assistance, contact IT at 123-456-"
-                + "\n"
-                + "7890. Further questions can be sent to"
-                + "\n"
-                + "diamonddragonsIT@gmail.com. "));
-    JFXDialog dialog = new JFXDialog(stackPane1, content, JFXDialog.DialogTransition.CENTER);
-    JFXButton closeButton = new JFXButton("Close");
-    closeButton.setOnAction(e -> dialog.close());
-    content.setActions(closeButton);
-    dialog.show();
-     */
-
     dialogFactory.createOneButtonDialogWhite(
         "More Information",
         "For assistance, contact IT at 123-456-"
@@ -79,41 +58,17 @@ public class CovidSurveyController implements Initializable, AllAccessible {
 
   @FXML
   void popupWarning(ActionEvent event) throws IOException {
-    Text header = new Text("Error");
-    header.setFont(Font.font("System", FontWeight.BOLD, 18));
-
-    JFXDialogLayout warningLayout = new JFXDialogLayout();
-    warningLayout.setHeading(header);
-    warningLayout.setBody(new Text("Please fill out the required fields."));
-    JFXDialog warningDia =
-        new JFXDialog(stackPane1, warningLayout, JFXDialog.DialogTransition.CENTER);
-    JFXButton okBtn = new JFXButton("Close");
-    okBtn.setStyle("-fx-background-color: #cdcdcd;");
-    okBtn.setOnAction(e -> warningDia.close());
-    warningLayout.setActions(okBtn);
-    warningDia.show();
+    dialogFactory.createOneButtonDialog(
+        "Error", "Please fill out the required fields.", "Close", () -> {});
   }
 
   @FXML
   void popupWarningCovid(ActionEvent event) throws IOException {
-    Text header = new Text("ATTENTION:");
-    header.setFont(Font.font("System", FontWeight.BOLD, 18));
-
-    JFXDialogLayout warningLayout = new JFXDialogLayout();
-    warningLayout.setHeading(header);
-    warningLayout.setBody(
-        new Text(
-            "You are not permitted in the hospital, please" + "\n" + "self-isolate for 14 days."));
-    JFXDialog warningDia =
-        new JFXDialog(stackPane1, warningLayout, JFXDialog.DialogTransition.CENTER);
-    JFXButton okBtn = new JFXButton("OK");
-    okBtn.setStyle("-fx-background-color: #cdcdcd;");
-    okBtn.setOnAction(e -> ControllerManager.exitPopup());
-    okBtn.setStyle("-fx-background-color: #cdcdcd;");
-
-    warningLayout.setActions(okBtn);
-
-    warningDia.show();
+    dialogFactory.createOneButtonDialog(
+        "ATTENTION:",
+        "You are not permitted in the hospital, please" + "\n" + "self-isolate for 14 days.",
+        "OK",
+        ControllerManager::exitPopup);
   }
 
   @FXML
@@ -165,24 +120,11 @@ public class CovidSurveyController implements Initializable, AllAccessible {
       popupWarningCovid(event);
     } else {
       goodBool = 1;
-      Text submitText =
-          new Text(
-              "Your COVID-19 survey is submitted." + "\n" + "Press OK to return to home screen.");
-      JFXDialogLayout layout = new JFXDialogLayout();
-      layout.setHeading(new Text("Submitted!"));
-      layout.setBody(submitText);
-      JFXDialog submitDia = new JFXDialog(stackPane1, layout, JFXDialog.DialogTransition.CENTER);
-      JFXButton noBtn = new JFXButton("OK");
-      noBtn.setPrefHeight(20);
-      noBtn.setPrefWidth(60);
-      noBtn.setId("noBtn");
-      noBtn.setButtonType(JFXButton.ButtonType.FLAT);
-      noBtn.setOnAction(e -> ControllerManager.exitPopup());
-      noBtn.setStyle("-fx-background-color: #cdcdcd;");
-
-      layout.setActions(noBtn);
-
-      submitDia.show();
+      dialogFactory.createOneButtonDialog(
+          "Submitted!",
+          "Your COVID-19 survey is submitted." + "\n" + "Press OK to return to home screen.",
+          "OK",
+          ControllerManager::exitPopup);
     }
     submitPage(event);
   }
@@ -253,39 +195,12 @@ public class CovidSurveyController implements Initializable, AllAccessible {
 
   @FXML
   void cancelPage(ActionEvent event) throws IOException {
-    Text header = new Text("Exit form?");
-    header.setFont(Font.font("System", FontWeight.BOLD, 18));
-
-    JFXDialogLayout layout = new JFXDialogLayout();
-    layout.setHeading(header);
-    layout.setBody(new Text("This will bring you back to the home" + "\n" + "page."));
-    JFXDialog submitDia = new JFXDialog(stackPane1, layout, JFXDialog.DialogTransition.CENTER);
-
-    JFXButton yesBtn = new JFXButton("Yes");
-    yesBtn.setPrefHeight(20);
-    yesBtn.setPrefWidth(60);
-    yesBtn.setId("yesBtn");
-    yesBtn.setButtonType(JFXButton.ButtonType.FLAT);
-    yesBtn.setOnAction(
-        new EventHandler<ActionEvent>() {
-          @Override
-          public void handle(ActionEvent event) {
-            submitDia.close();
-            ControllerManager.exitPopup();
-          }
-        });
-    yesBtn.setStyle("-fx-background-color: #cdcdcd;");
-
-    JFXButton noBtn = new JFXButton("No");
-    noBtn.setPrefHeight(20);
-    noBtn.setPrefWidth(60);
-    noBtn.setId("noBtn");
-    noBtn.setButtonType(JFXButton.ButtonType.FLAT);
-    noBtn.setOnAction(e -> submitDia.close());
-    noBtn.setStyle("-fx-background-color: #cdcdcd;");
-
-    layout.setActions(yesBtn, noBtn);
-
-    submitDia.show();
+    dialogFactory.createTwoButtonDialog(
+        "Exit form?",
+        "This will bring you back to the home" + "\n" + "page.",
+        "Yes",
+        ControllerManager::exitPopup,
+        "No",
+        () -> {});
   }
 }
