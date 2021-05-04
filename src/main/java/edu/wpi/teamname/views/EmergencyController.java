@@ -1,8 +1,6 @@
 package edu.wpi.teamname.views;
 
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDialog;
-import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.base.IFXLabelFloatControl;
 import com.jfoenix.skins.JFXTextFieldSkin;
@@ -13,21 +11,23 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.layout.StackPane;
-import javafx.scene.text.Text;
 
 public class EmergencyController implements AllAccessible {
   @FXML JFXButton yesBtn;
   @FXML JFXButton noBtn;
   @FXML StackPane stackPane;
 
+  private DialogFactory dialogFactory;
+
   @FXML
   public void initialize() {
     stackPane.setPickOnBounds(false);
+    dialogFactory = new DialogFactory(stackPane);
   }
 
   @FXML
   public void popupYes() throws IOException {
-    popupWarning("HELP IS ON YOUR WAY!");
+    dialogFactory.createOneButtonDialog("", "HELP IS ON YOUR WAY!", "OK", this::closePopup);
   }
 
   @FXML
@@ -38,23 +38,6 @@ public class EmergencyController implements AllAccessible {
   public void closePopup() {
     if (HomeController.mainButtons != null) HomeController.mainButtons.setVisible(true);
     ControllerManager.exitPopup();
-  }
-
-  void popupWarning(String text) throws IOException {
-
-    JFXDialogLayout warningLayout = new JFXDialogLayout();
-    warningLayout.setBody(new Text(text));
-    JFXDialog warningDia =
-        new JFXDialog(stackPane, warningLayout, JFXDialog.DialogTransition.CENTER);
-    JFXButton okBtn = new JFXButton("Close");
-    okBtn.setStyle("-fx-background-color: #cdcdcd;");
-    okBtn.setOnAction(
-        event -> {
-          closePopup();
-          warningDia.close();
-        });
-    warningLayout.setActions(okBtn);
-    warningDia.show();
   }
 
   <T extends JFXTextField & IFXLabelFloatControl> void validationPaneFormatter(T jfxTextField) {
