@@ -2,6 +2,7 @@ package edu.wpi.teamname.Ddb;
 
 import edu.wpi.teamname.Astar.Node;
 import java.io.File;
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -228,7 +229,22 @@ public class NodesTable extends AbsTables {
     }
   }
 
-  public void getCategory(Connection conn, String id) {}
+  public ArrayList<String> getCategoryTry(Connection conn, String cate) {
+    ArrayList<String> category = new ArrayList<>();
+    try {
+      PreparedStatement stmt =
+          conn.prepareStatement("SELECT longName FROM Nodes WHERE nodeType = ?");
+      stmt.setString(1, cate);
+
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        category.add(rs.getString("longName"));
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    return category;
+  }
 
   public void updateNodeXCoord(Connection conn, String nID, int xc) {
     try {
@@ -451,5 +467,18 @@ public class NodesTable extends AbsTables {
       e.printStackTrace();
     }
     return graphInfo;
+  }
+
+  public void writeNodesTable(Connection connection, String nodesPath) {
+    try {
+      writeTableToCSV(
+          connection,
+          "Nodes",
+          nodesPath,
+          8,
+          "nodeID,xcoord,ycoord,floor,building,nodeType,longName,shortName");
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 }

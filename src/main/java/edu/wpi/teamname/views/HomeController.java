@@ -3,6 +3,7 @@ package edu.wpi.teamname.views;
 import com.jfoenix.controls.JFXButton;
 import edu.wpi.teamname.App;
 import edu.wpi.teamname.views.Access.*;
+import edu.wpi.teamname.views.Mapping.MapScrollPane;
 import java.io.IOException;
 import java.util.List;
 import javafx.application.Application;
@@ -84,6 +85,9 @@ public class HomeController extends Application implements AllAccessible {
               new SceneSizeChangeListener(scene, root, childrenList) {
                 @Override
                 public void changeChildren(List<Node> nodeList) {
+                  for (Node node : nodeList)
+                    if (node instanceof MapScrollPane)
+                      ((MapScrollPane) node).updateScaleRange(); // Map scrollpane scaling
                   changeChildrenMapView(childrenList);
                 }
               };
