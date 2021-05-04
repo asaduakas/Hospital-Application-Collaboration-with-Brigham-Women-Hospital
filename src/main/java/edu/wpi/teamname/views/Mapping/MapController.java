@@ -301,8 +301,8 @@ public class MapController implements AllAccessible {
   }
 
   private void initializeFloorList() {
-    ChooseFloorBtn.setButtonType(JFXButton.ButtonType.RAISED);
-    ChooseFloorBtn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 20px");
+    //    ChooseFloorBtn.setButtonType(JFXButton.ButtonType.RAISED);
+    //    ChooseFloorBtn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 20px");
 
     JFXButton Floor1Btn = new JFXButton("Floor 1");
     Floor1Btn.setButtonType(JFXButton.ButtonType.RAISED);
@@ -340,16 +340,13 @@ public class MapController implements AllAccessible {
         });
 
     JFXNodesList nodeList = new JFXNodesList();
-    nodeList.addAnimatedNode(ChooseFloorBtn);
+    nodeList.addAnimatedNode(floorBtn);
     nodeList.addAnimatedNode(FloorL2Btn);
     nodeList.addAnimatedNode(FloorL1Btn);
     nodeList.addAnimatedNode(Floor1Btn);
     nodeList.addAnimatedNode(Floor2Btn);
     nodeList.addAnimatedNode(Floor3Btn);
     nodeList.setSpacing(20d);
-    nodeList.setLayoutX(280);
-    nodeList.setLayoutY(10);
-
     mainAnchor.getChildren().add(nodeList);
   }
 
