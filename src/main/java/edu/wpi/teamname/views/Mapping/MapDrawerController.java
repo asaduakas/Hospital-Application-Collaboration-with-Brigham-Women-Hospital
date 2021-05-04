@@ -51,7 +51,6 @@ public class MapDrawerController implements Initializable {
   //  private ObservableList<CategoryNodeInfo> parkingData =
   //      FDatabaseTables.getNodeTable().getCategory(GlobalDb.getConnection(), "PAR");
 
-
   private MapController mapController;
 
   private LinkedList<String> nodesClicked = new LinkedList<>();
@@ -584,8 +583,6 @@ public class MapDrawerController implements Initializable {
       }
     }
   }
-
-
 
   // --------------------------------Text Direction-----------------------------------------
 
