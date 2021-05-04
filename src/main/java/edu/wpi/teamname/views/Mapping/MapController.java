@@ -69,6 +69,8 @@ public class MapController implements AllAccessible {
   public static final Image RETL = new Image("Images/retailpin.png");
   public static final Image SERV = new Image("Images/service.png");
   private Image up = new Image("Images/up-arrow.png");
+  private Image endImage = new Image("Images/endingIcon_white.png");
+  private Image startImage = new Image("Images/walkingStartIcon_black.png");
 
   @FXML private AnchorPane mainAnchor;
   @FXML private JFXComboBox FloorOption;
@@ -375,6 +377,34 @@ public class MapController implements AllAccessible {
         }
       }
     }
+
+    // Making different icons for starting and ending nodes
+
+    NodeUI startNode = getNodeUIByID(thePath.get(0).getStartNodeID());
+    ImageView startPin = new ImageView(startImage);
+    startPin.setFitWidth(45);
+    startPin.setFitHeight(45);
+    startPin.setX(startNode.getSimpXcoord() - 22.5);
+    startPin.setY(startNode.getSimpYcoord() - 22.5);
+
+    NodeUI endNode = getNodeUIByID(thePath.get(thePath.size() - 1).getEndNodeID());
+    ImageView endPin = new ImageView(endImage);
+    endPin.setFitWidth(30);
+    endPin.setFitHeight(30);
+    endPin.setX(endNode.getSimpXcoord() - 15);
+    endPin.setY(endNode.getSimpYcoord() - 15);
+
+    if (startNode.getN().getFloor().equals(currentFloor)) {
+      secondaryAnchor.getChildren().add(startPin);
+    }
+    if (endNode.getN().getFloor().equals(currentFloor)) {
+      secondaryAnchor.getChildren().add(endPin);
+      scaleAnimation(
+          secondaryAnchor.getChildren().get(secondaryAnchor.getChildren().indexOf(endPin)));
+    }
+
+    animateEdges();
+    animateElevators();
   }
 
   public void resizeNodeUI(NodeUI N, double factor) {
@@ -513,8 +543,7 @@ public class MapController implements AllAccessible {
       Targets.clear();
     } else {
       showPath();
-      animateEdges();
-      animateElevators();
+      algorithm.multiSearch(initialData, Targets).printPathEdges();
     }
   }
 
@@ -783,32 +812,87 @@ public class MapController implements AllAccessible {
 
       final double maxOffset = line.getStrokeDashArray().stream().reduce(0d, (a, b) -> a + b);
 
-      Timeline timeline =
-          new Timeline(
-              new KeyFrame(
-                  Duration.ZERO,
-                  new KeyValue(line.strokeDashOffsetProperty(), 0, Interpolator.LINEAR)),
-              new KeyFrame(
-                  Duration.seconds(2),
-                  new KeyValue(line.strokeDashOffsetProperty(), maxOffset, Interpolator.LINEAR)));
+      Timeline timeline;
+      System.out.println(edgeUi.getE().getStartNodeID());
+      System.out.println(e.getStartNodeID().equals(edgeUi.getE().getStartNodeID()));
+      if (e.getStartNodeID().equals(edgeUi.getE().getStartNodeID())) {
+        timeline =
+            new Timeline(
+                new KeyFrame(
+                    Duration.seconds(2),
+                    new KeyValue(line.strokeDashOffsetProperty(), 0, Interpolator.LINEAR)),
+                new KeyFrame(
+                    Duration.ZERO,
+                    new KeyValue(line.strokeDashOffsetProperty(), maxOffset, Interpolator.LINEAR)));
+      } else {
+        timeline =
+            new Timeline(
+                new KeyFrame(
+                    Duration.seconds(2),
+                    new KeyValue(line.strokeDashOffsetProperty(), maxOffset, Interpolator.LINEAR)),
+                new KeyFrame(
+                    Duration.ZERO,
+                    new KeyValue(line.strokeDashOffsetProperty(), 0, Interpolator.LINEAR)));
+      }
+
       timeline.setCycleCount(Timeline.INDEFINITE);
       timeline.play();
     }
   }
 
+  private void goUp() {
+    String temp = null;
+    switch (currentFloor) {
+      case "1":
+        temp = "2";
+        break;
+      case "2":
+        temp = "3";
+        break;
+      default:
+        temp = "1";
+        break;
+    }
+    switchFloor(temp);
+  }
+
+  private void goDown() {
+    String temp = null;
+    switch (currentFloor) {
+      case "3":
+        temp = "2";
+        break;
+      case "2":
+        temp = "1";
+        break;
+      default:
+        temp = "1";
+        break;
+    }
+    switchFloor(temp);
+  }
+
   @FXML
   private void animateElevators() {
-    for (Node n : Targets) {
-      if (n.getNodeType().equals("ELEV")) {
-        ImageView empty = new ImageView();
+    for (int i = 0; i < thePath.size() - 1; i++) {
+      Node n = initialData.getNodeByID(thePath.get(i).getStartNodeID());
+      Node nodeNext = initialData.getNodeByID(thePath.get(i + 1).getStartNodeID());
+
+      if (n.getNodeType().equals("ELEV") && n.getFloor().equals(currentFloor)) {
         ImageView imageView = new ImageView(up);
         imageView.setFitHeight(20);
         imageView.setFitWidth(20);
         imageView.setX(n.getXCoord() - 10);
         imageView.setY(n.getYCoord() - 10);
-        secondaryAnchor.getChildren().add(imageView);
-        // TODO: if clicked on image, take to according floor
-        // maybe get rid of old node image
+        ;
+
+        if (n.compareFloor(nodeNext) >= 1) {
+          secondaryAnchor.getChildren().add(imageView);
+          imageView.setOnMousePressed(event -> goDown());
+        } else if (n.compareFloor(nodeNext) <= -1) {
+          secondaryAnchor.getChildren().add(imageView);
+          imageView.setOnMousePressed(event -> goUp());
+        }
 
         ScaleTransition st = new ScaleTransition(Duration.seconds(1), imageView);
         st.setByX(1.5f);
@@ -818,6 +902,16 @@ public class MapController implements AllAccessible {
         st.play();
       }
     }
+  }
+
+  @FXML
+  private void scaleAnimation(javafx.scene.Node n) {
+    ScaleTransition st = new ScaleTransition(Duration.seconds(1), n);
+    st.setByX(1.2f);
+    st.setByY(1.2f);
+    st.setCycleCount(Animation.INDEFINITE);
+    st.setAutoReverse(true);
+    st.play();
   }
 
   // ___________________________________Getter and Setter_____________________________________
