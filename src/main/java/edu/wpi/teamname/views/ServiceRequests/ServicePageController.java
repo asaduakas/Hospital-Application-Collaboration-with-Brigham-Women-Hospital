@@ -63,12 +63,12 @@ public class ServicePageController implements AllAccessible, Initializable {
           Pane root = (Pane) fxmlLoader.getRoot();
           JFXComboBox staff = (JFXComboBox) root.getChildren().get(5);
 
-          if (userCategory.equalsIgnoreCase("Guest") || userCategory.equalsIgnoreCase("patient")) {
-            staff.setDisable(true);
-            staff.setVisible(false);
-          } else if (userCategory.equalsIgnoreCase("admin")) {
+          if (userCategory.equalsIgnoreCase("admin")) {
             staff.setDisable(false);
             staff.setVisible(true);
+          } else {
+            staff.setDisable(true);
+            staff.setVisible(false);
           }
           root.setStyle("-fx-background-color: White");
         };
