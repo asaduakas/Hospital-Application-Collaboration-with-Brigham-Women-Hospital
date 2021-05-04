@@ -741,11 +741,13 @@ public class MapController implements AllAccessible {
                   isEditStart = true;
                   isEditEnd = false;
                   tempEUI = E;
+                  E.getL().setStroke(Color.ROYALBLUE);
                 }
                 if (endPressed.get()) {
                   isEditEnd = true;
                   isEditStart = false;
                   tempEUI = E;
+                  E.getL().setStroke(Color.ORANGERED);
                 }
               }
             });
@@ -753,13 +755,13 @@ public class MapController implements AllAccessible {
     E.getL()
         .setOnMouseEntered(
             (MouseEvent e) -> {
-              E.getL().setStroke(Color.DARKORANGE);
+              if (!isEditStart && !isEditEnd) E.getL().setStroke(Color.DARKORANGE);
             });
 
     E.getL()
         .setOnMouseExited(
             (MouseEvent e) -> {
-              E.getL().setStroke(Color.BLACK);
+              if (!isEditStart && !isEditEnd) E.getL().setStroke(Color.BLACK);
             });
   }
 
@@ -1015,11 +1017,13 @@ public class MapController implements AllAccessible {
 
         if (isEditStart) {
           editEdgeStart(tempEUI.getE(), N.getN());
+          tempEUI.getL().setStroke(Color.BLACK);
           tempEUI = null;
           isEditStart = false;
         }
         if (isEditEnd) {
           editEdgeEnd(tempEUI.getE(), N.getN());
+          tempEUI.getL().setStroke(Color.BLACK);
           tempEUI = null;
           isEditEnd = false;
         }
