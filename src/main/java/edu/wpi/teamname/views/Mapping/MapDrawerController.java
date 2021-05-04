@@ -81,9 +81,14 @@ public class MapDrawerController implements Initializable {
     if (node instanceof Text || (node instanceof TreeCell && ((TreeCell) node).getText() != null)) {
       String name =
           (String) ((TreeItem) directoryTreeView.getSelectionModel().getSelectedItem()).getValue();
-      System.out.println("Node click: " + name);
+      System.out.println("Nodsssssssssssssssssssssssssssssssse click: " + name);
       String type = "PARK";
       switch (name) {
+        case "Directory":
+          System.out.println(mapController.getCurrentFloor());
+          mapController.drawNodeFloor(mapController.getCurrentFloor());
+          type = "ALL";
+          break;
         case "Elevator":
           type = "ELEV";
           break;
@@ -132,10 +137,14 @@ public class MapDrawerController implements Initializable {
   private void nodeRedrawing(String type) {
     mapController.clearMap();
 
-    for (NodeUI NUI : mapController.NODES) {
-      if (NUI.getN().getFloor().equals(mapController.currentFloor)
-          && (NUI.getN().getNodeType().equals(type))) {
-        mapController.addNodeUI(NUI);
+    if (type == "ALL") {
+      mapController.drawNodeFloor(mapController.getCurrentFloor());
+    } else {
+      for (NodeUI NUI : mapController.NODES) {
+        if (NUI.getN().getFloor().equals(mapController.currentFloor)
+            && (NUI.getN().getNodeType().equals(type))) {
+          mapController.addNodeUI(NUI);
+        }
       }
     }
   }

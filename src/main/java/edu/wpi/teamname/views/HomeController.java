@@ -1,6 +1,8 @@
 package edu.wpi.teamname.views;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXNodesList;
+import com.jfoenix.controls.JFXToggleButton;
 import edu.wpi.teamname.App;
 import edu.wpi.teamname.views.Access.*;
 import edu.wpi.teamname.views.Mapping.MapScrollPane;
@@ -99,16 +101,16 @@ public class HomeController extends Application implements AllAccessible {
 
   public void changeChildrenMapView(List<Node> nodeList) {
 
-    //    JFXToggleButton mapEditorBtn = (JFXToggleButton) nodeList.get(4);
-    //
-    //    JFXButton exitBtn = (JFXButton) nodeList.get(5);
-    //    exitBtn.setLayoutY(
-    //        App.getPrimaryStage().getScene().getWindow().getHeight() - exitBtn.getHeight() - 60);
-    //    exitBtn.setLayoutX(App.getPrimaryStage().getScene().getWidth() - exitBtn.getWidth() - 50);
-    //
-    //    JFXNodesList btns = (JFXNodesList) nodeList.get(6);
-    //    btns.setLayoutY(20);
-    //    btns.setLayoutX(App.getPrimaryStage().getScene().getWidth() - btns.getWidth() - 50);
+    JFXToggleButton mapEditorBtn = (JFXToggleButton) nodeList.get(4);
+
+    JFXButton exitBtn = (JFXButton) nodeList.get(5);
+    exitBtn.setLayoutY(
+        App.getPrimaryStage().getScene().getWindow().getHeight() - exitBtn.getHeight() - 60);
+    exitBtn.setLayoutX(App.getPrimaryStage().getScene().getWidth() - exitBtn.getWidth() - 50);
+
+    JFXNodesList btns = (JFXNodesList) nodeList.get(6);
+    btns.setLayoutY(20);
+    btns.setLayoutX(App.getPrimaryStage().getScene().getWidth() - btns.getWidth() - 50);
   }
 
   @FXML
