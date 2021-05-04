@@ -89,7 +89,7 @@ public class MapDrawerController implements Initializable {
     directoryTreeView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEventHandle);
 
     ArrayList<String> longNames =
-        FDatabaseTables.getNodeTable().fetchLongName(GlobalDb.getConnection());
+        FDatabaseTables.getNodeTable().fetchLongNameNoHall(GlobalDb.getConnection());
     String[] str = {"Hi", "Hello", "adkfljafiowe"};
 
     startField
@@ -99,8 +99,14 @@ public class MapDrawerController implements Initializable {
               if (startGrid.getChildren().size() > 1) {
                 startGrid.getChildren().remove(1);
               }
-              startGrid.add(longNameMenu(newValue, longNames), 0, 1);
-              endGrid.setVisible(startField.getText().isEmpty());
+              startGrid.add(longNameMenu(newValue, longNames, startField), 0, 1);
+              endGrid.setVisible(
+                  startField.getText().isEmpty()
+                      || startField.getText().length() > 8
+                      || startField.getText().equals("Cafe"));
+              System.out.println(
+                  "this is the size of the menu "
+                      + longNameMenu(newValue, longNames, startField).getChildren().size());
             });
 
     endField
@@ -110,7 +116,7 @@ public class MapDrawerController implements Initializable {
               if (endGrid.getChildren().size() > 1) {
                 endGrid.getChildren().remove(1);
               }
-              endGrid.add(longNameMenu(newValue, longNames), 0, 1);
+              endGrid.add(longNameMenu(newValue, longNames, endField), 0, 1);
             });
 
     algoVersion.getItems().addAll("A*", "BFS", "DFS", "Dijkstra");
@@ -127,15 +133,23 @@ public class MapDrawerController implements Initializable {
             });
   }
 
-  public static VBox longNameMenu(String str, ArrayList<String> list) {
+  public static VBox longNameMenu(String str, ArrayList<String> list, JFXTextField textField) {
     VBox nameMenu = new VBox();
     nameMenu.setStyle(
         "-fx-background-color: #ffffff; -fx-border-color: #000000; -fx-border-width: 1");
     nameMenu.setAlignment(Pos.CENTER);
-
     for (String hmm : list) {
       if (!str.replace(" ", "").isEmpty() && hmm.toUpperCase().contains(str.toUpperCase())) {
         Label text = new Label(hmm);
+        text.setOnMouseClicked(
+            new EventHandler<MouseEvent>() {
+              @Override
+              public void handle(MouseEvent event) {
+                textField.setText(text.getText());
+                nameMenu.setVisible(false);
+                nameMenu.setDisable(true);
+              }
+            });
         nameMenu.getChildren().add(text);
       }
       if (nameMenu.getChildren().size() > 5) {
