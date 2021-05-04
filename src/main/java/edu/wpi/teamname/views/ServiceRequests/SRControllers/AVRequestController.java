@@ -35,12 +35,14 @@ public class AVRequestController extends AbsRequest
   @FXML
   public void loadDialog(MouseEvent Event) {
     JFXDialogLayout content = new JFXDialogLayout();
-    content.setHeading(new Text("More Information"));
+    content.setHeading(new Text("Need Help?"));
     content.setBody(
         new Text(
-            "For assistance, contact IT at 123-456-"
+            "All fields must be filled out before submitting"
                 + "\n"
-                + "7890. Further questions can be sent to"
+                + "the form. For further assistance, contact IT at"
+                + "\n"
+                + "123-456- 7890. Questions can also be sent to"
                 + "\n"
                 + "diamonddragonsIT@gmail.com. "));
     JFXDialog dialog = new JFXDialog(stackPane1, content, JFXDialog.DialogTransition.CENTER);

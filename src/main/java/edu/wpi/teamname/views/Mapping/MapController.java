@@ -7,6 +7,7 @@ import edu.wpi.teamname.Astar.*;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.Access.AllAccessible;
 import edu.wpi.teamname.views.Mapping.Popup.Edit.AddNodeController;
+import edu.wpi.teamname.views.Mapping.Popup.Edit.EditNodeController;
 import java.awt.*;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -287,14 +288,17 @@ public class MapController implements AllAccessible {
     nodeList.addAnimatedNode(Floor1Btn);
     nodeList.addAnimatedNode(Floor2Btn);
     nodeList.addAnimatedNode(Floor3Btn);
+    ChooseFloorBtn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 20px");
     nodeList.setSpacing(20d);
+    nodeList.setLayoutX(280);
+    nodeList.setLayoutY(10);
 
     mainAnchor.getChildren().add(nodeList);
   }
 
   // _______________________________________Draw________________________________________
 
-  private void addNodeUI(NodeUI NUI) {
+  public void addNodeUI(NodeUI NUI) {
     secondaryAnchor.getChildren().add(NUI.getI());
   }
 
@@ -320,11 +324,12 @@ public class MapController implements AllAccessible {
     }
   }
 
-  private void clearMap() {
+  public void clearMap() {
     secondaryAnchor.getChildren().removeIf(n -> (!(n instanceof ImageView)));
+    resetNodeSizes();
   }
 
-  private void switchFloor(String floor) {
+  public void switchFloor(String floor) {
     clearMap();
     switch (floor) {
       case "2":
@@ -386,6 +391,12 @@ public class MapController implements AllAccessible {
 
   private void disableListener(MouseEvent e) {}
 
+//  public void clearMap() {
+//    secondaryAnchor.getChildren().remove(0, secondaryAnchor.getChildren().size());
+//    secondaryAnchor.getChildren().add(TheMap);
+//    resetNodeSizes();
+//  }
+
   private void clearEdges() {
     Line line = new Line(); // for comparison
     secondaryAnchor
@@ -409,6 +420,7 @@ public class MapController implements AllAccessible {
       N.getI().setY(N.getN().getYCoord() - N.getI().getFitHeight());
     }
   }
+
   // _______________________________________EDITOR FEATURES________________________________________
 
   private void deleteNode(NodeUI N) {

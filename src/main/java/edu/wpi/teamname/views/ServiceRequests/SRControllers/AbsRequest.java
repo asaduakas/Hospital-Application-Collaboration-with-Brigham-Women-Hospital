@@ -103,11 +103,11 @@ public abstract class AbsRequest implements AllAccessible {
           @Override
           public void handle(ActionEvent event) {
             // ServicePageController.popup.hide();
-            try {
-              popUpAction("ServicePageView.fxml");
-            } catch (IOException e) {
-              e.printStackTrace();
-            }
+            //            try {
+            //              popUpAction("ServicePageView.fxml");
+            //            } catch (IOException e) {
+            //              e.printStackTrace();
+            //            }
             warningDia.close();
           }
         });
