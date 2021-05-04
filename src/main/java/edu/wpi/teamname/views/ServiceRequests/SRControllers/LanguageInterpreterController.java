@@ -22,7 +22,7 @@ public class LanguageInterpreterController extends AbsRequest
     implements Initializable, EmployeeAccessible, IRequest {
 
   @FXML private JFXComboBox<String> staffAssigned;
-  @FXML private JFXTextField languageSpoken;
+  @FXML private JFXComboBox<String> languageSpoken;
   @FXML private JFXDatePicker datePicker;
   @FXML private JFXTimePicker timePicker;
   @FXML public static Popup popup;
@@ -40,9 +40,11 @@ public class LanguageInterpreterController extends AbsRequest
     content.setHeading(new Text("More Information"));
     content.setBody(
         new Text(
-            "For assistance, contact IT at 123-456-"
+            "All fields must be filled out before submitting"
                 + "\n"
-                + "7890. Further questions can be sent to"
+                + "the form. For further assistance, contact IT at"
+                + "\n"
+                + "123-456- 7890. Questions can also be sent to"
                 + "\n"
                 + "diamonddragonsIT@gmail.com. "));
     JFXDialog dialog = new JFXDialog(stackPane1, content, JFXDialog.DialogTransition.CENTER);
@@ -70,8 +72,7 @@ public class LanguageInterpreterController extends AbsRequest
                 .or(super.contactInfo.textProperty().isEmpty())
                 .or(datePicker.valueProperty().isNull())
                 .or(timePicker.valueProperty().isNull())
-                .or(super.locationBox.valueProperty().isNull())
-                .or(languageSpoken.textProperty().isEmpty()));
+                .or(super.locationBox.valueProperty().isNull()));
 
     if (super.submitButton.isDisabled()) {
       popupWarning(event);
@@ -135,7 +136,7 @@ public class LanguageInterpreterController extends AbsRequest
               super.contactInfo.getText(),
               super.locationBox.getValue(),
               staffAssigned.getValue(),
-              languageSpoken.getText(),
+              languageSpoken.getValue(),
               datePicker.getValue());
     }
   }
@@ -198,5 +199,9 @@ public class LanguageInterpreterController extends AbsRequest
         FDatabaseTables.getNodeTable().fetchLongName(GlobalDb.getConnection());
     longNameList.sort(String::compareToIgnoreCase);
     locationBox.getItems().addAll(longNameList);
+
+    languageSpoken
+        .getItems()
+        .addAll("Chinese", "French", "German", "Italian", "Spanish", "Portuguese");
   }
 }

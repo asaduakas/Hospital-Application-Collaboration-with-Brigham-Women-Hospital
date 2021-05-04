@@ -57,10 +57,7 @@
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor></JFXDatePicker>
-                  <JFXTextField fx:id="languageSpoken" prefHeight="25.0" prefWidth="292.0" promptText="Language Spoken:" style="-fx-font-size: 14;">
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor></JFXTextField>
+                  <JFXComboBox fx:id="languageSpoken" prefHeight="25.0" prefWidth="310.0" promptText="Language Spoken:" style="-fx-font-size: 14;" />
                     </children>
                     <padding>
                         <Insets right="20.0" />

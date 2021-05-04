@@ -227,12 +227,6 @@ public class MapDrawerController implements Initializable {
         };
 
     directoryTreeView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEventHandle);
-
-    parking.addEventHandler(
-        MouseEvent.MOUSE_ENTERED,
-        (e) -> {
-          System.out.println("doesnt work");
-        });
   }
 
   private void handleMouseClicked(MouseEvent event) {
