@@ -4,10 +4,12 @@ import com.jfoenix.controls.*;
 import com.jfoenix.transitions.hamburger.HamburgerSlideCloseTransition;
 import edu.wpi.teamname.App;
 import edu.wpi.teamname.Astar.*;
+import edu.wpi.teamname.Ddb.FDatabaseTables;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.Access.AllAccessible;
 import edu.wpi.teamname.views.Mapping.Popup.Edit.AddNodeController;
 import java.awt.*;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
@@ -34,6 +36,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Popup;
 import javafx.util.Duration;
 
@@ -81,6 +84,7 @@ public class MapController implements AllAccessible {
   @FXML private JFXHamburger mapHam;
   @FXML private JFXDrawer mapDrawer;
   @FXML private JFXToggleButton toggleEditor;
+  @FXML private StackPane stackPane;
 
   @FXML
   private void initialize() {
@@ -301,10 +305,12 @@ public class MapController implements AllAccessible {
   // _______________________________________Draw________________________________________
 
   public void addNodeUI(NodeUI NUI) {
+    if (secondaryAnchor.getChildren().contains(NUI.getI())) return;
     secondaryAnchor.getChildren().add(NUI.getI());
   }
 
   private void addEdgeUI(EdgeUI EUI) {
+    if (secondaryAnchor.getChildren().contains(EUI.getL())) return;
     secondaryAnchor.getChildren().add(EUI.getL());
   }
 
@@ -420,12 +426,6 @@ public class MapController implements AllAccessible {
   // ----------------------------------------RESET-----------------------------------------------
 
   private void disableListener(MouseEvent e) {}
-
-  //  public void clearMap() {
-  //    secondaryAnchor.getChildren().remove(0, secondaryAnchor.getChildren().size());
-  //    secondaryAnchor.getChildren().add(TheMap);
-  //    resetNodeSizes();
-  //  }
 
   private void clearEdges() {
     Line line = new Line(); // for comparison
@@ -591,7 +591,7 @@ public class MapController implements AllAccessible {
   }
 
   private void cancelListener() {
-    mainAnchor.setOnKeyPressed(
+    mapScrollPane.setOnKeyPressed(
         (KeyEvent e) -> {
           KeyCode key = e.getCode();
           if (key == KeyCode.ESCAPE) {
@@ -600,6 +600,18 @@ public class MapController implements AllAccessible {
             drawNodeFloor("1");
             nodesToAlign.clear();
             System.out.println("Just cleared");
+          }
+          if (!isEditor) return;
+          switch (key) {
+            case R:
+              resetCSV();
+              break;
+            case I:
+              importCSV();
+              break;
+            case E:
+              exportCSV();
+              break;
           }
         });
   }
@@ -1247,5 +1259,121 @@ public class MapController implements AllAccessible {
                 resizeNodeUI(NUI, .5);
               }
             });
+  }
+
+  /*------------------------  CSV buttons ----------------------------------*/
+
+  boolean resetOpen = false;
+
+  private void updateMapFromDB() {
+    initialData = new RoomGraph(GlobalDb.getConnection());
+    NODES.clear();
+    EDGES.clear();
+    initializeNodes();
+    initializeEdges();
+    switchFloor(currentFloor); // Redraw current floor
+  }
+
+  private void resetCSV() {
+    if (resetOpen) return;
+    resetOpen = true;
+
+    // Creating a vertical box and adding textFields
+    Text header = new Text("Are you sure you want to reset CSV?");
+    header.setFont(javafx.scene.text.Font.font("System", FontWeight.BOLD, 18));
+
+    JFXDialogLayout layout = new JFXDialogLayout();
+    layout.setHeading(header);
+    JFXDialog submitDia = new JFXDialog(stackPane, layout, JFXDialog.DialogTransition.CENTER);
+
+    // Creating the Submit Button
+    JFXButton subBtn = new JFXButton("Submit");
+    subBtn.setPrefHeight(20);
+    subBtn.setPrefWidth(60);
+    subBtn.setId("subBtn");
+    subBtn.setButtonType(JFXButton.ButtonType.FLAT);
+    subBtn.setOnAction(
+        new EventHandler<ActionEvent>() {
+          @Override
+          public void handle(ActionEvent event) {
+            // option
+            FDatabaseTables.getNodeTable().clearTable(GlobalDb.getConnection(), "Nodes");
+            FDatabaseTables.getEdgeTable().clearTable(GlobalDb.getConnection(), "Edges");
+            FDatabaseTables.getNodeTable().populateTable(GlobalDb.getConnection(), "");
+            FDatabaseTables.getEdgeTable().populateTable(GlobalDb.getConnection(), "");
+            updateMapFromDB();
+            submitDia.close();
+            resetOpen = false;
+          }
+        });
+    subBtn.setStyle("-fx-background-color: #cdcdcd;");
+
+    // Creating the Cancel Button
+    JFXButton canBtn = new JFXButton("Cancel");
+    canBtn.setPrefHeight(20);
+    canBtn.setPrefWidth(60);
+    canBtn.setId("canBtn");
+    canBtn.setButtonType(JFXButton.ButtonType.FLAT);
+    canBtn.setOnAction(
+        e -> {
+          submitDia.close();
+          resetOpen = false;
+        });
+    canBtn.setStyle("-fx-background-color: #cdcdcd;");
+
+    layout.setActions(subBtn, canBtn);
+
+    submitDia.show();
+  }
+
+  private void importCSV() {
+    FileChooser nodeChooser = new FileChooser();
+    nodeChooser.setTitle("Import nodes");
+    nodeChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV files", "*.csv"));
+    File selectedNodesFile =
+        nodeChooser.showOpenDialog(App.getPrimaryStage().getScene().getWindow());
+    if (selectedNodesFile == null) return;
+
+    FileChooser edgeChooser = new FileChooser();
+    edgeChooser.setTitle("Import edges");
+    edgeChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV files", "*.csv"));
+    File selectedEdgesFile =
+        edgeChooser.showOpenDialog(App.getPrimaryStage().getScene().getWindow());
+    if (selectedEdgesFile == null) return;
+
+    String _nodesPath = selectedNodesFile.getAbsolutePath();
+    String _edgesPath = selectedEdgesFile.getAbsolutePath();
+
+    FDatabaseTables.getNodeTable().clearTable(GlobalDb.getConnection(), "Nodes");
+    FDatabaseTables.getEdgeTable().clearTable(GlobalDb.getConnection(), "Edges");
+    FDatabaseTables.getNodeTable().populateNodesTableExternal(GlobalDb.getConnection(), _nodesPath);
+    FDatabaseTables.getEdgeTable().populateEdgesTableExternal(GlobalDb.getConnection(), _edgesPath);
+    System.out.println("Nodes path entered: " + _nodesPath);
+    System.out.println("Edges path entered: " + _edgesPath);
+
+    updateMapFromDB();
+  }
+
+  private void exportCSV() {
+    FileChooser nodeChooser = new FileChooser();
+    nodeChooser.setTitle("Export nodes");
+    nodeChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV files", "*.csv"));
+    File selectedNodesFile =
+        nodeChooser.showSaveDialog(App.getPrimaryStage().getScene().getWindow());
+    if (selectedNodesFile == null) return;
+
+    FileChooser edgeChooser = new FileChooser();
+    nodeChooser.setTitle("Export edges");
+    nodeChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV files", "*.csv"));
+    File selectedEdgesFile =
+        nodeChooser.showSaveDialog(App.getPrimaryStage().getScene().getWindow());
+    if (selectedEdgesFile == null) return;
+
+    String _nodesPath = selectedNodesFile.getAbsolutePath();
+    String _edgesPath = selectedEdgesFile.getAbsolutePath();
+    FDatabaseTables.getNodeTable().writeNodesTable(GlobalDb.getConnection(), _nodesPath);
+    FDatabaseTables.getEdgeTable().writeEdgesTable(GlobalDb.getConnection(), _edgesPath);
+    System.out.println("Nodes path entered: " + _nodesPath);
+    System.out.println("Edges path entered: " + _edgesPath);
   }
 }
