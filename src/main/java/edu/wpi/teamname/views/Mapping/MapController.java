@@ -730,61 +730,12 @@ public class MapController implements AllAccessible {
   }
 
   private void hoverResize(NodeUI N) {
-    N.getI()
-        .setOnMouseEntered(
-            (MouseEvent e) -> {
-              resizeNodeUI(N, 2);
-              if (isEditor) {
-                if (!isEditNodeProperties) {
-                  try {
-                    FXMLLoader temp = loadPopup("MapPopUps/EditNode.fxml");
-                    EditNodeController editNodeController = temp.getController();
-                    editNodeController.setMapController(this);
-                    editNodeController.setTheNode(N);
-                    Pane root = (Pane) temp.getRoot();
-                    popup.addEventHandler(
-                        KeyEvent.KEY_PRESSED,
-                        (KeyEvent k) -> {
-                          KeyCode key = k.getCode();
-                          if (key == KeyCode.SHIFT) {
-                            isEditNodeProperties = true;
-                          }
-                        });
-
-                    root.addEventHandler(
-                        MouseEvent.MOUSE_ENTERED,
-                        (MouseEvent e1) -> {
-                          for (NodeUI node : NODES) {
-                            node.getI().setOnMouseExited(this::disableListener);
-                          }
-                        });
-                    root.addEventHandler(
-                        MouseEvent.MOUSE_EXITED,
-                        (MouseEvent e1) -> {
-                          popup.hide();
-                          for (NodeUI node : NODES) {
-                            node.getI()
-                                .setOnMouseExited(
-                                    (MouseEvent e2) -> {
-                                      if (!Targets.contains(node.getN())) resizeNodeUI(node, .5);
-                                      if (isEditor) {
-                                        if (!isEditNodeProperties) {
-                                          this.popup.hide();
-                                        }
-                                      }
-                                    });
-                          }
-                        });
-                  } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                  }
-                }
-              }
-            });
+    N.getI().setOnMouseEntered(new NodeEnterHandler(N, this));
 
     N.getI()
         .setOnMouseExited(
             (MouseEvent e) -> {
+              resetNodeSizes();
               if (!Targets.contains(N.getN())) resizeNodeUI(N, .5);
               if (isEditor) {
                 if (!isEditNodeProperties) {
@@ -792,6 +743,77 @@ public class MapController implements AllAccessible {
                 }
               }
             });
+  }
+
+  private class NodeEnterHandler implements EventHandler<MouseEvent> {
+    private NodeUI N;
+    private MapController mapController;
+
+    NodeEnterHandler(NodeUI N, MapController mapController) {
+      this.N = N;
+      this.mapController = mapController;
+    }
+
+    @Override
+    public void handle(MouseEvent event) {
+      resizeNodeUI(N, 2);
+      if (isEditor) {
+        if (!isEditNodeProperties) {
+          try {
+            FXMLLoader temp = loadPopup("MapPopUps/EditNode.fxml");
+            EditNodeController editNodeController = temp.getController();
+            editNodeController.setMapController(mapController);
+            editNodeController.setTheNode(N);
+            Pane root = (Pane) temp.getRoot();
+            popup.addEventHandler(
+                KeyEvent.KEY_PRESSED,
+                (KeyEvent k) -> {
+                  KeyCode key = k.getCode();
+                  if (key == KeyCode.SEMICOLON) {
+                    isEditNodeProperties = true;
+                  }
+                });
+
+            // remove node listeners
+            root.addEventHandler(
+                MouseEvent.MOUSE_ENTERED,
+                (MouseEvent e1) -> {
+                  for (NodeUI node : NODES) {
+                    node.getI().setOnMouseEntered(mapController::disableListener);
+                    node.getI().setOnMouseExited(mapController::disableListener);
+                  }
+                });
+
+            // return node listeners
+            root.addEventHandler(
+                MouseEvent.MOUSE_EXITED,
+                (MouseEvent e1) -> {
+                  mapController.resetNodeSizes();
+                  if (!isEditNodeProperties) {
+                    popup.hide();
+                  }
+                  for (NodeUI node : NODES) {
+                    // here's that recursive calling
+                    node.getI().setOnMouseEntered(new NodeEnterHandler(node, mapController));
+                    node.getI()
+                        .setOnMouseExited(
+                            (MouseEvent e2) -> {
+                              mapController.resetNodeSizes();
+                              if (!Targets.contains(node.getN())) resizeNodeUI(node, .5);
+                              if (isEditor) {
+                                if (!isEditNodeProperties) {
+                                  mapController.popup.hide();
+                                }
+                              }
+                            });
+                  }
+                });
+          } catch (IOException ioException) {
+            ioException.printStackTrace();
+          }
+        }
+      }
+    }
   }
 
   public void setupDraggableNodeUI(NodeUI NUI) {
