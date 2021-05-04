@@ -170,95 +170,97 @@ public class MapDrawerController implements Initializable {
     return nameMenu;
   }
 
-  private void handleMouseClicked(MouseEvent event) {
-    Node node = event.getPickResult().getIntersectedNode();
-    // Accept clicks only on node cells, and not on empty spaces of the TreeView
-    if (node instanceof Text || (node instanceof TreeCell && ((TreeCell) node).getText() != null)) {
-      String name =
-          (String) ((TreeItem) directoryTreeView.getSelectionModel().getSelectedItem()).getValue();
-      System.out.println("Nodsssssssssssssssssssssssssssssssse click: " + name);
-      String type = "PARK";
-      switch (name) {
-        case "Directory":
-          System.out.println(mapController.getCurrentFloor());
-          mapController.drawNodeFloor(mapController.getCurrentFloor());
-          type = "ALL";
-          break;
-        case "Elevator":
-          type = "ELEV";
-          break;
-        case "Restroom":
-          type = "REST";
-          break;
-        case "Stairs":
-          type = "STAI";
-          break;
-        case "Department":
-          type = "DEPT";
-          break;
-        case "Laboratory":
-          type = "LABS";
-          break;
-        case "Information":
-          type = "INFO";
-          break;
-        case "Conference":
-          type = "CONF";
-          break;
-        case "Entrance/Exit":
-          type = "EXIT";
-          break;
-        case "Retail":
-          type = "RETL";
-          break;
-        case "Service":
-          type = "SERV";
-          break;
-        case "Parking":
-          type = "PARK";
-          break;
-          //        default:
-          //          for (NodeUI nodess : mapController.NODES) {
-          //            if (nodess.getN().getLongName().equals(name)) {
-          //              mapController.clearMap();
-          //              mapController.addNode(nodess);
-          //            }
-          //          }
-      }
-      nodeRedrawing(type);
-      if (mapController.getNodeUIByLongName(name) != null) {
-        if (nodesClicked.size() >= 2) {
-          nodesClicked.clear();
-        }
-        if (!(nodesClicked.contains(name))) nodesClicked.add(name);
-        for (String nodeName : nodesClicked) {
-          if ((nodesClicked.size() == 1) && !(nodesClicked.size() == 0)) {
-            String firstClicked = nodesClicked.getFirst();
-            startField.setText(firstClicked);
-          } else {
-            String lastClicked = nodesClicked.getLast();
-            endField.setText(lastClicked);
-          }
-        }
-      }
-      System.out.println(nodesClicked.size());
-    }
-  }
+  //  private void handleMouseClicked(MouseEvent event) {
+  //    Node node = event.getPickResult().getIntersectedNode();
+  //    // Accept clicks only on node cells, and not on empty spaces of the TreeView
+  //    if (node instanceof Text || (node instanceof TreeCell && ((TreeCell) node).getText() !=
+  // null)) {
+  //      String name =
+  //          (String) ((TreeItem)
+  // directoryTreeView.getSelectionModel().getSelectedItem()).getValue();
+  //      System.out.println("Nodsssssssssssssssssssssssssssssssse click: " + name);
+  //      String type = "PARK";
+  //      switch (name) {
+  //        case "Directory":
+  //          System.out.println(mapController.getCurrentFloor());
+  //          mapController.drawNodeFloor(mapController.getCurrentFloor());
+  //          type = "ALL";
+  //          break;
+  //        case "Elevator":
+  //          type = "ELEV";
+  //          break;
+  //        case "Restroom":
+  //          type = "REST";
+  //          break;
+  //        case "Stairs":
+  //          type = "STAI";
+  //          break;
+  //        case "Department":
+  //          type = "DEPT";
+  //          break;
+  //        case "Laboratory":
+  //          type = "LABS";
+  //          break;
+  //        case "Information":
+  //          type = "INFO";
+  //          break;
+  //        case "Conference":
+  //          type = "CONF";
+  //          break;
+  //        case "Entrance/Exit":
+  //          type = "EXIT";
+  //          break;
+  //        case "Retail":
+  //          type = "RETL";
+  //          break;
+  //        case "Service":
+  //          type = "SERV";
+  //          break;
+  //        case "Parking":
+  //          type = "PARK";
+  //          break;
+  //          //        default:
+  //          //          for (NodeUI nodess : mapController.NODES) {
+  //          //            if (nodess.getN().getLongName().equals(name)) {
+  //          //              mapController.clearMap();
+  //          //              mapController.addNode(nodess);
+  //          //            }
+  //          //          }
+  //      }
+  //      nodeRedrawing(type);
+  //      if (mapController.getNodeUIByLongName(name) != null) {
+  //        if (nodesClicked.size() >= 2) {
+  //          nodesClicked.clear();
+  //        }
+  //        if (!(nodesClicked.contains(name))) nodesClicked.add(name);
+  //        for (String nodeName : nodesClicked) {
+  //          if ((nodesClicked.size() == 1) && !(nodesClicked.size() == 0)) {
+  //            String firstClicked = nodesClicked.getFirst();
+  //            startField.setText(firstClicked);
+  //          } else {
+  //            String lastClicked = nodesClicked.getLast();
+  //            endField.setText(lastClicked);
+  //          }
+  //        }
+  //      }
+  //      System.out.println(nodesClicked.size());
+  //    }
+  //  }
 
-  private void nodeRedrawing(String type) {
-    mapController.clearMap();
-
-    if (type == "ALL") {
-      mapController.drawNodeFloor(mapController.getCurrentFloor());
-    } else {
-      for (NodeUI NUI : mapController.NODES) {
-        if (NUI.getN().getFloor().equals(mapController.currentFloor)
-            && (NUI.getN().getNodeType().equals(type))) {
-          mapController.addNodeUI(NUI);
-        }
-      }
-    }
-  }
+  //  private void nodeRedrawing(String type) {
+  //    mapController.clearMap();
+  //
+  //    if (type == "ALL") {
+  //      mapController.drawNodeFloor(mapController.getCurrentFloor());
+  //    } else {
+  //      for (NodeUI NUI : mapController.NODES) {
+  //        if (NUI.getN().getFloor().equals(mapController.currentFloor)
+  //            && (NUI.getN().getNodeType().equals(type))) {
+  //          mapController.addNodeUI(NUI);
+  //        }
+  //      }
+  //    }
+  //  }
 
   public void changePathFinderAlgo(String algo) {
     if (algo.equals("BFS")) mapController.algorithm.setAlgorithm(new singleBFS());
@@ -267,9 +269,9 @@ public class MapDrawerController implements Initializable {
     else mapController.algorithm.setAlgorithm(new aStar());
   }
 
-//  public void setMapController(MapController mapController) {
-//    this.mapController = mapController;
-//  }
+  //  public void setMapController(MapController mapController) {
+  //    this.mapController = mapController;
+  //  }
 
   public void treeViewSetup() {
 
