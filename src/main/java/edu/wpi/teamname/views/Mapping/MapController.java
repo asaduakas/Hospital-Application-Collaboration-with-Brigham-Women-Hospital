@@ -564,11 +564,11 @@ public class MapController implements AllAccessible {
 
                 if (toggleEditor.isSelected()) {
                   clearMap();
-                  LoadingNodesEdges("1");
+                  LoadingNodesEdges(currentFloor);
                   isEditor = true;
                 } else {
                   clearMap();
-                  drawNodeFloor("1");
+                  drawNodeFloor(currentFloor);
                   isEditor = false;
                 }
               }
