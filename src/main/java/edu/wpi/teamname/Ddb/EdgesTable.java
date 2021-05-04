@@ -3,6 +3,7 @@ package edu.wpi.teamname.Ddb;
 import edu.wpi.teamname.Astar.Edge;
 import edu.wpi.teamname.Astar.Node;
 import java.io.File;
+import java.io.IOException;
 import java.sql.*;
 import java.util.LinkedList;
 import java.util.Scanner;
@@ -242,5 +243,13 @@ public class EdgesTable extends AbsTables {
     }
     System.out.printf("Node %s not found in data\n", nodeID);
     return null;
+  }
+
+  public void writeEdgesTable(Connection connection, String edgesPath) {
+    try {
+      writeTableToCSV(connection, "Edges", edgesPath, 3, "edgeID,startNode,endNode");
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 }
