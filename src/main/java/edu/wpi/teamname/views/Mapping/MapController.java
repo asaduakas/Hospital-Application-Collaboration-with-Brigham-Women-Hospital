@@ -365,7 +365,7 @@ public class MapController implements AllAccessible {
     secondaryAnchor.getChildren().add(EUI.getL());
   }
 
-  private void drawNodeFloor(String Floor) {
+  public void drawNodeFloor(String Floor) {
     for (NodeUI NUI : NODES) {
       if (NUI.getN().getFloor().equals(Floor)
           && (!NUI.getN().getNodeType().equals("WALK"))
@@ -1123,6 +1123,10 @@ public class MapController implements AllAccessible {
     }
     System.out.println("This Edge doesn't exist.");
     return null;
+  }
+
+  public String getCurrentFloor() {
+    return currentFloor;
   }
 
   // _____________________________________Directions__________________________________________
