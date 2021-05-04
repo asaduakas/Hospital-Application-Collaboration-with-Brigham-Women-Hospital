@@ -18,6 +18,7 @@ public class FDatabaseTables {
   private static SearchHistoryTable searchHistoryTable;
   private static SanitationServRequestTable sanitationServiceTable;
   private static SecurityRequestTable securityRequestTable;
+  private static COVID19SurveyTable covid19SurveyTable;
 
   public FDatabaseTables() {
     this.audVisTable = new AudVisRequestTable();
@@ -36,6 +37,7 @@ public class FDatabaseTables {
     this.searchHistoryTable = new SearchHistoryTable();
     this.sanitationServiceTable = new SanitationServRequestTable();
     this.securityRequestTable = new SecurityRequestTable();
+    this.covid19SurveyTable = new COVID19SurveyTable();
   }
 
   public static AudVisRequestTable getAudVisTable() {
@@ -102,6 +104,10 @@ public class FDatabaseTables {
     return securityRequestTable;
   }
 
+  public static COVID19SurveyTable getCovid19SurveyTable() {
+    return covid19SurveyTable;
+  }
+
   // src/main/resources/csv/MapDAllEdges.csv
   // src/main/resources/csv/MapDAllNodes.csv
   public void createAllTables() {
@@ -125,6 +131,7 @@ public class FDatabaseTables {
     laundryRequestTable.createTable(GlobalDb.getConnection());
     medDeliveryTable.createTable(GlobalDb.getConnection());
     sanitationServiceTable.createTable(GlobalDb.getConnection());
+    covid19SurveyTable.createTable(GlobalDb.getConnection());
     securityRequestTable.createTable(GlobalDb.getConnection());
   }
 
@@ -188,5 +195,9 @@ public class FDatabaseTables {
 
   public void createSecurityServiceTable() {
     securityRequestTable.createTable(GlobalDb.getConnection());
+  }
+
+  public void createCOVIDTable() {
+    covid19SurveyTable.createTable(GlobalDb.getConnection());
   }
 }

@@ -21,6 +21,7 @@ public class HomeController extends Application implements AllAccessible {
 
   @FXML private JFXButton exitButton; // Btn to exit program
   @FXML private JFXButton logoutButton;
+  @FXML private JFXButton usersBtn;
 
   @FXML private JFXButton mapEditing;
   @FXML private JFXButton serviceRequest;
@@ -64,6 +65,13 @@ public class HomeController extends Application implements AllAccessible {
   @FXML
   public void helpView() throws IOException {
     ControllerManager.attemptLoadPopupBlur("Help.fxml");
+  }
+
+  @FXML
+  public void usersView(ActionEvent event) {
+    ControllerManager.attemptLoadPopupBlur(
+        "UsersView.fxml",
+        fxmlLoader -> ((Pane) fxmlLoader.getRoot()).setStyle("-fx-background-color: White"));
   }
 
   @FXML

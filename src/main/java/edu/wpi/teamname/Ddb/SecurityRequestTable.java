@@ -1,6 +1,5 @@
 package edu.wpi.teamname.Ddb;
 
-import edu.wpi.teamname.views.ServiceRequests.NodeInfo.SanitationNodeInfo;
 import edu.wpi.teamname.views.ServiceRequests.NodeInfo.SecurityRequestNodeInfo;
 import java.io.IOException;
 import java.sql.*;
@@ -94,9 +93,9 @@ public class SecurityRequestTable extends AbsTables {
     }
   }
 
-  public ObservableList<SanitationNodeInfo> changeSanitationData(
-      ObservableList<SanitationNodeInfo> sanitationData) {
-    for (SanitationNodeInfo securityInfo : sanitationData) {
+  public ObservableList<SecurityRequestNodeInfo> changeSecurityData(
+      ObservableList<SecurityRequestNodeInfo> securityData) {
+    for (SecurityRequestNodeInfo securityInfo : securityData) {
       if (!(securityInfo.getStatus().isEmpty())) {
         PreparedStatement stmt = null;
         try {
@@ -114,6 +113,6 @@ public class SecurityRequestTable extends AbsTables {
         }
       }
     }
-    return sanitationData;
+    return securityData;
   }
 }
