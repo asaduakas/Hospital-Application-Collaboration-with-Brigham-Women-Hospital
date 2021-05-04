@@ -279,7 +279,10 @@ public class MapController implements AllAccessible {
     nodeList.addAnimatedNode(Floor1Btn);
     nodeList.addAnimatedNode(Floor2Btn);
     nodeList.addAnimatedNode(Floor3Btn);
+    ChooseFloorBtn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 20px");
     nodeList.setSpacing(20d);
+    nodeList.setLayoutX(280);
+    nodeList.setLayoutY(10);
 
     mainAnchor.getChildren().add(nodeList);
   }

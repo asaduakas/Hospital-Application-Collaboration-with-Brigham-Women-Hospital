@@ -15,14 +15,13 @@ import javafx.scene.Node;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 
 public class MapDrawerController implements Initializable {
-  @FXML private TreeView<String> directoryTreeView;
+  @FXML private JFXTreeView<String> directoryTreeView;
   @FXML private JFXTextField startField;
   @FXML private JFXTextField endField;
   @FXML private JFXButton findPathButton;
@@ -53,12 +52,14 @@ public class MapDrawerController implements Initializable {
       FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "RETL");
   private ArrayList<String> serviceList =
       FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "SERV");
+  private Node textDirection;
 
   @Override
   public void initialize(URL url, ResourceBundle rb) {
 
-    TreeItem<String> root = new TreeItem<>("Directory");
-    directoryTreeView.setRoot(root);
+    TreeItem<String> dummyRoot = new TreeItem<>();
+    TreeItem<String> directoryRoot = new TreeItem<>("Directory");
+    TreeItem<String> textRoot = new TreeItem<>("Text Direction");
     TreeItem<String> parking = new TreeItem<>("Parking");
     TreeItem<String> elevator = new TreeItem<>("Elevator");
     TreeItem<String> restroom = new TreeItem<>("Restroom");
@@ -70,6 +71,11 @@ public class MapDrawerController implements Initializable {
     TreeItem<String> exit = new TreeItem<>("Entrance/Exit");
     TreeItem<String> retail = new TreeItem<>("Retail");
     TreeItem<String> service = new TreeItem<>("Service");
+    dummyRoot.getChildren().addAll(directoryRoot, textRoot);
+    directoryTreeView.setRoot(dummyRoot);
+    directoryTreeView.setShowRoot(false);
+
+    textRoot.setGraphic(textDirection);
 
     try {
       ImageView parkImage =
@@ -145,7 +151,8 @@ public class MapDrawerController implements Initializable {
       e.printStackTrace();
     }
 
-    root.getChildren()
+    directoryRoot
+        .getChildren()
         .addAll(
             parking,
             elevator,
@@ -214,7 +221,7 @@ public class MapDrawerController implements Initializable {
       service.getChildren().add(serviceLocation);
     }
 
-    root.setExpanded(true);
+    directoryRoot.setExpanded(true);
     directoryTreeView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
     //    if (parking.isExpanded()) {
