@@ -5,6 +5,8 @@ import com.jfoenix.controls.base.IFXLabelFloatControl;
 import com.jfoenix.skins.JFXTextFieldSkin;
 import com.jfoenix.skins.ValidationPane;
 import com.jfoenix.validation.RequiredFieldValidator;
+import edu.wpi.teamname.Ddb.FDatabaseTables;
+import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.Access.AllAccessible;
 import java.io.IOException;
 import java.net.URL;
@@ -36,6 +38,12 @@ public class CovidSurveyController implements Initializable, AllAccessible {
   @FXML private JFXCheckBox closeContactCheck;
   @FXML private JFXCheckBox isolateCheck;
   @FXML private JFXCheckBox goodCheck;
+
+  int posBool = 0;
+  int sympBool = 0;
+  int conBool = 0;
+  int isoBool = 0;
+  int goodBool = 0;
 
   @FXML
   public void loadDialog(MouseEvent Event) {
@@ -108,6 +116,18 @@ public class CovidSurveyController implements Initializable, AllAccessible {
     if (submitButton.isDisabled()) {
       popupWarning(event);
     }
+
+    FDatabaseTables.getCovid19SurveyTable()
+        .addEntity(
+            GlobalDb.getConnection(),
+            firstName.getText(),
+            lastName.getText(),
+            phoneNumber.getText(),
+            posBool,
+            sympBool,
+            conBool,
+            isoBool,
+            goodBool);
   }
 
   @FXML
@@ -116,8 +136,21 @@ public class CovidSurveyController implements Initializable, AllAccessible {
         || symptomCheck.isSelected()
         || closeContactCheck.isSelected()
         || isolateCheck.isSelected()) {
+      if (positiveCheck.isSelected()) {
+        posBool = 1;
+      }
+      if (symptomCheck.isSelected()) {
+        sympBool = 1;
+      }
+      if (closeContactCheck.isSelected()) {
+        conBool = 1;
+      }
+      if (isolateCheck.isSelected()) {
+        isoBool = 1;
+      }
       popupWarningCovid(event);
     } else {
+      goodBool = 1;
       Text submitText =
           new Text(
               "Your COVID-19 survey is submitted." + "\n" + "Press OK to return to home screen.");
@@ -137,6 +170,7 @@ public class CovidSurveyController implements Initializable, AllAccessible {
 
       submitDia.show();
     }
+    submitPage(event);
   }
 
   @Override
