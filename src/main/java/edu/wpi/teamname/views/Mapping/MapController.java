@@ -55,7 +55,7 @@ public class MapController implements AllAccessible {
   private RoomGraph initialData = new RoomGraph(GlobalDb.getConnection());
   public static LinkedList<NodeUI> NODES = new LinkedList<>();
   private static LinkedList<EdgeUI> EDGES = new LinkedList<>();
-  private PathAlgoPicker algorithm = new PathAlgoPicker(new aStar());
+  public PathAlgoPicker algorithm = new PathAlgoPicker(new aStar());
   private LinkedList<Edge> thePath = new LinkedList<Edge>();
   private LinkedList<Node> Targets = new LinkedList<Node>();
   LinkedList<NodeUI> NewEdge = new LinkedList<NodeUI>();
@@ -497,10 +497,12 @@ public class MapController implements AllAccessible {
 
   private void resetNodeSizes() {
     for (NodeUI N : NODES) {
-      N.getI().setFitWidth(N.getSizeWidth());
-      N.getI().setFitHeight(N.getSizeHeight());
-      N.getI().setX(N.getN().getXCoord() - N.getI().getFitWidth() / 2);
-      N.getI().setY(N.getN().getYCoord() - N.getI().getFitHeight());
+      if (!Targets.contains(N.getN())) {
+        N.getI().setFitWidth(N.getSizeWidth());
+        N.getI().setFitHeight(N.getSizeHeight());
+        N.getI().setX(N.getN().getXCoord() - N.getI().getFitWidth() / 2);
+        N.getI().setY(N.getN().getYCoord() - N.getI().getFitHeight());
+      }
     }
   }
 
@@ -937,7 +939,6 @@ public class MapController implements AllAccessible {
         .setOnMouseExited(
             (MouseEvent e) -> {
               resetNodeSizes();
-              if (!Targets.contains(N.getN())) resizeNodeUI(N, .5);
               if (isEditor) {
                 if (!isEditNodeProperties) {
                   this.popup.hide();
@@ -1000,7 +1001,6 @@ public class MapController implements AllAccessible {
                         .setOnMouseExited(
                             (MouseEvent e2) -> {
                               mapController.resetNodeSizes();
-                              if (!Targets.contains(node.getN())) resizeNodeUI(node, .5);
                               if (isEditor) {
                                 if (!isEditNodeProperties) {
                                   mapController.popup.hide();
