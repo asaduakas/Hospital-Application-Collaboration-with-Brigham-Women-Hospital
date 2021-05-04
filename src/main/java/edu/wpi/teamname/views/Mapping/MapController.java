@@ -741,12 +741,38 @@ public class MapController implements AllAccessible {
                     EditNodeController editNodeController = temp.getController();
                     editNodeController.setMapController(this);
                     editNodeController.setTheNode(N);
+                    Pane root = (Pane) temp.getRoot();
                     popup.addEventHandler(
                         KeyEvent.KEY_PRESSED,
                         (KeyEvent k) -> {
                           KeyCode key = k.getCode();
                           if (key == KeyCode.SHIFT) {
-                            isEditNodeProperties = !isEditNodeProperties;
+                            isEditNodeProperties = true;
+                          }
+                        });
+
+                    root.addEventHandler(
+                        MouseEvent.MOUSE_ENTERED,
+                        (MouseEvent e1) -> {
+                          for (NodeUI node : NODES) {
+                            node.getI().setOnMouseExited(this::disableListener);
+                          }
+                        });
+                    root.addEventHandler(
+                        MouseEvent.MOUSE_EXITED,
+                        (MouseEvent e1) -> {
+                          popup.hide();
+                          for (NodeUI node : NODES) {
+                            node.getI()
+                                .setOnMouseExited(
+                                    (MouseEvent e2) -> {
+                                      if (!Targets.contains(node.getN())) resizeNodeUI(node, .5);
+                                      if (isEditor) {
+                                        if (!isEditNodeProperties) {
+                                          this.popup.hide();
+                                        }
+                                      }
+                                    });
                           }
                         });
                   } catch (IOException ioException) {
