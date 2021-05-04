@@ -12,7 +12,6 @@ import edu.wpi.teamname.views.ControllerManager;
 import edu.wpi.teamname.views.Mapping.Popup.Edit.AddNodeController;
 import edu.wpi.teamname.views.Mapping.Popup.Edit.EditNodeController;
 import edu.wpi.teamname.views.SceneSizeChangeListener;
-import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -20,6 +19,7 @@ import java.util.*;
 import java.util.List;
 import javafx.animation.*;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
@@ -54,7 +54,7 @@ public class MapController implements AllAccessible {
   private RoomGraph initialData = new RoomGraph(GlobalDb.getConnection());
   public static LinkedList<NodeUI> NODES = new LinkedList<>();
   private static LinkedList<EdgeUI> EDGES = new LinkedList<>();
-  private PathAlgoPicker algorithm = new PathAlgoPicker(new aStar());
+  public PathAlgoPicker algorithm = new PathAlgoPicker(new aStar());
   private LinkedList<Edge> thePath = new LinkedList<Edge>();
   private LinkedList<Node> Targets = new LinkedList<Node>();
   LinkedList<NodeUI> NewEdge = new LinkedList<NodeUI>();
@@ -64,6 +64,11 @@ public class MapController implements AllAccessible {
   public static String currentFloor = "1";
   private boolean isEditor = false;
   public boolean isEditNodeProperties = false;
+  private boolean isEditStart = false;
+  private boolean isEditEnd = false;
+  private SimpleBooleanProperty startPressed = new SimpleBooleanProperty();
+  private SimpleBooleanProperty endPressed = new SimpleBooleanProperty();
+  private EdgeUI tempEUI;
 
   private final Image F1 = new Image("01_thefirstfloor.png");
   private final Image F2 = new Image("02_thesecondfloor.png");
@@ -102,7 +107,6 @@ public class MapController implements AllAccessible {
 
   @FXML
   private void initialize() {
-
     mapScrollPane = new MapScrollPane(F1);
     mainAnchor.getChildren().add(mapScrollPane);
     AnchorPane.setTopAnchor(mapScrollPane, 0.0);
@@ -270,7 +274,7 @@ public class MapController implements AllAccessible {
       }
 
       NodeUI Temp = new NodeUI(N, Marker, nodeNormalWidth, nodeNormalHeight);
-      pathListener(Temp);
+      pathListener_AddEdge(Temp);
       hoverResize(Temp);
       deleteNodeListener(Temp);
       setupDraggableNodeUI(Temp);
@@ -296,6 +300,7 @@ public class MapController implements AllAccessible {
       EdgeUI Temp = new EdgeUI(E, L);
       EDGES.add(Temp);
       deleteEdgeListener(Temp);
+      editEdgeListener(Temp);
     }
   }
 
@@ -376,7 +381,7 @@ public class MapController implements AllAccessible {
     secondaryAnchor.getChildren().add(EUI.getL());
   }
 
-  private void drawNodeFloor(String Floor) {
+  public void drawNodeFloor(String Floor) {
     for (NodeUI NUI : NODES) {
       if (NUI.getN().getFloor().equals(Floor)
           && (!NUI.getN().getNodeType().equals("WALK"))
@@ -506,10 +511,12 @@ public class MapController implements AllAccessible {
 
   private void resetNodeSizes() {
     for (NodeUI N : NODES) {
-      N.getI().setFitWidth(N.getSizeWidth());
-      N.getI().setFitHeight(N.getSizeHeight());
-      N.getI().setX(N.getN().getXCoord() - N.getI().getFitWidth() / 2);
-      N.getI().setY(N.getN().getYCoord() - N.getI().getFitHeight());
+      if (!Targets.contains(N.getN())) {
+        N.getI().setFitWidth(N.getSizeWidth());
+        N.getI().setFitHeight(N.getSizeHeight());
+        N.getI().setX(N.getN().getXCoord() - N.getI().getFitWidth() / 2);
+        N.getI().setY(N.getN().getYCoord() - N.getI().getFitHeight());
+      }
     }
   }
 
@@ -560,7 +567,7 @@ public class MapController implements AllAccessible {
             N.getN().getLongName(),
             N.getN().getShortName(),
             0);
-    pathListener(N);
+    pathListener_AddEdge(N);
     hoverResize(N);
     setupDraggableNodeUI(N);
     initialData.getGraphInfo().add(N.getN());
@@ -581,7 +588,33 @@ public class MapController implements AllAccessible {
     EDGES.add(E);
   }
 
-  private void editEdge() {} // TODO Implement edit edges
+  private void editEdgeStart(Edge E, Node N) {
+    String newID = N.getNodeID() + "_" + E.getEndNodeID();
+    FDatabaseTables.getEdgeTable()
+        .updateEdgeStartNode(GlobalDb.getConnection(), E.getEdgeID(), N.getNodeID());
+    FDatabaseTables.getEdgeTable().updateEdgeID(GlobalDb.getConnection(), E.getEdgeID(), newID);
+
+    EdgeUI edgeUI = getEdgeUIByID(E.getEdgeID());
+    NodeUI nodeUI = getNodeUIByID(N.getNodeID());
+    edgeUI.getL().startXProperty().unbind();
+    edgeUI.getL().startXProperty().bind(nodeUI.simpXcoordProperty());
+    edgeUI.getL().startYProperty().unbind();
+    edgeUI.getL().startYProperty().bind(nodeUI.simpYcoordProperty());
+  }
+
+  private void editEdgeEnd(Edge E, Node N) {
+    String newID = E.getStartNodeID() + "_" + N.getNodeID();
+    FDatabaseTables.getEdgeTable()
+        .updateEdgeEndNode(GlobalDb.getConnection(), E.getEdgeID(), N.getNodeID());
+    FDatabaseTables.getEdgeTable().updateEdgeID(GlobalDb.getConnection(), E.getEdgeID(), newID);
+
+    EdgeUI edgeUI = getEdgeUIByID(E.getEdgeID());
+    NodeUI nodeUI = getNodeUIByID(N.getNodeID());
+    edgeUI.getL().endXProperty().unbind();
+    edgeUI.getL().endXProperty().bind(nodeUI.simpXcoordProperty());
+    edgeUI.getL().endYProperty().unbind();
+    edgeUI.getL().endYProperty().bind(nodeUI.simpYcoordProperty());
+  }
 
   // _______________________________________Path Finding____________________________________________
 
@@ -600,7 +633,9 @@ public class MapController implements AllAccessible {
   public void runPathFindingClick() {
     thePath = algorithm.multiSearch(initialData, Targets).getPathEdges();
     if (thePath.isEmpty()) {
-      Targets.clear();
+      resetData();
+      clearMap();
+      drawNodeFloor("1");
     } else {
       showPath();
       // algorithm.multiSearch(initialData, Targets).printPathEdges();
@@ -651,6 +686,7 @@ public class MapController implements AllAccessible {
   }
 
   private void cancelListener() {
+
     mapScrollPane.setOnKeyPressed(
         (KeyEvent e) -> {
           KeyCode key = e.getCode();
@@ -672,6 +708,20 @@ public class MapController implements AllAccessible {
               exportCSV();
               break;
           }
+          if (key == KeyCode.COMMA) {
+            startPressed.setValue(true);
+            endPressed.setValue(false);
+          }
+          if (key == KeyCode.PERIOD) {
+            endPressed.setValue(true);
+            startPressed.setValue(false);
+          }
+        });
+
+    mapScrollPane.setOnKeyReleased(
+        (event) -> {
+          startPressed.setValue(false);
+          endPressed.setValue(false);
         });
   }
 
@@ -689,13 +739,48 @@ public class MapController implements AllAccessible {
     E.getL()
         .setOnMousePressed(
             (MouseEvent e) -> {
-              if (e.isControlDown()) {
+              if (e.isControlDown() && isEditor) {
                 deleteEdge(E);
               }
             });
   }
 
-  private void pathListener(NodeUI N) {
+  private void editEdgeListener(EdgeUI E) {
+
+    E.getL()
+        .setOnMouseClicked(
+            new EventHandler<MouseEvent>() {
+              @Override
+              public void handle(MouseEvent event) {
+                if (startPressed.get()) {
+                  isEditStart = true;
+                  isEditEnd = false;
+                  tempEUI = E;
+                  E.getL().setStroke(Color.ROYALBLUE);
+                }
+                if (endPressed.get()) {
+                  isEditEnd = true;
+                  isEditStart = false;
+                  tempEUI = E;
+                  E.getL().setStroke(Color.ORANGERED);
+                }
+              }
+            });
+
+    E.getL()
+        .setOnMouseEntered(
+            (MouseEvent e) -> {
+              if (!isEditStart && !isEditEnd) E.getL().setStroke(Color.DARKORANGE);
+            });
+
+    E.getL()
+        .setOnMouseExited(
+            (MouseEvent e) -> {
+              if (!isEditStart && !isEditEnd) E.getL().setStroke(Color.BLACK);
+            });
+  }
+
+  private void pathListener_AddEdge(NodeUI N) {
     N.getI()
         .addEventHandler(
             MouseEvent.MOUSE_PRESSED,
@@ -868,7 +953,6 @@ public class MapController implements AllAccessible {
         .setOnMouseExited(
             (MouseEvent e) -> {
               resetNodeSizes();
-              if (!Targets.contains(N.getN())) resizeNodeUI(N, .5);
               if (isEditor) {
                 if (!isEditNodeProperties) {
                   this.popup.hide();
@@ -890,7 +974,7 @@ public class MapController implements AllAccessible {
     public void handle(MouseEvent event) {
       resizeNodeUI(N, 2);
       if (isEditor) {
-        if (!isEditNodeProperties) {
+        if (!isEditNodeProperties && !(isEditEnd || isEditStart)) {
           try {
             FXMLLoader temp = loadPopup("MapPopUps/EditNode.fxml");
             EditNodeController editNodeController = temp.getController();
@@ -931,7 +1015,6 @@ public class MapController implements AllAccessible {
                         .setOnMouseExited(
                             (MouseEvent e2) -> {
                               mapController.resetNodeSizes();
-                              if (!Targets.contains(node.getN())) resizeNodeUI(node, .5);
                               if (isEditor) {
                                 if (!isEditNodeProperties) {
                                   mapController.popup.hide();
@@ -943,8 +1026,21 @@ public class MapController implements AllAccessible {
           } catch (IOException ioException) {
             ioException.printStackTrace();
           }
+        } // end of edit node popup stuff
+
+        if (isEditStart) {
+          editEdgeStart(tempEUI.getE(), N.getN());
+          tempEUI.getL().setStroke(Color.BLACK);
+          tempEUI = null;
+          isEditStart = false;
         }
-      }
+        if (isEditEnd) {
+          editEdgeEnd(tempEUI.getE(), N.getN());
+          tempEUI.getL().setStroke(Color.BLACK);
+          tempEUI = null;
+          isEditEnd = false;
+        }
+      } // end of isEditor
     }
   }
 
@@ -1134,6 +1230,10 @@ public class MapController implements AllAccessible {
     }
     System.out.println("This Edge doesn't exist.");
     return null;
+  }
+
+  public String getCurrentFloor() {
+    return currentFloor;
   }
 
   // _____________________________________Directions__________________________________________

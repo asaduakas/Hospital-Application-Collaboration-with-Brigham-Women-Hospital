@@ -1,6 +1,10 @@
 package edu.wpi.teamname.views.Mapping;
 
 import com.jfoenix.controls.*;
+import edu.wpi.teamname.Astar.Dijkstras;
+import edu.wpi.teamname.Astar.aStar;
+import edu.wpi.teamname.Astar.singleBFS;
+import edu.wpi.teamname.Astar.singleDFS;
 import edu.wpi.teamname.Ddb.FDatabaseTables;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import java.io.FileInputStream;
@@ -8,6 +12,8 @@ import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -32,6 +38,7 @@ public class MapDrawerController implements Initializable {
   @FXML private VBox vBox;
   @FXML private GridPane startGrid;
   @FXML private GridPane endGrid;
+  @FXML private JFXComboBox algoVersion;
 
   private MapController mapController;
 
@@ -120,6 +127,19 @@ public class MapDrawerController implements Initializable {
       }
     }
     return nameMenu;
+
+    algoVersion.getItems().addAll("A*", "BFS", "DFS", "Dijkstra");
+    algoVersion
+        .getSelectionModel()
+        .selectedItemProperty()
+        .addListener(
+            new ChangeListener<String>() {
+              @Override
+              public void changed(
+                  ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                changePathFinderAlgo(newValue);
+              }
+            });
   }
 
   private void handleMouseClicked(MouseEvent event) {
@@ -128,9 +148,14 @@ public class MapDrawerController implements Initializable {
     if (node instanceof Text || (node instanceof TreeCell && ((TreeCell) node).getText() != null)) {
       String name =
           (String) ((TreeItem) directoryTreeView.getSelectionModel().getSelectedItem()).getValue();
-      System.out.println("Node click: " + name);
+      System.out.println("Nodsssssssssssssssssssssssssssssssse click: " + name);
       String type = "PARK";
       switch (name) {
+        case "Directory":
+          System.out.println(mapController.getCurrentFloor());
+          mapController.drawNodeFloor(mapController.getCurrentFloor());
+          type = "ALL";
+          break;
         case "Elevator":
           type = "ELEV";
           break;
@@ -179,12 +204,23 @@ public class MapDrawerController implements Initializable {
   private void nodeRedrawing(String type) {
     mapController.clearMap();
 
-    for (NodeUI NUI : mapController.NODES) {
-      if (NUI.getN().getFloor().equals(mapController.currentFloor)
-          && (NUI.getN().getNodeType().equals(type))) {
-        mapController.addNodeUI(NUI);
+    if (type == "ALL") {
+      mapController.drawNodeFloor(mapController.getCurrentFloor());
+    } else {
+      for (NodeUI NUI : mapController.NODES) {
+        if (NUI.getN().getFloor().equals(mapController.currentFloor)
+            && (NUI.getN().getNodeType().equals(type))) {
+          mapController.addNodeUI(NUI);
+        }
       }
     }
+  }
+
+  public void changePathFinderAlgo(String algo) {
+    if (algo.equals("BFS")) mapController.algorithm.setAlgorithm(new singleBFS());
+    else if (algo.equals("DFS")) mapController.algorithm.setAlgorithm(new singleDFS());
+    else if (algo.equals("Dijkstra")) mapController.algorithm.setAlgorithm(new Dijkstras());
+    else mapController.algorithm.setAlgorithm(new aStar());
   }
 
   public void setMapController(MapController mapController) {
