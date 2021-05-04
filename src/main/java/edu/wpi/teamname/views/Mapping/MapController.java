@@ -75,13 +75,7 @@ public class MapController implements AllAccessible {
   @FXML
   private void initialize() {
 
-    double minScale =
-        Math.max(
-            App.getPrimaryStage().getScene().getWidth() / F1.getWidth(),
-            App.getPrimaryStage().getScene().getHeight() / F1.getHeight());
-    double maxScale = minScale * 10;
-
-    mapScrollPane = new MapScrollPane(minScale, maxScale, F1);
+    mapScrollPane = new MapScrollPane(F1);
     mainAnchor.getChildren().add(mapScrollPane);
     AnchorPane.setTopAnchor(mapScrollPane, 0.0);
     AnchorPane.setBottomAnchor(mapScrollPane, 0.0);
@@ -263,8 +257,7 @@ public class MapController implements AllAccessible {
   }
 
   private void clearMap() {
-    secondaryAnchor.getChildren().remove(0, secondaryAnchor.getChildren().size());
-    secondaryAnchor.getChildren().add(TheMap);
+    secondaryAnchor.getChildren().removeIf(n -> (!(n instanceof ImageView)));
   }
 
   public void showPath() {

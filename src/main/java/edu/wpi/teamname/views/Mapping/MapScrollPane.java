@@ -1,5 +1,6 @@
 package edu.wpi.teamname.views.Mapping;
 
+import edu.wpi.teamname.App;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
@@ -21,11 +22,10 @@ public class MapScrollPane extends ScrollPane {
   public AnchorPane mapAnchor;
   private Node zoomNode;
 
-  public MapScrollPane(double minimumScale, double maximumScale, Image image) {
+  public MapScrollPane(Image image) {
     super();
-    this.minimumScale = minimumScale;
+
     this.scaleValue = minimumScale;
-    this.maximumScale = maximumScale;
     this.mapImage = new ImageView();
     mapImage.setImage(image);
     this.mapAnchor = new AnchorPane();
@@ -39,12 +39,18 @@ public class MapScrollPane extends ScrollPane {
     setFitToHeight(true); // center
     setFitToWidth(true); // center
 
-    updateScale();
+    updateScaleRange();
   }
 
-  public void setScaleRange(double min, double max) {
-    this.minimumScale = min;
-    this.maximumScale = max;
+  public void updateScaleRange() {
+    System.out.println(App.getPrimaryStage().getWidth());
+    System.out.println(App.getPrimaryStage().getHeight());
+    System.out.println();
+    this.minimumScale =
+        Math.max(
+            App.getPrimaryStage().getWidth() / mapImage.getImage().getWidth(),
+            App.getPrimaryStage().getHeight() / mapImage.getImage().getHeight());
+    this.maximumScale = minimumScale * 10;
     if (scaleValue < minimumScale) scaleValue = minimumScale;
     if (scaleValue > maximumScale) scaleValue = maximumScale;
     updateScale();
