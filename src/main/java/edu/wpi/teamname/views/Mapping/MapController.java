@@ -98,8 +98,11 @@ public class MapController implements AllAccessible {
     mapDrawer.setPickOnBounds(false);
 
     try {
-      AnchorPane menuBtns =
-          FXMLLoader.load(getClass().getClassLoader().getResource("MapDrawerView.fxml"));
+      FXMLLoader fxmlLoader =
+          new FXMLLoader(getClass().getClassLoader().getResource("MapDrawerView.fxml"));
+      AnchorPane menuBtns = fxmlLoader.load();
+      MapDrawerController mapDrawerController = fxmlLoader.getController();
+      mapDrawerController.setMapController(this);
       mapDrawer.setSidePane(menuBtns);
     } catch (IOException e) {
       e.printStackTrace();
@@ -283,7 +286,7 @@ public class MapController implements AllAccessible {
 
   // _______________________________________Draw________________________________________
 
-  private void addNodeUI(NodeUI NUI) {
+  public void addNodeUI(NodeUI NUI) {
     secondaryAnchor.getChildren().add(NUI.getI());
   }
 
@@ -309,7 +312,7 @@ public class MapController implements AllAccessible {
     }
   }
 
-  private void switchFloor(String floor) {
+  public void switchFloor(String floor) {
     clearMap();
     switch (floor) {
       case "2":
@@ -371,7 +374,7 @@ public class MapController implements AllAccessible {
 
   private void disableListener(MouseEvent e) {}
 
-  private void clearMap() {
+  public void clearMap() {
     secondaryAnchor.getChildren().remove(0, secondaryAnchor.getChildren().size());
     secondaryAnchor.getChildren().add(TheMap);
     resetNodeSizes();
