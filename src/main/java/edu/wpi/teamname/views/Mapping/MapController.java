@@ -71,7 +71,6 @@ public class MapController implements AllAccessible {
   public static final Image SERV = new Image("Images/service.png");
   private Image up = new Image("Images/up-arrow.png");
 
-  @FXML private JFXToggleButton toggleEditor;
   @FXML private AnchorPane mainAnchor;
   @FXML private JFXComboBox FloorOption;
   @FXML private ScrollPane movingMap;
@@ -80,6 +79,7 @@ public class MapController implements AllAccessible {
   @FXML public static Popup popup;
   @FXML private JFXHamburger mapHam;
   @FXML private JFXDrawer mapDrawer;
+  @FXML private JFXToggleButton toggleEditor;
 
   @FXML
   private void initialize() {
@@ -97,6 +97,7 @@ public class MapController implements AllAccessible {
     nodeAddListener();
     cancelListener();
     getNodesToAlignListener();
+    recordParkingListener();
 
     mapDrawer.setPickOnBounds(false);
 
@@ -120,9 +121,11 @@ public class MapController implements AllAccessible {
           if (mapDrawer.isOpened()) {
             mapDrawer.close();
             TheMap.setLayoutX(0);
+            mapDrawer.setLayoutX(-132);
           } else {
             mapDrawer.open();
             TheMap.setLayoutX(263);
+            mapDrawer.setLayoutX(0);
           }
         });
   }
@@ -670,6 +673,49 @@ public class MapController implements AllAccessible {
         System.out.println("aligned X: " + NUI.getN().getXCoord());
         System.out.println("aligned Y: " + NUI.getN().getYCoord());
       }
+    }
+  }
+
+  private void recordParkingListener() {
+
+    mainAnchor.setOnKeyPressed(
+        (KeyEvent e) -> {
+          KeyCode key = e.getCode();
+          int saveMode = 1;
+          if (key == KeyCode.S && !isEditor) {
+            System.out.println("S is down");
+            if (saveMode == 0) {
+              saveMode += 1;
+            } else if (saveMode == 1) {
+              saveMode -= 1;
+              for (Node N : this.initialData.getGraphInfo()) {
+                if (N.getNodeType().equals("PARK")) {
+                  NodeUI NUI = getNodeUIByID(N.getNodeID());
+                  NUI.getI()
+                      .addEventHandler(
+                          MouseEvent.MOUSE_PRESSED,
+                          (M) -> {
+                            System.out.println("node clicked");
+                            saveParkingSpot(NUI);
+                          });
+                }
+              }
+            }
+          }
+        });
+  }
+
+  private void saveParkingSpot(NodeUI N) {
+    System.out.println("Saving spot");
+    System.out.println(N.getSizeHeight());
+    System.out.println(N.getSizeWidth());
+
+    if (N.getSizeHeight() > 30) {
+      N.setSizeHeight(N.getSizeHeight() - 60);
+      N.setSizeWidth(N.getSizeWidth() - 60);
+    } else {
+      N.setSizeHeight(N.getSizeHeight() + 60);
+      N.setSizeWidth(N.getSizeWidth() + 60);
     }
   }
 
