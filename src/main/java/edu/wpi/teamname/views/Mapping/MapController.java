@@ -528,15 +528,14 @@ public class MapController implements AllAccessible {
   // _______________________________________Path Finding____________________________________________
 
   // For Directory
-  public void runPathFindingDirectory(String startNode, String targetNode) throws IOException {
-    Node start = initialData.getNodeByID(startNode);
-    Node target = initialData.getNodeByID(targetNode);
-
-    algorithm.search(initialData, start, target);
-    algorithm.printPathTo();
-    algorithm.printEdgeTo();
-    thePath = algorithm.getShortestPath().getPathEdges();
-    getDirections(thePath);
+  public void runPathFindingDirectory(LinkedList<Node> DirectoryTargets) throws IOException {
+    thePath = algorithm.multiSearch(initialData, DirectoryTargets).getPathEdges();
+    if (thePath.isEmpty()) {
+      Targets.clear();
+    } else {
+      showPath();
+      algorithm.multiSearch(initialData, DirectoryTargets).printPathEdges();
+    }
   }
 
   public void runPathFindingClick() {

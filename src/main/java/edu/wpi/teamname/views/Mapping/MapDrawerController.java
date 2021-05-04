@@ -5,8 +5,10 @@ import edu.wpi.teamname.Ddb.FDatabaseTables;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.ResourceBundle;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -25,6 +27,7 @@ public class MapDrawerController implements Initializable {
   @FXML private JFXTextField startField;
   @FXML private JFXTextField endField;
   @FXML private JFXButton findPathButton;
+  private LinkedList<edu.wpi.teamname.Astar.Node> Targets = new LinkedList<>();
   //  private ObservableList<CategoryNodeInfo> parkingData =
   //      FDatabaseTables.getNodeTable().getCategory(GlobalDb.getConnection(), "PAR");
 
@@ -222,23 +225,38 @@ public class MapDrawerController implements Initializable {
     }
 
     directoryRoot.setExpanded(true);
-    directoryTreeView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-
-    //    if (parking.isExpanded()) {
-    //      MapController.NODES.
-    //    }
+    directoryTreeView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
     EventHandler<MouseEvent> mouseEventHandle =
         (MouseEvent event) -> {
-          handleMouseClicked(event);
+          try {
+            handleMouseClicked(event);
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
         };
 
     directoryTreeView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEventHandle);
   }
 
-  private void handleMouseClicked(MouseEvent event) {
+  private void handleMouseClicked(MouseEvent event) throws IOException {
     Node node = event.getPickResult().getIntersectedNode();
     // Accept clicks only on node cells, and not on empty spaces of the TreeView
+
+    if (event.isControlDown()) {
+      String clickname =
+          (String) ((TreeItem) directoryTreeView.getSelectionModel().getSelectedItem()).getValue();
+      for (NodeUI NUI : mapController.NODES) {
+        if (NUI.getN().getLongName().equals(clickname)) {
+          Targets.add(NUI.getN());
+          mapController.addNodeUI(NUI);
+
+          if (Targets.size() >= 2) {
+            mapController.runPathFindingDirectory(Targets);
+          }
+        }
+      }
+    }
     if (node instanceof Text || (node instanceof TreeCell && ((TreeCell) node).getText() != null)) {
       String name =
           (String) ((TreeItem) directoryTreeView.getSelectionModel().getSelectedItem()).getValue();
