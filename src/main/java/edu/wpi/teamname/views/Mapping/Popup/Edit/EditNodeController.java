@@ -53,11 +53,19 @@ public class EditNodeController {
     String shortName = theNode.getN().getShortName();
     String longName = theNode.getN().getLongName();
 
-    if(NodeType.getValue() != null) type = (String) NodeType.getValue();
-    if(this.building.getText() != null) building = this.building.getText();
-    if(FloorBox.getValue() != null) floor = (String) FloorBox.getValue();
-    if(this.shortName != null) shortName = this.shortName.getText();
-    if(this.longName != null) longName = this.longName.getText();
+    System.out.println(building);
+    System.out.println(floor);
+    System.out.println(type);
+    System.out.println(shortName);
+    System.out.println(longName);
+
+    if (!this.building.getText().isEmpty()) building = this.building.getText();
+
+    if (FloorBox.getValue() != null) floor = (String) FloorBox.getValue();
+    if (NodeType.getValue() != null) type = (String) NodeType.getValue();
+
+    if (!this.shortName.getText().isEmpty()) shortName = this.shortName.getText();
+    if (!this.longName.getText().isEmpty()) longName = this.longName.getText();
 
     String nID = theNode.getN().getNodeID();
     FDatabaseTables.getNodeTable().updateNodeBuilding(GlobalDb.getConnection(), nID, building);
@@ -65,6 +73,19 @@ public class EditNodeController {
     FDatabaseTables.getNodeTable().updateNodeType(GlobalDb.getConnection(), nID, type);
     FDatabaseTables.getNodeTable().updateNodeShortName(GlobalDb.getConnection(), nID, shortName);
     FDatabaseTables.getNodeTable().updateNodeLongName(GlobalDb.getConnection(), nID, longName);
+
+    System.out.println(building);
+    System.out.println(floor);
+    System.out.println(type);
+    System.out.println(shortName);
+    System.out.println(longName);
+
+    Node node = theNode.getN();
+    node.setFloor(floor);
+    node.setBuilding(building);
+    node.setNodeType(type);
+    node.setShortName(shortName);
+    node.setLongName(longName);
 
     exitpopup();
   }
@@ -138,6 +159,7 @@ public class EditNodeController {
 
   @FXML
   private void exitpopup() {
+    mapController.isEditNodeProperties = false;
     mapController.popup.hide();
   }
 

@@ -4,7 +4,6 @@ import com.jfoenix.controls.*;
 import com.jfoenix.transitions.hamburger.HamburgerSlideCloseTransition;
 import edu.wpi.teamname.App;
 import edu.wpi.teamname.Astar.*;
-import edu.wpi.teamname.Ddb.FDatabaseTables;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.Access.AllAccessible;
 import edu.wpi.teamname.views.Mapping.Popup.Edit.AddNodeController;
@@ -51,7 +50,8 @@ public class MapController implements AllAccessible {
   public static final double nodeNormalWidth = 30;
   private String userCategory = "admin";
   public static String currentFloor = "1";
-  private boolean isEditor;
+  private boolean isEditor = false;
+  public boolean isEditNodeProperties = false;
 
   private final Image F1 = new Image("01_thefirstfloor.png");
   private final Image F2 = new Image("02_thesecondfloor.png");
@@ -735,21 +735,23 @@ public class MapController implements AllAccessible {
             (MouseEvent e) -> {
               resizeNodeUI(N, 2);
               if (isEditor) {
-                try {
-                  //                  FXMLLoader temp =
-                  //               loadPopup("MapPopUps/AddNode.fxml");
-                  //                  AddNodeController popupController =
-                  //               temp.getController();
-                  //                  popupController.setMapController(this);
-                  //                  popupController.setNX(e.getX());
-                  //                  popupController.setNY(e.getY());
-                  FXMLLoader temp = loadPopup("MapPopUps/EditNode.fxml");
-                  EditNodeController editNodeController = temp.getController();
-                  editNodeController.setMapController(this);
-                  editNodeController.setTheNode(N);
-
-                } catch (IOException ioException) {
-                  ioException.printStackTrace();
+                if (!isEditNodeProperties) {
+                  try {
+                    FXMLLoader temp = loadPopup("MapPopUps/EditNode.fxml");
+                    EditNodeController editNodeController = temp.getController();
+                    editNodeController.setMapController(this);
+                    editNodeController.setTheNode(N);
+                    popup.addEventHandler(
+                        KeyEvent.KEY_PRESSED,
+                        (KeyEvent k) -> {
+                          KeyCode key = k.getCode();
+                          if (key == KeyCode.SHIFT) {
+                            isEditNodeProperties = !isEditNodeProperties;
+                          }
+                        });
+                  } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                  }
                 }
               }
             });
@@ -759,7 +761,9 @@ public class MapController implements AllAccessible {
             (MouseEvent e) -> {
               if (!Targets.contains(N.getN())) resizeNodeUI(N, .5);
               if (isEditor) {
-                this.popup.hide();
+                if (!isEditNodeProperties) {
+                  this.popup.hide();
+                }
               }
             });
   }
