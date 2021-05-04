@@ -228,6 +228,8 @@ public class NodesTable extends AbsTables {
     }
   }
 
+  public void getCategory(Connection conn, String id) {}
+
   public void updateNodeXCoord(Connection conn, String nID, int xc) {
     try {
       PreparedStatement stmt = conn.prepareStatement("UPDATE Nodes SET xCoord=? WHERE nodeID=?");
