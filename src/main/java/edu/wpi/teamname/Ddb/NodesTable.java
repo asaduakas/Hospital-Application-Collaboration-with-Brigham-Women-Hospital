@@ -228,7 +228,22 @@ public class NodesTable extends AbsTables {
     }
   }
 
-  public void getCategory(Connection conn, String id) {}
+  public ArrayList<String> getCategoryTry(Connection conn, String cate) {
+    ArrayList<String> category = new ArrayList<>();
+    try {
+      PreparedStatement stmt =
+          conn.prepareStatement("SELECT longName FROM Nodes WHERE nodeType = ?");
+      stmt.setString(1, cate);
+
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        category.add(rs.getString("longName"));
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    return category;
+  }
 
   public void updateNodeXCoord(Connection conn, String nID, int xc) {
     try {

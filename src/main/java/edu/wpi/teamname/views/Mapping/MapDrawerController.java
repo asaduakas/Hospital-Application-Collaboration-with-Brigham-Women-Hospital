@@ -1,11 +1,13 @@
 package edu.wpi.teamname.views.Mapping;
 
-import com.jfoenix.controls.JFXTreeTableColumn;
-import com.jfoenix.controls.JFXTreeTableView;
+import com.jfoenix.controls.*;
+import edu.wpi.teamname.Ddb.FDatabaseTables;
+import edu.wpi.teamname.Ddb.GlobalDb;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,8 +15,6 @@ import javafx.scene.Node;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeTableColumn;
-import javafx.util.Callback;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;

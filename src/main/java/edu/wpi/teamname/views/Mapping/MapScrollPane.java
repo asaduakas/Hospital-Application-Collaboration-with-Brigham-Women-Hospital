@@ -34,12 +34,16 @@ public class MapScrollPane extends ScrollPane {
     setContent(outerNode(zoomNode));
 
     setPannable(true);
-    setHbarPolicy(ScrollBarPolicy.ALWAYS);
-    setVbarPolicy(ScrollBarPolicy.ALWAYS);
+    setHbarPolicy(ScrollBarPolicy.NEVER);
+    setVbarPolicy(ScrollBarPolicy.NEVER);
     setFitToHeight(true); // center
     setFitToWidth(true); // center
 
     updateScaleRange();
+  }
+
+  public ImageView getMapImage() {
+    return mapImage;
   }
 
   public void updateScaleRange() {

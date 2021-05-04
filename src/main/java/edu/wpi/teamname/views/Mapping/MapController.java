@@ -7,7 +7,6 @@ import edu.wpi.teamname.Astar.*;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.Access.AllAccessible;
 import edu.wpi.teamname.views.Mapping.Popup.Edit.AddNodeController;
-import edu.wpi.teamname.views.Mapping.Popup.Edit.EditNodeController;
 import java.awt.*;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -110,8 +109,11 @@ public class MapController implements AllAccessible {
     mapDrawer.setPickOnBounds(false);
 
     try {
-      AnchorPane menuBtns =
-          FXMLLoader.load(getClass().getClassLoader().getResource("MapDrawerView.fxml"));
+      FXMLLoader loader =
+          new FXMLLoader(getClass().getClassLoader().getResource("MapDrawerView.fxml"));
+      AnchorPane menuBtns = loader.load();
+      MapDrawerController drawer = loader.getController();
+      drawer.setMapController(this);
       mapDrawer.setSidePane(menuBtns);
     } catch (IOException e) {
       e.printStackTrace();
@@ -128,11 +130,9 @@ public class MapController implements AllAccessible {
           burgerTask.play();
           if (mapDrawer.isOpened()) {
             mapDrawer.close();
-            TheMap.setLayoutX(0);
             mapDrawer.setLayoutX(-132);
           } else {
             mapDrawer.open();
-            TheMap.setLayoutX(263);
             mapDrawer.setLayoutX(0);
           }
         });
@@ -325,7 +325,7 @@ public class MapController implements AllAccessible {
   }
 
   public void clearMap() {
-    secondaryAnchor.getChildren().removeIf(n -> (!(n instanceof ImageView)));
+    secondaryAnchor.getChildren().removeIf(n -> !n.equals(mapScrollPane.getMapImage()));
     resetNodeSizes();
   }
 
@@ -391,11 +391,11 @@ public class MapController implements AllAccessible {
 
   private void disableListener(MouseEvent e) {}
 
-//  public void clearMap() {
-//    secondaryAnchor.getChildren().remove(0, secondaryAnchor.getChildren().size());
-//    secondaryAnchor.getChildren().add(TheMap);
-//    resetNodeSizes();
-//  }
+  //  public void clearMap() {
+  //    secondaryAnchor.getChildren().remove(0, secondaryAnchor.getChildren().size());
+  //    secondaryAnchor.getChildren().add(TheMap);
+  //    resetNodeSizes();
+  //  }
 
   private void clearEdges() {
     Line line = new Line(); // for comparison
