@@ -38,6 +38,7 @@ public class CovidSurveyController implements Initializable, AllAccessible {
   @FXML private JFXCheckBox closeContactCheck;
   @FXML private JFXCheckBox isolateCheck;
   @FXML private JFXCheckBox goodCheck;
+  @FXML private JFXTextField emailAddress;
 
   int posBool = 0;
   int sympBool = 0;
@@ -111,10 +112,51 @@ public class CovidSurveyController implements Initializable, AllAccessible {
                 .textProperty()
                 .isEmpty()
                 .or(lastName.textProperty().isEmpty())
-                .or(phoneNumber.textProperty().isEmpty()));
+                .or(phoneNumber.textProperty().isEmpty())
+                .or(emailAddress.textProperty().isEmpty()));
 
     if (submitButton.isDisabled()) {
       popupWarning(event);
+    }
+    if (!submitButton.isDisabled()) {
+      if (positiveCheck.isSelected()
+          || symptomCheck.isSelected()
+          || closeContactCheck.isSelected()
+          || isolateCheck.isSelected()) {
+        if (positiveCheck.isSelected()) {
+          posBool = 1;
+        }
+        if (symptomCheck.isSelected()) {
+          sympBool = 1;
+        }
+        if (closeContactCheck.isSelected()) {
+          conBool = 1;
+        }
+        if (isolateCheck.isSelected()) {
+          isoBool = 1;
+        }
+        popupWarningCovid(event);
+      } else {
+        goodBool = 1;
+        Text submitText =
+            new Text(
+                "Your COVID-19 survey is submitted." + "\n" + "Press OK to return to home screen.");
+        JFXDialogLayout layout = new JFXDialogLayout();
+        layout.setHeading(new Text("Submitted!"));
+        layout.setBody(submitText);
+        JFXDialog submitDia = new JFXDialog(stackPane1, layout, JFXDialog.DialogTransition.CENTER);
+        JFXButton noBtn = new JFXButton("OK");
+        noBtn.setPrefHeight(20);
+        noBtn.setPrefWidth(60);
+        noBtn.setId("noBtn");
+        noBtn.setButtonType(JFXButton.ButtonType.FLAT);
+        noBtn.setOnAction(e -> ControllerManager.exitPopup());
+        noBtn.setStyle("-fx-background-color: #cdcdcd;");
+
+        layout.setActions(noBtn);
+
+        submitDia.show();
+      }
     }
 
     FDatabaseTables.getCovid19SurveyTable()
@@ -179,6 +221,7 @@ public class CovidSurveyController implements Initializable, AllAccessible {
     validationPaneFormatter(firstName);
     validationPaneFormatter(lastName);
     validationPaneFormatter(phoneNumber);
+    validationPaneFormatter(emailAddress);
 
     RequiredFieldValidator firstNameValid = new RequiredFieldValidator();
     firstNameValid.setMessage("Enter patient's first name");
@@ -208,6 +251,16 @@ public class CovidSurveyController implements Initializable, AllAccessible {
         .addListener(
             (o, oldVal, newVal) -> {
               if (!newVal) phoneNumber.validate();
+            });
+
+    RequiredFieldValidator emailValid = new RequiredFieldValidator();
+    emailValid.setMessage("Enter phone number");
+    emailAddress.getValidators().add(emailValid);
+    emailAddress
+        .focusedProperty()
+        .addListener(
+            (o, oldVal, newVal) -> {
+              if (!newVal) emailAddress.validate();
             });
   }
 
