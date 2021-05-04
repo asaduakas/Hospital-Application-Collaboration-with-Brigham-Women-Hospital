@@ -247,42 +247,61 @@ public class MapDrawerController implements Initializable {
       switch (name) {
         case "Directory":
           type = "ALL";
+          nodeRedrawing(type);
           break;
         case "Elevator":
           type = "ELEV";
+          nodeRedrawing(type);
           break;
         case "Restroom":
           type = "REST";
+          nodeRedrawing(type);
           break;
         case "Stairs":
           type = "STAI";
+          nodeRedrawing(type);
           break;
         case "Department":
           type = "DEPT";
+          nodeRedrawing(type);
           break;
         case "Laboratory":
           type = "LABS";
+          nodeRedrawing(type);
           break;
         case "Information":
           type = "INFO";
+          nodeRedrawing(type);
           break;
         case "Conference":
           type = "CONF";
+          nodeRedrawing(type);
           break;
         case "Entrance/Exit":
           type = "EXIT";
+          nodeRedrawing(type);
           break;
         case "Retail":
           type = "RETL";
+          nodeRedrawing(type);
           break;
         case "Service":
           type = "SERV";
+          nodeRedrawing(type);
+          break;
+        case "Parking":
+          type = "PARK";
+          nodeRedrawing(type);
           break;
         default:
-          type = "PARK";
+          mapController.clearMap();
+          for (NodeUI NUI : mapController.NODES) {
+            if (NUI.getN().getLongName().equals(name)) {
+              mapController.addNodeUI(NUI);
+            }
+          }
           break;
       }
-      nodeRedrawing(type);
     }
   }
 
@@ -295,8 +314,7 @@ public class MapDrawerController implements Initializable {
           mapController.addNodeUI(NUI);
         }
       }
-    }
-    else {
+    } else {
       for (NodeUI NUI : mapController.NODES) {
         if (NUI.getN().getFloor().equals(mapController.currentFloor)
             && (NUI.getN().getNodeType().equals(type))) {
