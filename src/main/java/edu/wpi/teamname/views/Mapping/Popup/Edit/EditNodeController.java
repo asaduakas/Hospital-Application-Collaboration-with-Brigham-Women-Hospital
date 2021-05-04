@@ -2,13 +2,13 @@ package edu.wpi.teamname.views.Mapping.Popup.Edit;
 
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
-import edu.wpi.teamname.App;
 import edu.wpi.teamname.Astar.Node;
+import edu.wpi.teamname.Ddb.FDatabaseTables;
+import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.Mapping.MapController;
 import edu.wpi.teamname.views.Mapping.NodeUI;
 import java.util.Random;
 import javafx.fxml.FXML;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class EditNodeController {
@@ -16,19 +16,18 @@ public class EditNodeController {
   @FXML public JFXComboBox FloorBox;
   @FXML public JFXComboBox NodeType;
   @FXML public JFXTextField building;
-  @FXML public JFXTextField nodeType;
   @FXML public JFXTextField longName;
   @FXML public JFXTextField shortName;
-  private NodeUI theNode;
 
   double X;
   double Y;
 
-  private Image I = new Image("Images/274px-Google_Maps_pin.svg.png");
   private MapController mapController;
+  private NodeUI theNode;
 
   @FXML
   private void initialize() {
+
     FloorBox.setPromptText("Floor " + MapController.currentFloor);
     FloorBox.getItems().addAll("L2", "L1", "1", "2", "3");
     NodeType.getItems()
@@ -44,20 +43,38 @@ public class EditNodeController {
             "Exit",
             "Retail",
             "Service");
-
-    building.setText(theNode.getN().getBuilding());
-    nodeType.setText(theNode.getN().getNodeType());
-    longName.setText(theNode.getN().getLongName());
-    shortName.setText(theNode.getN().getShortName());
   }
 
   @FXML
-  private void editNodeUI(NodeUI NUI) {
-    Node node = buildNode();
+  private void editNodeUI() {
+    String building = theNode.getN().getBuilding();
+    String floor = theNode.getN().getFloor();
+    String type = theNode.getN().getNodeType();
+    String shortName = theNode.getN().getShortName();
+    String longName = theNode.getN().getLongName();
 
-    NUI.setI(editMarker(NUI.getN()));
+    if (!this.building.getText().isEmpty()) building = this.building.getText();
 
-    mapController.addNode(NUI);
+    if (FloorBox.getValue() != null) floor = (String) FloorBox.getValue();
+    if (NodeType.getValue() != null) type = (String) NodeType.getValue();
+
+    if (!this.shortName.getText().isEmpty()) shortName = this.shortName.getText();
+    if (!this.longName.getText().isEmpty()) longName = this.longName.getText();
+
+    String nID = theNode.getN().getNodeID();
+    FDatabaseTables.getNodeTable().updateNodeBuilding(GlobalDb.getConnection(), nID, building);
+    FDatabaseTables.getNodeTable().updateNodeFloor(GlobalDb.getConnection(), nID, floor);
+    FDatabaseTables.getNodeTable().updateNodeType(GlobalDb.getConnection(), nID, type);
+    FDatabaseTables.getNodeTable().updateNodeShortName(GlobalDb.getConnection(), nID, shortName);
+    FDatabaseTables.getNodeTable().updateNodeLongName(GlobalDb.getConnection(), nID, longName);
+
+    Node node = theNode.getN();
+    node.setFloor(floor);
+    node.setBuilding(building);
+    node.setNodeType(type);
+    node.setShortName(shortName);
+    node.setLongName(longName);
+
     exitpopup();
   }
 
@@ -118,6 +135,7 @@ public class EditNodeController {
         type = "SERV";
         break;
       default:
+        type = (String) NodeType.getValue();
         break;
     }
     New.setNodeType(type);
@@ -129,10 +147,11 @@ public class EditNodeController {
 
   @FXML
   private void exitpopup() {
+    mapController.isEditNodeProperties = false;
     mapController.popup.hide();
   }
 
-  private ImageView editMarker(Node N) {
+  private ImageView buildMarker(Node N) {
     ImageView Marker = new ImageView();
     switch (N.getNodeType()) {
       case "PARK":
@@ -178,20 +197,63 @@ public class EditNodeController {
     return Marker;
   }
 
+  public void setNX(double x) {
+    X = x;
+  }
+
+  public void setNY(double y) {
+    Y = y;
+  }
+
   public void setTheNode(NodeUI N) {
     theNode = N;
+    String type = "";
+    switch (N.getN().getNodeType()) {
+      case "PARK":
+        type = "Parking";
+        break;
+      case "ELEV":
+        type = "Elevator";
+        break;
+      case "REST":
+        type = "Restroom";
+        break;
+      case "STAI":
+        type = "Stairs";
+        break;
+      case "DEPT":
+        type = "Department";
+        break;
+      case "LABS":
+        type = "Laboratory";
+        break;
+      case "INFO":
+        type = "Information";
+        break;
+      case "CONF":
+        type = "Conference";
+        break;
+      case "EXIT":
+        type = "Exit";
+        break;
+      case "RETL":
+        type = "Retail";
+        break;
+      case "SERV":
+        type = "Service";
+        break;
+      default:
+        type = N.getN().getNodeType();
+        break;
+    }
+    NodeType.setPromptText(type);
+
+    building.setPromptText(N.getN().getBuilding());
+    shortName.setPromptText(N.getN().getShortName());
+    longName.setPromptText(N.getN().getLongName());
   }
 
   public void setMapController(MapController mapController) {
     this.mapController = mapController;
-  }
-
-  @FXML
-  private void Cancel() {
-    exitPopup();
-  }
-
-  private void exitPopup() {
-    App.getPrimaryStage().getScene().getRoot().setEffect(null);
   }
 }

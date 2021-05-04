@@ -111,6 +111,7 @@ public class AddNodeController {
         type = "SERV";
         break;
       default:
+        type = (String) NodeType.getValue();
         break;
     }
     New.setNodeType(type);
@@ -162,6 +163,7 @@ public class AddNodeController {
         Marker.setImage(MapController.SERV);
         break;
       default:
+        Marker.setImage(I);
         break;
     }
     Marker.setFitWidth(MapController.nodeNormalWidth);
