@@ -90,9 +90,11 @@ public class HomeController extends Application implements AllAccessible {
           Pane root = (Pane) fxmlLoader.getRoot();
           List<Node> childrenList = root.getChildren();
           System.out.println("this is childrenList of the map" + childrenList);
-
+          JFXToggleButton mapEditing = (JFXToggleButton) childrenList.get(4);
+          JFXNodesList csvList = (JFXNodesList) childrenList.get(7);
           if (!userCategory.equalsIgnoreCase("admin")) {
-            JFXToggleButton mapEditing = (JFXToggleButton) childrenList.get(4);
+            csvList.setVisible(false);
+            csvList.setDisable(true);
             mapEditing.setVisible(false);
             mapEditing.setDisable(true);
           }
@@ -118,17 +120,21 @@ public class HomeController extends Application implements AllAccessible {
 
     JFXToggleButton mapEditorBtn = (JFXToggleButton) nodeList.get(4);
     JFXButton exitBtn = (JFXButton) nodeList.get(5);
+    JFXNodesList floorBtns = (JFXNodesList) nodeList.get(6);
+    JFXNodesList csvBtns = (JFXNodesList) nodeList.get(7);
 
     exitBtn.setLayoutY(
         App.getPrimaryStage().getScene().getWindow().getHeight() - exitBtn.getHeight() - 60);
-    exitBtn.setLayoutX(App.getPrimaryStage().getScene().getWidth() - exitBtn.getWidth() - 50);
+    exitBtn.setLayoutX(App.getPrimaryStage().getScene().getWidth() - exitBtn.getWidth() - 40);
 
-    JFXNodesList btns = (JFXNodesList) nodeList.get(6);
-    btns.setLayoutY(20);
-    btns.setLayoutX(App.getPrimaryStage().getScene().getWidth() - btns.getWidth() - 50);
+    floorBtns.setLayoutY(20);
+    floorBtns.setLayoutX(App.getPrimaryStage().getScene().getWidth() - floorBtns.getWidth() - 40);
 
-    mapEditorBtn.setLayoutX(btns.getLayoutX() - 150);
+    mapEditorBtn.setLayoutX(floorBtns.getLayoutX() - 150);
     mapEditorBtn.setLayoutY(14);
+
+    csvBtns.setLayoutY(16);
+    csvBtns.setLayoutX(mapEditorBtn.getLayoutX() - csvBtns.getWidth() - 20);
   }
 
   @FXML

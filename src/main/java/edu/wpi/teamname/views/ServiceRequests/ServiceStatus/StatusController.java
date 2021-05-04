@@ -229,7 +229,8 @@ public class StatusController extends AbsRequest
       security.setGraphic(securityImage);
 
       ImageView covidImage =
-          new ImageView(new Image(new FileInputStream("src/main/resources/Images/covid.png")));
+          new ImageView(
+              new Image(new FileInputStream("src/main/resources/Images/covid_black.png")));
       covidImage.setFitWidth(40);
       covidImage.setFitHeight(40);
       covid.setGraphic(covidImage);

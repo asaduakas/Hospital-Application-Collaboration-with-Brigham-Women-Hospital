@@ -80,20 +80,21 @@ public class UsersController extends AbsRequest
     try {
       ImageView empImage =
           new ImageView(
-              new Image(new FileInputStream("src/main/resources/Images/employeeIcon.jpeg")));
+              new Image(new FileInputStream("src/main/resources/Images/employeeIcon.png")));
       empImage.setFitWidth(35);
       empImage.setFitHeight(35);
       emp.setGraphic(empImage);
 
       ImageView patImage =
           new ImageView(
-              new Image(new FileInputStream("src/main/resources/Images/patientIcon.jpeg")));
+              new Image(new FileInputStream("src/main/resources/Images/patientIcon.png")));
       patImage.setFitWidth(40);
       patImage.setFitHeight(40);
       pat.setGraphic(patImage);
 
       ImageView adImage =
-          new ImageView(new Image(new FileInputStream("src/main/resources/Images/adminIcon.jpeg")));
+          new ImageView(
+              new Image(new FileInputStream("src/main/resources/Images/adminIcon_black.png")));
       adImage.setFitHeight(40);
       adImage.setFitWidth(40);
       ad.setGraphic(adImage);

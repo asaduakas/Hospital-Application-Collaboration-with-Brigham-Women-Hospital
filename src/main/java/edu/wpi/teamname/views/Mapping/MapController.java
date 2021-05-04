@@ -104,6 +104,7 @@ public class MapController implements AllAccessible {
   @FXML private JFXToggleButton toggleEditor;
   @FXML private JFXButton floorBtn;
   @FXML private StackPane stackPane;
+  @FXML private JFXButton csv;
   private SimpleStringProperty simpleFloor = new SimpleStringProperty("Floor " + currentFloor);
   private JFXButton ChooseFloorBtn = new JFXButton("Floor 1");
 
@@ -137,6 +138,8 @@ public class MapController implements AllAccessible {
     }
 
     initializeFloorList();
+
+    csvBtns();
 
     HamburgerSlideCloseTransition burgerTask = new HamburgerSlideCloseTransition(mapHam);
     burgerTask.setRate(-1);
@@ -173,20 +176,6 @@ public class MapController implements AllAccessible {
     mapDrawer.setSidePane(menuBtns);
     Pane root = (Pane) loader.getRoot();
     List<javafx.scene.Node> childrenList = root.getChildren();
-
-    JFXButton exportCSV = (JFXButton) childrenList.get(7);
-    JFXButton importCSV = (JFXButton) childrenList.get(8);
-    if (toggleEditor.isSelected()) {
-      exportCSV.setVisible(false);
-      exportCSV.setDisable(true);
-      importCSV.setVisible(false);
-      importCSV.setDisable(true);
-    } else {
-      exportCSV.setVisible(true);
-      exportCSV.setDisable(false);
-      importCSV.setVisible(true);
-      importCSV.setDisable(false);
-    }
     System.out.println("this is childrenList of the drawer " + childrenList);
     root.setMinHeight(App.getPrimaryStage().getScene().getHeight());
     Scene scene = App.getPrimaryStage().getScene();
@@ -208,7 +197,7 @@ public class MapController implements AllAccessible {
     JFXTreeView treeView = (JFXTreeView) nodeList.get(1);
     Label label = (Label) nodeList.get(2);
     JFXTextArea textDirection = (JFXTextArea) nodeList.get(3);
-    JFXButton dirBtn = (JFXButton) nodeList.get(9);
+    JFXButton dirBtn = (JFXButton) nodeList.get(7);
 
     treeView.setPrefHeight(App.getPrimaryStage().getScene().getHeight() / 2.5);
     label.setLayoutY(treeView.getLayoutY() + treeView.getPrefHeight() + 10);
@@ -1699,5 +1688,38 @@ public class MapController implements AllAccessible {
     FDatabaseTables.getEdgeTable().writeEdgesTable(GlobalDb.getConnection(), _edgesPath);
     System.out.println("Nodes path entered: " + _nodesPath);
     System.out.println("Edges path entered: " + _edgesPath);
+  }
+
+  private void csvBtns() {
+    JFXButton importBtn = new JFXButton("Import CSV");
+    importBtn.setButtonType(JFXButton.ButtonType.FLAT);
+    importBtn.setOnAction(
+        (e) -> {
+          importCSV();
+        });
+
+    JFXButton exportBtn = new JFXButton("Export CSV");
+    exportBtn.setOnAction(
+        (e) -> {
+          exportCSV();
+        });
+
+    JFXButton resetBtn = new JFXButton("Reset CSV");
+    resetBtn.setOnAction(
+        (e) -> {
+          resetCSV();
+        });
+
+    JFXNodesList csvNodeList = new JFXNodesList();
+    csvNodeList.addAnimatedNode(csv);
+    csvNodeList.addAnimatedNode(importBtn);
+    csvNodeList.addAnimatedNode(exportBtn);
+    csvNodeList.addAnimatedNode(resetBtn);
+    csvNodeList.setSpacing(20d);
+    mainAnchor.getChildren().add(csvNodeList);
+
+    //    csvNodeList.setVisible(false);
+
+    csvNodeList.visibleProperty().bind(toggleEditor.selectedProperty());
   }
 }
