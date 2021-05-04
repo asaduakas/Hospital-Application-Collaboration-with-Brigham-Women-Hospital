@@ -359,6 +359,8 @@ public class MapController implements AllAccessible {
         }
       }
     }
+    animateEdges();
+    animateElevators();
   }
 
   public void resizeNodeUI(NodeUI N, double factor) {
@@ -497,8 +499,7 @@ public class MapController implements AllAccessible {
       Targets.clear();
     } else {
       showPath();
-      animateEdges();
-      animateElevators();
+      algorithm.multiSearch(initialData, Targets).printPathEdges();
     }
   }
 
@@ -767,14 +768,29 @@ public class MapController implements AllAccessible {
 
       final double maxOffset = line.getStrokeDashArray().stream().reduce(0d, (a, b) -> a + b);
 
-      Timeline timeline =
-          new Timeline(
-              new KeyFrame(
-                  Duration.ZERO,
-                  new KeyValue(line.strokeDashOffsetProperty(), 0, Interpolator.LINEAR)),
-              new KeyFrame(
-                  Duration.seconds(2),
-                  new KeyValue(line.strokeDashOffsetProperty(), maxOffset, Interpolator.LINEAR)));
+      Timeline timeline;
+      System.out.println(edgeUi.getE().getStartNodeID());
+      System.out.println(e.getStartNodeID().equals(edgeUi.getE().getStartNodeID()));
+      if (e.getStartNodeID().equals(edgeUi.getE().getStartNodeID())) {
+        timeline =
+            new Timeline(
+                new KeyFrame(
+                    Duration.seconds(2),
+                    new KeyValue(line.strokeDashOffsetProperty(), 0, Interpolator.LINEAR)),
+                new KeyFrame(
+                    Duration.ZERO,
+                    new KeyValue(line.strokeDashOffsetProperty(), maxOffset, Interpolator.LINEAR)));
+      } else {
+        timeline =
+            new Timeline(
+                new KeyFrame(
+                    Duration.seconds(2),
+                    new KeyValue(line.strokeDashOffsetProperty(), maxOffset, Interpolator.LINEAR)),
+                new KeyFrame(
+                    Duration.ZERO,
+                    new KeyValue(line.strokeDashOffsetProperty(), 0, Interpolator.LINEAR)));
+      }
+
       timeline.setCycleCount(Timeline.INDEFINITE);
       timeline.play();
     }
@@ -817,18 +833,20 @@ public class MapController implements AllAccessible {
     for (int i = 0; i < thePath.size() - 1; i++) {
       Node n = initialData.getNodeByID(thePath.get(i).getStartNodeID());
       Node nodeNext = initialData.getNodeByID(thePath.get(i + 1).getStartNodeID());
-      if (n.getNodeType().equals("ELEV")) {
 
+      if (n.getNodeType().equals("ELEV") && n.getFloor().equals(currentFloor)) {
         ImageView imageView = new ImageView(up);
         imageView.setFitHeight(20);
         imageView.setFitWidth(20);
         imageView.setX(n.getXCoord() - 10);
         imageView.setY(n.getYCoord() - 10);
-        secondaryAnchor.getChildren().add(imageView);
+        ;
 
-        if (n.compareFloor(nodeNext) > 1) {
+        if (n.compareFloor(nodeNext) >= 1) {
+          secondaryAnchor.getChildren().add(imageView);
           imageView.setOnMousePressed(event -> goDown());
-        } else {
+        } else if (n.compareFloor(nodeNext) <= -1) {
+          secondaryAnchor.getChildren().add(imageView);
           imageView.setOnMousePressed(event -> goUp());
         }
 
@@ -839,29 +857,6 @@ public class MapController implements AllAccessible {
         st.setAutoReverse(true);
         st.play();
       }
-    }
-    Node n = initialData.getNodeByID(thePath.get(thePath.size()-1).getStartNodeID());
-    Node nodeNext = initialData.getNodeByID(thePath.get(thePath.size()).getStartNodeID());
-    if (n.getNodeType().equals("ELEV")) {
-      ImageView imageView = new ImageView(up);
-      imageView.setFitHeight(20);
-      imageView.setFitWidth(20);
-      imageView.setX(n.getXCoord() - 10);
-      imageView.setY(n.getYCoord() - 10);
-      secondaryAnchor.getChildren().add(imageView);
-
-      if (n.compareFloor(nodeNext) > 1) {
-        imageView.setOnMousePressed(event -> goDown());
-      } else {
-        imageView.setOnMousePressed(event -> goUp());
-      }
-
-      ScaleTransition st = new ScaleTransition(Duration.seconds(1), imageView);
-      st.setByX(1.5f);
-      st.setByY(1.5f);
-      st.setCycleCount(Animation.INDEFINITE);
-      st.setAutoReverse(true);
-      st.play();
     }
   }
 
