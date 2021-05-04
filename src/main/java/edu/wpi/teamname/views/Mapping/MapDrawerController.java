@@ -170,6 +170,8 @@ public class MapDrawerController implements Initializable {
     TreeItem<String> service = new TreeItem<>("Service");
     directoryTreeView.setRoot(directoryRoot);
 
+//    parking.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
     try {
       ImageView parkImage =
           new ImageView(new Image(new FileInputStream("src/main/resources/Images/parkingpin.png")));
