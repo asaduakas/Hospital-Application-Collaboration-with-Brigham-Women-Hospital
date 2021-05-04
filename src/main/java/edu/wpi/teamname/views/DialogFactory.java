@@ -37,12 +37,12 @@ public class DialogFactory {
 
     for (Pair<String, Runnable> buttonPair : buttonPairs) {
       JFXButton button = new JFXButton(buttonPair.getKey());
-      if (!whiteButtons)
-        button.setStyle("-fx-background-color: #cdcdcd;");
-      button.setOnAction(e -> {
-        dialog.close();
-        buttonPair.getValue().run();
-      });
+      if (!whiteButtons) button.setStyle("-fx-background-color: #cdcdcd;");
+      button.setOnAction(
+          e -> {
+            dialog.close();
+            buttonPair.getValue().run();
+          });
       buttons.add(button);
     }
 

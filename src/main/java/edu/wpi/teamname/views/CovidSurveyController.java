@@ -39,6 +39,8 @@ public class CovidSurveyController implements Initializable, AllAccessible {
   @FXML private JFXCheckBox isolateCheck;
   @FXML private JFXCheckBox goodCheck;
 
+  private DialogFactory dialogFactory;
+
   int posBool = 0;
   int sympBool = 0;
   int conBool = 0;
@@ -47,6 +49,7 @@ public class CovidSurveyController implements Initializable, AllAccessible {
 
   @FXML
   public void loadDialog(MouseEvent Event) {
+    /*
     JFXDialogLayout content = new JFXDialogLayout();
     content.setHeading(new Text("More Information"));
     content.setBody(
@@ -61,6 +64,17 @@ public class CovidSurveyController implements Initializable, AllAccessible {
     closeButton.setOnAction(e -> dialog.close());
     content.setActions(closeButton);
     dialog.show();
+     */
+
+    dialogFactory.createOneButtonDialogWhite(
+        "More Information",
+        "For assistance, contact IT at 123-456-"
+            + "\n"
+            + "7890. Further questions can be sent to"
+            + "\n"
+            + "diamonddragonsIT@gmail.com. ",
+        "Close",
+        () -> {});
   }
 
   @FXML
@@ -175,6 +189,8 @@ public class CovidSurveyController implements Initializable, AllAccessible {
 
   @Override
   public void initialize(URL url, ResourceBundle rb) {
+    dialogFactory = new DialogFactory(stackPane1);
+
     stackPane1.setPickOnBounds(false);
     validationPaneFormatter(firstName);
     validationPaneFormatter(lastName);
