@@ -87,6 +87,7 @@ public class MapDrawerController implements Initializable {
         case "Directory":
           System.out.println(mapController.getCurrentFloor());
           mapController.drawNodeFloor(mapController.getCurrentFloor());
+          type = "ALL";
           break;
         case "Elevator":
           type = "ELEV";
@@ -136,10 +137,14 @@ public class MapDrawerController implements Initializable {
   private void nodeRedrawing(String type) {
     mapController.clearMap();
 
-    for (NodeUI NUI : mapController.NODES) {
-      if (NUI.getN().getFloor().equals(mapController.currentFloor)
-          && (NUI.getN().getNodeType().equals(type))) {
-        mapController.addNodeUI(NUI);
+    if (type == "ALL") {
+      mapController.drawNodeFloor(mapController.getCurrentFloor());
+    } else {
+      for (NodeUI NUI : mapController.NODES) {
+        if (NUI.getN().getFloor().equals(mapController.currentFloor)
+            && (NUI.getN().getNodeType().equals(type))) {
+          mapController.addNodeUI(NUI);
+        }
       }
     }
   }
