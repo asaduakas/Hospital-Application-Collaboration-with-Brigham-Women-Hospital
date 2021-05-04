@@ -29,8 +29,9 @@ public class LangInterpreterRequestTable extends AbsTables {
               + "dateRequested DATE NOT NULL," // YYYY-MM-DD format
               + "PRIMARY KEY(id),"
               + "CONSTRAINT LANG_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
-              + "CONSTRAINT LANG_status_check CHECK (status IN ('Incomplete', 'Complete', 'In Progress')))";
-      // + "CONSTRAINT LANG_location_FK FOREIGN KEY(location) REFERENCES Nodes(nodeID))";
+              + "CONSTRAINT LANG_status_check CHECK (status IN ('Incomplete', 'Complete', 'In Progress')),"
+              + "CONSTRAINT LANG_langRequested_check CHECK (languageRequested IN ('Chinese', 'French', 'German', 'Italian', 'Spanish', 'Portuguese')))";
+              // + "CONSTRAINT LANG_location_FK FOREIGN KEY(location) REFERENCES Nodes(nodeID))";
       stmt.executeUpdate(query);
       System.out.println("Language Interpreter Request table created");
     } catch (Exception e) {
