@@ -31,6 +31,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -171,7 +172,7 @@ public class MapController implements AllAccessible {
     mapDrawer.setSidePane(menuBtns);
     Pane root = (Pane) loader.getRoot();
     List<javafx.scene.Node> childrenList = root.getChildren();
-    System.out.println("this is childrenList " + childrenList);
+    System.out.println("this is childrenList of the drawer " + childrenList);
     root.setMinHeight(App.getPrimaryStage().getScene().getHeight());
     Scene scene = App.getPrimaryStage().getScene();
     changeChildrenMapView(childrenList);
@@ -189,14 +190,21 @@ public class MapController implements AllAccessible {
   }
 
   public void changeChildrenMapView(List<javafx.scene.Node> nodeList) {
-    //    JFXButton findPath = (JFXButton) nodeList.get(0);
-    //    JFXTreeView treeView = (JFXTreeView) nodeList.get(3);
-    //    Label label = (Label) nodeList.get(4);
-    //    JFXTextArea textDirection = (JFXTextArea) nodeList.get(5);
-    //    treeView.setMinHeight(App.getPrimaryStage().getScene().getHeight() / 3);
-    //    label.setLayoutY(treeView.getLayoutY() + treeView.getMinHeight() + 10);
-    //    label.setLayoutX(10);
-    //    textDirection.setLayoutY(label.getLayoutY() + label.getHeight() + 30);
+    JFXButton findPath = (JFXButton) nodeList.get(0);
+    JFXTreeView treeView = (JFXTreeView) nodeList.get(1);
+    Label label = (Label) nodeList.get(2);
+    JFXTextArea textDirection = (JFXTextArea) nodeList.get(3);
+    JFXButton dirBtn = (JFXButton) nodeList.get(9);
+    treeView.setPrefHeight(App.getPrimaryStage().getScene().getHeight() / 2.5);
+    label.setLayoutY(treeView.getLayoutY() + treeView.getPrefHeight() + 10);
+    label.setLayoutX(10);
+    textDirection.setLayoutY(label.getLayoutY() + label.getHeight() + 30);
+    dirBtn.setLayoutY(textDirection.getLayoutY() + textDirection.getPrefHeight() + 20);
+    System.out.println(
+        "This is textArea layout stuff "
+            + textDirection.getLayoutY()
+            + " this is height "
+            + textDirection.getPrefHeight());
   }
 
   public void goHome() {
