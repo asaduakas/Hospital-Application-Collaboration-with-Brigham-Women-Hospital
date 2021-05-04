@@ -7,11 +7,11 @@ import edu.wpi.teamname.Astar.*;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.Access.AllAccessible;
 import edu.wpi.teamname.views.Mapping.Popup.Edit.AddNodeController;
-import edu.wpi.teamname.views.Mapping.Popup.Edit.EditNodeController;
 import java.awt.*;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import javafx.animation.*;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -35,6 +35,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Popup;
+import javafx.util.Duration;
 
 public class MapController implements AllAccessible {
 
@@ -67,6 +68,7 @@ public class MapController implements AllAccessible {
   public static final Image EXIT = new Image("Images/exitpin.png");
   public static final Image RETL = new Image("Images/retailpin.png");
   public static final Image SERV = new Image("Images/service.png");
+  private Image up = new Image("Images/up-arrow.png");
 
   @FXML private AnchorPane mainAnchor;
   @FXML private JFXComboBox FloorOption;
@@ -101,6 +103,8 @@ public class MapController implements AllAccessible {
     ToggleListener();
     nodeAddListener();
     cancelListener();
+    getNodesToAlignListener();
+    recordParkingListener();
 
     mapDrawer.setPickOnBounds(false);
 
@@ -497,6 +501,8 @@ public class MapController implements AllAccessible {
       Targets.clear();
     } else {
       showPath();
+      animateEdges();
+      animateElevators();
     }
   }
 
@@ -551,6 +557,8 @@ public class MapController implements AllAccessible {
             resetData();
             clearMap();
             drawNodeFloor("1");
+            nodesToAlign.clear();
+            System.out.println("Just cleared");
           }
         });
   }
@@ -590,37 +598,214 @@ public class MapController implements AllAccessible {
             });
   }
 
+  LinkedList<Node> nodesToAlign = new LinkedList<Node>();
+
+  private void getNodesToAlignListener() {
+    mainAnchor.setOnKeyPressed(
+        (KeyEvent e) -> {
+          KeyCode key = e.getCode();
+          if (key == KeyCode.SHIFT && isEditor) {
+            System.out.println("Shift is down");
+            cancelListener();
+
+            for (Node N : this.initialData.getGraphInfo()) {
+              NodeUI NUI = getNodeUIByID(N.getNodeID());
+              NUI.getI()
+                  .addEventHandler(
+                      MouseEvent.MOUSE_PRESSED,
+                      (M) -> {
+                        System.out.println("node clicked");
+                        nodesToAlign.add(NUI.getN());
+
+                        if (nodesToAlign.size() > 2) {
+                          alignNodes();
+                        }
+                      });
+            }
+          }
+        });
+  }
+
+  private void alignNodes() {
+    System.out.println("about to align");
+
+    int totalX = 0;
+    int totalY = 0;
+    int nodeCount = 0;
+    int diffX = 0;
+    int diffY = 0;
+    int totalXDiff = 0;
+    int totalYDiff = 0;
+    int tempX = nodesToAlign.getFirst().getXCoord();
+    int tempY = nodesToAlign.getFirst().getYCoord();
+
+    for (Node node : nodesToAlign) {
+      System.out.println(node.getNodeID());
+      System.out.println("X: " + node.getXCoord());
+      System.out.println("Y: " + node.getYCoord());
+      diffX = tempX - node.getXCoord();
+      diffY = tempY - node.getYCoord();
+      totalXDiff += Math.abs(diffX);
+      totalYDiff += Math.abs(diffY);
+      totalX += node.getXCoord();
+      totalY += node.getYCoord();
+      tempX = node.getXCoord();
+      tempY = node.getYCoord();
+      nodeCount++;
+    }
+
+    int avgX = totalX / nodeCount;
+    int avgY = totalY / nodeCount;
+
+    if (totalXDiff > totalYDiff) {
+      System.out.println("Align horizontally");
+      for (Node node : nodesToAlign) {
+        NodeUI NUI = getNodeUIByID(node.getNodeID());
+        NUI.getI().setX(node.getXCoord() - NUI.getI().getFitWidth() / 2);
+        NUI.getI().setY(avgY - NUI.getI().getFitHeight());
+        NUI.setNodeCoord(node.getXCoord(), avgY);
+        System.out.println("aligned X: " + NUI.getN().getXCoord());
+        System.out.println("aligned Y: " + NUI.getN().getYCoord());
+      }
+    } else {
+      System.out.println("Align vertically");
+      for (Node node : nodesToAlign) {
+        NodeUI NUI = getNodeUIByID(node.getNodeID());
+        NUI.getI().setX(avgX - NUI.getI().getFitWidth() / 2);
+        NUI.getI().setY(node.getYCoord() - NUI.getI().getFitHeight());
+        NUI.setNodeCoord(avgX, node.getYCoord());
+        System.out.println("aligned X: " + NUI.getN().getXCoord());
+        System.out.println("aligned Y: " + NUI.getN().getYCoord());
+      }
+    }
+  }
+
+  private void recordParkingListener() {
+
+    mainAnchor.setOnKeyPressed(
+        (KeyEvent e) -> {
+          KeyCode key = e.getCode();
+          int saveMode = 1;
+          if (key == KeyCode.S && !isEditor) {
+            System.out.println("S is down");
+            if (saveMode == 0) {
+              saveMode += 1;
+            } else if (saveMode == 1) {
+              saveMode -= 1;
+              for (Node N : this.initialData.getGraphInfo()) {
+                if (N.getNodeType().equals("PARK")) {
+                  NodeUI NUI = getNodeUIByID(N.getNodeID());
+                  NUI.getI()
+                      .addEventHandler(
+                          MouseEvent.MOUSE_PRESSED,
+                          (M) -> {
+                            System.out.println("node clicked");
+                            saveParkingSpot(NUI);
+                          });
+                }
+              }
+            }
+          }
+        });
+  }
+
+  private void saveParkingSpot(NodeUI N) {
+    System.out.println("Saving spot");
+    System.out.println(N.getSizeHeight());
+    System.out.println(N.getSizeWidth());
+
+    if (N.getSizeHeight() > 30) {
+      N.setSizeHeight(N.getSizeHeight() - 60);
+      N.setSizeWidth(N.getSizeWidth() - 60);
+    } else {
+      N.setSizeHeight(N.getSizeHeight() + 60);
+      N.setSizeWidth(N.getSizeWidth() + 60);
+    }
+  }
+
   private void hoverResize(NodeUI N) {
     N.getI()
         .setOnMouseEntered(
             (MouseEvent e) -> {
               resizeNodeUI(N, 2);
-              if (isEditor) {
-                try {
-                  //                  FXMLLoader temp = loadPopup("MapPopUps/AddNode.fxml");
-                  //                  AddNodeController popupController = temp.getController();
-                  //                  popupController.setMapController(this);
-                  //                  popupController.setNX(e.getX());
-                  //                  popupController.setNY(e.getY());
-                  FXMLLoader temp = loadPopup("MapPopUps/EditNode.fxml");
-                  EditNodeController editNodeController = temp.getController();
-                  editNodeController.setMapController(this);
-                  editNodeController.setTheNode(N);
-
-                } catch (IOException ioException) {
-                  ioException.printStackTrace();
-                }
-              }
+              //              if (isEditor) {
+              //                try {
+              //                  //                  FXMLLoader temp =
+              // loadPopup("MapPopUps/AddNode.fxml");
+              //                  //                  AddNodeController popupController =
+              // temp.getController();
+              //                  //                  popupController.setMapController(this);
+              //                  //                  popupController.setNX(e.getX());
+              //                  //                  popupController.setNY(e.getY());
+              //                  FXMLLoader temp = loadPopup("MapPopUps/EditNode.fxml");
+              //                  EditNodeController editNodeController = temp.getController();
+              //                  editNodeController.setMapController(this);
+              //                  editNodeController.setTheNode(N);
+              //
+              //                } catch (IOException ioException) {
+              //                  ioException.printStackTrace();
+              //                }
+              //              }
             });
 
     N.getI()
         .setOnMouseExited(
             (MouseEvent e) -> {
               if (Targets.isEmpty()) resizeNodeUI(N, .5);
-              if (isEditor) {
-                this.popup.hide();
-              }
+              //              if (isEditor) {
+              //                this.popup.hide();
+              //              }
             });
+  }
+
+  // ---------------------------------------Animation------------------------------------------
+
+  @FXML
+  private void animateEdges() {
+    for (Edge e : thePath) {
+      EdgeUI edgeUi = getEdgeUIByID(e.getEdgeID());
+      Line line = edgeUi.getL();
+
+      line.getStrokeDashArray().setAll(25d, 10d);
+      line.setStrokeWidth(2);
+
+      final double maxOffset = line.getStrokeDashArray().stream().reduce(0d, (a, b) -> a + b);
+
+      Timeline timeline =
+          new Timeline(
+              new KeyFrame(
+                  Duration.ZERO,
+                  new KeyValue(line.strokeDashOffsetProperty(), 0, Interpolator.LINEAR)),
+              new KeyFrame(
+                  Duration.seconds(2),
+                  new KeyValue(line.strokeDashOffsetProperty(), maxOffset, Interpolator.LINEAR)));
+      timeline.setCycleCount(Timeline.INDEFINITE);
+      timeline.play();
+    }
+  }
+
+  @FXML
+  private void animateElevators() {
+    for (Node n : Targets) {
+      if (n.getNodeType().equals("ELEV")) {
+        ImageView empty = new ImageView();
+        ImageView imageView = new ImageView(up);
+        imageView.setFitHeight(20);
+        imageView.setFitWidth(20);
+        imageView.setX(n.getXCoord() - 10);
+        imageView.setY(n.getYCoord() - 10);
+        secondaryAnchor.getChildren().add(imageView);
+        // TODO: if clicked on image, take to according floor
+        // maybe get rid of old node image
+
+        ScaleTransition st = new ScaleTransition(Duration.seconds(1), imageView);
+        st.setByX(1.5f);
+        st.setByY(1.5f);
+        st.setCycleCount(Animation.INDEFINITE);
+        st.setAutoReverse(true);
+        st.play();
+      }
+    }
   }
 
   // ___________________________________Getter and Setter_____________________________________

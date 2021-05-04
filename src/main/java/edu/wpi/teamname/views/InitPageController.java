@@ -1,8 +1,6 @@
 package edu.wpi.teamname.views;
 
 import com.jfoenix.controls.JFXButton;
-import edu.wpi.teamname.Ddb.FDatabaseTables;
-import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.Access.AllAccessible;
 import edu.wpi.teamname.views.Access.LoginController;
 import java.awt.*;
@@ -69,7 +67,6 @@ public class InitPageController implements AllAccessible {
     LoginController.userCategory = "Guest";
     ControllerManager.attemptLoadPage(
         "HomeView.fxml", fxmlLoader -> LoginController.start(fxmlLoader.getRoot()));
-    FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "PARK");
   }
 
   public static String getUserCategory() {

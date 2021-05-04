@@ -1,14 +1,11 @@
 package edu.wpi.teamname.Ddb;
 
 import edu.wpi.teamname.Astar.Node;
-import edu.wpi.teamname.views.Mapping.CategoryNodeInfo;
 import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Scanner;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 public class NodesTable extends AbsTables {
 
@@ -231,40 +228,7 @@ public class NodesTable extends AbsTables {
     }
   }
 
-  public ObservableList<CategoryNodeInfo> getCategory(Connection conn, String cate) {
-    ObservableList<CategoryNodeInfo> category = FXCollections.observableArrayList();
-    try {
-      PreparedStatement stmt =
-          conn.prepareStatement("SELECT longName FROM Nodes WHERE nodeType = ?");
-      stmt.setString(1, cate);
-
-      ResultSet rs = stmt.executeQuery();
-      while (rs.next()) {
-        category.add(new CategoryNodeInfo(rs.getString("longName")));
-        System.out.println(rs.getString("longName"));
-      }
-    } catch (SQLException throwables) {
-      throwables.printStackTrace();
-    }
-    return category;
-  }
-
-  public ArrayList<String> getCategoryTry(Connection conn, String cate) {
-    ArrayList<String> category = new ArrayList<>();
-    try {
-      PreparedStatement stmt =
-          conn.prepareStatement("SELECT longName FROM Nodes WHERE nodeType = ?");
-      stmt.setString(1, cate);
-
-      ResultSet rs = stmt.executeQuery();
-      while (rs.next()) {
-        category.add(rs.getString("longName"));
-      }
-    } catch (SQLException throwables) {
-      throwables.printStackTrace();
-    }
-    return category;
-  }
+  public void getCategory(Connection conn, String id) {}
 
   public void updateNodeXCoord(Connection conn, String nID, int xc) {
     try {
