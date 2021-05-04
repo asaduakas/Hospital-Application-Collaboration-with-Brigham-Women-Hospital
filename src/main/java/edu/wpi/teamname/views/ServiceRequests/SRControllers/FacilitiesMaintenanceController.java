@@ -11,11 +11,9 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.text.Text;
 import javafx.stage.Popup;
 
 public class FacilitiesMaintenanceController extends AbsRequest
@@ -36,16 +34,16 @@ public class FacilitiesMaintenanceController extends AbsRequest
   @FXML
   public void loadDialog(MouseEvent Event) {
     dialogFactory.createOneButtonDialogWhite(
-            "More Information",
-            "All fields must be filled out before submitting"
-                    + "\n"
-                    + "the form. For further assistance, contact IT at"
-                    + "\n"
-                    + "123-456- 7890. Questions can also be sent to"
-                    + "\n"
-                    + "diamonddragonsIT@gmail.com. ",
-            "Close",
-            () -> {});
+        "More Information",
+        "All fields must be filled out before submitting"
+            + "\n"
+            + "the form. For further assistance, contact IT at"
+            + "\n"
+            + "123-456- 7890. Questions can also be sent to"
+            + "\n"
+            + "diamonddragonsIT@gmail.com. ",
+        "Close",
+        () -> {});
   }
 
   @FXML
@@ -71,18 +69,18 @@ public class FacilitiesMaintenanceController extends AbsRequest
       // Tables.addExTransInfo(connection, super.firstName.getText());
 
       dialogFactory.createTwoButtonDialog(
-              "Submitted!",
-              "Your request is submitted." + "\n" + "Would you like to make another request?",
-              "Yes",
-              () -> {
-                try {
-                  popUpAction("ServicePageView.fxml");
-                } catch (IOException e) {
-                  e.printStackTrace();
-                }
-              },
-              "No",
-              this::goHome);
+          "Submitted!",
+          "Your request is submitted." + "\n" + "Would you like to make another request?",
+          "Yes",
+          () -> {
+            try {
+              popUpAction("ServicePageView.fxml");
+            } catch (IOException e) {
+              e.printStackTrace();
+            }
+          },
+          "No",
+          this::goHome);
 
       //      // TODO - create facilities maintenance table
       //
@@ -102,6 +100,7 @@ public class FacilitiesMaintenanceController extends AbsRequest
 
   @Override
   public void initialize(URL url, ResourceBundle rb) {
+    initDialogFactory();
     stackPane1.setPickOnBounds(false);
     //    validationPaneFormatter(super.firstName);
     //    validationPaneFormatter(super.lastName);
