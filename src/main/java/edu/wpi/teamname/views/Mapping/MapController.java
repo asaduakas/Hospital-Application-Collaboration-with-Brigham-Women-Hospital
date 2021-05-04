@@ -690,7 +690,7 @@ public class MapController implements AllAccessible {
     mapScrollPane.setOnKeyPressed(
         (KeyEvent e) -> {
           KeyCode key = e.getCode();
-          if(!isEditor) {
+          if (!isEditor) {
             if (key == KeyCode.ESCAPE) {
               resetData();
               clearMap();

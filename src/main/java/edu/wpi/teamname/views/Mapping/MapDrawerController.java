@@ -39,7 +39,7 @@ public class MapDrawerController implements Initializable {
   @FXML private VBox vBox;
   @FXML private GridPane startGrid;
   @FXML private GridPane endGrid;
-  @FXML private JFXComboBox algoVersion;
+  @FXML private JFXComboBox<String> algoVersion;
 
   private MapController mapController;
 
@@ -112,6 +112,19 @@ public class MapDrawerController implements Initializable {
               }
               endGrid.add(longNameMenu(newValue, longNames), 0, 1);
             });
+
+    algoVersion.getItems().addAll("A*", "BFS", "DFS", "Dijkstra");
+    algoVersion
+        .getSelectionModel()
+        .selectedItemProperty()
+        .addListener(
+            new ChangeListener<String>() {
+              @Override
+              public void changed(
+                  ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                changePathFinderAlgo(newValue);
+              }
+            });
   }
 
   public static VBox longNameMenu(String str, ArrayList<String> list) {
@@ -130,19 +143,6 @@ public class MapDrawerController implements Initializable {
       }
     }
     return nameMenu;
-
-    algoVersion.getItems().addAll("A*", "BFS", "DFS", "Dijkstra");
-    algoVersion
-        .getSelectionModel()
-        .selectedItemProperty()
-        .addListener(
-            new ChangeListener<String>() {
-              @Override
-              public void changed(
-                  ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                changePathFinderAlgo(newValue);
-              }
-            });
   }
 
   private void handleMouseClicked(MouseEvent event) {
