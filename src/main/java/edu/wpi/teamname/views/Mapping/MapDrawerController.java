@@ -108,6 +108,8 @@ public class MapDrawerController implements Initializable {
         FDatabaseTables.getNodeTable().fetchLongNameNoHall(GlobalDb.getConnection());
     String[] str = {"Hi", "Hello", "adkfljafiowe"};
 
+    startGrid.setPickOnBounds(false);
+
     startField
         .textProperty()
         .addListener(
@@ -116,13 +118,6 @@ public class MapDrawerController implements Initializable {
                 startGrid.getChildren().remove(1);
               }
               startGrid.add(longNameMenu(newValue, longNames, startField), 0, 1);
-              endGrid.setVisible(
-                  startField.getText().isEmpty()
-                      || startField.getText().length() > 8
-                      || startField.getText().equals("Cafe"));
-              System.out.println(
-                  "this is the size of the menu "
-                      + longNameMenu(newValue, longNames, startField).getChildren().size());
             });
 
     endField
