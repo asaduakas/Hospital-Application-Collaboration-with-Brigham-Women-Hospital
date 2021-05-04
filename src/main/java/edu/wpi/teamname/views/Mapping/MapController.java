@@ -70,6 +70,8 @@ public class MapController implements AllAccessible {
   public static final Image RETL = new Image("Images/retailpin.png");
   public static final Image SERV = new Image("Images/service.png");
   private Image up = new Image("Images/up-arrow.png");
+  private Image endImage = new Image("Images/endingIcon_white.png");
+  private Image startImage = new Image("Images/walkingStartIcon_black.png");
 
   @FXML private AnchorPane mainAnchor;
   @FXML private JFXComboBox FloorOption;
@@ -359,6 +361,32 @@ public class MapController implements AllAccessible {
         }
       }
     }
+
+    // Making different icons for starting and ending nodes
+
+    NodeUI startNode = getNodeUIByID(thePath.get(0).getStartNodeID());
+    ImageView startPin = new ImageView(startImage);
+    startPin.setFitWidth(45);
+    startPin.setFitHeight(45);
+    startPin.setX(startNode.getSimpXcoord() - 22.5);
+    startPin.setY(startNode.getSimpYcoord() - 22.5);
+
+    NodeUI endNode = getNodeUIByID(thePath.get(thePath.size() - 1).getEndNodeID());
+    ImageView endPin = new ImageView(endImage);
+    endPin.setFitWidth(30);
+    endPin.setFitHeight(30);
+    endPin.setX(endNode.getSimpXcoord() - 15);
+    endPin.setY(endNode.getSimpYcoord() - 15);
+
+    if (startNode.getN().getFloor().equals(currentFloor)) {
+      secondaryAnchor.getChildren().add(startPin);
+    }
+    if (endNode.getN().getFloor().equals(currentFloor)) {
+      secondaryAnchor.getChildren().add(endPin);
+      scaleAnimation(
+          secondaryAnchor.getChildren().get(secondaryAnchor.getChildren().indexOf(endPin)));
+    }
+
     animateEdges();
     animateElevators();
   }
@@ -858,6 +886,16 @@ public class MapController implements AllAccessible {
         st.play();
       }
     }
+  }
+
+  @FXML
+  private void scaleAnimation(javafx.scene.Node n) {
+    ScaleTransition st = new ScaleTransition(Duration.seconds(1), n);
+    st.setByX(1.2f);
+    st.setByY(1.2f);
+    st.setCycleCount(Animation.INDEFINITE);
+    st.setAutoReverse(true);
+    st.play();
   }
 
   // ___________________________________Getter and Setter_____________________________________
