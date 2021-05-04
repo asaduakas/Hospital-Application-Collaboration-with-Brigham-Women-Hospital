@@ -21,6 +21,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -151,5 +152,20 @@ public abstract class AbsRequest implements AllAccessible {
     ArrayList<String> longNameList =
         FDatabaseTables.getNodeTable().fetchLongName(GlobalDb.getConnection());
     locationAutoComplete.getEntries().addAll(longNameList);
+  }
+
+  @FXML
+  public void loadDialog(MouseEvent Event) {
+    dialogFactory.createOneButtonDialogWhite(
+        "More Information",
+        "All fields must be filled out before submitting"
+            + "\n"
+            + "the form. For further assistance, contact IT at"
+            + "\n"
+            + "123-456- 7890. Questions can also be sent to"
+            + "\n"
+            + "diamonddragonsIT@gmail.com. ",
+        "Close",
+        () -> {});
   }
 }

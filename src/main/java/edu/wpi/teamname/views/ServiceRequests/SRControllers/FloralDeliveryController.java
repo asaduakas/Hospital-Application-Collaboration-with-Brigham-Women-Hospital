@@ -15,7 +15,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Popup;
 
 public class FloralDeliveryController extends AbsRequest
@@ -32,21 +31,6 @@ public class FloralDeliveryController extends AbsRequest
     popup = new Popup();
     //// ServicePageController.popup.hide();
     super.popUpAction("Emergency.fxml");
-  }
-
-  @FXML
-  public void loadDialog(MouseEvent Event) {
-    dialogFactory.createOneButtonDialogWhite(
-        "More Information",
-        "All fields must be filled out before submitting"
-            + "\n"
-            + "the form. For further assistance, contact IT at"
-            + "\n"
-            + "123-456- 7890. Questions can also be sent to"
-            + "\n"
-            + "diamonddragonsIT@gmail.com. ",
-        "Close",
-        () -> {});
   }
 
   @FXML
