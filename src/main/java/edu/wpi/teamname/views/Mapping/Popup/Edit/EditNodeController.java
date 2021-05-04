@@ -53,11 +53,11 @@ public class EditNodeController {
     String shortName = theNode.getN().getShortName();
     String longName = theNode.getN().getLongName();
 
-    if(NodeType.getValue() != null) type = (String) NodeType.getValue();
-    if(this.building.getText() != null) building = this.building.getText();
-    if(FloorBox.getValue() != null) floor = (String) FloorBox.getValue();
-    if(this.shortName != null) shortName = this.shortName.getText();
-    if(this.longName != null) longName = this.longName.getText();
+    if (NodeType.getValue() != null) type = (String) NodeType.getValue();
+    if (this.building.getText() != null) building = this.building.getText();
+    if (FloorBox.getValue() != null) floor = (String) FloorBox.getValue();
+    if (this.shortName != null) shortName = this.shortName.getText();
+    if (this.longName != null) longName = this.longName.getText();
 
     String nID = theNode.getN().getNodeID();
     FDatabaseTables.getNodeTable().updateNodeBuilding(GlobalDb.getConnection(), nID, building);
