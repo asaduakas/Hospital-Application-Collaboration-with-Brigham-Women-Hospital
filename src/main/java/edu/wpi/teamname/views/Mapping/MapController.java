@@ -690,13 +690,15 @@ public class MapController implements AllAccessible {
     mapScrollPane.setOnKeyPressed(
         (KeyEvent e) -> {
           KeyCode key = e.getCode();
-          if (key == KeyCode.ESCAPE) {
-            resetData();
-            clearMap();
-            drawNodeFloor("1");
-            System.out.println("Just cleared");
+          if(!isEditor) {
+            if (key == KeyCode.ESCAPE) {
+              resetData();
+              clearMap();
+              drawNodeFloor(currentFloor);
+              System.out.println("Just cleared");
+            }
+            return;
           }
-          if (!isEditor) return;
           switch (key) {
             case R:
               resetCSV();
@@ -1213,6 +1215,16 @@ public class MapController implements AllAccessible {
   public static NodeUI getNodeUIByID(String NodeID) {
     for (NodeUI theNode : NODES) {
       if (theNode.getN().getNodeID().equals(NodeID)) {
+        return theNode;
+      }
+    }
+    System.out.println("This node doesn't exist.");
+    return null;
+  }
+
+  public static NodeUI getNodeUIByLongName(String NodeLongName) {
+    for (NodeUI theNode : NODES) {
+      if (theNode.getN().getLongName().equals(NodeLongName)) {
         return theNode;
       }
     }
