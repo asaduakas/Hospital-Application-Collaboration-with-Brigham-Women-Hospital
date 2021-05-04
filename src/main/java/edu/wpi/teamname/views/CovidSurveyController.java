@@ -109,9 +109,11 @@ public class CovidSurveyController implements Initializable, AllAccessible {
         popupWarningCovid(event);
       } else {
         goodBool = 1;
-        dialogFactory.createOneButtonDialog("Submitted!",
-                "Your COVID-19 survey is submitted." + "\n" + "Press OK to return to home screen.",
-                "OK", ControllerManager::exitPopup);
+        dialogFactory.createOneButtonDialog(
+            "Submitted!",
+            "Your COVID-19 survey is submitted." + "\n" + "Press OK to return to home screen.",
+            "OK",
+            ControllerManager::exitPopup);
       }
     }
 

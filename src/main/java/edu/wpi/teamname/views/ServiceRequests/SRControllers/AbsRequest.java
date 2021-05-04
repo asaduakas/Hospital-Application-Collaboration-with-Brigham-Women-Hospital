@@ -11,6 +11,7 @@ import edu.wpi.teamname.views.Access.AllAccessible;
 import edu.wpi.teamname.views.Access.LoginController;
 import edu.wpi.teamname.views.AutoCompleteComboBox;
 import edu.wpi.teamname.views.ControllerManager;
+import edu.wpi.teamname.views.DialogFactory;
 import edu.wpi.teamname.views.InitPageController;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,6 +40,17 @@ public abstract class AbsRequest implements AllAccessible {
   @FXML JFXButton helpButton;
   private static String userCategory;
   public static Boolean disableRequestStatus = false;
+
+  protected DialogFactory dialogFactory;
+
+  public void initDialogFactory() {
+    dialogFactory = new DialogFactory(stackPane1);
+  }
+
+  @FXML
+  public void initialize() {
+    initDialogFactory();
+  }
 
   public void goHome() {
     List<Node> childrenList = App.getPrimaryStage().getScene().getRoot().getChildrenUnmodifiable();
