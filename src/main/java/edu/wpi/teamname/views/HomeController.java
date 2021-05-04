@@ -91,10 +91,7 @@ public class HomeController extends Application implements AllAccessible {
           List<Node> childrenList = root.getChildren();
           System.out.println("this is childrenList of the map" + childrenList);
           JFXToggleButton mapEditing = (JFXToggleButton) childrenList.get(4);
-          JFXNodesList csvList = (JFXNodesList) childrenList.get(7);
           if (!userCategory.equalsIgnoreCase("admin")) {
-            csvList.setVisible(false);
-            csvList.setDisable(true);
             mapEditing.setVisible(false);
             mapEditing.setDisable(true);
           }
