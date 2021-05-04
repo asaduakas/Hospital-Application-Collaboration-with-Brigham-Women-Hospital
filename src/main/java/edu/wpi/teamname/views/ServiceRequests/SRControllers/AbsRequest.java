@@ -18,16 +18,12 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 
 public abstract class AbsRequest implements AllAccessible {
 
@@ -100,8 +96,8 @@ public abstract class AbsRequest implements AllAccessible {
 
   @FXML
   void popupWarning(ActionEvent event) throws IOException {
-    dialogFactory.createOneButtonDialog("Error", "Please fill out the required fields.",
-            "Close", () -> {});
+    dialogFactory.createOneButtonDialog(
+        "Error", "Please fill out the required fields.", "Close", () -> {});
   }
 
   <T extends JFXTextField & IFXLabelFloatControl> void validationPaneFormatter(T jfxTextField) {
@@ -130,21 +126,24 @@ public abstract class AbsRequest implements AllAccessible {
 
   @FXML
   void cancelPage(ActionEvent event) throws IOException {
-    dialogFactory.createTwoButtonDialog("Exit form?",
-            "This will bring you back to the service" + "\n" + "requests page.",
-            "Yes", () -> {
-              List<Node> childrenList =
-                      App.getPrimaryStage().getScene().getRoot().getChildrenUnmodifiable();
-              VBox buttonBox = (VBox) childrenList.get(2);
-              buttonBox.setVisible(false);
-              // ServicePageController.popup.hide();
-              try {
-                popUpAction("ServicePageView.fxml");
-              } catch (IOException e) {
-                e.printStackTrace();
-              }
-            },
-            "No", () -> {});
+    dialogFactory.createTwoButtonDialog(
+        "Exit form?",
+        "This will bring you back to the service" + "\n" + "requests page.",
+        "Yes",
+        () -> {
+          List<Node> childrenList =
+              App.getPrimaryStage().getScene().getRoot().getChildrenUnmodifiable();
+          VBox buttonBox = (VBox) childrenList.get(2);
+          buttonBox.setVisible(false);
+          // ServicePageController.popup.hide();
+          try {
+            popUpAction("ServicePageView.fxml");
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+        },
+        "No",
+        () -> {});
   }
 
   public void type(ActionEvent actionEvent) {

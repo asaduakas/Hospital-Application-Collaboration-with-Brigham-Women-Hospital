@@ -33,7 +33,7 @@ public class AVRequestController extends AbsRequest
   @FXML
   public void loadDialog(MouseEvent Event) {
     dialogFactory.createOneButtonDialogWhite(
-        "Need Help?",
+        "More Information",
         "All fields must be filled out before submitting"
             + "\n"
             + "the form. For further assistance, contact IT at"
