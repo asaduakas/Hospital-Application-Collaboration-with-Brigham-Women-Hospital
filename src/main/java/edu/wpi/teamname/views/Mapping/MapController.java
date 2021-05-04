@@ -734,19 +734,57 @@ public class MapController implements AllAccessible {
     }
   }
 
+  private void goUp() {
+    String temp = null;
+    switch (currentFloor) {
+      case "1":
+        temp = "2";
+        break;
+      case "2":
+        temp = "3";
+        break;
+      default:
+        temp = "1";
+        break;
+    }
+    switchFloor(temp);
+  }
+
+  private void goDown() {
+    String temp = null;
+    switch (currentFloor) {
+      case "3":
+        temp = "2";
+        break;
+      case "2":
+        temp = "1";
+        break;
+      default:
+        temp = "1";
+        break;
+    }
+    switchFloor(temp);
+  }
+
   @FXML
   private void animateElevators() {
-    for (Node n : Targets) {
+    for (int i = 0; i < thePath.size() - 1; i++) {
+      Node n = initialData.getNodeByID(thePath.get(i).getStartNodeID());
+      Node nodeNext = initialData.getNodeByID(thePath.get(i + 1).getStartNodeID());
       if (n.getNodeType().equals("ELEV")) {
-        ImageView empty = new ImageView();
+
         ImageView imageView = new ImageView(up);
         imageView.setFitHeight(20);
         imageView.setFitWidth(20);
         imageView.setX(n.getXCoord() - 10);
         imageView.setY(n.getYCoord() - 10);
         secondaryAnchor.getChildren().add(imageView);
-        // TODO: if clicked on image, take to according floor
-        // maybe get rid of old node image
+
+        if (n.compareFloor(nodeNext) > 1) {
+          imageView.setOnMousePressed(event -> goDown());
+        } else {
+          imageView.setOnMousePressed(event -> goUp());
+        }
 
         ScaleTransition st = new ScaleTransition(Duration.seconds(1), imageView);
         st.setByX(1.5f);
@@ -755,6 +793,29 @@ public class MapController implements AllAccessible {
         st.setAutoReverse(true);
         st.play();
       }
+    }
+    Node n = initialData.getNodeByID(thePath.get(thePath.size()-1).getStartNodeID());
+    Node nodeNext = initialData.getNodeByID(thePath.get(thePath.size()).getStartNodeID());
+    if (n.getNodeType().equals("ELEV")) {
+      ImageView imageView = new ImageView(up);
+      imageView.setFitHeight(20);
+      imageView.setFitWidth(20);
+      imageView.setX(n.getXCoord() - 10);
+      imageView.setY(n.getYCoord() - 10);
+      secondaryAnchor.getChildren().add(imageView);
+
+      if (n.compareFloor(nodeNext) > 1) {
+        imageView.setOnMousePressed(event -> goDown());
+      } else {
+        imageView.setOnMousePressed(event -> goUp());
+      }
+
+      ScaleTransition st = new ScaleTransition(Duration.seconds(1), imageView);
+      st.setByX(1.5f);
+      st.setByY(1.5f);
+      st.setCycleCount(Animation.INDEFINITE);
+      st.setAutoReverse(true);
+      st.play();
     }
   }
 
