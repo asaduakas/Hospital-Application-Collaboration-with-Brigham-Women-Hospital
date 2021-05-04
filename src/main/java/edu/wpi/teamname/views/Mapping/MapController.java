@@ -4,17 +4,20 @@ import com.jfoenix.controls.*;
 import com.jfoenix.transitions.hamburger.HamburgerSlideCloseTransition;
 import edu.wpi.teamname.App;
 import edu.wpi.teamname.Astar.*;
+import edu.wpi.teamname.Ddb.FDatabaseTables;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.Access.AllAccessible;
 import edu.wpi.teamname.views.Mapping.Popup.Edit.AddNodeController;
 import edu.wpi.teamname.views.Mapping.Popup.Edit.EditNodeController;
 import java.awt.*;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 import javafx.animation.*;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -35,6 +38,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Popup;
 import javafx.util.Duration;
 
@@ -72,6 +76,9 @@ public class MapController implements AllAccessible {
   public static final Image RETL = new Image("Images/retailpin.png");
   public static final Image SERV = new Image("Images/service.png");
   private Image up = new Image("Images/up-arrow.png");
+  private Image down = new Image("Images/redArrow.png");
+  private Image endImage = new Image("Images/endingIcon_white.png");
+  private Image startImage = new Image("Images/walkingStartIcon_black.png");
 
   @FXML private AnchorPane mainAnchor;
   @FXML private JFXComboBox FloorOption;
@@ -82,6 +89,9 @@ public class MapController implements AllAccessible {
   @FXML private JFXHamburger mapHam;
   @FXML private JFXDrawer mapDrawer;
   @FXML private JFXToggleButton toggleEditor;
+  @FXML private StackPane stackPane;
+  private SimpleStringProperty simpleFloor = new SimpleStringProperty("Floor " + currentFloor);
+  private JFXButton ChooseFloorBtn = new JFXButton("Floor 1");
 
   @FXML
   private void initialize() {
@@ -240,8 +250,8 @@ public class MapController implements AllAccessible {
   }
 
   private void initializeFloorList() {
-    JFXButton ChooseFloorBtn = new JFXButton("Choose Floor");
     ChooseFloorBtn.setButtonType(JFXButton.ButtonType.RAISED);
+    ChooseFloorBtn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 20px");
 
     JFXButton Floor1Btn = new JFXButton("Floor 1");
     Floor1Btn.setButtonType(JFXButton.ButtonType.RAISED);
@@ -285,7 +295,6 @@ public class MapController implements AllAccessible {
     nodeList.addAnimatedNode(Floor1Btn);
     nodeList.addAnimatedNode(Floor2Btn);
     nodeList.addAnimatedNode(Floor3Btn);
-    ChooseFloorBtn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 20px");
     nodeList.setSpacing(20d);
     nodeList.setLayoutX(280);
     nodeList.setLayoutY(10);
@@ -296,10 +305,12 @@ public class MapController implements AllAccessible {
   // _______________________________________Draw________________________________________
 
   public void addNodeUI(NodeUI NUI) {
+    if (secondaryAnchor.getChildren().contains(NUI.getI())) return;
     secondaryAnchor.getChildren().add(NUI.getI());
   }
 
   private void addEdgeUI(EdgeUI EUI) {
+    if (secondaryAnchor.getChildren().contains(EUI.getL())) return;
     secondaryAnchor.getChildren().add(EUI.getL());
   }
 
@@ -351,6 +362,7 @@ public class MapController implements AllAccessible {
         break;
     }
     drawNodeFloor(floor);
+    ChooseFloorBtn.setText("Floor " + currentFloor);
     if (isEditor) {
       drawEdgeFloor(floor);
     } else {
@@ -371,6 +383,32 @@ public class MapController implements AllAccessible {
           if (!secondaryAnchor.getChildren().contains(EUI.getL())) addEdgeUI(EUI);
         }
       }
+      // Making different icons for starting and ending nodes
+
+      NodeUI startNode = getNodeUIByID(thePath.get(0).getStartNodeID());
+      ImageView startPin = new ImageView(startImage);
+      startPin.setFitWidth(45);
+      startPin.setFitHeight(45);
+      startPin.setX(startNode.getSimpXcoord() - 22.5);
+      startPin.setY(startNode.getSimpYcoord() - 22.5);
+
+      NodeUI endNode = getNodeUIByID(thePath.get(thePath.size() - 1).getEndNodeID());
+      ImageView endPin = new ImageView(endImage);
+      endPin.setFitWidth(30);
+      endPin.setFitHeight(30);
+      endPin.setX(endNode.getSimpXcoord() - 15);
+      endPin.setY(endNode.getSimpYcoord() - 15);
+
+      if (startNode.getN().getFloor().equals(currentFloor)) {
+        secondaryAnchor.getChildren().add(startPin);
+      }
+      if (endNode.getN().getFloor().equals(currentFloor)) {
+        secondaryAnchor.getChildren().add(endPin);
+        scaleAnimation(
+            secondaryAnchor.getChildren().get(secondaryAnchor.getChildren().indexOf(endPin)));
+      }
+      animateEdges();
+      animateElevators();
     }
   }
 
@@ -503,8 +541,7 @@ public class MapController implements AllAccessible {
       Targets.clear();
     } else {
       showPath();
-      animateEdges();
-      animateElevators();
+      //algorithm.multiSearch(initialData, Targets).printPathEdges();
     }
   }
 
@@ -560,6 +597,18 @@ public class MapController implements AllAccessible {
             clearMap();
             drawNodeFloor("1");
             System.out.println("Just cleared");
+          }
+          if (!isEditor) return;
+          switch (key) {
+            case R:
+              resetCSV();
+              break;
+            case I:
+              importCSV();
+              break;
+            case E:
+              exportCSV();
+              break;
           }
         });
   }
@@ -886,30 +935,102 @@ public class MapController implements AllAccessible {
 
       final double maxOffset = line.getStrokeDashArray().stream().reduce(0d, (a, b) -> a + b);
 
-      Timeline timeline =
-          new Timeline(
-              new KeyFrame(
-                  Duration.ZERO,
-                  new KeyValue(line.strokeDashOffsetProperty(), 0, Interpolator.LINEAR)),
-              new KeyFrame(
-                  Duration.seconds(2),
-                  new KeyValue(line.strokeDashOffsetProperty(), maxOffset, Interpolator.LINEAR)));
+      Timeline timeline;
+      System.out.println(edgeUi.getE().getStartNodeID());
+      System.out.println(e.getStartNodeID().equals(edgeUi.getE().getStartNodeID()));
+      if (e.getStartNodeID().equals(edgeUi.getE().getStartNodeID())) {
+        timeline =
+            new Timeline(
+                new KeyFrame(
+                    Duration.seconds(2),
+                    new KeyValue(line.strokeDashOffsetProperty(), 0, Interpolator.LINEAR)),
+                new KeyFrame(
+                    Duration.ZERO,
+                    new KeyValue(line.strokeDashOffsetProperty(), maxOffset, Interpolator.LINEAR)));
+      } else {
+        timeline =
+            new Timeline(
+                new KeyFrame(
+                    Duration.seconds(2),
+                    new KeyValue(line.strokeDashOffsetProperty(), maxOffset, Interpolator.LINEAR)),
+                new KeyFrame(
+                    Duration.ZERO,
+                    new KeyValue(line.strokeDashOffsetProperty(), 0, Interpolator.LINEAR)));
+      }
+
       timeline.setCycleCount(Timeline.INDEFINITE);
       timeline.play();
     }
   }
 
+  private void goUp() {
+    String temp = null;
+    switch (currentFloor) {
+      case "L2":
+        temp = "L1";
+        break;
+      case "L1":
+        temp = "1";
+        break;
+      case "1":
+        temp = "2";
+        break;
+      case "2":
+        temp = "3";
+        break;
+      default:
+        temp = "1";
+        break;
+    }
+    switchFloor(temp);
+  }
+
+  private void goDown() {
+    String temp = null;
+    switch (currentFloor) {
+      case "3":
+        temp = "2";
+        break;
+      case "2":
+        temp = "1";
+        break;
+      case "1":
+        temp = "L1";
+        break;
+      case "L1":
+        temp = "L2";
+        break;
+      default:
+        temp = "1";
+        break;
+    }
+    switchFloor(temp);
+  }
+
   @FXML
   private void animateElevators() {
-    for (Node n : Targets) {
-      if (n.getNodeType().equals("ELEV")) {
-        ImageView empty = new ImageView();
+    Node endNode = getNodeUIByID(thePath.get(thePath.size() - 1).getEndNodeID()).getN();
+    for (int i = 0; i < thePath.size() - 1; i++) {
+      Node n = initialData.getNodeByID(thePath.get(i).getStartNodeID());
+      Node nodeNext = initialData.getNodeByID(thePath.get(i + 1).getStartNodeID());
+
+      if ((n.getNodeType().equals("ELEV") || n.getNodeType().equals("STAI"))
+          && n.getFloor().equals(currentFloor)) {
         ImageView imageView = new ImageView(up);
         imageView.setFitHeight(20);
         imageView.setFitWidth(20);
         imageView.setX(n.getXCoord() - 10);
         imageView.setY(n.getYCoord() - 10);
-        secondaryAnchor.getChildren().add(imageView);
+
+        if (n.compareFloor(nodeNext) >= 1) {
+          imageView.setImage(down);
+          secondaryAnchor.getChildren().add(imageView);
+          imageView.setOnMousePressed(event -> switchFloor(nodeNext.getFloor()));
+        } else if (n.compareFloor(nodeNext) <= -1) {
+          secondaryAnchor.getChildren().add(imageView);
+          imageView.setOnMousePressed(event -> switchFloor(nodeNext.getFloor()));
+        }
+
         ScaleTransition st = new ScaleTransition(Duration.seconds(1), imageView);
         st.setByX(1.5f);
         st.setByY(1.5f);
@@ -918,6 +1039,16 @@ public class MapController implements AllAccessible {
         st.play();
       }
     }
+  }
+
+  @FXML
+  private void scaleAnimation(javafx.scene.Node n) {
+    ScaleTransition st = new ScaleTransition(Duration.seconds(1), n);
+    st.setByX(1.2f);
+    st.setByY(1.2f);
+    st.setCycleCount(Animation.INDEFINITE);
+    st.setAutoReverse(true);
+    st.play();
   }
 
   // ___________________________________Getter and Setter_____________________________________
@@ -1217,5 +1348,121 @@ public class MapController implements AllAccessible {
             mouseLocation.set(new Point2D(x, y));
           }
         });
+  }
+
+  /*------------------------  CSV buttons ----------------------------------*/
+
+  boolean resetOpen = false;
+
+  private void updateMapFromDB() {
+    initialData = new RoomGraph(GlobalDb.getConnection());
+    NODES.clear();
+    EDGES.clear();
+    initializeNodes();
+    initializeEdges();
+    switchFloor(currentFloor); // Redraw current floor
+  }
+
+  private void resetCSV() {
+    if (resetOpen) return;
+    resetOpen = true;
+
+    // Creating a vertical box and adding textFields
+    Text header = new Text("Are you sure you want to reset CSV?");
+    header.setFont(javafx.scene.text.Font.font("System", FontWeight.BOLD, 18));
+
+    JFXDialogLayout layout = new JFXDialogLayout();
+    layout.setHeading(header);
+    JFXDialog submitDia = new JFXDialog(stackPane, layout, JFXDialog.DialogTransition.CENTER);
+
+    // Creating the Submit Button
+    JFXButton subBtn = new JFXButton("Submit");
+    subBtn.setPrefHeight(20);
+    subBtn.setPrefWidth(60);
+    subBtn.setId("subBtn");
+    subBtn.setButtonType(JFXButton.ButtonType.FLAT);
+    subBtn.setOnAction(
+        new EventHandler<ActionEvent>() {
+          @Override
+          public void handle(ActionEvent event) {
+            // option
+            FDatabaseTables.getNodeTable().clearTable(GlobalDb.getConnection(), "Nodes");
+            FDatabaseTables.getEdgeTable().clearTable(GlobalDb.getConnection(), "Edges");
+            FDatabaseTables.getNodeTable().populateTable(GlobalDb.getConnection(), "");
+            FDatabaseTables.getEdgeTable().populateTable(GlobalDb.getConnection(), "");
+            updateMapFromDB();
+            submitDia.close();
+            resetOpen = false;
+          }
+        });
+    subBtn.setStyle("-fx-background-color: #cdcdcd;");
+
+    // Creating the Cancel Button
+    JFXButton canBtn = new JFXButton("Cancel");
+    canBtn.setPrefHeight(20);
+    canBtn.setPrefWidth(60);
+    canBtn.setId("canBtn");
+    canBtn.setButtonType(JFXButton.ButtonType.FLAT);
+    canBtn.setOnAction(
+        e -> {
+          submitDia.close();
+          resetOpen = false;
+        });
+    canBtn.setStyle("-fx-background-color: #cdcdcd;");
+
+    layout.setActions(subBtn, canBtn);
+
+    submitDia.show();
+  }
+
+  private void importCSV() {
+    FileChooser nodeChooser = new FileChooser();
+    nodeChooser.setTitle("Import nodes");
+    nodeChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV files", "*.csv"));
+    File selectedNodesFile =
+        nodeChooser.showOpenDialog(App.getPrimaryStage().getScene().getWindow());
+    if (selectedNodesFile == null) return;
+
+    FileChooser edgeChooser = new FileChooser();
+    edgeChooser.setTitle("Import edges");
+    edgeChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV files", "*.csv"));
+    File selectedEdgesFile =
+        edgeChooser.showOpenDialog(App.getPrimaryStage().getScene().getWindow());
+    if (selectedEdgesFile == null) return;
+
+    String _nodesPath = selectedNodesFile.getAbsolutePath();
+    String _edgesPath = selectedEdgesFile.getAbsolutePath();
+
+    FDatabaseTables.getNodeTable().clearTable(GlobalDb.getConnection(), "Nodes");
+    FDatabaseTables.getEdgeTable().clearTable(GlobalDb.getConnection(), "Edges");
+    FDatabaseTables.getNodeTable().populateNodesTableExternal(GlobalDb.getConnection(), _nodesPath);
+    FDatabaseTables.getEdgeTable().populateEdgesTableExternal(GlobalDb.getConnection(), _edgesPath);
+    System.out.println("Nodes path entered: " + _nodesPath);
+    System.out.println("Edges path entered: " + _edgesPath);
+
+    updateMapFromDB();
+  }
+
+  private void exportCSV() {
+    FileChooser nodeChooser = new FileChooser();
+    nodeChooser.setTitle("Export nodes");
+    nodeChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV files", "*.csv"));
+    File selectedNodesFile =
+        nodeChooser.showSaveDialog(App.getPrimaryStage().getScene().getWindow());
+    if (selectedNodesFile == null) return;
+
+    FileChooser edgeChooser = new FileChooser();
+    nodeChooser.setTitle("Export edges");
+    nodeChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV files", "*.csv"));
+    File selectedEdgesFile =
+        nodeChooser.showSaveDialog(App.getPrimaryStage().getScene().getWindow());
+    if (selectedEdgesFile == null) return;
+
+    String _nodesPath = selectedNodesFile.getAbsolutePath();
+    String _edgesPath = selectedEdgesFile.getAbsolutePath();
+    FDatabaseTables.getNodeTable().writeNodesTable(GlobalDb.getConnection(), _nodesPath);
+    FDatabaseTables.getEdgeTable().writeEdgesTable(GlobalDb.getConnection(), _edgesPath);
+    System.out.println("Nodes path entered: " + _nodesPath);
+    System.out.println("Edges path entered: " + _edgesPath);
   }
 }

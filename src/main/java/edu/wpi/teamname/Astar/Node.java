@@ -145,4 +145,29 @@ public class Node {
   public void addEdge(Edge edge) {
     this.edges.add(edge);
   }
+
+  public int compareFloor(Node other) {
+    switch (this.floor) {
+      case "L2":
+        if (other.getFloor().equals("L2")) return 0;
+        else return -1;
+      case "L1":
+        if (other.getFloor().equals("L2")) return 1;
+        if (other.getFloor().equals("L1")) return 0;
+        else return -1;
+      case "1":
+        if (other.getFloor().equals("L2") || other.getFloor().equals("L1")) return 1;
+        if (other.getFloor().equals("1")) return 0;
+        else return -1;
+      case "2":
+        if (other.getFloor().equals("3")) return -1;
+        if (other.getFloor().equals("2")) return 0;
+        else return 1;
+      case "3":
+        if (other.getFloor().equals("3")) return 0;
+        else return 1;
+      default:
+        return -100;
+    }
+  }
 }
