@@ -1,6 +1,7 @@
 package edu.wpi.teamname.views.Mapping;
 
 import com.jfoenix.controls.*;
+import edu.wpi.teamname.Astar.*;
 import edu.wpi.teamname.Ddb.FDatabaseTables;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import java.io.FileInputStream;
@@ -10,16 +11,22 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 public class MapDrawerController implements Initializable {
@@ -27,11 +34,19 @@ public class MapDrawerController implements Initializable {
   @FXML private JFXTextField startField;
   @FXML private JFXTextField endField;
   @FXML private JFXButton findPathButton;
+  @FXML private VBox vBox;
+  @FXML private GridPane startGrid;
+  @FXML private GridPane endGrid;
+  @FXML private JFXComboBox<String> algoVersion;
+  @FXML private JFXButton exportBut;
+  @FXML private JFXButton importBut;
   private LinkedList<edu.wpi.teamname.Astar.Node> Targets = new LinkedList<>();
   //  private ObservableList<CategoryNodeInfo> parkingData =
   //      FDatabaseTables.getNodeTable().getCategory(GlobalDb.getConnection(), "PAR");
 
   private MapController mapController;
+
+  private LinkedList<String> nodesClicked = new LinkedList<>();
 
   private ArrayList<String> parkingList =
       FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "PARK");
@@ -57,12 +72,216 @@ public class MapDrawerController implements Initializable {
       FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "SERV");
   private Node textDirection;
 
+  @FXML
+  public void tiasSpecialFunction() throws IOException {
+    String startText = startField.getText();
+    String endText = endField.getText();
+    //    String longName1 = "Neuroscience Waiting Room";
+    //    String longName2 = "Emergency Department Entrance";
+    System.out.println(startText);
+    System.out.println(endText);
+
+    Targets.add(mapController.getNodeUIByLongName(startText).getN());
+    Targets.add(mapController.getNodeUIByLongName(endText).getN());
+
+    mapController.runPathFindingDirectory(Targets);
+  }
+
   @Override
   public void initialize(URL url, ResourceBundle rb) {
 
-    TreeItem<String> dummyRoot = new TreeItem<>();
+    directoryTreeView
+        .getSelectionModel()
+        .setSelectionMode(SelectionMode.MULTIPLE); // Setting SelectionMode to MULTIPLE
+
+    JFXTextArea textDirection = new JFXTextArea();
+    Label textDirectionLabel = new Label("Text Direction");
+
+    treeViewSetup();
+
+    EventHandler<MouseEvent> mouseEventHandle =
+        (MouseEvent event) -> {
+          try {
+            handleMouseClicked(event);
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+        };
+
+    directoryTreeView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEventHandle);
+
+    ArrayList<String> longNames =
+        FDatabaseTables.getNodeTable().fetchLongNameNoHall(GlobalDb.getConnection());
+    String[] str = {"Hi", "Hello", "adkfljafiowe"};
+
+    startGrid.setPickOnBounds(false);
+
+    startField
+        .textProperty()
+        .addListener(
+            (observable, oldValue, newValue) -> {
+              if (startGrid.getChildren().size() > 1) {
+                startGrid.getChildren().remove(1);
+              }
+              startGrid.add(longNameMenu(newValue, longNames, startField), 0, 1);
+            });
+
+    endField
+        .textProperty()
+        .addListener(
+            (observable, oldValue, newValue) -> {
+              if (endGrid.getChildren().size() > 1) {
+                endGrid.getChildren().remove(1);
+              }
+              endGrid.add(longNameMenu(newValue, longNames, endField), 0, 1);
+            });
+
+    algoVersion.getItems().addAll("A*", "BFS", "DFS", "Dijkstra");
+    algoVersion
+        .getSelectionModel()
+        .selectedItemProperty()
+        .addListener(
+            new ChangeListener<String>() {
+              @Override
+              public void changed(
+                  ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                changePathFinderAlgo(newValue);
+              }
+            });
+  }
+
+  public static VBox longNameMenu(String str, ArrayList<String> list, JFXTextField textField) {
+    VBox nameMenu = new VBox();
+    nameMenu.setStyle(
+        "-fx-background-color: #ffffff; -fx-border-color: #000000; -fx-border-width: 1");
+    nameMenu.setAlignment(Pos.CENTER);
+    for (String hmm : list) {
+      if (!str.replace(" ", "").isEmpty() && hmm.toUpperCase().contains(str.toUpperCase())) {
+        Label text = new Label(hmm);
+        text.setOnMouseClicked(
+            new EventHandler<MouseEvent>() {
+              @Override
+              public void handle(MouseEvent event) {
+                textField.setText(text.getText());
+                nameMenu.setVisible(false);
+                nameMenu.setDisable(true);
+              }
+            });
+        nameMenu.getChildren().add(text);
+      }
+      if (nameMenu.getChildren().size() > 5) {
+        break;
+      }
+    }
+    return nameMenu;
+  }
+
+  //  private void handleMouseClicked(MouseEvent event) {
+  //    Node node = event.getPickResult().getIntersectedNode();
+  //    // Accept clicks only on node cells, and not on empty spaces of the TreeView
+  //    if (node instanceof Text || (node instanceof TreeCell && ((TreeCell) node).getText() !=
+  // null)) {
+  //      String name =
+  //          (String) ((TreeItem)
+  // directoryTreeView.getSelectionModel().getSelectedItem()).getValue();
+  //      System.out.println("Nodsssssssssssssssssssssssssssssssse click: " + name);
+  //      String type = "PARK";
+  //      switch (name) {
+  //        case "Directory":
+  //          System.out.println(mapController.getCurrentFloor());
+  //          mapController.drawNodeFloor(mapController.getCurrentFloor());
+  //          type = "ALL";
+  //          break;
+  //        case "Elevator":
+  //          type = "ELEV";
+  //          break;
+  //        case "Restroom":
+  //          type = "REST";
+  //          break;
+  //        case "Stairs":
+  //          type = "STAI";
+  //          break;
+  //        case "Department":
+  //          type = "DEPT";
+  //          break;
+  //        case "Laboratory":
+  //          type = "LABS";
+  //          break;
+  //        case "Information":
+  //          type = "INFO";
+  //          break;
+  //        case "Conference":
+  //          type = "CONF";
+  //          break;
+  //        case "Entrance/Exit":
+  //          type = "EXIT";
+  //          break;
+  //        case "Retail":
+  //          type = "RETL";
+  //          break;
+  //        case "Service":
+  //          type = "SERV";
+  //          break;
+  //        case "Parking":
+  //          type = "PARK";
+  //          break;
+  //          //        default:
+  //          //          for (NodeUI nodess : mapController.NODES) {
+  //          //            if (nodess.getN().getLongName().equals(name)) {
+  //          //              mapController.clearMap();
+  //          //              mapController.addNode(nodess);
+  //          //            }
+  //          //          }
+  //      }
+  //      nodeRedrawing(type);
+  //      if (mapController.getNodeUIByLongName(name) != null) {
+  //        if (nodesClicked.size() >= 2) {
+  //          nodesClicked.clear();
+  //        }
+  //        if (!(nodesClicked.contains(name))) nodesClicked.add(name);
+  //        for (String nodeName : nodesClicked) {
+  //          if ((nodesClicked.size() == 1) && !(nodesClicked.size() == 0)) {
+  //            String firstClicked = nodesClicked.getFirst();
+  //            startField.setText(firstClicked);
+  //          } else {
+  //            String lastClicked = nodesClicked.getLast();
+  //            endField.setText(lastClicked);
+  //          }
+  //        }
+  //      }
+  //      System.out.println(nodesClicked.size());
+  //    }
+  //  }
+
+  //  private void nodeRedrawing(String type) {
+  //    mapController.clearMap();
+  //
+  //    if (type == "ALL") {
+  //      mapController.drawNodeFloor(mapController.getCurrentFloor());
+  //    } else {
+  //      for (NodeUI NUI : mapController.NODES) {
+  //        if (NUI.getN().getFloor().equals(mapController.currentFloor)
+  //            && (NUI.getN().getNodeType().equals(type))) {
+  //          mapController.addNodeUI(NUI);
+  //        }
+  //      }
+  //    }
+  //  }
+
+  public void changePathFinderAlgo(String algo) {
+    if (algo.equals("BFS")) mapController.algorithm.setAlgorithm(new singleBFS());
+    else if (algo.equals("DFS")) mapController.algorithm.setAlgorithm(new singleDFS());
+    else if (algo.equals("Dijkstra")) mapController.algorithm.setAlgorithm(new Dijkstras());
+    else mapController.algorithm.setAlgorithm(new aStar());
+  }
+
+  //  public void setMapController(MapController mapController) {
+  //    this.mapController = mapController;
+  //  }
+
+  public void treeViewSetup() {
+
     TreeItem<String> directoryRoot = new TreeItem<>("Directory");
-    TreeItem<String> textRoot = new TreeItem<>("Text Direction");
     TreeItem<String> parking = new TreeItem<>("Parking");
     TreeItem<String> elevator = new TreeItem<>("Elevator");
     TreeItem<String> restroom = new TreeItem<>("Restroom");
@@ -74,11 +293,10 @@ public class MapDrawerController implements Initializable {
     TreeItem<String> exit = new TreeItem<>("Entrance/Exit");
     TreeItem<String> retail = new TreeItem<>("Retail");
     TreeItem<String> service = new TreeItem<>("Service");
-    dummyRoot.getChildren().addAll(directoryRoot, textRoot);
-    directoryTreeView.setRoot(dummyRoot);
-    directoryTreeView.setShowRoot(false);
+    directoryTreeView.setRoot(directoryRoot);
 
-    textRoot.setGraphic(textDirection);
+    directoryTreeView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+    directoryTreeView.setStyle("-fx-padding: 0; -fx-background-insets: 0");
 
     try {
       ImageView parkImage =
@@ -242,17 +460,26 @@ public class MapDrawerController implements Initializable {
   private void handleMouseClicked(MouseEvent event) throws IOException {
     Node node = event.getPickResult().getIntersectedNode();
     // Accept clicks only on node cells, and not on empty spaces of the TreeView
-
+    String prev = "";
     if (event.isControlDown()) {
+      mapController.clearMap();
       String clickname =
           (String) ((TreeItem) directoryTreeView.getSelectionModel().getSelectedItem()).getValue();
       for (NodeUI NUI : mapController.NODES) {
         if (NUI.getN().getLongName().equals(clickname)) {
+          System.out.println(NUI.getN().getLongName());
           Targets.add(NUI.getN());
           mapController.addNodeUI(NUI);
 
           if (Targets.size() >= 2) {
-            mapController.runPathFindingDirectory(Targets);
+            LinkedList<Edge> ThePath = mapController.runPathFindingDirectory(Targets);
+            startField.setText(
+                mapController.getNodeUIByID(ThePath.get(0).getStartNodeID()).getN().getLongName());
+            endField.setText(
+                mapController
+                    .getNodeUIByID(ThePath.get(ThePath.size() - 1).getEndNodeID())
+                    .getN()
+                    .getLongName());
           }
         }
       }
@@ -260,7 +487,7 @@ public class MapDrawerController implements Initializable {
     if (node instanceof Text || (node instanceof TreeCell && ((TreeCell) node).getText() != null)) {
       String name =
           (String) ((TreeItem) directoryTreeView.getSelectionModel().getSelectedItem()).getValue();
-      System.out.println("Node click: " + name);
+      //      System.out.println("Node click: " + name);
       String type = "PARK";
       switch (name) {
         case "Directory":
@@ -312,7 +539,6 @@ public class MapDrawerController implements Initializable {
           nodeRedrawing(type);
           break;
         default:
-          mapController.clearMap();
           for (NodeUI NUI : mapController.NODES) {
             if (NUI.getN().getLongName().equals(name)) {
               mapController.addNodeUI(NUI);
@@ -328,7 +554,9 @@ public class MapDrawerController implements Initializable {
 
     if (type.equals("ALL")) {
       for (NodeUI NUI : mapController.NODES) {
-        if (NUI.getN().getFloor().equals(mapController.currentFloor)) {
+        if (NUI.getN().getFloor().equals(mapController.currentFloor)
+            && !NUI.getN().getNodeType().equals("HALL")
+            && !NUI.getN().getNodeType().equals("WALK")) {
           mapController.addNodeUI(NUI);
         }
       }

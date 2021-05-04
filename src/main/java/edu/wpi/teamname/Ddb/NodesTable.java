@@ -337,6 +337,23 @@ public class NodesTable extends AbsTables {
     return longNames;
   }
 
+  public ArrayList<String> fetchLongNameNoHall(Connection conn) {
+    ArrayList<String> longNames = new ArrayList<String>();
+    try {
+      PreparedStatement longNameStmt =
+          conn.prepareStatement(
+              "SELECT longName FROM Nodes WHERE nodeType = 'ELEV' OR nodeType = 'REST' OR nodeType = 'STAI' OR nodeType = 'DEPT' OR nodeType = 'LABS' OR nodeType = 'INFO' OR nodeType = 'CONF' OR nodeType = 'EXIT' OR nodeType = 'RETL' OR nodeType = 'SERV' OR nodeType = 'PARK'");
+      ResultSet rs = longNameStmt.executeQuery();
+      while (rs.next()) {
+        longNames.add(rs.getString(1));
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    System.out.println();
+    return longNames;
+  }
+
   private void updateCoord(Connection conn) {
     PreparedStatement stmt1 = null;
     PreparedStatement stmt2 = null;
