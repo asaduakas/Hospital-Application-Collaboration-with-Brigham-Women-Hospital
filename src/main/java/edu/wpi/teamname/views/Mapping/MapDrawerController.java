@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.ResourceBundle;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -37,6 +38,8 @@ public class MapDrawerController implements Initializable {
   @FXML private JFXComboBox algoVersion;
 
   private MapController mapController;
+
+  private LinkedList<String> nodesClicked = new LinkedList<>();
 
   private ArrayList<String> parkingList =
       FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "PARK");
@@ -142,15 +145,22 @@ public class MapDrawerController implements Initializable {
         case "Parking":
           type = "PARK";
           break;
-        default:
-          for (NodeUI nodess : mapController.NODES) {
-            if (nodess.getN().getLongName().equals(name)) {
-              mapController.clearMap();
-              mapController.addNode(nodess);
-            }
-          }
+          //        default:
+          //          for (NodeUI nodess : mapController.NODES) {
+          //            if (nodess.getN().getLongName().equals(name)) {
+          //              mapController.clearMap();
+          //              mapController.addNode(nodess);
+          //            }
+          //          }
       }
       nodeRedrawing(type);
+      if (mapController.getNodeUIByLongName(name) != null) {
+        if (nodesClicked.size() >= 2) {
+          nodesClicked.clear();
+        }
+        if (!(nodesClicked.contains(name))) nodesClicked.add(name);
+      }
+      System.out.println(nodesClicked.size());
     }
   }
 
@@ -195,6 +205,8 @@ public class MapDrawerController implements Initializable {
     TreeItem<String> retail = new TreeItem<>("Retail");
     TreeItem<String> service = new TreeItem<>("Service");
     directoryTreeView.setRoot(directoryRoot);
+
+    directoryTreeView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
     try {
       ImageView parkImage =

@@ -1208,6 +1208,16 @@ public class MapController implements AllAccessible {
     return null;
   }
 
+  public static NodeUI getNodeUIByLongName(String NodeLongName) {
+    for (NodeUI theNode : NODES) {
+      if (theNode.getN().getLongName().equals(NodeLongName)) {
+        return theNode;
+      }
+    }
+    System.out.println("This node doesn't exist.");
+    return null;
+  }
+
   private static EdgeUI getEdgeUIByID(String EdgeID) {
     for (EdgeUI theEdge : EDGES) {
       if (theEdge.getE().getEdgeID().equals(EdgeID)) {
