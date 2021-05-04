@@ -627,7 +627,15 @@ public class MapController implements AllAccessible {
     algorithm.printPathTo();
     algorithm.printEdgeTo();
     thePath = algorithm.getShortestPath().getPathEdges();
-    getDirections(thePath);
+    // getDirections(thePath);
+
+    if (thePath.isEmpty()) {
+      resetData();
+      clearMap();
+      drawNodeFloor(currentFloor);
+    } else {
+      showPath();
+    }
   }
 
   public void runPathFindingClick() {
@@ -635,7 +643,7 @@ public class MapController implements AllAccessible {
     if (thePath.isEmpty()) {
       resetData();
       clearMap();
-      drawNodeFloor("1");
+      drawNodeFloor(currentFloor);
     } else {
       showPath();
       // algorithm.multiSearch(initialData, Targets).printPathEdges();
@@ -772,7 +780,7 @@ public class MapController implements AllAccessible {
     E.getL()
         .setOnMouseEntered(
             (MouseEvent e) -> {
-              if (!isEditStart && !isEditEnd) E.getL().setStroke(Color.DARKORANGE);
+              if (!isEditStart && !isEditEnd && isEditor) E.getL().setStroke(Color.DARKORANGE);
             });
 
     E.getL()
