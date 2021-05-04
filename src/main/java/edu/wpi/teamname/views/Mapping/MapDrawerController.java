@@ -41,6 +41,8 @@ public class MapDrawerController implements Initializable {
   @FXML private GridPane startGrid;
   @FXML private GridPane endGrid;
   @FXML private JFXComboBox<String> algoVersion;
+  @FXML private JFXButton exportBut;
+  @FXML private JFXButton importBut;
 
   private MapController mapController;
 
