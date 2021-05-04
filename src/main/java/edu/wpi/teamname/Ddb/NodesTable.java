@@ -2,6 +2,7 @@ package edu.wpi.teamname.Ddb;
 
 import edu.wpi.teamname.Astar.Node;
 import java.io.File;
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -451,5 +452,18 @@ public class NodesTable extends AbsTables {
       e.printStackTrace();
     }
     return graphInfo;
+  }
+
+  public void writeNodesTable(Connection connection, String nodesPath) {
+    try {
+      writeTableToCSV(
+          connection,
+          "Nodes",
+          nodesPath,
+          8,
+          "nodeID,xcoord,ycoord,floor,building,nodeType,longName,shortName");
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 }
