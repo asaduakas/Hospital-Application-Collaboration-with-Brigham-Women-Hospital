@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
@@ -19,6 +20,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -28,6 +30,8 @@ public class MapDrawerController implements Initializable {
   @FXML private JFXTextField endField;
   @FXML private JFXButton findPathButton;
   @FXML private VBox vBox;
+  @FXML private GridPane startGrid;
+  @FXML private GridPane endGrid;
 
   private MapController mapController;
 
@@ -73,6 +77,49 @@ public class MapDrawerController implements Initializable {
         };
 
     directoryTreeView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEventHandle);
+
+    ArrayList<String> longNames =
+        FDatabaseTables.getNodeTable().fetchLongName(GlobalDb.getConnection());
+    String[] str = {"Hi", "Hello", "adkfljafiowe"};
+
+    startField
+        .textProperty()
+        .addListener(
+            (observable, oldValue, newValue) -> {
+              if (startGrid.getChildren().size() > 1) {
+                startGrid.getChildren().remove(1);
+              }
+              startGrid.add(longNameMenu(newValue, longNames), 0, 1);
+              endGrid.setVisible(startField.getText().isEmpty());
+            });
+
+    endField
+        .textProperty()
+        .addListener(
+            (observable, oldValue, newValue) -> {
+              if (endGrid.getChildren().size() > 1) {
+                endGrid.getChildren().remove(1);
+              }
+              endGrid.add(longNameMenu(newValue, longNames), 0, 1);
+            });
+  }
+
+  public static VBox longNameMenu(String str, ArrayList<String> list) {
+    VBox nameMenu = new VBox();
+    nameMenu.setStyle(
+        "-fx-background-color: #ffffff; -fx-border-color: #000000; -fx-border-width: 1");
+    nameMenu.setAlignment(Pos.CENTER);
+
+    for (String hmm : list) {
+      if (!str.replace(" ", "").isEmpty() && hmm.toUpperCase().contains(str.toUpperCase())) {
+        Label text = new Label(hmm);
+        nameMenu.getChildren().add(text);
+      }
+      if (nameMenu.getChildren().size() > 5) {
+        break;
+      }
+    }
+    return nameMenu;
   }
 
   private void handleMouseClicked(MouseEvent event) {

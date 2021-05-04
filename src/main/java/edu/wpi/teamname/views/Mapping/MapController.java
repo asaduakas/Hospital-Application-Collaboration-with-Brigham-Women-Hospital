@@ -31,7 +31,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -186,14 +185,14 @@ public class MapController implements AllAccessible {
   }
 
   public void changeChildrenMapView(List<javafx.scene.Node> nodeList) {
-    JFXButton findPath = (JFXButton) nodeList.get(0);
-    JFXTreeView treeView = (JFXTreeView) nodeList.get(3);
-    Label label = (Label) nodeList.get(4);
-    JFXTextArea textDirection = (JFXTextArea) nodeList.get(5);
-    treeView.setMinHeight(App.getPrimaryStage().getScene().getHeight() / 3);
-    label.setLayoutY(treeView.getLayoutY() + treeView.getMinHeight() + 10);
-    label.setLayoutX(10);
-    textDirection.setLayoutY(label.getLayoutY() + label.getHeight() + 30);
+    //    JFXButton findPath = (JFXButton) nodeList.get(0);
+    //    JFXTreeView treeView = (JFXTreeView) nodeList.get(3);
+    //    Label label = (Label) nodeList.get(4);
+    //    JFXTextArea textDirection = (JFXTextArea) nodeList.get(5);
+    //    treeView.setMinHeight(App.getPrimaryStage().getScene().getHeight() / 3);
+    //    label.setLayoutY(treeView.getLayoutY() + treeView.getMinHeight() + 10);
+    //    label.setLayoutX(10);
+    //    textDirection.setLayoutY(label.getLayoutY() + label.getHeight() + 30);
   }
 
   public void goHome() {
@@ -304,36 +303,51 @@ public class MapController implements AllAccessible {
     //    ChooseFloorBtn.setButtonType(JFXButton.ButtonType.RAISED);
     //    ChooseFloorBtn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 20px");
 
-    JFXButton Floor1Btn = new JFXButton("Floor 1");
-    Floor1Btn.setButtonType(JFXButton.ButtonType.RAISED);
+    JFXButton Floor1Btn = new JFXButton("Fl 1");
+    Floor1Btn.setButtonType(JFXButton.ButtonType.FLAT);
+    Floor1Btn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50px");
+    Floor1Btn.setPrefHeight(50);
+    Floor1Btn.setPrefWidth(50);
     Floor1Btn.setOnAction(
         (e) -> {
           switchFloor("1");
         });
 
-    JFXButton Floor2Btn = new JFXButton("Floor 2");
-    Floor2Btn.setButtonType(JFXButton.ButtonType.RAISED);
+    JFXButton Floor2Btn = new JFXButton("Fl 2");
+    Floor2Btn.setButtonType(JFXButton.ButtonType.FLAT);
+    Floor2Btn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50px");
+    Floor2Btn.setPrefHeight(50);
+    Floor2Btn.setPrefWidth(50);
     Floor2Btn.setOnAction(
         (e) -> {
           switchFloor("2");
         });
 
-    JFXButton Floor3Btn = new JFXButton("Floor 3");
-    Floor3Btn.setButtonType(JFXButton.ButtonType.RAISED);
+    JFXButton Floor3Btn = new JFXButton("Fl 3");
+    Floor3Btn.setButtonType(JFXButton.ButtonType.FLAT);
+    Floor3Btn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50px");
+    Floor3Btn.setPrefHeight(50);
+    Floor3Btn.setPrefWidth(50);
     Floor3Btn.setOnAction(
         (e) -> {
           switchFloor("3");
         });
 
-    JFXButton FloorL1Btn = new JFXButton("Floor L1");
-    FloorL1Btn.setButtonType(JFXButton.ButtonType.RAISED);
+    JFXButton FloorL1Btn = new JFXButton("Fl L1");
+    FloorL1Btn.setButtonType(JFXButton.ButtonType.FLAT);
+    FloorL1Btn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50px");
+    FloorL1Btn.setPrefHeight(50);
+    FloorL1Btn.setPrefWidth(50);
     FloorL1Btn.setOnAction(
         (e) -> {
           switchFloor("L1");
         });
 
-    JFXButton FloorL2Btn = new JFXButton("Floor L2");
-    FloorL2Btn.setButtonType(JFXButton.ButtonType.RAISED);
+    JFXButton FloorL2Btn = new JFXButton("Fl L2");
+    FloorL2Btn.setButtonType(JFXButton.ButtonType.FLAT);
+    FloorL2Btn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50px");
+    FloorL2Btn.setPrefHeight(50);
+    FloorL2Btn.setPrefWidth(50);
     FloorL2Btn.setOnAction(
         (e) -> {
           switchFloor("L2");
@@ -341,11 +355,11 @@ public class MapController implements AllAccessible {
 
     JFXNodesList nodeList = new JFXNodesList();
     nodeList.addAnimatedNode(floorBtn);
-    nodeList.addAnimatedNode(FloorL2Btn);
-    nodeList.addAnimatedNode(FloorL1Btn);
     nodeList.addAnimatedNode(Floor1Btn);
     nodeList.addAnimatedNode(Floor2Btn);
     nodeList.addAnimatedNode(Floor3Btn);
+    nodeList.addAnimatedNode(FloorL2Btn);
+    nodeList.addAnimatedNode(FloorL1Btn);
     nodeList.setSpacing(20d);
     mainAnchor.getChildren().add(nodeList);
   }
