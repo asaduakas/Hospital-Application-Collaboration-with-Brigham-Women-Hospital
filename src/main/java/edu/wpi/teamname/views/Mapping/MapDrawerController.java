@@ -9,6 +9,7 @@ import edu.wpi.teamname.Ddb.FDatabaseTables;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -40,6 +41,8 @@ public class MapDrawerController implements Initializable {
   @FXML private GridPane startGrid;
   @FXML private GridPane endGrid;
   @FXML private JFXComboBox<String> algoVersion;
+  @FXML private JFXButton exportBut;
+  @FXML private JFXButton importBut;
 
   private MapController mapController;
 
@@ -68,6 +71,19 @@ public class MapDrawerController implements Initializable {
   private ArrayList<String> serviceList =
       FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "SERV");
   private Node textDirection;
+
+  @FXML
+  public void tiasSpecialFunction() throws IOException {
+    String startText = startField.getText();
+    String endText = endField.getText();
+    //    String longName1 = "Neuroscience Waiting Room";
+    //    String longName2 = "Emergency Department Entrance";
+    System.out.println(startText);
+    System.out.println(endText);
+    String startNode = mapController.getNodeUIByLongName(startText).getN().getNodeID();
+    String endNode = mapController.getNodeUIByLongName(endText).getN().getNodeID();
+    mapController.runPathFindingDirectory(startNode, endNode);
+  }
 
   @Override
   public void initialize(URL url, ResourceBundle rb) {
@@ -220,6 +236,15 @@ public class MapDrawerController implements Initializable {
           nodesClicked.clear();
         }
         if (!(nodesClicked.contains(name))) nodesClicked.add(name);
+        for (String nodeName : nodesClicked) {
+          if ((nodesClicked.size() == 1) && !(nodesClicked.size() == 0)) {
+            String firstClicked = nodesClicked.getFirst();
+            startField.setText(firstClicked);
+          } else {
+            String lastClicked = nodesClicked.getLast();
+            endField.setText(lastClicked);
+          }
+        }
       }
       System.out.println(nodesClicked.size());
     }
