@@ -1,6 +1,10 @@
 package edu.wpi.teamname.views.Mapping;
 
 import com.jfoenix.controls.*;
+import edu.wpi.teamname.Astar.Dijkstras;
+import edu.wpi.teamname.Astar.aStar;
+import edu.wpi.teamname.Astar.singleBFS;
+import edu.wpi.teamname.Astar.singleDFS;
 import edu.wpi.teamname.Ddb.FDatabaseTables;
 import edu.wpi.teamname.Ddb.GlobalDb;
 import java.io.FileInputStream;
@@ -8,6 +12,8 @@ import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -74,6 +80,19 @@ public class MapDrawerController implements Initializable {
         };
 
     directoryTreeView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEventHandle);
+
+    algoVersion.getItems().addAll("A*", "BFS", "DFS", "Dijkstra");
+    algoVersion
+        .getSelectionModel()
+        .selectedItemProperty()
+        .addListener(
+            new ChangeListener<String>() {
+              @Override
+              public void changed(
+                  ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                changePathFinderAlgo(newValue);
+              }
+            });
   }
 
   private void handleMouseClicked(MouseEvent event) {
@@ -148,6 +167,13 @@ public class MapDrawerController implements Initializable {
         }
       }
     }
+  }
+
+  public void changePathFinderAlgo(String algo) {
+    if (algo.equals("BFS")) mapController.algorithm.setAlgorithm(new singleBFS());
+    else if (algo.equals("DFS")) mapController.algorithm.setAlgorithm(new singleDFS());
+    else if (algo.equals("Dijkstra")) mapController.algorithm.setAlgorithm(new Dijkstras());
+    else mapController.algorithm.setAlgorithm(new aStar());
   }
 
   public void setMapController(MapController mapController) {
