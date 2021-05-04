@@ -1,5 +1,6 @@
 id,password,name,category
 admin,admin,ll,Admin
+testAdmin,admin,testing,Admin
 patient,patient,qq,Patient
 employee,employee,ee,Employee
 wwong,admin,Wilson Wong,Admin

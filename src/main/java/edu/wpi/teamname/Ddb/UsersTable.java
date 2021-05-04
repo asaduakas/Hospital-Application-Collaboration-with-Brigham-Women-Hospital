@@ -2,6 +2,8 @@ package edu.wpi.teamname.Ddb;
 
 import edu.wpi.teamname.views.Access.UserCategory;
 import edu.wpi.teamname.views.HomeController;
+import edu.wpi.teamname.views.ServiceRequests.NodeInfo.UsersNodeInfo;
+import java.io.IOException;
 import java.sql.*;
 import java.util.Scanner;
 import javafx.collections.FXCollections;
@@ -191,4 +193,77 @@ public class UsersTable extends AbsTables {
 
   // TODO: implement this function
   public static void updateUserPassword(Connection conn, String id, String password) {}
+
+  public ObservableList<UsersNodeInfo> addIntoEmployeeDataList(
+      ObservableList<UsersNodeInfo> employeeData) throws IOException {
+    try {
+      String query = "SELECT * FROM Users WHERE category = 'Employee'";
+      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      while (rs.next()) {
+        employeeData.add(
+            new UsersNodeInfo(
+                rs.getString("id"),
+                rs.getString("password"),
+                rs.getString("name"),
+                rs.getString("category")));
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    return employeeData;
+  }
+
+  public ObservableList<UsersNodeInfo> addIntoPatientDataList(
+      ObservableList<UsersNodeInfo> patientData) throws IOException {
+    try {
+      String query = "SELECT * FROM Users WHERE category = 'Patient'";
+      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      while (rs.next()) {
+        patientData.add(
+            new UsersNodeInfo(
+                rs.getString("id"),
+                rs.getString("password"),
+                rs.getString("name"),
+                rs.getString("category")));
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    return patientData;
+  }
+
+  public ObservableList<UsersNodeInfo> addIntoAdminDataList(ObservableList<UsersNodeInfo> adminData)
+      throws IOException {
+    try {
+      String query = "SELECT * FROM Users WHERE category = 'Admin'";
+      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      while (rs.next()) {
+        adminData.add(
+            new UsersNodeInfo(
+                rs.getString("id"),
+                rs.getString("password"),
+                rs.getString("name"),
+                rs.getString("category")));
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    return adminData;
+  }
+
+  public ObservableList<UsersNodeInfo> changeUserData(ObservableList<UsersNodeInfo> userData) {
+    for (UsersNodeInfo info : userData) {
+      PreparedStatement stmt = null;
+      try {
+        stmt =
+            GlobalDb.getConnection().prepareStatement("UPDATE Users SET password = ? WHERE id=?");
+        stmt.setString(1, info.getPassword());
+        stmt.setString(2, info.getId());
+        stmt.executeUpdate();
+      } catch (SQLException throwables) {
+        throwables.printStackTrace();
+      }
+    }
+    return userData;
+  }
 }
