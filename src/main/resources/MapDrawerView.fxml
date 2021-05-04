@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXTextArea?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import com.jfoenix.controls.JFXTreeView?>
@@ -33,5 +34,6 @@
             <Font size="15.0" />
          </font>
       </JFXTextArea>
+      <JFXComboBox fx:id="algoVersion" layoutX="188.0" layoutY="14.0" prefHeight="25.0" prefWidth="195.0" promptText="Pathfinding Algorithm" style="-fx-font-size: 14;" />
    </children>
 </AnchorPane>

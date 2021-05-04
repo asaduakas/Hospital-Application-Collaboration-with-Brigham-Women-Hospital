@@ -108,7 +108,6 @@ public class MapController implements AllAccessible {
 
   @FXML
   private void initialize() {
-
     mapScrollPane = new MapScrollPane(F1);
     mainAnchor.getChildren().add(mapScrollPane);
     AnchorPane.setTopAnchor(mapScrollPane, 0.0);

@@ -28,6 +28,7 @@ public class MapDrawerController implements Initializable {
   @FXML private JFXTextField endField;
   @FXML private JFXButton findPathButton;
   @FXML private VBox vBox;
+  @FXML private JFXComboBox algoVersion;
 
   private MapController mapController;
 
