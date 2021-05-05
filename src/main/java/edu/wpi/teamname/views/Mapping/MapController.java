@@ -67,12 +67,15 @@ public class MapController implements AllAccessible {
   public boolean isEditNodeProperties = false;
   private boolean isEditStart = false;
   private boolean isEditEnd = false;
+  private boolean saveMode = false;
+  private boolean alignMode = false;
   private SimpleBooleanProperty startPressed = new SimpleBooleanProperty();
   private SimpleBooleanProperty endPressed = new SimpleBooleanProperty();
   private SimpleBooleanProperty plusPressed = new SimpleBooleanProperty();
   private SimpleBooleanProperty minusPressed = new SimpleBooleanProperty();
   private SimpleBooleanProperty aPressed = new SimpleBooleanProperty();
   private SimpleBooleanProperty pPressed = new SimpleBooleanProperty();
+  private SimpleBooleanProperty shiftPressed = new SimpleBooleanProperty();
   private EdgeUI tempEUI;
   public static boolean mapEditorIsSelected = false;
 
@@ -130,7 +133,6 @@ public class MapController implements AllAccessible {
     ToggleListener();
     nodeAddListener();
     cancelListener();
-    getNodesToAlignListener_recordParkingListener();
 
     mapDrawer.setPickOnBounds(false);
 
@@ -730,19 +732,29 @@ public class MapController implements AllAccessible {
             }
             return;
           }
-          switch (key) {
-            case R:
-              resetCSV();
-              break;
-            case I:
-              importCSV();
-              break;
-            case E:
-              exportCSV();
-              break;
-          }
+//          switch (key) {
+//            case R:
+//              resetCSV();
+//              break;
+//            case I:
+//              importCSV();
+//              break;
+//            case E:
+//              exportCSV();
+//              break;
+//          }
           if (key == KeyCode.P) {
             pPressed.set(true);
+            plusPressed.set(false);
+            minusPressed.set(false);
+            aPressed.set(false);
+            startPressed.setValue(false);
+            endPressed.setValue(false);
+            shiftPressed.set(false);
+          }
+          if (key == KeyCode.SHIFT) {
+            pPressed.set(false);
+            shiftPressed.set(true);
             plusPressed.set(false);
             minusPressed.set(false);
             aPressed.set(false);
@@ -756,6 +768,7 @@ public class MapController implements AllAccessible {
             aPressed.set(false);
             startPressed.setValue(false);
             endPressed.setValue(false);
+            shiftPressed.set(false);
           }
           if (key == KeyCode.MINUS) {
             pPressed.set(false);
@@ -764,6 +777,7 @@ public class MapController implements AllAccessible {
             aPressed.set(false);
             startPressed.setValue(false);
             endPressed.setValue(false);
+            shiftPressed.set(false);
           }
           if (key == KeyCode.A) {
             pPressed.set(false);
@@ -772,6 +786,7 @@ public class MapController implements AllAccessible {
             aPressed.set(true);
             startPressed.setValue(false);
             endPressed.setValue(false);
+            shiftPressed.set(false);
           }
           if (key == KeyCode.S) {
             startPressed.setValue(true);
@@ -780,6 +795,7 @@ public class MapController implements AllAccessible {
             plusPressed.set(false);
             minusPressed.set(false);
             aPressed.set(false);
+            shiftPressed.set(false);
           }
           if (key == KeyCode.E) {
             endPressed.setValue(true);
@@ -788,6 +804,7 @@ public class MapController implements AllAccessible {
             plusPressed.set(false);
             minusPressed.set(false);
             aPressed.set(false);
+            shiftPressed.set(false);
           }
         });
 
@@ -799,6 +816,7 @@ public class MapController implements AllAccessible {
           plusPressed.set(false);
           minusPressed.set(false);
           aPressed.set(false);
+          shiftPressed.set(false);
         });
   }
 
@@ -869,91 +887,71 @@ public class MapController implements AllAccessible {
                   runPathFindingClick();
                 }
               }
-              if (aPressed.get() && isEditor) {
-                NewEdge.add(N);
-                if (NewEdge.size() == 2) {
+              if (isEditor) {
+                if (aPressed.get()) {
+                  alignMode = false;
+                  saveMode = false;
+                  NewEdge.add(N);
+                  if (NewEdge.size() == 2) {
 
-                  System.out.println(NewEdge.get(0).getN().getNodeID());
-                  System.out.println(NewEdge.get(1).getN().getNodeID());
+                    System.out.println(NewEdge.get(0).getN().getNodeID());
+                    System.out.println(NewEdge.get(1).getN().getNodeID());
 
-                  Line L = new Line();
+                    Line L = new Line();
 
-                  L.startXProperty().bind(NewEdge.get(0).simpXcoordProperty());
-                  L.startYProperty().bind(NewEdge.get(0).simpYcoordProperty());
-                  L.endXProperty().bind(NewEdge.get(1).simpXcoordProperty());
-                  L.endYProperty().bind(NewEdge.get(1).simpYcoordProperty());
-                  L.setStroke(Color.BLACK);
-                  L.setStrokeWidth(5.0);
-                  Edge edge =
-                      new Edge(
-                          NewEdge.get(0).getN(),
-                          NewEdge.get(1).getN(),
-                          NewEdge.get(0).getN().getMeasuredDistance(NewEdge.get(1).getN()));
-                  Edge edge1 =
-                      new Edge(
-                          NewEdge.get(1).getN(),
-                          NewEdge.get(0).getN(),
-                          NewEdge.get(0).getN().getMeasuredDistance(NewEdge.get(1).getN()));
-                  NewEdge.get(0).getN().addEdge(edge);
-                  NewEdge.get(1).getN().addEdge(edge1);
-                  EdgeUI temp = new EdgeUI(edge, L);
-                  addEdge(temp);
-                  NewEdge = new LinkedList<NodeUI>();
+                    L.startXProperty().bind(NewEdge.get(0).simpXcoordProperty());
+                    L.startYProperty().bind(NewEdge.get(0).simpYcoordProperty());
+                    L.endXProperty().bind(NewEdge.get(1).simpXcoordProperty());
+                    L.endYProperty().bind(NewEdge.get(1).simpYcoordProperty());
+                    L.setStroke(Color.BLACK);
+                    L.setStrokeWidth(5.0);
+                    Edge edge =
+                            new Edge(
+                                    NewEdge.get(0).getN(),
+                                    NewEdge.get(1).getN(),
+                                    NewEdge.get(0).getN().getMeasuredDistance(NewEdge.get(1).getN()));
+                    Edge edge1 =
+                            new Edge(
+                                    NewEdge.get(1).getN(),
+                                    NewEdge.get(0).getN(),
+                                    NewEdge.get(0).getN().getMeasuredDistance(NewEdge.get(1).getN()));
+                    NewEdge.get(0).getN().addEdge(edge);
+                    NewEdge.get(1).getN().addEdge(edge1);
+                    EdgeUI temp = new EdgeUI(edge, L);
+                    addEdge(temp);
+                    NewEdge = new LinkedList<NodeUI>();
+                  }
                 }
+
+                //Align node
+                if (shiftPressed.get()) {//toggle align mode
+                  alignMode = !alignMode;
+                  saveMode = false;
+                }
+                if (alignMode ) {
+                  System.out.println("node clicked");
+                  nodesToAlign.add(N.getN());
+
+                  if (nodesToAlign.size() > 2) {
+                    alignNodes();
+                  }
+                }
+              }//end of isEditor
+
+              if (pPressed.get() && !isEditor) {//toggle save mode
+                saveMode = !saveMode;
+                alignMode = false;
               }
+              if (saveMode) {
+                System.out.println("node clicked");
+                saveParkingSpot(N);
+              }
+
             });
   }
 
   LinkedList<Node> nodesToAlign = new LinkedList<Node>();
 
-  private void getNodesToAlignListener_recordParkingListener() {
-    mainAnchor.setOnKeyPressed(
-        (KeyEvent e) -> {
-          KeyCode key = e.getCode();
-          if (key == KeyCode.SHIFT && isEditor) {
-            System.out.println("Shift is down");
-            cancelListener();
-
-            for (Node N : this.initialData.getGraphInfo()) {
-              NodeUI NUI = getNodeUIByID(N.getNodeID());
-              NUI.getI()
-                  .addEventHandler(
-                      MouseEvent.MOUSE_PRESSED,
-                      (M) -> {
-                        System.out.println("node clicked");
-                        nodesToAlign.add(NUI.getN());
-
-                        if (nodesToAlign.size() > 2) {
-                          alignNodes();
-                        }
-                      });
-            }
-          }
-
-          // record parking lot
-          int saveMode = 1;
-          if (key == KeyCode.P && !isEditor) {
-            System.out.println("S is down");
-            if (saveMode == 0) {
-              saveMode += 1;
-            } else if (saveMode == 1) {
-              saveMode -= 1;
-              for (Node N : this.initialData.getGraphInfo()) {
-                if (N.getNodeType().equals("PARK")) {
-                  NodeUI NUI = getNodeUIByID(N.getNodeID());
-                  NUI.getI()
-                      .addEventHandler(
-                          MouseEvent.MOUSE_PRESSED,
-                          (M) -> {
-                            System.out.println("node clicked");
-                            saveParkingSpot(NUI);
-                          });
-                }
-              }
-            }
-          }
-        });
-  }
 
   private void alignNodes() {
     System.out.println("about to align");
