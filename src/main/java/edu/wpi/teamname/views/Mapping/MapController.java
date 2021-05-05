@@ -536,6 +536,7 @@ public class MapController implements AllAccessible {
 
   private void resetData() {
     Targets.clear();
+    thePath.clear();
     nodesToAlign.clear();
   }
 
@@ -817,6 +818,19 @@ public class MapController implements AllAccessible {
               if (minusPressed.get() && isEditor) {
                 deleteNode(N);
               }
+
+              if (isEditStart && isEditor) {
+                editEdgeStart(tempEUI.getE(), N.getN());
+                tempEUI.getL().setStroke(Color.BLACK);
+                tempEUI = null;
+                isEditStart = false;
+              }
+              if (isEditEnd && isEditor) {
+                editEdgeEnd(tempEUI.getE(), N.getN());
+                tempEUI.getL().setStroke(Color.BLACK);
+                tempEUI = null;
+                isEditEnd = false;
+              }
             });
   }
 
@@ -1088,19 +1102,6 @@ public class MapController implements AllAccessible {
             ioException.printStackTrace();
           }
         } // end of edit node popup stuff
-
-        if (isEditStart) {
-          editEdgeStart(tempEUI.getE(), N.getN());
-          tempEUI.getL().setStroke(Color.BLACK);
-          tempEUI = null;
-          isEditStart = false;
-        }
-        if (isEditEnd) {
-          editEdgeEnd(tempEUI.getE(), N.getN());
-          tempEUI.getL().setStroke(Color.BLACK);
-          tempEUI = null;
-          isEditEnd = false;
-        }
       } // end of isEditor
     }
   }
