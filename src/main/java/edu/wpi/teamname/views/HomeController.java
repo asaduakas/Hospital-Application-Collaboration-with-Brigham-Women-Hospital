@@ -102,15 +102,20 @@ public class HomeController extends Application implements AllAccessible {
               new SceneSizeChangeListener(scene, root, childrenList) {
                 @Override
                 public void changeChildren(List<Node> nodeList) {
-                  for (Node node : nodeList)
-                    if (node instanceof MapScrollPane)
-                      ((MapScrollPane) node).updateScaleRange(); // Map scrollpane scaling
+                  updateMapScrollPane(nodeList);
                   changeChildrenMapView(childrenList);
                 }
               };
           scene.widthProperty().addListener(sizeListener);
           scene.heightProperty().addListener(sizeListener);
+          updateMapScrollPane(childrenList);
         });
+  }
+
+  // Make sure map scroll pane is scaled correctly
+  private void updateMapScrollPane(List<Node> nodeList) {
+    for (Node node : nodeList)
+      if (node instanceof MapScrollPane) ((MapScrollPane) node).updateScaleRange();
   }
 
   public void changeChildrenMapView(List<Node> nodeList) {
