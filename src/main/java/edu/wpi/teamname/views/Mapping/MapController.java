@@ -51,7 +51,7 @@ public class MapController implements AllAccessible {
   public static LinkedList<NodeUI> NODES = new LinkedList<>();
   private static LinkedList<EdgeUI> EDGES = new LinkedList<>();
   public PathAlgoPicker algorithm = new PathAlgoPicker(new aStar());
-  private LinkedList<Edge> thePath = new LinkedList<Edge>();
+  public LinkedList<Edge> thePath = new LinkedList<Edge>();
   private LinkedList<Node> Targets = new LinkedList<Node>();
   private LinkedList<NodeUI> NewEdge = new LinkedList<NodeUI>();
   private LinkedList<Node> nodesToAlign = new LinkedList<Node>();
@@ -724,11 +724,10 @@ public class MapController implements AllAccessible {
     if (thePath.isEmpty()) {
       Targets.clear();
     } else {
-      showPath();
-      algorithm.multiSearch(initialData, DirectoryTargets).printPathEdges();
+      switchFloor(currentFloor);
+      //      algorithm.multiSearch(initialData, DirectoryTargets).printPathEdges();
       drawerController.getDirections(thePath);
     }
-
     return thePath;
   }
 
@@ -739,7 +738,7 @@ public class MapController implements AllAccessible {
       clearMap();
       drawNodeFloor(currentFloor);
     } else {
-      showPath();
+      switchFloor(currentFloor);
       // algorithm.multiSearch(initialData, Targets).printPathEdges();
       drawerController.getDirections(thePath);
     }
