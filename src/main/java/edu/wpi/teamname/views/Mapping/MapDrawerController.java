@@ -4,6 +4,7 @@ import com.jfoenix.controls.*;
 import edu.wpi.teamname.Astar.*;
 import edu.wpi.teamname.Ddb.FDatabaseTables;
 import edu.wpi.teamname.Ddb.GlobalDb;
+import edu.wpi.teamname.views.HomeController;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -48,8 +49,6 @@ public class MapDrawerController implements Initializable {
   @FXML JFXButton dirBtn;
   @FXML JFXTextArea dirText;
   private LinkedList<edu.wpi.teamname.Astar.Node> Targets = new LinkedList<>();
-  //  private ObservableList<CategoryNodeInfo> parkingData =
-  //      FDatabaseTables.getNodeTable().getCategory(GlobalDb.getConnection(), "PAR");
 
   private MapController mapController;
 
@@ -77,6 +76,9 @@ public class MapDrawerController implements Initializable {
       FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "RETL");
   private ArrayList<String> serviceList =
       FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "SERV");
+  private ArrayList<String> favList =
+      FDatabaseTables.getNodeTable()
+          .fetchLongNameFavorites(GlobalDb.getConnection(), HomeController.username);
   private Node textDirection;
   private RoomGraph initialData = new RoomGraph(GlobalDb.getConnection());
 
@@ -192,98 +194,6 @@ public class MapDrawerController implements Initializable {
     return nameMenu;
   }
 
-  //  private void handleMouseClicked(MouseEvent event) {
-  //    Node node = event.getPickResult().getIntersectedNode();
-  //    // Accept clicks only on node cells, and not on empty spaces of the TreeView
-  //    if (node instanceof Text || (node instanceof TreeCell && ((TreeCell) node).getText() !=
-  // null)) {
-  //      String name =
-  //          (String) ((TreeItem)
-  // directoryTreeView.getSelectionModel().getSelectedItem()).getValue();
-  //      System.out.println("Nodsssssssssssssssssssssssssssssssse click: " + name);
-  //      String type = "PARK";
-  //      switch (name) {
-  //        case "Directory":
-  //          System.out.println(mapController.getCurrentFloor());
-  //          mapController.drawNodeFloor(mapController.getCurrentFloor());
-  //          type = "ALL";
-  //          break;
-  //        case "Elevator":
-  //          type = "ELEV";
-  //          break;
-  //        case "Restroom":
-  //          type = "REST";
-  //          break;
-  //        case "Stairs":
-  //          type = "STAI";
-  //          break;
-  //        case "Department":
-  //          type = "DEPT";
-  //          break;
-  //        case "Laboratory":
-  //          type = "LABS";
-  //          break;
-  //        case "Information":
-  //          type = "INFO";
-  //          break;
-  //        case "Conference":
-  //          type = "CONF";
-  //          break;
-  //        case "Entrance/Exit":
-  //          type = "EXIT";
-  //          break;
-  //        case "Retail":
-  //          type = "RETL";
-  //          break;
-  //        case "Service":
-  //          type = "SERV";
-  //          break;
-  //        case "Parking":
-  //          type = "PARK";
-  //          break;
-  //          //        default:
-  //          //          for (NodeUI nodess : mapController.NODES) {
-  //          //            if (nodess.getN().getLongName().equals(name)) {
-  //          //              mapController.clearMap();
-  //          //              mapController.addNode(nodess);
-  //          //            }
-  //          //          }
-  //      }
-  //      nodeRedrawing(type);
-  //      if (mapController.getNodeUIByLongName(name) != null) {
-  //        if (nodesClicked.size() >= 2) {
-  //          nodesClicked.clear();
-  //        }
-  //        if (!(nodesClicked.contains(name))) nodesClicked.add(name);
-  //        for (String nodeName : nodesClicked) {
-  //          if ((nodesClicked.size() == 1) && !(nodesClicked.size() == 0)) {
-  //            String firstClicked = nodesClicked.getFirst();
-  //            startField.setText(firstClicked);
-  //          } else {
-  //            String lastClicked = nodesClicked.getLast();
-  //            endField.setText(lastClicked);
-  //          }
-  //        }
-  //      }
-  //      System.out.println(nodesClicked.size());
-  //    }
-  //  }
-
-  //  private void nodeRedrawing(String type) {
-  //    mapController.clearMap();
-  //
-  //    if (type == "ALL") {
-  //      mapController.drawNodeFloor(mapController.getCurrentFloor());
-  //    } else {
-  //      for (NodeUI NUI : mapController.NODES) {
-  //        if (NUI.getN().getFloor().equals(mapController.currentFloor)
-  //            && (NUI.getN().getNodeType().equals(type))) {
-  //          mapController.addNodeUI(NUI);
-  //        }
-  //      }
-  //    }
-  //  }
-
   public void changePathFinderAlgo(String algo) {
     if (algo.equals("BFS")) mapController.algorithm.setAlgorithm(new singleBFS());
     else if (algo.equals("DFS")) mapController.algorithm.setAlgorithm(new singleDFS());
@@ -309,6 +219,7 @@ public class MapDrawerController implements Initializable {
     TreeItem<String> exit = new TreeItem<>("Entrance/Exit");
     TreeItem<String> retail = new TreeItem<>("Retail");
     TreeItem<String> service = new TreeItem<>("Service");
+    TreeItem<String> favoriteCell = new TreeItem<>("Favorite");
     directoryTreeView.setRoot(directoryRoot);
 
     directoryTreeView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -384,6 +295,13 @@ public class MapDrawerController implements Initializable {
       servImage.setFitHeight(15);
       service.setGraphic(servImage);
 
+      ImageView favImage =
+          new ImageView(
+              new Image(new FileInputStream("src/main/resources/Images/favIcon_good.png")));
+      favImage.setFitWidth(15);
+      favImage.setFitHeight(15);
+      favoriteCell.setGraphic(favImage);
+
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
@@ -401,7 +319,8 @@ public class MapDrawerController implements Initializable {
             conference,
             exit,
             retail,
-            service);
+            service,
+            favoriteCell);
 
     for (String parkingSpace : parkingList) {
       TreeItem<String> parkingLocation = new TreeItem<String>(parkingSpace);
@@ -456,6 +375,11 @@ public class MapDrawerController implements Initializable {
     for (String serv : serviceList) {
       TreeItem<String> serviceLocation = new TreeItem<String>(serv);
       service.getChildren().add(serviceLocation);
+    }
+
+    for (String fav : favList) {
+      TreeItem<String> favorite = new TreeItem<>(fav);
+      favoriteCell.getChildren().add(favorite);
     }
 
     directoryRoot.setExpanded(true);
@@ -553,6 +477,10 @@ public class MapDrawerController implements Initializable {
           type = "PARK";
           nodeRedrawing(type);
           break;
+        case "Favorite":
+          type = "Favorite";
+          nodeRedrawing(type);
+          break;
         default:
           for (NodeUI NUI : mapController.NODES) {
             if (NUI.getN().getLongName().equals(name)) {
@@ -572,6 +500,17 @@ public class MapDrawerController implements Initializable {
         if (NUI.getN().getFloor().equals(mapController.currentFloor)
             && !NUI.getN().getNodeType().equals("HALL")
             && !NUI.getN().getNodeType().equals("WALK")) {
+          mapController.addNodeUI(NUI);
+        }
+      }
+    } else if (type.equals("Favorite")) {
+      for (NodeUI NUI : mapController.NODES) {
+        if (NUI.getN().getFloor().equals(mapController.currentFloor)
+            && !NUI.getN().getNodeType().equals("HALL")
+            && !NUI.getN().getNodeType().equals("WALK")
+            && FDatabaseTables.getNodeTable()
+                .FavContains(
+                    GlobalDb.getConnection(), NUI.getN().getNodeID(), HomeController.username)) {
           mapController.addNodeUI(NUI);
         }
       }

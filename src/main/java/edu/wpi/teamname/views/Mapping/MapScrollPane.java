@@ -47,9 +47,6 @@ public class MapScrollPane extends ScrollPane {
   }
 
   public void updateScaleRange() {
-    System.out.println(App.getPrimaryStage().getWidth());
-    System.out.println(App.getPrimaryStage().getHeight());
-    System.out.println();
     this.minimumScale =
         Math.max(
             App.getPrimaryStage().getWidth() / mapImage.getImage().getWidth(),
@@ -83,7 +80,6 @@ public class MapScrollPane extends ScrollPane {
   private void updateScale() {
     mapAnchor.setScaleX(scaleValue);
     mapAnchor.setScaleY(scaleValue);
-    System.out.println("Scale is " + scaleValue);
   }
 
   private void onScroll(double wheelDelta, Point2D mousePoint) {
