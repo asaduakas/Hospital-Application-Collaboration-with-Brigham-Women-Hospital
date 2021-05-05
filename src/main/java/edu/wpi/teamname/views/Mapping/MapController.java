@@ -601,13 +601,13 @@ public class MapController implements AllAccessible {
             N.getN().getLongName(),
             N.getN().getShortName(),
             0);
+    initialData.getGraphInfo().add(N.getN());
+    NODES.add(N);
     pathListener_AddEdge(N);
     hoverResize(N);
     setupDraggableNodeUI(N);
-    initialData.getGraphInfo().add(N.getN());
-    NODES.add(N);
-    addNodeUI(N);
     deleteNodeListener(N);
+    addNodeUI(N);
   }
 
   private void addEdge(EdgeUI E) {
