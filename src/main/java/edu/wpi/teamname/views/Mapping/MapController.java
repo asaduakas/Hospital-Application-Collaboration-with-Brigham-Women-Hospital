@@ -103,6 +103,8 @@ public class MapController implements AllAccessible {
   private SimpleStringProperty simpleFloor = new SimpleStringProperty("Floor " + currentFloor);
   private JFXButton ChooseFloorBtn = new JFXButton("Floor 1");
 
+  private MapDrawerController drawerController;
+
   @FXML
   private void initialize() {
     mapScrollPane = new MapScrollPane(F1);
@@ -166,8 +168,8 @@ public class MapController implements AllAccessible {
     FXMLLoader loader =
         new FXMLLoader(getClass().getClassLoader().getResource("MapDrawerView.fxml"));
     AnchorPane menuBtns = loader.load();
-    MapDrawerController drawer = loader.getController();
-    drawer.setMapController(this);
+    this.drawerController = loader.getController();
+    drawerController.setMapController(this);
     mapDrawer.setSidePane(menuBtns);
     Pane root = (Pane) loader.getRoot();
     List<javafx.scene.Node> childrenList = root.getChildren();
@@ -640,8 +642,7 @@ public class MapController implements AllAccessible {
     } else {
       showPath();
       algorithm.multiSearch(initialData, DirectoryTargets).printPathEdges();
-      MapDrawerController myMapDrawCtrl = new MapDrawerController();
-      myMapDrawCtrl.getDirections(thePath);
+      drawerController.getDirections(thePath);
     }
 
     return thePath;
@@ -656,8 +657,7 @@ public class MapController implements AllAccessible {
     } else {
       showPath();
       // algorithm.multiSearch(initialData, Targets).printPathEdges();
-      MapDrawerController myMapDrawCtrl = new MapDrawerController();
-      myMapDrawCtrl.getDirections(thePath);
+      drawerController.getDirections(thePath);
     }
   }
 
