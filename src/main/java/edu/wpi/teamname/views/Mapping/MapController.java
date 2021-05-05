@@ -9,6 +9,7 @@ import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.Access.AllAccessible;
 import edu.wpi.teamname.views.Access.LoginController;
 import edu.wpi.teamname.views.ControllerManager;
+import edu.wpi.teamname.views.HomeController;
 import edu.wpi.teamname.views.Mapping.Popup.Edit.AddNodeController;
 import edu.wpi.teamname.views.Mapping.Popup.Edit.EditNodeController;
 import edu.wpi.teamname.views.SceneSizeChangeListener;
@@ -72,6 +73,7 @@ public class MapController implements AllAccessible {
   private SimpleBooleanProperty aPressed = new SimpleBooleanProperty();
   private SimpleBooleanProperty pPressed = new SimpleBooleanProperty();
   private SimpleBooleanProperty shiftPressed = new SimpleBooleanProperty();
+  private SimpleBooleanProperty fPressed = new SimpleBooleanProperty();
   private EdgeUI tempEUI;
   public static boolean mapEditorIsSelected = false;
 
@@ -92,6 +94,7 @@ public class MapController implements AllAccessible {
   public static final Image EXIT = new Image("Images/exitpin.png");
   public static final Image RETL = new Image("Images/retailpin.png");
   public static final Image SERV = new Image("Images/service.png");
+  public static final Image favImage = new Image("Images/favIcon_good.png");
   private Image up = new Image("Images/up-arrow.png");
   private Image down = new Image("Images/redArrow.png");
   private Image endImage = new Image("Images/endingIcon_white.png");
@@ -134,7 +137,7 @@ public class MapController implements AllAccessible {
 
     switchFloor("1");
     for (NodeUI node : NODES) {
-      System.out.println(node.getN().getNodeID());
+      //      System.out.println(node.getN().getNodeID());
     }
 
     ToggleListener();
@@ -226,11 +229,6 @@ public class MapController implements AllAccessible {
     label.setLayoutX(10);
     textDirection.setLayoutY(label.getLayoutY() + label.getHeight() + 30);
     dirBtn.setLayoutY(textDirection.getLayoutY() + textDirection.getPrefHeight() + 20);
-    System.out.println(
-        "This is textArea layout stuff "
-            + textDirection.getLayoutY()
-            + " this is height "
-            + textDirection.getPrefHeight());
   }
 
   public void goHome() {
@@ -269,44 +267,48 @@ public class MapController implements AllAccessible {
       Marker.setFitHeight(nodeNormalHeight);
       Marker.setX(N.getXCoord() - nodeNormalWidth / 2);
       Marker.setY(N.getYCoord() - nodeNormalHeight);
-
-      switch (N.getNodeType()) {
-        case "PARK":
-          Marker.setImage(PARK);
-          break;
-        case "ELEV":
-          Marker.setImage(ELEV);
-          break;
-        case "REST":
-          Marker.setImage(REST);
-          break;
-        case "STAI":
-          Marker.setImage(STAI);
-          break;
-        case "DEPT":
-          Marker.setImage(DEPT);
-          break;
-        case "LABS":
-          Marker.setImage(LABS);
-          break;
-        case "INFO":
-          Marker.setImage(INFO);
-          break;
-        case "CONF":
-          Marker.setImage(CONF);
-          break;
-        case "EXIT":
-          Marker.setImage(EXIT);
-          break;
-        case "RETL":
-          Marker.setImage(RETL);
-          break;
-        case "SERV":
-          Marker.setImage(SERV);
-          break;
-        default:
-          Marker.setImage(DEFAULT);
-          break;
+      if (FDatabaseTables.getNodeTable()
+          .FavContains(GlobalDb.getConnection(), N.getNodeID(), HomeController.username)) {
+        Marker.setImage(favImage);
+      } else {
+        switch (N.getNodeType()) {
+          case "PARK":
+            Marker.setImage(PARK);
+            break;
+          case "ELEV":
+            Marker.setImage(ELEV);
+            break;
+          case "REST":
+            Marker.setImage(REST);
+            break;
+          case "STAI":
+            Marker.setImage(STAI);
+            break;
+          case "DEPT":
+            Marker.setImage(DEPT);
+            break;
+          case "LABS":
+            Marker.setImage(LABS);
+            break;
+          case "INFO":
+            Marker.setImage(INFO);
+            break;
+          case "CONF":
+            Marker.setImage(CONF);
+            break;
+          case "EXIT":
+            Marker.setImage(EXIT);
+            break;
+          case "RETL":
+            Marker.setImage(RETL);
+            break;
+          case "SERV":
+            Marker.setImage(SERV);
+            break;
+          default:
+            Marker.setImage(DEFAULT);
+            break;
+        }
       }
 
       NodeUI Temp = new NodeUI(N, Marker, nodeNormalWidth, nodeNormalHeight);
@@ -800,9 +802,19 @@ public class MapController implements AllAccessible {
             startPressed.setValue(false);
             endPressed.setValue(false);
             shiftPressed.set(false);
+            fPressed.set(false);
             saveMode = !saveMode;
             alignMode = false;
-            System.out.println("I'm REAGAN");
+          }
+          if (key == KeyCode.F) {
+            pPressed.set(false);
+            plusPressed.set(false);
+            minusPressed.set(false);
+            aPressed.set(false);
+            startPressed.setValue(false);
+            endPressed.setValue(false);
+            shiftPressed.set(false);
+            fPressed.set(true);
           }
           if (key == KeyCode.SHIFT) {
             pPressed.set(false);
@@ -812,6 +824,7 @@ public class MapController implements AllAccessible {
             aPressed.set(false);
             startPressed.setValue(false);
             endPressed.setValue(false);
+            fPressed.set(false);
             alignMode = !alignMode;
             saveMode = false;
           }
@@ -823,6 +836,7 @@ public class MapController implements AllAccessible {
             startPressed.setValue(false);
             endPressed.setValue(false);
             shiftPressed.set(false);
+            fPressed.set(false);
           }
           if (key == KeyCode.MINUS) {
             pPressed.set(false);
@@ -832,6 +846,7 @@ public class MapController implements AllAccessible {
             startPressed.setValue(false);
             endPressed.setValue(false);
             shiftPressed.set(false);
+            fPressed.set(false);
           }
           if (key == KeyCode.A) {
             pPressed.set(false);
@@ -841,6 +856,7 @@ public class MapController implements AllAccessible {
             startPressed.setValue(false);
             endPressed.setValue(false);
             shiftPressed.set(false);
+            fPressed.set(false);
           }
           if (key == KeyCode.S) {
             startPressed.setValue(true);
@@ -850,6 +866,7 @@ public class MapController implements AllAccessible {
             minusPressed.set(false);
             aPressed.set(false);
             shiftPressed.set(false);
+            fPressed.set(false);
           }
           if (key == KeyCode.E) {
             endPressed.setValue(true);
@@ -859,6 +876,7 @@ public class MapController implements AllAccessible {
             minusPressed.set(false);
             aPressed.set(false);
             shiftPressed.set(false);
+            fPressed.set(false);
           }
           if (!isEditor) {
             if (key == KeyCode.ESCAPE) {
@@ -880,6 +898,7 @@ public class MapController implements AllAccessible {
           minusPressed.set(false);
           aPressed.set(false);
           shiftPressed.set(false);
+          fPressed.set(false);
         });
   }
 
@@ -970,8 +989,8 @@ public class MapController implements AllAccessible {
                   NewEdge.add(N);
                   if (NewEdge.size() == 2) {
 
-                    System.out.println(NewEdge.get(0).getN().getNodeID());
-                    System.out.println(NewEdge.get(1).getN().getNodeID());
+                    //                    System.out.println(NewEdge.get(0).getN().getNodeID());
+                    //                    System.out.println(NewEdge.get(1).getN().getNodeID());
 
                     Line L = new Line();
 
@@ -1002,7 +1021,6 @@ public class MapController implements AllAccessible {
                 }
                 // Align node
                 if (alignMode) {
-                  System.out.println("node clicked");
                   nodesToAlign.add(N.getN());
 
                   if (nodesToAlign.size() > 2) {
@@ -1013,9 +1031,11 @@ public class MapController implements AllAccessible {
 
               if (saveMode) {
                 if (N.getN().getNodeType().equals("PARK")) {
-                  System.out.println("node clicked");
                   saveParkingSpot(N);
                 }
+              }
+              if (fPressed.get()) {
+                favorite(N);
               }
             });
   }
@@ -1034,9 +1054,9 @@ public class MapController implements AllAccessible {
     int tempY = nodesToAlign.getFirst().getYCoord();
 
     for (Node node : nodesToAlign) {
-      System.out.println(node.getNodeID());
-      System.out.println("X: " + node.getXCoord());
-      System.out.println("Y: " + node.getYCoord());
+      //      System.out.println(node.getNodeID());
+      //      System.out.println("X: " + node.getXCoord());
+      //      System.out.println("Y: " + node.getYCoord());
       diffX = tempX - node.getXCoord();
       diffY = tempY - node.getYCoord();
       totalXDiff += Math.abs(diffX);
@@ -1086,6 +1106,61 @@ public class MapController implements AllAccessible {
       N.setSizeHeight(N.getSizeHeight() + 60);
       N.setSizeWidth(N.getSizeWidth() + 60);
     }
+  }
+
+  private void favorite(NodeUI N) {
+    if (FDatabaseTables.getNodeTable()
+        .FavContains(GlobalDb.getConnection(), N.getN().getNodeID(), HomeController.username)) {
+      FDatabaseTables.getNodeTable()
+          .deleteFav(GlobalDb.getConnection(), N.getN().getNodeID(), HomeController.username);
+      switch (N.getN().getNodeType()) {
+        case "PARK":
+          N.getI().setImage(PARK);
+          break;
+        case "ELEV":
+          N.getI().setImage(ELEV);
+          break;
+        case "REST":
+          N.getI().setImage(REST);
+          break;
+        case "STAI":
+          N.getI().setImage(STAI);
+          break;
+        case "DEPT":
+          N.getI().setImage(DEPT);
+          break;
+        case "LABS":
+          N.getI().setImage(LABS);
+          break;
+        case "INFO":
+          N.getI().setImage(INFO);
+          break;
+        case "CONF":
+          N.getI().setImage(CONF);
+          break;
+        case "EXIT":
+          N.getI().setImage(EXIT);
+          break;
+        case "RETL":
+          N.getI().setImage(RETL);
+          break;
+        case "SERV":
+          N.getI().setImage(SERV);
+          break;
+        default:
+          N.getI().setImage(DEFAULT);
+          break;
+      }
+    } else {
+      FDatabaseTables.getNodeTable()
+          .addToFavoriteNodes(
+              GlobalDb.getConnection(),
+              HomeController.username,
+              N.getN().getNodeID(),
+              N.getN().getLongName());
+      N.getI().setImage(favImage);
+    }
+    MapDrawerController.favCallStuff();
   }
 
   private void hoverResize(NodeUI N) {
@@ -1337,249 +1412,6 @@ public class MapController implements AllAccessible {
   public String getCurrentFloor() {
     return currentFloor;
   }
-
-  // _____________________________________Directions__________________________________________
-
-  //  @FXML JFXButton dirBtn;
-  //  @FXML JFXTextArea dirText;
-  //  private String endLocation = "";
-  //
-  //  private void setEnd(String end) {
-  //    endLocation = end;
-  //  }
-  //
-  //  private String getEnd() {
-  //    return endLocation;
-  //  }
-  //
-  //  @FXML
-  //  public void getDirections(LinkedList<Edge> edges) {
-  //
-  //    if (edges.isEmpty()) {
-  //      System.out.println("No Directions to Give!");
-  //      return;
-  //    }
-  //    // ScaleDown(edges.getFirst().getStartNode());
-  //
-  //    dirText.clear();
-  //
-  //    Node start = initialData.getNodeByID(edges.getFirst().getStartNodeID());
-  //    Node end = initialData.getNodeByID(edges.getLast().getEndNodeID());
-  //    dirText.appendText(
-  //        "Directions from " + start.getLongName() + " to " + end.getLongName() + ":\n");
-  //    System.out.println(
-  //        "Directions from " + start.getLongName() + " to " + end.getLongName() + ":\n");
-  //    System.out.println("getting text------------\n" + dirText.getText());
-  //    setEnd(end.getShortName());
-  //
-  //    // ScaleDown(edges.getFirst().getEndNode());
-  //    String initialDirection =
-  //        firstMove(
-  //            start.getXCoord(), start.getYCoord(), start.getXCoord(), start.getYCoord(), start,
-  // end);
-  //
-  //    // used to skip first edge
-  //    int skip = 0;
-  //    for (Edge N : edges) {
-  //      if (skip == 0) {
-  //        skip++;
-  //        continue;
-  //      }
-  //      // ScaleDown(N.getEndNode());
-  //      Node startN = initialData.getNodeByID(N.getStartNodeID());
-  //      Node endN = initialData.getNodeByID(N.getEndNodeID());
-  //
-  //      String newDirection =
-  //          evalTurn(
-  //              initialDirection,
-  //              startN.getXCoord(),
-  //              startN.getYCoord(),
-  //              endN.getXCoord(),
-  //              endN.getYCoord(),
-  //              startN,
-  //              endN);
-  //      initialDirection = newDirection;
-  //    }
-  //    dirText.appendText("\nWelcome to " + end.getLongName() + "\n");
-  //    System.out.println("final text--------\n" + dirText.getText());
-  //  }
-  //
-  //  public String evalTurn(
-  //      String currentDirection,
-  //      int startX,
-  //      int startY,
-  //      int endX,
-  //      int endY,
-  //      Node startNode,
-  //      Node endNode) {
-  //    String newDirection = "";
-  //    int deltaX = endX - startX;
-  //    int deltaY = endY - startY;
-  //
-  //    System.out.println("start type: " + startNode.getNodeType());
-  //    System.out.println("end type: " + endNode.getNodeType());
-  //
-  //    // add handling for changing floors
-  //    if (startNode.getNodeType().equals("ELEV") && endNode.getNodeType().equals("ELEV")) {
-  //      dirText.appendText("Take the elevator towards floor " + endNode.getFloor() + "\n");
-  //      return "In elevator";
-  //
-  //    } else if (startNode.getNodeType().equals("ELEV") && !endNode.getNodeType().equals("ELEV"))
-  // {
-  //      newDirection = firstMove(startX, startY, endX, endY, startNode, endNode);
-  //      return newDirection;
-  //    } else if (startNode.getNodeType().equals("STAI") && endNode.getNodeType().equals("STAI")) {
-  //      dirText.appendText("Take the stairs towards floor " + endNode.getFloor() + "\n");
-  //      return "In stairs";
-  //    } else if (startNode.getNodeType().equals("STAI") && !endNode.getNodeType().equals("STAI"))
-  // {
-  //      newDirection = firstMove(startX, startY, endX, endY, startNode, endNode);
-  //      return newDirection;
-  //    }
-  //
-  //    // North
-  //    if ((deltaY < 0) && (Math.abs(deltaY) > Math.abs(deltaX))) {
-  //      newDirection = "North";
-  //    }
-  //    // South
-  //    else if ((deltaY > 0) && (deltaY > Math.abs(deltaX))) {
-  //      newDirection = "South";
-  //    }
-  //    // East
-  //    else if ((deltaX > 0) && (deltaX > Math.abs(deltaY))) {
-  //      newDirection = "East";
-  //    }
-  //    // West
-  //    else if ((deltaX < 0) && (Math.abs(deltaX) > Math.abs(deltaY))) {
-  //      newDirection = "West";
-  //    } else {
-  //      newDirection = "Error";
-  //    }
-  //
-  //    // Turn Left
-  //    if ((currentDirection.equals("North") && newDirection.equals("West"))
-  //        || (currentDirection.equals("East") && newDirection.equals("North"))
-  //        || (currentDirection.equals("South") && newDirection.equals("East"))
-  //        || (currentDirection.equals("West") && newDirection.equals("South"))) {
-  //      dirText.appendText("Turn Left towards " + endNode.getLongName() + "\n");
-  //
-  //    }
-  //    // Turn Right
-  //    else if ((currentDirection.equals("North") && newDirection.equals("East"))
-  //        || (currentDirection.equals("East") && newDirection.equals("South"))
-  //        || (currentDirection.equals("South") && newDirection.equals("West"))
-  //        || (currentDirection.equals("West") && newDirection.equals("North"))) {
-  //      dirText.appendText("Turn Right towards " + endNode.getLongName() + "\n");
-  //    }
-  //    // Continue Straight
-  //    else if (currentDirection.equals(newDirection)) {
-  //      if (!(startNode.getNodeType().equals("HALL") && endNode.getNodeType().equals("HALL"))) {
-  //        dirText.appendText("Continue Straight towards " + endNode.getLongName() + "\n");
-  //      }
-  //    }
-  //
-  //    return newDirection;
-  //  }
-  //
-  //  public String firstMove(
-  //      int startX, int startY, int endX, int endY, Node startNode, Node endNode) {
-  //    int deltaX = endX - startX;
-  //    int deltaY = endY - startY;
-  //
-  //    // add handling for changing floors
-  //    if (startNode.getNodeType().equals("ELEV") && endNode.getNodeType().equals("ELEV")) {
-  //      dirText.appendText("Take the elevator towards floor " + endNode.getFloor() + "\n");
-  //      return "In elevator";
-  //    } else if (startNode.getNodeType().equals("STAI") && endNode.getNodeType().equals("STAI")) {
-  //      dirText.appendText("Take the stairs towards floor " + endNode.getFloor() + "\n");
-  //      return "In stairs";
-  //    } else {
-  //      // North
-  //      if ((deltaY < 0) && (Math.abs(deltaY) > Math.abs(deltaX))) {
-  //        System.out.println("Head North towards " + endNode.getLongName());
-  //        dirText.appendText("Head North towards " + endNode.getLongName() + "\n");
-  //        return "North";
-  //      }
-  //      // South
-  //      else if ((deltaY > 0) && (deltaY > Math.abs(deltaX))) {
-  //        System.out.println("Head South towards " + endNode.getLongName());
-  //        dirText.appendText("Head South towards " + endNode.getLongName() + "\n");
-  //        return "South";
-  //      }
-  //      // East
-  //      else if ((deltaX > 0) && (deltaX > Math.abs(deltaY))) {
-  //        System.out.println("Head East towards " + endNode.getLongName());
-  //        dirText.appendText("Head East towards " + endNode.getLongName() + "\n");
-  //        return "East";
-  //      }
-  //      // West
-  //      else if ((deltaX < 0) && (Math.abs(deltaX) > Math.abs(deltaY))) {
-  //        System.out.println("Head West towards " + endNode.getLongName());
-  //        dirText.appendText("Head West towards " + endNode.getLongName() + "\n");
-  //        return "West";
-  //      } else {
-  //        System.out.println("Error determining turn direction towards " + endNode.getLongName());
-  //        return "Direction Error";
-  //      }
-  //    }
-  //  }
-  //
-  //  @FXML
-  //  public void downloadDirections(ActionEvent event) {
-  //    if (event.getSource() == dirBtn) {
-  //
-  //      String name = getEnd().replaceAll(" ", "") + "Directions.txt";
-  //
-  //      try {
-  //        FileWriter directions = new FileWriter(name);
-  //
-  //        directions.write(dirText.getText());
-  //        directions.close();
-  //
-  //        String DialogText = "";
-  //        if (getEnd().equals("")) {
-  //          DialogText = "Select a Start and End Before Downloading Directions";
-  //        } else {
-  //          DialogText = "Your Directions Have Been Downloaded";
-  //        }
-  //        Text header = new Text(DialogText);
-  //        header.setFont(Font.font("System", FontWeight.BOLD, 18));
-  //
-  //        JFXDialogLayout layout = new JFXDialogLayout();
-  //        layout.setHeading(header);
-  //        layout.setBody(new Text(""));
-  //
-  //        StackPane downloadedStackPane = new StackPane();
-  //        mainAnchor.getChildren().add(downloadedStackPane);
-  //        StackPane.setAlignment(downloadedStackPane, Pos.TOP_RIGHT);
-  //        downloadedStackPane.setLayoutY(245);
-  //        downloadedStackPane.setLayoutX(300);
-  //        JFXDialog submitDia =
-  //            new JFXDialog(downloadedStackPane, layout, JFXDialog.DialogTransition.CENTER);
-  //
-  //        JFXButton downloadedBtn = new JFXButton("Close");
-  //        downloadedBtn.setPrefHeight(60);
-  //        downloadedBtn.setPrefWidth(120);
-  //        downloadedBtn.setId("downloadedBtn");
-  //        downloadedBtn.setButtonType(JFXButton.ButtonType.FLAT);
-  //        downloadedBtn.setStyle("-fx-background-color: #cdcdcd;");
-  //
-  //        downloadedBtn.setOnAction(
-  //            new EventHandler<ActionEvent>() {
-  //              @Override
-  //              public void handle(ActionEvent event) {
-  //                submitDia.close();
-  //              }
-  //            });
-  //
-  //        layout.setActions(downloadedBtn);
-  //        submitDia.show();
-  //
-  //      } catch (IOException e) {
-  //        System.out.println("Unable to write to directions output file");
-  //      }
-  //    }
-  //  }
   // ______________________________________Popups_____________________________________________
 
   private FXMLLoader loadPopup(String fxml) throws IOException {
@@ -1671,57 +1503,6 @@ public class MapController implements AllAccessible {
   }
 
   private void resetCSV() {
-    /* ------------- OLD VERSION WITH DIALOGS ---------------------------
-    if (resetOpen) return;
-    resetOpen = true;
-
-    // Creating a vertical box and adding textFields
-    Text header = new Text("Are you sure you want to reset CSV?");
-    header.setFont(javafx.scene.text.Font.font("System", FontWeight.BOLD, 18));
-
-    JFXDialogLayout layout = new JFXDialogLayout();
-    layout.setHeading(header);
-    JFXDialog submitDia = new JFXDialog(stackPane, layout, JFXDialog.DialogTransition.CENTER);
-
-    // Creating the Submit Button
-    JFXButton subBtn = new JFXButton("Submit");
-    subBtn.setPrefHeight(20);
-    subBtn.setPrefWidth(60);
-    subBtn.setId("subBtn");
-    subBtn.setButtonType(JFXButton.ButtonType.FLAT);
-    subBtn.setOnAction(
-        new EventHandler<ActionEvent>() {
-          @Override
-          public void handle(ActionEvent event) {
-            // option
-            FDatabaseTables.getNodeTable().clearTable(GlobalDb.getConnection(), "Nodes");
-            FDatabaseTables.getEdgeTable().clearTable(GlobalDb.getConnection(), "Edges");
-            FDatabaseTables.getNodeTable().populateTable(GlobalDb.getConnection(), "");
-            FDatabaseTables.getEdgeTable().populateTable(GlobalDb.getConnection(), "");
-            updateMapFromDB();
-            submitDia.close();
-            resetOpen = false;
-          }
-        });
-    subBtn.setStyle("-fx-background-color: #cdcdcd;");
-
-    // Creating the Cancel Button
-    JFXButton canBtn = new JFXButton("Cancel");
-    canBtn.setPrefHeight(20);
-    canBtn.setPrefWidth(60);
-    canBtn.setId("canBtn");
-    canBtn.setButtonType(JFXButton.ButtonType.FLAT);
-    canBtn.setOnAction(
-        e -> {
-          submitDia.close();
-          resetOpen = false;
-        });
-    canBtn.setStyle("-fx-background-color: #cdcdcd;");
-
-    layout.setActions(subBtn, canBtn);
-
-    submitDia.show();
-     */
 
     FDatabaseTables.getNodeTable().clearTable(GlobalDb.getConnection(), "Nodes");
     FDatabaseTables.getEdgeTable().clearTable(GlobalDb.getConnection(), "Edges");

@@ -4,6 +4,7 @@ import com.jfoenix.controls.*;
 import edu.wpi.teamname.Astar.*;
 import edu.wpi.teamname.Ddb.FDatabaseTables;
 import edu.wpi.teamname.Ddb.GlobalDb;
+import edu.wpi.teamname.views.HomeController;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -48,8 +49,6 @@ public class MapDrawerController implements Initializable {
   @FXML JFXButton dirBtn;
   @FXML JFXTextArea dirText;
   private LinkedList<edu.wpi.teamname.Astar.Node> Targets = new LinkedList<>();
-  //  private ObservableList<CategoryNodeInfo> parkingData =
-  //      FDatabaseTables.getNodeTable().getCategory(GlobalDb.getConnection(), "PAR");
 
   private MapController mapController;
 
@@ -77,8 +76,12 @@ public class MapDrawerController implements Initializable {
       FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "RETL");
   private ArrayList<String> serviceList =
       FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "SERV");
+  public static ArrayList<String> favList =
+      FDatabaseTables.getNodeTable()
+          .fetchLongNameFavorites(GlobalDb.getConnection(), HomeController.username);
   private Node textDirection;
   private RoomGraph initialData = new RoomGraph(GlobalDb.getConnection());
+  public static TreeItem<String> favoriteCell = new TreeItem<>("Favorite");
 
   @FXML
   public void tiasSpecialFunction() throws IOException {
@@ -86,8 +89,8 @@ public class MapDrawerController implements Initializable {
     String endText = endField.getText();
     //    String longName1 = "Neuroscience Waiting Room";
     //    String longName2 = "Emergency Department Entrance";
-    System.out.println(startText);
-    System.out.println(endText);
+    //    System.out.println(startText);
+    //    System.out.println(endText);
 
     Targets.add(mapController.getNodeUIByLongName(startText).getN());
     Targets.add(mapController.getNodeUIByLongName(endText).getN());
@@ -162,8 +165,23 @@ public class MapDrawerController implements Initializable {
                 changePathFinderAlgo(newValue);
               }
             });
+    favCallStuff();
+  }
 
-    System.out.println("dirtext is Null?: " + (dirText == null));
+  public static void favCallStuff() {
+    if (favList.size()
+        != FDatabaseTables.getNodeTable()
+            .fetchLongNameFavorites(GlobalDb.getConnection(), HomeController.username)
+            .size()) {
+      favList =
+          FDatabaseTables.getNodeTable()
+              .fetchLongNameFavorites(GlobalDb.getConnection(), HomeController.username);
+      favoriteCell.getChildren().clear();
+      for (String fav : favList) {
+        TreeItem<String> favorite = new TreeItem<>(fav);
+        favoriteCell.getChildren().add(favorite);
+      }
+    }
   }
 
   public static VBox longNameMenu(String str, ArrayList<String> list, JFXTextField textField) {
@@ -192,98 +210,6 @@ public class MapDrawerController implements Initializable {
     return nameMenu;
   }
 
-  //  private void handleMouseClicked(MouseEvent event) {
-  //    Node node = event.getPickResult().getIntersectedNode();
-  //    // Accept clicks only on node cells, and not on empty spaces of the TreeView
-  //    if (node instanceof Text || (node instanceof TreeCell && ((TreeCell) node).getText() !=
-  // null)) {
-  //      String name =
-  //          (String) ((TreeItem)
-  // directoryTreeView.getSelectionModel().getSelectedItem()).getValue();
-  //      System.out.println("Nodsssssssssssssssssssssssssssssssse click: " + name);
-  //      String type = "PARK";
-  //      switch (name) {
-  //        case "Directory":
-  //          System.out.println(mapController.getCurrentFloor());
-  //          mapController.drawNodeFloor(mapController.getCurrentFloor());
-  //          type = "ALL";
-  //          break;
-  //        case "Elevator":
-  //          type = "ELEV";
-  //          break;
-  //        case "Restroom":
-  //          type = "REST";
-  //          break;
-  //        case "Stairs":
-  //          type = "STAI";
-  //          break;
-  //        case "Department":
-  //          type = "DEPT";
-  //          break;
-  //        case "Laboratory":
-  //          type = "LABS";
-  //          break;
-  //        case "Information":
-  //          type = "INFO";
-  //          break;
-  //        case "Conference":
-  //          type = "CONF";
-  //          break;
-  //        case "Entrance/Exit":
-  //          type = "EXIT";
-  //          break;
-  //        case "Retail":
-  //          type = "RETL";
-  //          break;
-  //        case "Service":
-  //          type = "SERV";
-  //          break;
-  //        case "Parking":
-  //          type = "PARK";
-  //          break;
-  //          //        default:
-  //          //          for (NodeUI nodess : mapController.NODES) {
-  //          //            if (nodess.getN().getLongName().equals(name)) {
-  //          //              mapController.clearMap();
-  //          //              mapController.addNode(nodess);
-  //          //            }
-  //          //          }
-  //      }
-  //      nodeRedrawing(type);
-  //      if (mapController.getNodeUIByLongName(name) != null) {
-  //        if (nodesClicked.size() >= 2) {
-  //          nodesClicked.clear();
-  //        }
-  //        if (!(nodesClicked.contains(name))) nodesClicked.add(name);
-  //        for (String nodeName : nodesClicked) {
-  //          if ((nodesClicked.size() == 1) && !(nodesClicked.size() == 0)) {
-  //            String firstClicked = nodesClicked.getFirst();
-  //            startField.setText(firstClicked);
-  //          } else {
-  //            String lastClicked = nodesClicked.getLast();
-  //            endField.setText(lastClicked);
-  //          }
-  //        }
-  //      }
-  //      System.out.println(nodesClicked.size());
-  //    }
-  //  }
-
-  //  private void nodeRedrawing(String type) {
-  //    mapController.clearMap();
-  //
-  //    if (type == "ALL") {
-  //      mapController.drawNodeFloor(mapController.getCurrentFloor());
-  //    } else {
-  //      for (NodeUI NUI : mapController.NODES) {
-  //        if (NUI.getN().getFloor().equals(mapController.currentFloor)
-  //            && (NUI.getN().getNodeType().equals(type))) {
-  //          mapController.addNodeUI(NUI);
-  //        }
-  //      }
-  //    }
-  //  }
-
   public void changePathFinderAlgo(String algo) {
     if (algo.equals("BFS")) mapController.algorithm.setAlgorithm(new singleBFS());
     else if (algo.equals("DFS")) mapController.algorithm.setAlgorithm(new singleDFS());
@@ -309,6 +235,7 @@ public class MapDrawerController implements Initializable {
     TreeItem<String> exit = new TreeItem<>("Entrance/Exit");
     TreeItem<String> retail = new TreeItem<>("Retail");
     TreeItem<String> service = new TreeItem<>("Service");
+
     directoryTreeView.setRoot(directoryRoot);
 
     directoryTreeView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -384,6 +311,13 @@ public class MapDrawerController implements Initializable {
       servImage.setFitHeight(15);
       service.setGraphic(servImage);
 
+      ImageView favImage =
+          new ImageView(
+              new Image(new FileInputStream("src/main/resources/Images/favIcon_good.png")));
+      favImage.setFitWidth(15);
+      favImage.setFitHeight(15);
+      favoriteCell.setGraphic(favImage);
+
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
@@ -401,7 +335,8 @@ public class MapDrawerController implements Initializable {
             conference,
             exit,
             retail,
-            service);
+            service,
+            favoriteCell);
 
     for (String parkingSpace : parkingList) {
       TreeItem<String> parkingLocation = new TreeItem<String>(parkingSpace);
@@ -456,6 +391,11 @@ public class MapDrawerController implements Initializable {
     for (String serv : serviceList) {
       TreeItem<String> serviceLocation = new TreeItem<String>(serv);
       service.getChildren().add(serviceLocation);
+    }
+
+    for (String fav : favList) {
+      TreeItem<String> favorite = new TreeItem<>(fav);
+      favoriteCell.getChildren().add(favorite);
     }
 
     directoryRoot.setExpanded(true);
@@ -564,6 +504,10 @@ public class MapDrawerController implements Initializable {
           type = "PARK";
           nodeRedrawing(type);
           break;
+        case "Favorite":
+          type = "Favorite";
+          nodeRedrawing(type);
+          break;
         default:
           for (NodeUI NUI : mapController.NODES) {
             if (NUI.getN().getLongName().equals(name)) {
@@ -583,6 +527,17 @@ public class MapDrawerController implements Initializable {
         if (NUI.getN().getFloor().equals(mapController.currentFloor)
             && !NUI.getN().getNodeType().equals("HALL")
             && !NUI.getN().getNodeType().equals("WALK")) {
+          mapController.addNodeUI(NUI);
+        }
+      }
+    } else if (type.equals("Favorite")) {
+      for (NodeUI NUI : mapController.NODES) {
+        if (NUI.getN().getFloor().equals(mapController.currentFloor)
+            && !NUI.getN().getNodeType().equals("HALL")
+            && !NUI.getN().getNodeType().equals("WALK")
+            && FDatabaseTables.getNodeTable()
+                .FavContains(
+                    GlobalDb.getConnection(), NUI.getN().getNodeID(), HomeController.username)) {
           mapController.addNodeUI(NUI);
         }
       }
@@ -623,9 +578,6 @@ public class MapDrawerController implements Initializable {
     edu.wpi.teamname.Astar.Node end = initialData.getNodeByID(edges.getLast().getEndNodeID());
     dirText.appendText(
         "Directions from " + start.getLongName() + " to " + end.getLongName() + ":\n");
-    System.out.println(
-        "Directions from " + start.getLongName() + " to " + end.getLongName() + ":\n");
-    System.out.println("getting text------------\n" + dirText.getText());
     setEnd(end.getShortName());
 
     // ScaleDown(edges.getFirst().getEndNode());
@@ -656,7 +608,6 @@ public class MapDrawerController implements Initializable {
       initialDirection = newDirection;
     }
     dirText.appendText("\nWelcome to " + end.getLongName() + "\n");
-    System.out.println("final text--------\n" + dirText.getText());
     dirText.setPromptText(dirText.getText());
   }
 
@@ -671,9 +622,6 @@ public class MapDrawerController implements Initializable {
     String newDirection = "";
     int deltaX = endX - startX;
     int deltaY = endY - startY;
-
-    System.out.println("start type: " + startNode.getNodeType());
-    System.out.println("end type: " + endNode.getNodeType());
 
     // add handling for changing floors
     if (startNode.getNodeType().equals("ELEV") && endNode.getNodeType().equals("ELEV")) {
@@ -755,29 +703,30 @@ public class MapDrawerController implements Initializable {
     } else {
       // North
       if ((deltaY < 0) && (Math.abs(deltaY) > Math.abs(deltaX))) {
-        System.out.println("Head North towards " + endNode.getLongName());
+        //        System.out.println("Head North towards " + endNode.getLongName());
         dirText.appendText("Head North towards " + endNode.getLongName() + "\n");
         return "North";
       }
       // South
       else if ((deltaY > 0) && (deltaY > Math.abs(deltaX))) {
-        System.out.println("Head South towards " + endNode.getLongName());
+        //        System.out.println("Head South towards " + endNode.getLongName());
         dirText.appendText("Head South towards " + endNode.getLongName() + "\n");
         return "South";
       }
       // East
       else if ((deltaX > 0) && (deltaX > Math.abs(deltaY))) {
-        System.out.println("Head East towards " + endNode.getLongName());
+        //        System.out.println("Head East towards " + endNode.getLongName());
         dirText.appendText("Head East towards " + endNode.getLongName() + "\n");
         return "East";
       }
       // West
       else if ((deltaX < 0) && (Math.abs(deltaX) > Math.abs(deltaY))) {
-        System.out.println("Head West towards " + endNode.getLongName());
+        //        System.out.println("Head West towards " + endNode.getLongName());
         dirText.appendText("Head West towards " + endNode.getLongName() + "\n");
         return "West";
       } else {
-        System.out.println("Error determining turn direction towards " + endNode.getLongName());
+        //        System.out.println("Error determining turn direction towards " +
+        // endNode.getLongName());
         return "Direction Error";
       }
     }

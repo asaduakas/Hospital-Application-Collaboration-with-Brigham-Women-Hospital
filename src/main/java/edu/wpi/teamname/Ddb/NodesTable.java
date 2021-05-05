@@ -212,6 +212,7 @@ public class NodesTable extends AbsTables {
       stmt.setString(2, nodeID);
       stmt.setString(3, longName);
       stmt.executeUpdate();
+      System.out.println("added to favTable");
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -231,6 +232,54 @@ public class NodesTable extends AbsTables {
       throwables.printStackTrace();
     }
     return longNames;
+  }
+
+  public Boolean contains(Connection conn, String nodeID) {
+    Boolean isExists = false;
+    try {
+      PreparedStatement prepStmt = null;
+      prepStmt = conn.prepareStatement("SELECT * FROM Nodes WHERE nodeID = ?");
+      prepStmt.setString(1, nodeID);
+      ResultSet rs = prepStmt.executeQuery();
+      if (rs.next()) {
+        isExists = true;
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    return isExists;
+  }
+
+  public Boolean FavContains(Connection conn, String nodeID, String userName) {
+    Boolean isExists = false;
+    try {
+      PreparedStatement prepStmt = null;
+      prepStmt =
+          conn.prepareStatement("SELECT * FROM FavoriteNodes WHERE nodeID = ? AND userID = ?");
+      prepStmt.setString(1, nodeID);
+      prepStmt.setString(2, userName);
+      ResultSet rs = prepStmt.executeQuery();
+      if (rs.next()) {
+        isExists = true;
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    return isExists;
+  }
+
+  public void deleteFav(Connection conn, String nodeId, String username) {
+    try {
+      System.out.println(username);
+      PreparedStatement stmt =
+          conn.prepareStatement("DELETE FROM FavoriteNodes WHERE nodeID=? AND userID = ?");
+      stmt.setString(1, nodeId);
+      stmt.setString(2, username);
+      stmt.executeUpdate();
+      System.out.println("deleted favNode");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   public void populateFavoriteNodeTable(Connection conn, String filePath) {
