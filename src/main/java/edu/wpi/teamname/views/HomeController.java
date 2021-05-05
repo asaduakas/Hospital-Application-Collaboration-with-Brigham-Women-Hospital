@@ -122,8 +122,9 @@ public class HomeController extends Application implements AllAccessible {
 
     JFXToggleButton mapEditorBtn = (JFXToggleButton) nodeList.get(4);
     JFXButton exitBtn = (JFXButton) nodeList.get(5);
-    JFXNodesList floorBtns = (JFXNodesList) nodeList.get(6);
-    JFXNodesList csvBtns = (JFXNodesList) nodeList.get(7);
+    JFXNodesList floorBtns = (JFXNodesList) nodeList.get(8);
+    JFXNodesList csvBtns = (JFXNodesList) nodeList.get(9);
+    JFXButton helpBtn = (JFXButton) nodeList.get(6);
 
     exitBtn.setLayoutY(
         App.getPrimaryStage().getScene().getWindow().getHeight() - exitBtn.getHeight() - 60);
@@ -137,6 +138,9 @@ public class HomeController extends Application implements AllAccessible {
 
     csvBtns.setLayoutY(20);
     csvBtns.setLayoutX(mapEditorBtn.getLayoutX() - csvBtns.getWidth() - 20);
+
+    helpBtn.setLayoutY(exitBtn.getLayoutY());
+    helpBtn.setLayoutX(20);
   }
 
   @FXML
