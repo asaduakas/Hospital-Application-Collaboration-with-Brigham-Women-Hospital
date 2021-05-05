@@ -190,9 +190,12 @@ public class NodesTable extends AbsTables {
       Statement stmt = conn.createStatement();
       String query =
           "CREATE TABLE FavoriteNodes("
-              + "name VARCHAR(50) NOT NULL,"
+              + "userID VARCHAR(100) NOT NULL,"
               + "nodeID VARCHAR(100) NOT NULL,"
-              + "CONSTRAINT nodeID_FK FOREIGN KEY (nodeID) REFERENCES Nodes(nodeID))";
+              + "longName VARCHAR(450) NOT NULL,"
+              + "CONSTRAINT userID_FK FOREIGN KEY (userID) REFERENCES Users(id),"
+              + "CONSTRAINT nodeID_FK FOREIGN KEY (nodeID) REFERENCES Nodes(nodeID),"
+              + "CONSTRAINT longName_FK FOREIGN KEY (nodeID) REFERENCES Nodes(longName))";
       stmt.executeUpdate(query);
       System.out.println("Favorite node table created");
     } catch (Exception e) {
@@ -200,6 +203,37 @@ public class NodesTable extends AbsTables {
       e.printStackTrace();
       return;
     }
+  }
+
+  public void addToFavoriteNodes(
+          Connection conn,
+          String userID,
+          String nodeID,
+          String longName) {
+    try {
+      PreparedStatement stmt = conn.prepareStatement("INSERT INTO FavoriteNodes VALUES(?,?,?)");
+      stmt.setString(1, userID);
+      stmt.setString(2, nodeID);
+      stmt.setString(3, longName);
+      stmt.executeUpdate();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  public ArrayList<String> fetchLongNameFavorites(Connection conn, String userID) {
+    ArrayList<String> longNames = new ArrayList<String>();
+    try {
+      PreparedStatement longNameStmt = conn.prepareStatement("SELECT longName FROM FavoriteNodes WHERE userID = ?");
+      longNameStmt.setString(1, userID);
+      ResultSet rs = longNameStmt.executeQuery();
+      while (rs.next()) {
+        longNames.add(rs.getString(1));
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    return longNames;
   }
 
   public void populateFavoriteNodeTable(Connection conn, String filePath) {
