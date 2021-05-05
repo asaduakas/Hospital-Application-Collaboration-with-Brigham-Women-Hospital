@@ -130,7 +130,7 @@ public class HomeController extends Application implements AllAccessible {
     mapEditorBtn.setLayoutX(floorBtns.getLayoutX() - 150);
     mapEditorBtn.setLayoutY(14);
 
-    csvBtns.setLayoutY(16);
+    csvBtns.setLayoutY(20);
     csvBtns.setLayoutX(mapEditorBtn.getLayoutX() - csvBtns.getWidth() - 20);
   }
 

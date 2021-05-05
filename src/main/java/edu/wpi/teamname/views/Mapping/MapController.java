@@ -317,8 +317,9 @@ public class MapController implements AllAccessible {
   }
 
   private void initializeFloorList() {
-    //    ChooseFloorBtn.setButtonType(JFXButton.ButtonType.RAISED);
-    //    ChooseFloorBtn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 20px");
+    floorBtn.setPrefHeight(55);
+    floorBtn.setPrefWidth(55);
+    floorBtn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 55px");
 
     JFXButton Floor1Btn = new JFXButton("Fl 1");
     Floor1Btn.setButtonType(JFXButton.ButtonType.FLAT);
@@ -328,6 +329,7 @@ public class MapController implements AllAccessible {
     Floor1Btn.setOnAction(
         (e) -> {
           switchFloor("1");
+          floorBtn.setText("Fl 1");
         });
 
     JFXButton Floor2Btn = new JFXButton("Fl 2");
@@ -338,6 +340,7 @@ public class MapController implements AllAccessible {
     Floor2Btn.setOnAction(
         (e) -> {
           switchFloor("2");
+          floorBtn.setText("Fl 2");
         });
 
     JFXButton Floor3Btn = new JFXButton("Fl 3");
@@ -348,6 +351,7 @@ public class MapController implements AllAccessible {
     Floor3Btn.setOnAction(
         (e) -> {
           switchFloor("3");
+          floorBtn.setText("Fl 3");
         });
 
     JFXButton FloorL1Btn = new JFXButton("Fl L1");
@@ -358,6 +362,7 @@ public class MapController implements AllAccessible {
     FloorL1Btn.setOnAction(
         (e) -> {
           switchFloor("L1");
+          floorBtn.setText("Fl L1");
         });
 
     JFXButton FloorL2Btn = new JFXButton("Fl L2");
@@ -368,6 +373,7 @@ public class MapController implements AllAccessible {
     FloorL2Btn.setOnAction(
         (e) -> {
           switchFloor("L2");
+          floorBtn.setText("Fl L2");
         });
 
     JFXNodesList nodeList = new JFXNodesList();
@@ -1694,18 +1700,21 @@ public class MapController implements AllAccessible {
   private void csvBtns() {
     JFXButton importBtn = new JFXButton("Import CSV");
     importBtn.setButtonType(JFXButton.ButtonType.FLAT);
+    importBtn.setStyle("-fx-background-color: #C3E4FF");
     importBtn.setOnAction(
         (e) -> {
           importCSV();
         });
 
     JFXButton exportBtn = new JFXButton("Export CSV");
+    exportBtn.setStyle("-fx-background-color: #C3E4FF");
     exportBtn.setOnAction(
         (e) -> {
           exportCSV();
         });
 
     JFXButton resetBtn = new JFXButton("Reset CSV");
+    resetBtn.setStyle("-fx-background-color: #C3E4FF");
     resetBtn.setOnAction(
         (e) -> {
           resetCSV();
@@ -1718,8 +1727,6 @@ public class MapController implements AllAccessible {
     csvNodeList.addAnimatedNode(resetBtn);
     csvNodeList.setSpacing(20d);
     mainAnchor.getChildren().add(csvNodeList);
-
-    //    csvNodeList.setVisible(false);
 
     csvNodeList.visibleProperty().bind(toggleEditor.selectedProperty());
   }
