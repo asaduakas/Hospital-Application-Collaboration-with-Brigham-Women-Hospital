@@ -1,6 +1,7 @@
 package edu.wpi.teamname.views;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXNodesList;
 import com.jfoenix.controls.JFXToggleButton;
 import edu.wpi.teamname.App;
@@ -15,6 +16,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
@@ -120,12 +122,17 @@ public class HomeController extends Application implements AllAccessible {
 
   public void changeChildrenMapView(List<Node> nodeList) {
 
+    JFXDrawer drawer = (JFXDrawer) nodeList.get(1);
     JFXToggleButton mapEditorBtn = (JFXToggleButton) nodeList.get(4);
     JFXButton exitBtn = (JFXButton) nodeList.get(5);
-    JFXNodesList floorBtns = (JFXNodesList) nodeList.get(8);
-    ImageView helpImage = (ImageView) nodeList.get(7);
-    JFXNodesList csvBtns = (JFXNodesList) nodeList.get(9);
     JFXButton helpBtn = (JFXButton) nodeList.get(6);
+    ImageView helpImage = (ImageView) nodeList.get(7);
+    StackPane stackPane = (StackPane) nodeList.get(8);
+    JFXNodesList floorBtns = (JFXNodesList) nodeList.get(9);
+    JFXNodesList csvBtns = (JFXNodesList) nodeList.get(10);
+
+    drawer.setLayoutX(-270);
+    drawer.setLayoutY(0);
 
     exitBtn.setLayoutY(
         App.getPrimaryStage().getScene().getWindow().getHeight() - exitBtn.getHeight() - 60);
@@ -148,6 +155,11 @@ public class HomeController extends Application implements AllAccessible {
     helpImage.setLayoutY(
         (App.getPrimaryStage().getScene().getHeight() - helpImage.getFitHeight()) / 2);
     helpImage.setVisible(false);
+
+    stackPane.setLayoutX((App.getPrimaryStage().getScene().getWidth() - stackPane.getWidth()) / 2);
+    stackPane.setLayoutY(
+        (App.getPrimaryStage().getScene().getHeight() - stackPane.getHeight()) / 2);
+    stackPane.setPickOnBounds(false);
   }
 
   @FXML

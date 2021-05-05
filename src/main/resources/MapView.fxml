@@ -8,11 +8,12 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="mainAnchor" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.teamname.views.Mapping.MapController">
    <children>
-      <JFXDrawer fx:id="mapDrawer" layoutX="-270.0" layoutY="0" prefHeight="640.0" prefWidth="400.0" />
+      <JFXDrawer fx:id="mapDrawer" layoutX="0.0" layoutY="0" prefHeight="640.0" prefWidth="400.0" />
       <JFXHamburger fx:id="mapHam" layoutX="1.0" layoutY="1.0" prefHeight="49.0" prefWidth="59.0" />
       <Label layoutX="52.0" layoutY="13.0" text="MENU">
          <font>
@@ -45,6 +46,7 @@
             <Image url="@Images/map_stuff_ctrls.jpeg" />
          </image>
       </ImageView>
+      <StackPane fx:id="stackPane" layoutX="400.0" layoutY="245.0" prefHeight="150.0" prefWidth="200.0" />
 
    </children>
 </AnchorPane>

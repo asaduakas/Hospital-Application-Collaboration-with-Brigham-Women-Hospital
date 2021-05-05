@@ -6,13 +6,11 @@ import edu.wpi.teamname.App;
 import edu.wpi.teamname.Astar.*;
 import edu.wpi.teamname.Ddb.FDatabaseTables;
 import edu.wpi.teamname.Ddb.GlobalDb;
+import edu.wpi.teamname.views.*;
 import edu.wpi.teamname.views.Access.AllAccessible;
 import edu.wpi.teamname.views.Access.LoginController;
-import edu.wpi.teamname.views.ControllerManager;
-import edu.wpi.teamname.views.HomeController;
 import edu.wpi.teamname.views.Mapping.Popup.Edit.AddNodeController;
 import edu.wpi.teamname.views.Mapping.Popup.Edit.EditNodeController;
-import edu.wpi.teamname.views.SceneSizeChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -100,6 +98,7 @@ public class MapController implements AllAccessible {
   private Image endImage = new Image("Images/endingIcon_white.png");
   private Image startImage = new Image("Images/walkingStartIcon_black.png");
   public static SceneSizeChangeListener sizeListener;
+  protected DialogFactory dialogFactory;
 
   @FXML private AnchorPane mainAnchor;
   private MapScrollPane mapScrollPane;
@@ -112,7 +111,7 @@ public class MapController implements AllAccessible {
   @FXML private StackPane stackPane;
   @FXML private JFXButton csv;
   private SimpleStringProperty simpleFloor = new SimpleStringProperty("Floor " + currentFloor);
-  private JFXButton ChooseFloorBtn = new JFXButton("Floor 1");
+  //  private JFXButton ChooseFloorBtn = new JFXButton("Floor 1");
   @FXML private JFXButton helpButton;
   @FXML private ImageView helpImage;
 
@@ -190,6 +189,7 @@ public class MapController implements AllAccessible {
           }
           toggleEditor.setText(toggleText[index]);
         });
+    dialogFactory = new DialogFactory(stackPane);
   }
 
   public void mapDrawerView() throws IOException {
@@ -406,11 +406,11 @@ public class MapController implements AllAccessible {
 
     JFXNodesList nodeList = new JFXNodesList();
     nodeList.addAnimatedNode(floorBtn);
+    nodeList.addAnimatedNode(FloorL2Btn);
+    nodeList.addAnimatedNode(FloorL1Btn);
     nodeList.addAnimatedNode(Floor1Btn);
     nodeList.addAnimatedNode(Floor2Btn);
     nodeList.addAnimatedNode(Floor3Btn);
-    nodeList.addAnimatedNode(FloorL2Btn);
-    nodeList.addAnimatedNode(FloorL1Btn);
     nodeList.setSpacing(20d);
     mainAnchor.getChildren().add(nodeList);
   }
@@ -479,7 +479,7 @@ public class MapController implements AllAccessible {
         mapScrollPane.setMapImage(F1);
         break;
     }
-    ChooseFloorBtn.setText("Floor " + currentFloor);
+    floorBtn.setText("Fl " + currentFloor);
     if (isEditor) {
       drawEdgeFloor(floor);
     } else {
@@ -1153,13 +1153,25 @@ public class MapController implements AllAccessible {
           break;
       }
     } else {
-      FDatabaseTables.getNodeTable()
-          .addToFavoriteNodes(
-              GlobalDb.getConnection(),
-              HomeController.username,
-              N.getN().getNodeID(),
-              N.getN().getLongName());
-      N.getI().setImage(favImage);
+      if (HomeController.username == null) {
+        dialogFactory.createTwoButtonDialog(
+            "You're in guest view",
+            "Please login or Sign up to add favorite",
+            "Sign up",
+            () -> {
+              ControllerManager.attemptLoadPopupBlur("signUpView.fxml");
+            },
+            "Just view map",
+            () -> {});
+      } else {
+        FDatabaseTables.getNodeTable()
+            .addToFavoriteNodes(
+                GlobalDb.getConnection(),
+                HomeController.username,
+                N.getN().getNodeID(),
+                N.getN().getLongName());
+        N.getI().setImage(favImage);
+      }
     }
     MapDrawerController.favCallStuff();
   }
