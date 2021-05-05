@@ -62,6 +62,6 @@
       <JFXComboBox fx:id="algoVersion" layoutX="188.0" layoutY="14.0" prefHeight="25.0" prefWidth="195.0" promptText="Pathfinding Algorithm" style="-fx-font-size: 14;" />
       <JFXButton fx:id="exportBut" layoutX="306.0" layoutY="812.0" style="-fx-background-color: #366CDB; -fx-background-radius: 6px;" text="Export CSV" textFill="WHITE" />
       <JFXButton fx:id="importBut" layoutX="209.0" layoutY="812.0" style="-fx-background-color: #366CDB; -fx-background-radius: 6px;" text="Import CSV" textFill="WHITE" />
-      <JFXButton fx:id="dirBtn" layoutX="258.0" layoutY="812.0" style="-fx-background-color: #366CDB; -fx-background-radius: 6px;" text="Download Direction" textFill="WHITE" />
+      <JFXButton fx:id="dirBtn" onAction="#downloadDirections" layoutX="258.0" layoutY="812.0" style="-fx-background-color: #366CDB; -fx-background-radius: 6px;" text="Download Direction" textFill="WHITE" />
    </children>
 </AnchorPane>

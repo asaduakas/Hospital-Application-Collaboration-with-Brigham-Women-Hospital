@@ -650,6 +650,7 @@ public class MapController implements AllAccessible {
     } else {
       showPath();
       algorithm.multiSearch(initialData, DirectoryTargets).printPathEdges();
+      getDirections(thePath);
     }
 
     return thePath;
@@ -664,6 +665,7 @@ public class MapController implements AllAccessible {
     } else {
       showPath();
       // algorithm.multiSearch(initialData, Targets).printPathEdges();
+      getDirections(thePath);
     }
   }
 
@@ -1276,7 +1278,7 @@ public class MapController implements AllAccessible {
   // _____________________________________Directions__________________________________________
 
   @FXML JFXButton dirBtn;
-  @FXML JFXTextArea dirText;
+  @FXML JFXTextArea dirText = new JFXTextArea();
   private String endLocation = "";
 
   private void setEnd(String end) {
@@ -1296,7 +1298,9 @@ public class MapController implements AllAccessible {
     }
     // ScaleDown(edges.getFirst().getStartNode());
 
-    dirText.setText("");
+    // if (dirText != null) {
+    dirText.clear();
+    // }
 
     Node start = initialData.getNodeByID(edges.getFirst().getStartNodeID());
     Node end = initialData.getNodeByID(edges.getLast().getEndNodeID());
