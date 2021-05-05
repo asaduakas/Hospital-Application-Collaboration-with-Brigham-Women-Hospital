@@ -46,7 +46,7 @@
             <Image url="@Images/map_stuff_ctrls.jpeg" />
          </image>
       </ImageView>
-      <StackPane fx:id="stackPane" layoutX="400.0" layoutY="245.0" prefHeight="150.0" prefWidth="200.0" />
+      <StackPane fx:id="stackPane" layoutX="400.0" layoutY="245.0" prefHeight="150.0" prefWidth="300.0" />
 
    </children>
 </AnchorPane>

@@ -1515,12 +1515,19 @@ public class MapController implements AllAccessible {
   }
 
   private void resetCSV() {
-
-    FDatabaseTables.getNodeTable().clearTable(GlobalDb.getConnection(), "Nodes");
-    FDatabaseTables.getEdgeTable().clearTable(GlobalDb.getConnection(), "Edges");
-    FDatabaseTables.getNodeTable().populateTable(GlobalDb.getConnection(), "");
-    FDatabaseTables.getEdgeTable().populateTable(GlobalDb.getConnection(), "");
-    updateMapFromDB();
+    dialogFactory.createTwoButtonDialog(
+        "Reset CSV",
+        "Are you sure to reset the CSV?",
+        "Yes",
+        () -> {
+          FDatabaseTables.getNodeTable().clearTable(GlobalDb.getConnection(), "Nodes");
+          FDatabaseTables.getEdgeTable().clearTable(GlobalDb.getConnection(), "Edges");
+          FDatabaseTables.getNodeTable().populateTable(GlobalDb.getConnection(), "");
+          FDatabaseTables.getEdgeTable().populateTable(GlobalDb.getConnection(), "");
+          updateMapFromDB();
+        },
+        "No",
+        () -> {});
   }
 
   @FXML
