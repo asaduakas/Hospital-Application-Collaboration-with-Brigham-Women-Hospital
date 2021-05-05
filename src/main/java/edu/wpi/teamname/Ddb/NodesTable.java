@@ -205,11 +205,7 @@ public class NodesTable extends AbsTables {
     }
   }
 
-  public void addToFavoriteNodes(
-          Connection conn,
-          String userID,
-          String nodeID,
-          String longName) {
+  public void addToFavoriteNodes(Connection conn, String userID, String nodeID, String longName) {
     try {
       PreparedStatement stmt = conn.prepareStatement("INSERT INTO FavoriteNodes VALUES(?,?,?)");
       stmt.setString(1, userID);
@@ -224,7 +220,8 @@ public class NodesTable extends AbsTables {
   public ArrayList<String> fetchLongNameFavorites(Connection conn, String userID) {
     ArrayList<String> longNames = new ArrayList<String>();
     try {
-      PreparedStatement longNameStmt = conn.prepareStatement("SELECT longName FROM FavoriteNodes WHERE userID = ?");
+      PreparedStatement longNameStmt =
+          conn.prepareStatement("SELECT longName FROM FavoriteNodes WHERE userID = ?");
       longNameStmt.setString(1, userID);
       ResultSet rs = longNameStmt.executeQuery();
       while (rs.next()) {
