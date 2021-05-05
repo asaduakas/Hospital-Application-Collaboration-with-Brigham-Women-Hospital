@@ -137,7 +137,7 @@ public class MapController implements AllAccessible {
 
     switchFloor("1");
     for (NodeUI node : NODES) {
-      System.out.println(node.getN().getNodeID());
+      //      System.out.println(node.getN().getNodeID());
     }
 
     ToggleListener();
@@ -229,11 +229,6 @@ public class MapController implements AllAccessible {
     label.setLayoutX(10);
     textDirection.setLayoutY(label.getLayoutY() + label.getHeight() + 30);
     dirBtn.setLayoutY(textDirection.getLayoutY() + textDirection.getPrefHeight() + 20);
-    System.out.println(
-        "This is textArea layout stuff "
-            + textDirection.getLayoutY()
-            + " this is height "
-            + textDirection.getPrefHeight());
   }
 
   public void goHome() {
@@ -995,8 +990,8 @@ public class MapController implements AllAccessible {
                   NewEdge.add(N);
                   if (NewEdge.size() == 2) {
 
-                    System.out.println(NewEdge.get(0).getN().getNodeID());
-                    System.out.println(NewEdge.get(1).getN().getNodeID());
+                    //                    System.out.println(NewEdge.get(0).getN().getNodeID());
+                    //                    System.out.println(NewEdge.get(1).getN().getNodeID());
 
                     Line L = new Line();
 
@@ -1060,9 +1055,9 @@ public class MapController implements AllAccessible {
     int tempY = nodesToAlign.getFirst().getYCoord();
 
     for (Node node : nodesToAlign) {
-      System.out.println(node.getNodeID());
-      System.out.println("X: " + node.getXCoord());
-      System.out.println("Y: " + node.getYCoord());
+      //      System.out.println(node.getNodeID());
+      //      System.out.println("X: " + node.getXCoord());
+      //      System.out.println("Y: " + node.getYCoord());
       diffX = tempX - node.getXCoord();
       diffY = tempY - node.getYCoord();
       totalXDiff += Math.abs(diffX);
@@ -1166,6 +1161,7 @@ public class MapController implements AllAccessible {
               N.getN().getLongName());
       N.getI().setImage(favImage);
     }
+    MapDrawerController.favCallStuff();
   }
 
   private void hoverResize(NodeUI N) {

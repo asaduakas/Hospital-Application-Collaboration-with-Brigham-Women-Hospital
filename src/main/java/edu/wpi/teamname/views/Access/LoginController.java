@@ -52,28 +52,7 @@ public class LoginController implements AllAccessible {
       this.userCategory =
           FDatabaseTables.getUserTable()
               .getCategoryofUser(GlobalDb.getConnection(), usernameField.getText());
-      ControllerManager.attemptLoadPage(
-          "HomeView.fxml",
-          fxmlLoader -> {
-            start(fxmlLoader.getRoot());
-            HBox hBox = (HBox) ((Pane) fxmlLoader.getRoot()).getChildren().get(4);
-            JFXButton usersBtn = (JFXButton) ((HBox) hBox).getChildren().get(0);
-            boolean disableStatusButton = false;
-            if (userCategory.equalsIgnoreCase("Admin")) {
-              disableStatusButton = false;
-            } else {
-              disableStatusButton = true;
-            }
-            if (disableStatusButton) {
-              // System.out.println("Hello 1");
-              usersBtn.setVisible(false);
-              usersBtn.setDisable(true);
-            } else {
-              // System.out.println("Hello 2 ");
-              usersBtn.setVisible(true);
-              usersBtn.setDisable(false);
-            }
-          });
+      ControllerManager.attemptLoadPage("HomeView.fxml", fxmlLoader -> start(fxmlLoader.getRoot()));
     }
   }
 
@@ -89,7 +68,7 @@ public class LoginController implements AllAccessible {
 
     List<Node> childrenList = root.getChildrenUnmodifiable();
 
-    if (userCategory.equalsIgnoreCase("Guest")) {
+    if (!userCategory.equalsIgnoreCase("admin")) {
       HBox hBox = (HBox) childrenList.get(4);
       JFXButton usersBtn = (JFXButton) ((HBox) hBox).getChildren().get(0);
       usersBtn.setVisible(false);
@@ -97,10 +76,6 @@ public class LoginController implements AllAccessible {
     }
 
     Scene scene = App.getPrimaryStage().getScene();
-
-    // App.getPrimaryStage().setScene(scene);
-    // App.getPrimaryStage().setMaximized(true);
-    // App.getPrimaryStage().show();
 
     changeChildrenHomePage(childrenList);
     SceneSizeChangeListener sizeListener =
