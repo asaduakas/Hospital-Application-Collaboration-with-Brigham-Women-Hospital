@@ -194,8 +194,8 @@ public class NodesTable extends AbsTables {
               + "nodeID VARCHAR(100) NOT NULL,"
               + "longName VARCHAR(450) NOT NULL,"
               + "CONSTRAINT userID_FK FOREIGN KEY (userID) REFERENCES Users(id),"
-              + "CONSTRAINT nodeID_FK FOREIGN KEY (nodeID) REFERENCES Nodes(nodeID),"
-              + "CONSTRAINT longName_FK FOREIGN KEY (nodeID) REFERENCES Nodes(longName))";
+              + "CONSTRAINT nodeID_FK FOREIGN KEY (nodeID) REFERENCES Nodes(nodeID))";
+      // + "CONSTRAINT longName_FK FOREIGN KEY (longName) REFERENCES Nodes(longName));
       stmt.executeUpdate(query);
       System.out.println("Favorite node table created");
     } catch (Exception e) {

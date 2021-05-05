@@ -111,14 +111,14 @@ public class FDatabaseTables {
   // src/main/resources/csv/MapDAllEdges.csv
   // src/main/resources/csv/MapDAllNodes.csv
   public void createAllTables() {
+    userTable.createTable(GlobalDb.getConnection());
+    userTable.populateTable(GlobalDb.getConnection(), "");
     nodeTable.createTable(GlobalDb.getConnection());
     nodeTable.populateTable(GlobalDb.getConnection(), "");
     nodeTable.createFavoriteNodeTable(GlobalDb.getConnection());
     nodeTable.populateFavoriteNodeTable(GlobalDb.getConnection(), "");
     edgeTable.createTable(GlobalDb.getConnection());
     edgeTable.populateTable(GlobalDb.getConnection(), "");
-    userTable.createTable(GlobalDb.getConnection());
-    userTable.populateTable(GlobalDb.getConnection(), "");
     searchHistoryTable.createTable(GlobalDb.getConnection());
     audVisTable.createTable(GlobalDb.getConnection());
     compRequestTable.createTable(GlobalDb.getConnection());
