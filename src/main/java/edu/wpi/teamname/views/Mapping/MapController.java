@@ -110,6 +110,10 @@ public class MapController implements AllAccessible {
   @FXML private JFXButton csv;
   private SimpleStringProperty simpleFloor = new SimpleStringProperty("Floor " + currentFloor);
   private JFXButton ChooseFloorBtn = new JFXButton("Floor 1");
+  @FXML JFXButton helpButton;
+  @FXML ImageView imageHelp;
+
+  private MapDrawerController drawerController;
 
   @FXML
   private void initialize() {
@@ -179,8 +183,8 @@ public class MapController implements AllAccessible {
     FXMLLoader loader =
         new FXMLLoader(getClass().getClassLoader().getResource("MapDrawerView.fxml"));
     AnchorPane menuBtns = loader.load();
-    MapDrawerController drawer = loader.getController();
-    drawer.setMapController(this);
+    this.drawerController = loader.getController();
+    drawerController.setMapController(this);
     mapDrawer.setSidePane(menuBtns);
     Pane root = (Pane) loader.getRoot();
     List<javafx.scene.Node> childrenList = root.getChildren();
@@ -712,8 +716,7 @@ public class MapController implements AllAccessible {
     } else {
       showPath();
       algorithm.multiSearch(initialData, DirectoryTargets).printPathEdges();
-      MapDrawerController myMapDrawCtrl = new MapDrawerController();
-      myMapDrawCtrl.getDirections(thePath);
+      drawerController.getDirections(thePath);
     }
 
     return thePath;
@@ -728,8 +731,7 @@ public class MapController implements AllAccessible {
     } else {
       showPath();
       // algorithm.multiSearch(initialData, Targets).printPathEdges();
-      MapDrawerController myMapDrawCtrl = new MapDrawerController();
-      myMapDrawCtrl.getDirections(thePath);
+      drawerController.getDirections(thePath);
     }
   }
 
@@ -1805,5 +1807,13 @@ public class MapController implements AllAccessible {
     mainAnchor.getChildren().add(csvNodeList);
 
     csvNodeList.visibleProperty().bind(toggleEditor.selectedProperty());
+  }
+
+  @FXML
+  private void helpPopUp() {
+    helpButton.setOnAction(
+        (e) -> {
+          imageHelp.getImage();
+        });
   }
 }
