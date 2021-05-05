@@ -51,14 +51,15 @@ import javafx.util.Duration;
 public class MapController implements AllAccessible {
 
   private int index = 0;
-  String toggleText[] = {"Pathfinding", "Map Editor"};
+  private String toggleText[] = {"Pathfinding", "Map Editor"};
   private RoomGraph initialData = new RoomGraph(GlobalDb.getConnection());
   public static LinkedList<NodeUI> NODES = new LinkedList<>();
   private static LinkedList<EdgeUI> EDGES = new LinkedList<>();
   public PathAlgoPicker algorithm = new PathAlgoPicker(new aStar());
   private LinkedList<Edge> thePath = new LinkedList<Edge>();
   private LinkedList<Node> Targets = new LinkedList<Node>();
-  LinkedList<NodeUI> NewEdge = new LinkedList<NodeUI>();
+  private LinkedList<NodeUI> NewEdge = new LinkedList<NodeUI>();
+  private LinkedList<Node> nodesToAlign = new LinkedList<Node>();
   public static final double nodeNormalHeight = 30;
   public static final double nodeNormalWidth = 30;
   private String userCategory = "admin";
@@ -580,7 +581,7 @@ public class MapController implements AllAccessible {
 
   private void deleteEdge(EdgeUI E) {
     FDatabaseTables.getEdgeTable()
-        .deleteEntity(GlobalDb.getConnection(), "Tables", E.getE().getEdgeID());
+        .deleteEntity(GlobalDb.getConnection(), "Edges", E.getE().getEdgeID());
     secondaryAnchor.getChildren().remove(E.getL());
     EDGES.remove(E);
   }
@@ -732,17 +733,6 @@ public class MapController implements AllAccessible {
             }
             return;
           }
-//          switch (key) {
-//            case R:
-//              resetCSV();
-//              break;
-//            case I:
-//              importCSV();
-//              break;
-//            case E:
-//              exportCSV();
-//              break;
-//          }
           if (key == KeyCode.P) {
             pPressed.set(true);
             plusPressed.set(false);
@@ -899,30 +889,30 @@ public class MapController implements AllAccessible {
 
                     Line L = new Line();
 
-                    L.startXProperty().bind(NewEdge.get(0).simpXcoordProperty());
-                    L.startYProperty().bind(NewEdge.get(0).simpYcoordProperty());
-                    L.endXProperty().bind(NewEdge.get(1).simpXcoordProperty());
-                    L.endYProperty().bind(NewEdge.get(1).simpYcoordProperty());
-                    L.setStroke(Color.BLACK);
-                    L.setStrokeWidth(5.0);
-                    Edge edge =
-                            new Edge(
-                                    NewEdge.get(0).getN(),
-                                    NewEdge.get(1).getN(),
-                                    NewEdge.get(0).getN().getMeasuredDistance(NewEdge.get(1).getN()));
-                    Edge edge1 =
-                            new Edge(
-                                    NewEdge.get(1).getN(),
-                                    NewEdge.get(0).getN(),
-                                    NewEdge.get(0).getN().getMeasuredDistance(NewEdge.get(1).getN()));
-                    NewEdge.get(0).getN().addEdge(edge);
-                    NewEdge.get(1).getN().addEdge(edge1);
-                    EdgeUI temp = new EdgeUI(edge, L);
-                    addEdge(temp);
-                    NewEdge = new LinkedList<NodeUI>();
-                  }
+                  L.startXProperty().bind(NewEdge.get(0).simpXcoordProperty());
+                  L.startYProperty().bind(NewEdge.get(0).simpYcoordProperty());
+                  L.endXProperty().bind(NewEdge.get(1).simpXcoordProperty());
+                  L.endYProperty().bind(NewEdge.get(1).simpYcoordProperty());
+                  L.setStroke(Color.BLACK);
+                  L.setStrokeWidth(5.0);
+                  Edge edge =
+                      new Edge(
+                          NewEdge.get(0).getN(),
+                          NewEdge.get(1).getN(),
+                          NewEdge.get(0).getN().getMeasuredDistance(NewEdge.get(1).getN()));
+                  Edge edge1 =
+                      new Edge(
+                          NewEdge.get(1).getN(),
+                          NewEdge.get(0).getN(),
+                          NewEdge.get(0).getN().getMeasuredDistance(NewEdge.get(1).getN()));
+                  NewEdge.get(0).getN().addEdge(edge);
+                  NewEdge.get(1).getN().addEdge(edge1);
+                  EdgeUI temp = new EdgeUI(edge, L);
+                  editEdgeListener(temp);
+                  addEdge(temp);
+                  NewEdge = new LinkedList<NodeUI>();
                 }
-
+              }
                 //Align node
                 if (shiftPressed.get()) {//toggle align mode
                   alignMode = !alignMode;
@@ -936,7 +926,10 @@ public class MapController implements AllAccessible {
                     alignNodes();
                   }
                 }
-              }//end of isEditor
+
+            }//end of isEditor
+
+
 
               if (pPressed.get() && !isEditor) {//toggle save mode
                 saveMode = !saveMode;
@@ -949,8 +942,6 @@ public class MapController implements AllAccessible {
 
             });
   }
-
-  LinkedList<Node> nodesToAlign = new LinkedList<Node>();
 
 
   private void alignNodes() {
@@ -1661,6 +1652,7 @@ public class MapController implements AllAccessible {
     submitDia.show();
   }
 
+  @FXML
   private void importCSV() {
     FileChooser nodeChooser = new FileChooser();
     nodeChooser.setTitle("Import nodes");
@@ -1689,6 +1681,7 @@ public class MapController implements AllAccessible {
     updateMapFromDB();
   }
 
+  @FXML
   private void exportCSV() {
     FileChooser nodeChooser = new FileChooser();
     nodeChooser.setTitle("Export nodes");
