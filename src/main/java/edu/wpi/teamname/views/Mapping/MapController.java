@@ -889,36 +889,37 @@ public class MapController implements AllAccessible {
 
                     Line L = new Line();
 
-                  L.startXProperty().bind(NewEdge.get(0).simpXcoordProperty());
-                  L.startYProperty().bind(NewEdge.get(0).simpYcoordProperty());
-                  L.endXProperty().bind(NewEdge.get(1).simpXcoordProperty());
-                  L.endYProperty().bind(NewEdge.get(1).simpYcoordProperty());
-                  L.setStroke(Color.BLACK);
-                  L.setStrokeWidth(5.0);
-                  Edge edge =
-                      new Edge(
-                          NewEdge.get(0).getN(),
-                          NewEdge.get(1).getN(),
-                          NewEdge.get(0).getN().getMeasuredDistance(NewEdge.get(1).getN()));
-                  Edge edge1 =
-                      new Edge(
-                          NewEdge.get(1).getN(),
-                          NewEdge.get(0).getN(),
-                          NewEdge.get(0).getN().getMeasuredDistance(NewEdge.get(1).getN()));
-                  NewEdge.get(0).getN().addEdge(edge);
-                  NewEdge.get(1).getN().addEdge(edge1);
-                  EdgeUI temp = new EdgeUI(edge, L);
-                  editEdgeListener(temp);
-                  addEdge(temp);
-                  NewEdge = new LinkedList<NodeUI>();
+                    L.startXProperty().bind(NewEdge.get(0).simpXcoordProperty());
+                    L.startYProperty().bind(NewEdge.get(0).simpYcoordProperty());
+                    L.endXProperty().bind(NewEdge.get(1).simpXcoordProperty());
+                    L.endYProperty().bind(NewEdge.get(1).simpYcoordProperty());
+                    L.setStroke(Color.BLACK);
+                    L.setStrokeWidth(5.0);
+                    Edge edge =
+                        new Edge(
+                            NewEdge.get(0).getN(),
+                            NewEdge.get(1).getN(),
+                            NewEdge.get(0).getN().getMeasuredDistance(NewEdge.get(1).getN()));
+                    Edge edge1 =
+                        new Edge(
+                            NewEdge.get(1).getN(),
+                            NewEdge.get(0).getN(),
+                            NewEdge.get(0).getN().getMeasuredDistance(NewEdge.get(1).getN()));
+                    NewEdge.get(0).getN().addEdge(edge);
+                    NewEdge.get(1).getN().addEdge(edge1);
+                    EdgeUI temp = new EdgeUI(edge, L);
+                    editEdgeListener(temp);
+                    deleteEdgeListener(temp);
+                    addEdge(temp);
+                    NewEdge = new LinkedList<NodeUI>();
+                  }
                 }
-              }
-                //Align node
-                if (shiftPressed.get()) {//toggle align mode
+                // Align node
+                if (shiftPressed.get()) { // toggle align mode
                   alignMode = !alignMode;
                   saveMode = false;
                 }
-                if (alignMode ) {
+                if (alignMode) {
                   System.out.println("node clicked");
                   nodesToAlign.add(N.getN());
 
@@ -926,12 +927,9 @@ public class MapController implements AllAccessible {
                     alignNodes();
                   }
                 }
+              } // end of isEditor
 
-            }//end of isEditor
-
-
-
-              if (pPressed.get() && !isEditor) {//toggle save mode
+              if (pPressed.get() && !isEditor) { // toggle save mode
                 saveMode = !saveMode;
                 alignMode = false;
               }
@@ -939,10 +937,8 @@ public class MapController implements AllAccessible {
                 System.out.println("node clicked");
                 saveParkingSpot(N);
               }
-
             });
   }
-
 
   private void alignNodes() {
     System.out.println("about to align");
