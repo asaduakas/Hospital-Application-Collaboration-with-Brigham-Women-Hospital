@@ -642,56 +642,68 @@ public class MapController implements AllAccessible {
     String newID = N.getNodeID() + "_" + E.getEndNodeID();
     String reverseNewID = E.getEndNodeID() + "_" + N.getNodeID();
 
-    //    if (!(FDatabaseTables.getEdgeTable().contains(GlobalDb.getConnection(), newID)
-    //        || FDatabaseTables.getEdgeTable().contains(GlobalDb.getConnection(), reverseNewID))) {
+    if (!(FDatabaseTables.getEdgeTable().contains(GlobalDb.getConnection(), newID)
+        || FDatabaseTables.getEdgeTable().contains(GlobalDb.getConnection(), reverseNewID))) {
 
-    if (FDatabaseTables.getEdgeTable().contains(GlobalDb.getConnection(), E.getEdgeID())) {
-      FDatabaseTables.getEdgeTable()
-          .updateEdgeStartNode(GlobalDb.getConnection(), E.getEdgeID(), N.getNodeID());
-      FDatabaseTables.getEdgeTable().updateEdgeID(GlobalDb.getConnection(), E.getEdgeID(), newID);
-    } else if (FDatabaseTables.getEdgeTable()
-        .contains(GlobalDb.getConnection(), E.getReverseEdgeID())) {
-      FDatabaseTables.getEdgeTable()
-          .updateEdgeStartNode(GlobalDb.getConnection(), E.getReverseEdgeID(), N.getNodeID());
-      FDatabaseTables.getEdgeTable()
-          .updateEdgeID(GlobalDb.getConnection(), E.getReverseEdgeID(), newID);
+      if (FDatabaseTables.getEdgeTable().contains(GlobalDb.getConnection(), E.getEdgeID())) {
+        FDatabaseTables.getEdgeTable()
+            .updateEdgeStartNode(GlobalDb.getConnection(), E.getEdgeID(), N.getNodeID());
+        FDatabaseTables.getEdgeTable().updateEdgeID(GlobalDb.getConnection(), E.getEdgeID(), newID);
+      } else if (FDatabaseTables.getEdgeTable()
+          .contains(GlobalDb.getConnection(), E.getReverseEdgeID())) {
+        FDatabaseTables.getEdgeTable()
+            .updateEdgeStartNode(GlobalDb.getConnection(), E.getReverseEdgeID(), N.getNodeID());
+        FDatabaseTables.getEdgeTable()
+            .updateEdgeID(GlobalDb.getConnection(), E.getReverseEdgeID(), newID);
+      }
+
+      EdgeUI edgeUI = getEdgeUIByID(E.getEdgeID());
+      NodeUI nodeUI = getNodeUIByID(N.getNodeID());
+
+      edgeUI.getE().setEdgeID(newID);
+      edgeUI.getE().setReverseEdgeID(reverseNewID);
+      edgeUI.getE().setStartNodeShortName(N.getShortName());
+      edgeUI.getE().setStartNodeID(N.getNodeID());
+
+      edgeUI.getL().startXProperty().unbind();
+      edgeUI.getL().startXProperty().bind(nodeUI.simpXcoordProperty());
+      edgeUI.getL().startYProperty().unbind();
+      edgeUI.getL().startYProperty().bind(nodeUI.simpYcoordProperty());
     }
-
-    EdgeUI edgeUI = getEdgeUIByID(E.getEdgeID());
-    NodeUI nodeUI = getNodeUIByID(N.getNodeID());
-    edgeUI.getL().startXProperty().unbind();
-    edgeUI.getL().startXProperty().bind(nodeUI.simpXcoordProperty());
-    edgeUI.getL().startYProperty().unbind();
-    edgeUI.getL().startYProperty().bind(nodeUI.simpYcoordProperty());
-    //    }
   }
 
   private void editEdgeEnd(Edge E, Node N) {
     String newID = E.getStartNodeID() + "_" + N.getNodeID();
     String reverseNewID = N.getNodeID() + "_" + E.getStartNodeID();
 
-    //    if (!(FDatabaseTables.getEdgeTable().contains(GlobalDb.getConnection(), newID)
-    //        || FDatabaseTables.getEdgeTable().contains(GlobalDb.getConnection(), reverseNewID))) {
+    if (!(FDatabaseTables.getEdgeTable().contains(GlobalDb.getConnection(), newID)
+        || FDatabaseTables.getEdgeTable().contains(GlobalDb.getConnection(), reverseNewID))) {
 
-    if (FDatabaseTables.getEdgeTable().contains(GlobalDb.getConnection(), E.getEdgeID())) {
-      FDatabaseTables.getEdgeTable()
-          .updateEdgeEndNode(GlobalDb.getConnection(), E.getEdgeID(), N.getNodeID());
-      FDatabaseTables.getEdgeTable().updateEdgeID(GlobalDb.getConnection(), E.getEdgeID(), newID);
-    } else if (FDatabaseTables.getEdgeTable()
-        .contains(GlobalDb.getConnection(), E.getReverseEdgeID())) {
-      FDatabaseTables.getEdgeTable()
-          .updateEdgeEndNode(GlobalDb.getConnection(), E.getReverseEdgeID(), N.getNodeID());
-      FDatabaseTables.getEdgeTable()
-          .updateEdgeID(GlobalDb.getConnection(), E.getReverseEdgeID(), newID);
+      if (FDatabaseTables.getEdgeTable().contains(GlobalDb.getConnection(), E.getEdgeID())) {
+        FDatabaseTables.getEdgeTable()
+            .updateEdgeEndNode(GlobalDb.getConnection(), E.getEdgeID(), N.getNodeID());
+        FDatabaseTables.getEdgeTable().updateEdgeID(GlobalDb.getConnection(), E.getEdgeID(), newID);
+      } else if (FDatabaseTables.getEdgeTable()
+          .contains(GlobalDb.getConnection(), E.getReverseEdgeID())) {
+        FDatabaseTables.getEdgeTable()
+            .updateEdgeEndNode(GlobalDb.getConnection(), E.getReverseEdgeID(), N.getNodeID());
+        FDatabaseTables.getEdgeTable()
+            .updateEdgeID(GlobalDb.getConnection(), E.getReverseEdgeID(), newID);
+      }
+
+      EdgeUI edgeUI = getEdgeUIByID(E.getEdgeID());
+      NodeUI nodeUI = getNodeUIByID(N.getNodeID());
+
+      edgeUI.getE().setEdgeID(newID);
+      edgeUI.getE().setReverseEdgeID(reverseNewID);
+      edgeUI.getE().setEndNodeShortName(N.getShortName());
+      edgeUI.getE().setEndNodeID(N.getNodeID());
+
+      edgeUI.getL().endXProperty().unbind();
+      edgeUI.getL().endXProperty().bind(nodeUI.simpXcoordProperty());
+      edgeUI.getL().endYProperty().unbind();
+      edgeUI.getL().endYProperty().bind(nodeUI.simpYcoordProperty());
     }
-
-    EdgeUI edgeUI = getEdgeUIByID(E.getEdgeID());
-    NodeUI nodeUI = getNodeUIByID(N.getNodeID());
-    edgeUI.getL().endXProperty().unbind();
-    edgeUI.getL().endXProperty().bind(nodeUI.simpXcoordProperty());
-    edgeUI.getL().endYProperty().unbind();
-    edgeUI.getL().endYProperty().bind(nodeUI.simpYcoordProperty());
-    //    }
   }
 
   // _______________________________________Path Finding____________________________________________
