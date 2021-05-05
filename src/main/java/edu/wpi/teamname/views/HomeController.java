@@ -13,11 +13,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
-import javax.swing.*;
 
 public class HomeController extends Application implements AllAccessible {
 
@@ -123,6 +123,7 @@ public class HomeController extends Application implements AllAccessible {
     JFXToggleButton mapEditorBtn = (JFXToggleButton) nodeList.get(4);
     JFXButton exitBtn = (JFXButton) nodeList.get(5);
     JFXNodesList floorBtns = (JFXNodesList) nodeList.get(8);
+    ImageView helpImage = (ImageView) nodeList.get(7);
     JFXNodesList csvBtns = (JFXNodesList) nodeList.get(9);
     JFXButton helpBtn = (JFXButton) nodeList.get(6);
 
@@ -141,6 +142,12 @@ public class HomeController extends Application implements AllAccessible {
 
     helpBtn.setLayoutY(exitBtn.getLayoutY());
     helpBtn.setLayoutX(20);
+
+    helpImage.setLayoutX(
+        (App.getPrimaryStage().getScene().getWidth() - helpImage.getFitWidth()) / 2);
+    helpImage.setLayoutY(
+        (App.getPrimaryStage().getScene().getHeight() - helpImage.getFitHeight()) / 2);
+    helpImage.setVisible(false);
   }
 
   @FXML

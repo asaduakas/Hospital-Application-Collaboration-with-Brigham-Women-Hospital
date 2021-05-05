@@ -110,8 +110,8 @@ public class MapController implements AllAccessible {
   @FXML private JFXButton csv;
   private SimpleStringProperty simpleFloor = new SimpleStringProperty("Floor " + currentFloor);
   private JFXButton ChooseFloorBtn = new JFXButton("Floor 1");
-  @FXML JFXButton helpButton;
-  @FXML ImageView imageHelp;
+  @FXML private JFXButton helpButton;
+  @FXML private ImageView helpImage;
 
   private MapDrawerController drawerController;
 
@@ -152,6 +152,16 @@ public class MapController implements AllAccessible {
     initializeFloorList();
 
     csvBtns();
+
+    helpButton.addEventHandler(
+        MouseEvent.MOUSE_PRESSED,
+        (event -> {
+          if (helpImage.isVisible()) {
+            helpImage.setVisible(false);
+          } else {
+            helpImage.setVisible(true);
+          }
+        }));
 
     HamburgerSlideCloseTransition burgerTask = new HamburgerSlideCloseTransition(mapHam);
     burgerTask.setRate(-1);
@@ -1813,7 +1823,7 @@ public class MapController implements AllAccessible {
   private void helpPopUp() {
     helpButton.setOnAction(
         (e) -> {
-          imageHelp.getImage();
+          helpImage.getImage();
         });
   }
 }

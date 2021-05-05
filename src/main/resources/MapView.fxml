@@ -40,9 +40,9 @@
             <Font size="18.0" />
          </font>
       </JFXButton>
-      <ImageView fx:id="imageHelp" fitHeight="269.0" fitWidth="434.0" layoutX="303.0" layoutY="159.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="helpImage" fitHeight="700.0" fitWidth="700.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@Images/map_stuff_ctrls.png" />
+            <Image url="@Images/map_stuff_ctrls.jpeg" />
          </image>
       </ImageView>
 
