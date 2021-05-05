@@ -578,7 +578,7 @@ public class MapController implements AllAccessible {
 
   private void deleteEdge(EdgeUI E) {
     FDatabaseTables.getEdgeTable()
-        .deleteEntity(GlobalDb.getConnection(), "Tables", E.getE().getEdgeID());
+        .deleteEntity(GlobalDb.getConnection(), "Edges", E.getE().getEdgeID());
     secondaryAnchor.getChildren().remove(E.getL());
     EDGES.remove(E);
   }
@@ -729,17 +729,6 @@ public class MapController implements AllAccessible {
               System.out.println("Just cleared");
             }
             return;
-          }
-          switch (key) {
-            case R:
-              resetCSV();
-              break;
-            case I:
-              importCSV();
-              break;
-            case E:
-              exportCSV();
-              break;
           }
           if (key == KeyCode.P) {
             pPressed.set(true);
@@ -897,6 +886,7 @@ public class MapController implements AllAccessible {
                   NewEdge.get(0).getN().addEdge(edge);
                   NewEdge.get(1).getN().addEdge(edge1);
                   EdgeUI temp = new EdgeUI(edge, L);
+                  editEdgeListener(temp);
                   addEdge(temp);
                   NewEdge = new LinkedList<NodeUI>();
                 }
@@ -1663,6 +1653,7 @@ public class MapController implements AllAccessible {
     submitDia.show();
   }
 
+  @FXML
   private void importCSV() {
     FileChooser nodeChooser = new FileChooser();
     nodeChooser.setTitle("Import nodes");
@@ -1691,6 +1682,7 @@ public class MapController implements AllAccessible {
     updateMapFromDB();
   }
 
+  @FXML
   private void exportCSV() {
     FileChooser nodeChooser = new FileChooser();
     nodeChooser.setTitle("Export nodes");

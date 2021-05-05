@@ -14,10 +14,7 @@
 
 <AnchorPane prefHeight="640.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.teamname.views.Mapping.MapDrawerController">
    <children>
-      <JFXButton fx:id="findPathButton" layoutX="300.0" layoutY="146.0" onAction="#tiasSpecialFunction" style="-fx-background-color: #366CDB; -fx-background-radius: 6px;" text="Find Path" textFill="WHITE">
-         <font>
-            <Font size="15.0" />
-         </font></JFXButton>
+      <JFXButton fx:id="findPathButton" layoutX="213.0" layoutY="162.0" onAction="#tiasSpecialFunction" prefHeight="1.0" prefWidth="84.0" style="-fx-background-color: #366CDB; -fx-background-radius: 6px;" text="Find Path" textFill="WHITE" />
       <JFXTreeView fx:id="directoryTreeView" layoutY="191.0" prefWidth="400.0" stylesheets="@tree.css" />
       <Label layoutY="601.0" text="Text Direction">
          <font>
@@ -60,8 +57,8 @@
          </children>
       </GridPane>
       <JFXComboBox fx:id="algoVersion" layoutX="188.0" layoutY="14.0" prefHeight="25.0" prefWidth="195.0" promptText="Pathfinding Algorithm" style="-fx-font-size: 14;" />
-      <JFXButton fx:id="exportBut" layoutX="306.0" layoutY="812.0" style="-fx-background-color: #366CDB; -fx-background-radius: 6px;" text="Export CSV" textFill="WHITE" />
-      <JFXButton fx:id="importBut" layoutX="209.0" layoutY="812.0" style="-fx-background-color: #366CDB; -fx-background-radius: 6px;" text="Import CSV" textFill="WHITE" />
-      <JFXButton fx:id="dirBtn" layoutX="258.0" layoutY="812.0" style="-fx-background-color: #366CDB; -fx-background-radius: 6px;" text="Download Direction" textFill="WHITE" />
+      <JFXButton fx:id="exportBut" layoutX="113.0" layoutY="162.0" style="-fx-background-color: #366CDB; -fx-background-radius: 6px;" text="Export CSV" textFill="WHITE" />
+      <JFXButton fx:id="importBut" layoutX="14.0" layoutY="162.0" style="-fx-background-color: #366CDB; -fx-background-radius: 6px;" text="Import CSV" textFill="WHITE" />
+      <JFXButton fx:id="dirBtn" layoutX="271.0" layoutY="599.0" style="-fx-background-color: #366CDB; -fx-background-radius: 6px;" text="Download Direction" textFill="WHITE" />
    </children>
 </AnchorPane>
