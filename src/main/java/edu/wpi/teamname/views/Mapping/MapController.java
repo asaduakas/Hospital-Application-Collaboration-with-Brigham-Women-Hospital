@@ -9,6 +9,7 @@ import edu.wpi.teamname.Ddb.GlobalDb;
 import edu.wpi.teamname.views.Access.AllAccessible;
 import edu.wpi.teamname.views.Access.LoginController;
 import edu.wpi.teamname.views.ControllerManager;
+import edu.wpi.teamname.views.HomeController;
 import edu.wpi.teamname.views.Mapping.Popup.Edit.AddNodeController;
 import edu.wpi.teamname.views.Mapping.Popup.Edit.EditNodeController;
 import edu.wpi.teamname.views.SceneSizeChangeListener;
@@ -72,6 +73,7 @@ public class MapController implements AllAccessible {
   private SimpleBooleanProperty aPressed = new SimpleBooleanProperty();
   private SimpleBooleanProperty pPressed = new SimpleBooleanProperty();
   private SimpleBooleanProperty shiftPressed = new SimpleBooleanProperty();
+  private SimpleBooleanProperty fPressed = new SimpleBooleanProperty();
   private EdgeUI tempEUI;
   public static boolean mapEditorIsSelected = false;
 
@@ -785,6 +787,17 @@ public class MapController implements AllAccessible {
             }
             return;
           }
+          if (key == KeyCode.F) {
+            pPressed.set(false);
+            plusPressed.set(false);
+            minusPressed.set(false);
+            aPressed.set(false);
+            startPressed.setValue(false);
+            endPressed.setValue(false);
+            shiftPressed.set(false);
+            fPressed.set(true);
+            System.out.println(fPressed.get());
+          }
           if (key == KeyCode.P) {
             pPressed.set(true);
             plusPressed.set(false);
@@ -793,6 +806,7 @@ public class MapController implements AllAccessible {
             startPressed.setValue(false);
             endPressed.setValue(false);
             shiftPressed.set(false);
+            fPressed.set(false);
           }
           if (key == KeyCode.SHIFT) {
             pPressed.set(false);
@@ -802,6 +816,7 @@ public class MapController implements AllAccessible {
             aPressed.set(false);
             startPressed.setValue(false);
             endPressed.setValue(false);
+            fPressed.set(false);
           }
           if (key == KeyCode.EQUALS) {
             pPressed.set(false);
@@ -811,6 +826,7 @@ public class MapController implements AllAccessible {
             startPressed.setValue(false);
             endPressed.setValue(false);
             shiftPressed.set(false);
+            fPressed.set(false);
           }
           if (key == KeyCode.MINUS) {
             pPressed.set(false);
@@ -820,6 +836,8 @@ public class MapController implements AllAccessible {
             startPressed.setValue(false);
             endPressed.setValue(false);
             shiftPressed.set(false);
+            fPressed.set(false);
+            System.out.println(minusPressed.get());
           }
           if (key == KeyCode.A) {
             pPressed.set(false);
@@ -829,6 +847,7 @@ public class MapController implements AllAccessible {
             startPressed.setValue(false);
             endPressed.setValue(false);
             shiftPressed.set(false);
+            fPressed.set(false);
           }
           if (key == KeyCode.S) {
             startPressed.setValue(true);
@@ -838,6 +857,7 @@ public class MapController implements AllAccessible {
             minusPressed.set(false);
             aPressed.set(false);
             shiftPressed.set(false);
+            fPressed.set(false);
           }
           if (key == KeyCode.E) {
             endPressed.setValue(true);
@@ -847,6 +867,7 @@ public class MapController implements AllAccessible {
             minusPressed.set(false);
             aPressed.set(false);
             shiftPressed.set(false);
+            fPressed.set(false);
           }
         });
 
@@ -859,6 +880,7 @@ public class MapController implements AllAccessible {
           minusPressed.set(false);
           aPressed.set(false);
           shiftPressed.set(false);
+          fPressed.set(false);
         });
   }
 
@@ -1002,6 +1024,11 @@ public class MapController implements AllAccessible {
                 System.out.println("node clicked");
                 saveParkingSpot(N);
               }
+              System.out.println(fPressed.get());
+              if (fPressed.get()) {
+                System.out.println("f clicked");
+                favorite(N.getN());
+              }
             });
   }
 
@@ -1070,6 +1097,18 @@ public class MapController implements AllAccessible {
     } else {
       N.setSizeHeight(N.getSizeHeight() + 60);
       N.setSizeWidth(N.getSizeWidth() + 60);
+    }
+  }
+
+  private void favorite(Node N) {
+    if (FDatabaseTables.getNodeTable()
+        .FavContains(GlobalDb.getConnection(), N.getNodeID(), HomeController.username)) {
+      FDatabaseTables.getNodeTable()
+          .deleteFav(GlobalDb.getConnection(), N.getNodeID(), HomeController.username);
+    } else {
+      FDatabaseTables.getNodeTable()
+          .addToFavoriteNodes(
+              GlobalDb.getConnection(), HomeController.username, N.getNodeID(), N.getLongName());
     }
   }
 
