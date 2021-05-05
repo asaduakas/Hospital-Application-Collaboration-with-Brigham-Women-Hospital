@@ -117,6 +117,9 @@ public class MapController implements AllAccessible {
 
   @FXML
   private void initialize() {
+
+    initialData = new RoomGraph(GlobalDb.getConnection());
+
     mapScrollPane = new MapScrollPane(F1);
     mainAnchor.getChildren().add(mapScrollPane);
     AnchorPane.setTopAnchor(mapScrollPane, 0.0);
@@ -129,7 +132,10 @@ public class MapController implements AllAccessible {
     initializeNodes();
     initializeEdges();
 
-    drawNodeFloor("1");
+    switchFloor("1");
+    for (NodeUI node : NODES) {
+      System.out.println(node.getN().getNodeID());
+    }
 
     ToggleListener();
     nodeAddListener();
@@ -257,6 +263,8 @@ public class MapController implements AllAccessible {
 
   private void initializeNodes() {
 
+    NODES.clear();
+
     for (Node N : initialData.getGraphInfo()) {
       ImageView Marker = new ImageView();
       Marker.setFitWidth(nodeNormalWidth);
@@ -313,6 +321,8 @@ public class MapController implements AllAccessible {
   }
 
   private void initializeEdges() {
+
+    EDGES.clear();
 
     for (Edge E : initialData.getListOfEdges()) {
       Line L = new Line();
@@ -630,9 +640,22 @@ public class MapController implements AllAccessible {
 
   private void editEdgeStart(Edge E, Node N) {
     String newID = N.getNodeID() + "_" + E.getEndNodeID();
-    FDatabaseTables.getEdgeTable()
-        .updateEdgeStartNode(GlobalDb.getConnection(), E.getEdgeID(), N.getNodeID());
-    FDatabaseTables.getEdgeTable().updateEdgeID(GlobalDb.getConnection(), E.getEdgeID(), newID);
+    String reverseNewID = E.getEndNodeID() + "_" + N.getNodeID();
+
+    //    if (!(FDatabaseTables.getEdgeTable().contains(GlobalDb.getConnection(), newID)
+    //        || FDatabaseTables.getEdgeTable().contains(GlobalDb.getConnection(), reverseNewID))) {
+
+    if (FDatabaseTables.getEdgeTable().contains(GlobalDb.getConnection(), E.getEdgeID())) {
+      FDatabaseTables.getEdgeTable()
+          .updateEdgeStartNode(GlobalDb.getConnection(), E.getEdgeID(), N.getNodeID());
+      FDatabaseTables.getEdgeTable().updateEdgeID(GlobalDb.getConnection(), E.getEdgeID(), newID);
+    } else if (FDatabaseTables.getEdgeTable()
+        .contains(GlobalDb.getConnection(), E.getReverseEdgeID())) {
+      FDatabaseTables.getEdgeTable()
+          .updateEdgeStartNode(GlobalDb.getConnection(), E.getReverseEdgeID(), N.getNodeID());
+      FDatabaseTables.getEdgeTable()
+          .updateEdgeID(GlobalDb.getConnection(), E.getReverseEdgeID(), newID);
+    }
 
     EdgeUI edgeUI = getEdgeUIByID(E.getEdgeID());
     NodeUI nodeUI = getNodeUIByID(N.getNodeID());
@@ -640,13 +663,27 @@ public class MapController implements AllAccessible {
     edgeUI.getL().startXProperty().bind(nodeUI.simpXcoordProperty());
     edgeUI.getL().startYProperty().unbind();
     edgeUI.getL().startYProperty().bind(nodeUI.simpYcoordProperty());
+    //    }
   }
 
   private void editEdgeEnd(Edge E, Node N) {
     String newID = E.getStartNodeID() + "_" + N.getNodeID();
-    FDatabaseTables.getEdgeTable()
-        .updateEdgeEndNode(GlobalDb.getConnection(), E.getEdgeID(), N.getNodeID());
-    FDatabaseTables.getEdgeTable().updateEdgeID(GlobalDb.getConnection(), E.getEdgeID(), newID);
+    String reverseNewID = N.getNodeID() + "_" + E.getStartNodeID();
+
+    //    if (!(FDatabaseTables.getEdgeTable().contains(GlobalDb.getConnection(), newID)
+    //        || FDatabaseTables.getEdgeTable().contains(GlobalDb.getConnection(), reverseNewID))) {
+
+    if (FDatabaseTables.getEdgeTable().contains(GlobalDb.getConnection(), E.getEdgeID())) {
+      FDatabaseTables.getEdgeTable()
+          .updateEdgeEndNode(GlobalDb.getConnection(), E.getEdgeID(), N.getNodeID());
+      FDatabaseTables.getEdgeTable().updateEdgeID(GlobalDb.getConnection(), E.getEdgeID(), newID);
+    } else if (FDatabaseTables.getEdgeTable()
+        .contains(GlobalDb.getConnection(), E.getReverseEdgeID())) {
+      FDatabaseTables.getEdgeTable()
+          .updateEdgeEndNode(GlobalDb.getConnection(), E.getReverseEdgeID(), N.getNodeID());
+      FDatabaseTables.getEdgeTable()
+          .updateEdgeID(GlobalDb.getConnection(), E.getReverseEdgeID(), newID);
+    }
 
     EdgeUI edgeUI = getEdgeUIByID(E.getEdgeID());
     NodeUI nodeUI = getNodeUIByID(N.getNodeID());
@@ -654,6 +691,7 @@ public class MapController implements AllAccessible {
     edgeUI.getL().endXProperty().bind(nodeUI.simpXcoordProperty());
     edgeUI.getL().endYProperty().unbind();
     edgeUI.getL().endYProperty().bind(nodeUI.simpYcoordProperty());
+    //    }
   }
 
   // _______________________________________Path Finding____________________________________________
