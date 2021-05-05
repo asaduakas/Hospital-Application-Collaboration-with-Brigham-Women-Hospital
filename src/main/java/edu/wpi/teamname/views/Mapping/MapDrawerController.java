@@ -410,7 +410,7 @@ public class MapDrawerController implements Initializable {
           }
         };
 
-    directoryTreeView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEventHandle);
+    directoryTreeView.addEventHandler(MouseEvent.MOUSE_PRESSED, mouseEventHandle);
   }
 
   private void handleMouseClicked(MouseEvent event) throws IOException {
@@ -418,29 +418,40 @@ public class MapDrawerController implements Initializable {
     // Accept clicks only on node cells, and not on empty spaces of the TreeView
     String prev = "";
     if (event.isControlDown()) {
-      mapController.clearMap();
       String clickname =
           (String) ((TreeItem) directoryTreeView.getSelectionModel().getSelectedItem()).getValue();
       for (NodeUI NUI : mapController.NODES) {
         if (NUI.getN().getLongName().equals(clickname)) {
-          //          System.out.println(NUI.getN().getLongName());
-          Targets.add(NUI.getN());
+          System.out.println(NUI.getN().getLongName());
+          if (!Targets.contains(NUI.getN())) {
+            Targets.add(NUI.getN());
+          }
           mapController.addNodeUI(NUI);
 
-          if (Targets.size() >= 2) {
-            LinkedList<Edge> ThePath = mapController.runPathFindingDirectory(Targets);
+          if (!endField.getText().equals(NUI.getN().getLongName())) {
             startField.setText(
-                mapController.getNodeUIByID(ThePath.get(0).getStartNodeID()).getN().getLongName());
-            endField.setText(
-                mapController
-                    .getNodeUIByID(ThePath.get(ThePath.size() - 1).getEndNodeID())
-                    .getN()
-                    .getLongName());
+                mapController.getNodeUIByID(Targets.getFirst().getNodeID()).getN().getLongName());
+          }
+
+          if (Targets.size() >= 2) {
+            mapController.runPathFindingDirectory(Targets);
+            if (!startField
+                .getText()
+                .equals(
+                    mapController
+                        .getNodeUIByID(Targets.getLast().getNodeID())
+                        .getN()
+                        .getLongName())) {
+              endField.setText(
+                  mapController.getNodeUIByID(Targets.getLast().getNodeID()).getN().getLongName());
+            }
+            Targets.clear();
           }
         }
       }
     }
-    if (node instanceof Text || (node instanceof TreeCell && ((TreeCell) node).getText() != null)) {
+    if ((node instanceof Text || (node instanceof TreeCell && ((TreeCell) node).getText() != null))
+        && mapController.thePath.isEmpty()) {
       String name =
           (String) ((TreeItem) directoryTreeView.getSelectionModel().getSelectedItem()).getValue();
       String type = "PARK";
