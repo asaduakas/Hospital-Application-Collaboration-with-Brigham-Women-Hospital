@@ -46,14 +46,15 @@ import javafx.util.Duration;
 public class MapController implements AllAccessible {
 
   private int index = 0;
-  String toggleText[] = {"Pathfinding", "Map Editor"};
+  private String toggleText[] = {"Pathfinding", "Map Editor"};
   private RoomGraph initialData = new RoomGraph(GlobalDb.getConnection());
   public static LinkedList<NodeUI> NODES = new LinkedList<>();
   private static LinkedList<EdgeUI> EDGES = new LinkedList<>();
   public PathAlgoPicker algorithm = new PathAlgoPicker(new aStar());
   private LinkedList<Edge> thePath = new LinkedList<Edge>();
   private LinkedList<Node> Targets = new LinkedList<Node>();
-  LinkedList<NodeUI> NewEdge = new LinkedList<NodeUI>();
+  private LinkedList<NodeUI> NewEdge = new LinkedList<NodeUI>();
+  private LinkedList<Node> nodesToAlign = new LinkedList<Node>();
   public static final double nodeNormalHeight = 30;
   public static final double nodeNormalWidth = 30;
   private String userCategory = "admin";
@@ -62,8 +63,15 @@ public class MapController implements AllAccessible {
   public boolean isEditNodeProperties = false;
   private boolean isEditStart = false;
   private boolean isEditEnd = false;
+  private boolean saveMode = false;
+  private boolean alignMode = false;
   private SimpleBooleanProperty startPressed = new SimpleBooleanProperty();
   private SimpleBooleanProperty endPressed = new SimpleBooleanProperty();
+  private SimpleBooleanProperty plusPressed = new SimpleBooleanProperty();
+  private SimpleBooleanProperty minusPressed = new SimpleBooleanProperty();
+  private SimpleBooleanProperty aPressed = new SimpleBooleanProperty();
+  private SimpleBooleanProperty pPressed = new SimpleBooleanProperty();
+  private SimpleBooleanProperty shiftPressed = new SimpleBooleanProperty();
   private EdgeUI tempEUI;
   public static boolean mapEditorIsSelected = false;
 
@@ -72,7 +80,7 @@ public class MapController implements AllAccessible {
   private final Image F3 = new Image("03_thethirdfloor.png");
   private final Image FL1 = new Image("00_thelowerlevel1.png");
   private final Image FL2 = new Image("00_thelowerlevel2.png");
-  public static final Image DEFAULT = new Image("Images/274px-Google_Maps_pin.svg.png");
+  public static final Image DEFAULT = new Image("Images/walkhallpin.png");
   public static final Image PARK = new Image("Images/parkingpin.png");
   public static final Image ELEV = new Image("Images/elevatorpin.png");
   public static final Image REST = new Image("Images/restroompins.png");
@@ -107,6 +115,9 @@ public class MapController implements AllAccessible {
 
   @FXML
   private void initialize() {
+
+    initialData = new RoomGraph(GlobalDb.getConnection());
+
     mapScrollPane = new MapScrollPane(F1);
     mainAnchor.getChildren().add(mapScrollPane);
     AnchorPane.setTopAnchor(mapScrollPane, 0.0);
@@ -119,12 +130,14 @@ public class MapController implements AllAccessible {
     initializeNodes();
     initializeEdges();
 
-    drawNodeFloor("1");
+    switchFloor("1");
+    for (NodeUI node : NODES) {
+      System.out.println(node.getN().getNodeID());
+    }
 
     ToggleListener();
     nodeAddListener();
     cancelListener();
-    getNodesToAlignListener_recordParkingListener();
 
     mapDrawer.setPickOnBounds(false);
 
@@ -236,6 +249,8 @@ public class MapController implements AllAccessible {
 
   private void initializeNodes() {
 
+    NODES.clear();
+
     for (Node N : initialData.getGraphInfo()) {
       ImageView Marker = new ImageView();
       Marker.setFitWidth(nodeNormalWidth);
@@ -292,6 +307,8 @@ public class MapController implements AllAccessible {
   }
 
   private void initializeEdges() {
+
+    EDGES.clear();
 
     for (Edge E : initialData.getListOfEdges()) {
       Line L = new Line();
@@ -521,6 +538,7 @@ public class MapController implements AllAccessible {
 
   private void resetData() {
     Targets.clear();
+    thePath.clear();
     nodesToAlign.clear();
   }
 
@@ -552,25 +570,35 @@ public class MapController implements AllAccessible {
       deleteEdge(E);
     }
 
-    GlobalDb.getTables()
-        .getNodeTable()
+    FDatabaseTables.getNodeTable()
         .deleteEntity(GlobalDb.getConnection(), "Nodes", N.getN().getNodeID());
     secondaryAnchor.getChildren().remove(N.getI());
+
+    if (this.popup.isShowing()) {
+      this.popup.hide();
+      isEditNodeProperties = false;
+    }
+
     NODES.remove(N);
   }
 
   private void deleteEdge(EdgeUI E) {
-    GlobalDb.getTables()
-        .getEdgeTable()
-        .deleteEntity(GlobalDb.getConnection(), "Tables", E.getE().getEdgeID());
+    if (FDatabaseTables.getEdgeTable().contains(GlobalDb.getConnection(), E.getE().getEdgeID()))
+      FDatabaseTables.getEdgeTable()
+          .deleteEntity(GlobalDb.getConnection(), "Edges", E.getE().getEdgeID());
+
+    if (FDatabaseTables.getEdgeTable()
+        .contains(GlobalDb.getConnection(), E.getE().getReverseEdgeID()))
+      FDatabaseTables.getEdgeTable()
+          .deleteEntity(GlobalDb.getConnection(), "Edges", E.getE().getReverseEdgeID());
+
     secondaryAnchor.getChildren().remove(E.getL());
     EDGES.remove(E);
   }
 
   public void addNode(NodeUI N) {
 
-    GlobalDb.getTables()
-        .getNodeTable()
+    FDatabaseTables.getNodeTable()
         .addEntity(
             GlobalDb.getConnection(),
             N.getN().getNodeID(),
@@ -582,18 +610,17 @@ public class MapController implements AllAccessible {
             N.getN().getLongName(),
             N.getN().getShortName(),
             0);
+    initialData.getGraphInfo().add(N.getN());
+    NODES.add(N);
     pathListener_AddEdge(N);
     hoverResize(N);
     setupDraggableNodeUI(N);
-    initialData.getGraphInfo().add(N.getN());
-    NODES.add(N);
-    addNodeUI(N);
     deleteNodeListener(N);
+    addNodeUI(N);
   }
 
   private void addEdge(EdgeUI E) {
-    GlobalDb.getTables()
-        .getEdgeTable()
+    FDatabaseTables.getEdgeTable()
         .addEntity(
             GlobalDb.getConnection(),
             E.getE().getEdgeID(),
@@ -605,30 +632,70 @@ public class MapController implements AllAccessible {
 
   private void editEdgeStart(Edge E, Node N) {
     String newID = N.getNodeID() + "_" + E.getEndNodeID();
-    FDatabaseTables.getEdgeTable()
-        .updateEdgeStartNode(GlobalDb.getConnection(), E.getEdgeID(), N.getNodeID());
-    FDatabaseTables.getEdgeTable().updateEdgeID(GlobalDb.getConnection(), E.getEdgeID(), newID);
+    String reverseNewID = E.getEndNodeID() + "_" + N.getNodeID();
 
-    EdgeUI edgeUI = getEdgeUIByID(E.getEdgeID());
-    NodeUI nodeUI = getNodeUIByID(N.getNodeID());
-    edgeUI.getL().startXProperty().unbind();
-    edgeUI.getL().startXProperty().bind(nodeUI.simpXcoordProperty());
-    edgeUI.getL().startYProperty().unbind();
-    edgeUI.getL().startYProperty().bind(nodeUI.simpYcoordProperty());
+    if (!(FDatabaseTables.getEdgeTable().contains(GlobalDb.getConnection(), newID)
+        || FDatabaseTables.getEdgeTable().contains(GlobalDb.getConnection(), reverseNewID))) {
+
+      if (FDatabaseTables.getEdgeTable().contains(GlobalDb.getConnection(), E.getEdgeID())) {
+        FDatabaseTables.getEdgeTable()
+            .updateEdgeStartNode(GlobalDb.getConnection(), E.getEdgeID(), N.getNodeID());
+        FDatabaseTables.getEdgeTable().updateEdgeID(GlobalDb.getConnection(), E.getEdgeID(), newID);
+      } else if (FDatabaseTables.getEdgeTable()
+          .contains(GlobalDb.getConnection(), E.getReverseEdgeID())) {
+        FDatabaseTables.getEdgeTable()
+            .updateEdgeStartNode(GlobalDb.getConnection(), E.getReverseEdgeID(), N.getNodeID());
+        FDatabaseTables.getEdgeTable()
+            .updateEdgeID(GlobalDb.getConnection(), E.getReverseEdgeID(), newID);
+      }
+
+      EdgeUI edgeUI = getEdgeUIByID(E.getEdgeID());
+      NodeUI nodeUI = getNodeUIByID(N.getNodeID());
+
+      edgeUI.getE().setEdgeID(newID);
+      edgeUI.getE().setReverseEdgeID(reverseNewID);
+      edgeUI.getE().setStartNodeShortName(N.getShortName());
+      edgeUI.getE().setStartNodeID(N.getNodeID());
+
+      edgeUI.getL().startXProperty().unbind();
+      edgeUI.getL().startXProperty().bind(nodeUI.simpXcoordProperty());
+      edgeUI.getL().startYProperty().unbind();
+      edgeUI.getL().startYProperty().bind(nodeUI.simpYcoordProperty());
+    }
   }
 
   private void editEdgeEnd(Edge E, Node N) {
     String newID = E.getStartNodeID() + "_" + N.getNodeID();
-    FDatabaseTables.getEdgeTable()
-        .updateEdgeEndNode(GlobalDb.getConnection(), E.getEdgeID(), N.getNodeID());
-    FDatabaseTables.getEdgeTable().updateEdgeID(GlobalDb.getConnection(), E.getEdgeID(), newID);
+    String reverseNewID = N.getNodeID() + "_" + E.getStartNodeID();
 
-    EdgeUI edgeUI = getEdgeUIByID(E.getEdgeID());
-    NodeUI nodeUI = getNodeUIByID(N.getNodeID());
-    edgeUI.getL().endXProperty().unbind();
-    edgeUI.getL().endXProperty().bind(nodeUI.simpXcoordProperty());
-    edgeUI.getL().endYProperty().unbind();
-    edgeUI.getL().endYProperty().bind(nodeUI.simpYcoordProperty());
+    if (!(FDatabaseTables.getEdgeTable().contains(GlobalDb.getConnection(), newID)
+        || FDatabaseTables.getEdgeTable().contains(GlobalDb.getConnection(), reverseNewID))) {
+
+      if (FDatabaseTables.getEdgeTable().contains(GlobalDb.getConnection(), E.getEdgeID())) {
+        FDatabaseTables.getEdgeTable()
+            .updateEdgeEndNode(GlobalDb.getConnection(), E.getEdgeID(), N.getNodeID());
+        FDatabaseTables.getEdgeTable().updateEdgeID(GlobalDb.getConnection(), E.getEdgeID(), newID);
+      } else if (FDatabaseTables.getEdgeTable()
+          .contains(GlobalDb.getConnection(), E.getReverseEdgeID())) {
+        FDatabaseTables.getEdgeTable()
+            .updateEdgeEndNode(GlobalDb.getConnection(), E.getReverseEdgeID(), N.getNodeID());
+        FDatabaseTables.getEdgeTable()
+            .updateEdgeID(GlobalDb.getConnection(), E.getReverseEdgeID(), newID);
+      }
+
+      EdgeUI edgeUI = getEdgeUIByID(E.getEdgeID());
+      NodeUI nodeUI = getNodeUIByID(N.getNodeID());
+
+      edgeUI.getE().setEdgeID(newID);
+      edgeUI.getE().setReverseEdgeID(reverseNewID);
+      edgeUI.getE().setEndNodeShortName(N.getShortName());
+      edgeUI.getE().setEndNodeID(N.getNodeID());
+
+      edgeUI.getL().endXProperty().unbind();
+      edgeUI.getL().endXProperty().bind(nodeUI.simpXcoordProperty());
+      edgeUI.getL().endYProperty().unbind();
+      edgeUI.getL().endYProperty().bind(nodeUI.simpYcoordProperty());
+    }
   }
 
   // _______________________________________Path Finding____________________________________________
@@ -690,7 +757,7 @@ public class MapController implements AllAccessible {
   private void nodeAddListener() {
     secondaryAnchor.setOnMousePressed(
         (MouseEvent E) -> {
-          if (E.isAltDown() && isEditor) {
+          if (plusPressed.get() && isEditor) {
             try {
               FXMLLoader temp = loadPopup("MapPopUps/AddNode.fxml");
               AddNodeController popupController = temp.getController();
@@ -718,31 +785,80 @@ public class MapController implements AllAccessible {
             }
             return;
           }
-          switch (key) {
-            case R:
-              resetCSV();
-              break;
-            case I:
-              importCSV();
-              break;
-            case E:
-              exportCSV();
-              break;
+          if (key == KeyCode.P) {
+            pPressed.set(true);
+            plusPressed.set(false);
+            minusPressed.set(false);
+            aPressed.set(false);
+            startPressed.setValue(false);
+            endPressed.setValue(false);
+            shiftPressed.set(false);
           }
-          if (key == KeyCode.COMMA) {
-            startPressed.setValue(true);
+          if (key == KeyCode.SHIFT) {
+            pPressed.set(false);
+            shiftPressed.set(true);
+            plusPressed.set(false);
+            minusPressed.set(false);
+            aPressed.set(false);
+            startPressed.setValue(false);
             endPressed.setValue(false);
           }
-          if (key == KeyCode.PERIOD) {
+          if (key == KeyCode.EQUALS) {
+            pPressed.set(false);
+            plusPressed.set(true);
+            minusPressed.set(false);
+            aPressed.set(false);
+            startPressed.setValue(false);
+            endPressed.setValue(false);
+            shiftPressed.set(false);
+          }
+          if (key == KeyCode.MINUS) {
+            pPressed.set(false);
+            plusPressed.set(false);
+            minusPressed.set(true);
+            aPressed.set(false);
+            startPressed.setValue(false);
+            endPressed.setValue(false);
+            shiftPressed.set(false);
+          }
+          if (key == KeyCode.A) {
+            pPressed.set(false);
+            plusPressed.set(false);
+            minusPressed.set(false);
+            aPressed.set(true);
+            startPressed.setValue(false);
+            endPressed.setValue(false);
+            shiftPressed.set(false);
+          }
+          if (key == KeyCode.S) {
+            startPressed.setValue(true);
+            endPressed.setValue(false);
+            pPressed.set(false);
+            plusPressed.set(false);
+            minusPressed.set(false);
+            aPressed.set(false);
+            shiftPressed.set(false);
+          }
+          if (key == KeyCode.E) {
             endPressed.setValue(true);
             startPressed.setValue(false);
+            pPressed.set(false);
+            plusPressed.set(false);
+            minusPressed.set(false);
+            aPressed.set(false);
+            shiftPressed.set(false);
           }
         });
 
     mapScrollPane.setOnKeyReleased(
         (event) -> {
-          startPressed.setValue(false);
           endPressed.setValue(false);
+          startPressed.setValue(false);
+          pPressed.set(false);
+          plusPressed.set(false);
+          minusPressed.set(false);
+          aPressed.set(false);
+          shiftPressed.set(false);
         });
   }
 
@@ -750,22 +866,21 @@ public class MapController implements AllAccessible {
     N.getI()
         .setOnMousePressed(
             (MouseEvent E) -> {
-              if (isEditor) {
-                if (E.isControlDown()) {
-                  deleteNode(N);
-                }
-                if (isEditStart) {
-                  editEdgeStart(tempEUI.getE(), N.getN());
-                  tempEUI.getL().setStroke(Color.BLACK);
-                  tempEUI = null;
-                  isEditStart = false;
-                }
-                if (isEditEnd) {
-                  editEdgeEnd(tempEUI.getE(), N.getN());
-                  tempEUI.getL().setStroke(Color.BLACK);
-                  tempEUI = null;
-                  isEditEnd = false;
-                }
+              if (minusPressed.get() && isEditor) {
+                deleteNode(N);
+              }
+
+              if (isEditStart && isEditor) {
+                editEdgeStart(tempEUI.getE(), N.getN());
+                tempEUI.getL().setStroke(Color.BLACK);
+                tempEUI = null;
+                isEditStart = false;
+              }
+              if (isEditEnd && isEditor) {
+                editEdgeEnd(tempEUI.getE(), N.getN());
+                tempEUI.getL().setStroke(Color.BLACK);
+                tempEUI = null;
+                isEditEnd = false;
               }
             });
   }
@@ -774,7 +889,7 @@ public class MapController implements AllAccessible {
     E.getL()
         .setOnMousePressed(
             (MouseEvent e) -> {
-              if (e.isControlDown() && isEditor) {
+              if (minusPressed.get() && isEditor) {
                 deleteEdge(E);
               }
             });
@@ -827,90 +942,67 @@ public class MapController implements AllAccessible {
                   runPathFindingClick();
                 }
               }
-              if (E.isShiftDown() && isEditor) {
-                NewEdge.add(N);
-                if (NewEdge.size() == 2) {
+              if (isEditor) {
+                if (aPressed.get()) {
+                  alignMode = false;
+                  saveMode = false;
+                  NewEdge.add(N);
+                  if (NewEdge.size() == 2) {
 
-                  System.out.println(NewEdge.get(0).getN().getNodeID());
-                  System.out.println(NewEdge.get(1).getN().getNodeID());
+                    System.out.println(NewEdge.get(0).getN().getNodeID());
+                    System.out.println(NewEdge.get(1).getN().getNodeID());
 
-                  Line L = new Line();
+                    Line L = new Line();
 
-                  L.startXProperty().bind(NewEdge.get(0).simpXcoordProperty());
-                  L.startYProperty().bind(NewEdge.get(0).simpYcoordProperty());
-                  L.endXProperty().bind(NewEdge.get(1).simpXcoordProperty());
-                  L.endYProperty().bind(NewEdge.get(1).simpYcoordProperty());
-                  L.setStroke(Color.BLACK);
-                  L.setStrokeWidth(5.0);
-                  Edge edge =
-                      new Edge(
-                          NewEdge.get(0).getN(),
-                          NewEdge.get(1).getN(),
-                          NewEdge.get(0).getN().getMeasuredDistance(NewEdge.get(1).getN()));
-                  Edge edge1 =
-                      new Edge(
-                          NewEdge.get(1).getN(),
-                          NewEdge.get(0).getN(),
-                          NewEdge.get(0).getN().getMeasuredDistance(NewEdge.get(1).getN()));
-                  NewEdge.get(0).getN().addEdge(edge);
-                  NewEdge.get(1).getN().addEdge(edge1);
-                  EdgeUI temp = new EdgeUI(edge, L);
-                  addEdge(temp);
-                  NewEdge = new LinkedList<NodeUI>();
+                    L.startXProperty().bind(NewEdge.get(0).simpXcoordProperty());
+                    L.startYProperty().bind(NewEdge.get(0).simpYcoordProperty());
+                    L.endXProperty().bind(NewEdge.get(1).simpXcoordProperty());
+                    L.endYProperty().bind(NewEdge.get(1).simpYcoordProperty());
+                    L.setStroke(Color.BLACK);
+                    L.setStrokeWidth(5.0);
+                    Edge edge =
+                        new Edge(
+                            NewEdge.get(0).getN(),
+                            NewEdge.get(1).getN(),
+                            NewEdge.get(0).getN().getMeasuredDistance(NewEdge.get(1).getN()));
+                    Edge edge1 =
+                        new Edge(
+                            NewEdge.get(1).getN(),
+                            NewEdge.get(0).getN(),
+                            NewEdge.get(0).getN().getMeasuredDistance(NewEdge.get(1).getN()));
+                    NewEdge.get(0).getN().addEdge(edge);
+                    NewEdge.get(1).getN().addEdge(edge1);
+                    EdgeUI temp = new EdgeUI(edge, L);
+                    editEdgeListener(temp);
+                    deleteEdgeListener(temp);
+                    addEdge(temp);
+                    NewEdge = new LinkedList<NodeUI>();
+                  }
                 }
+                // Align node
+                if (shiftPressed.get()) { // toggle align mode
+                  alignMode = !alignMode;
+                  saveMode = false;
+                }
+                if (alignMode) {
+                  System.out.println("node clicked");
+                  nodesToAlign.add(N.getN());
+
+                  if (nodesToAlign.size() > 2) {
+                    alignNodes();
+                  }
+                }
+              } // end of isEditor
+
+              if (pPressed.get() && !isEditor) { // toggle save mode
+                saveMode = !saveMode;
+                alignMode = false;
+              }
+              if (saveMode) {
+                System.out.println("node clicked");
+                saveParkingSpot(N);
               }
             });
-  }
-
-  LinkedList<Node> nodesToAlign = new LinkedList<Node>();
-
-  private void getNodesToAlignListener_recordParkingListener() {
-    mainAnchor.setOnKeyPressed(
-        (KeyEvent e) -> {
-          KeyCode key = e.getCode();
-          if (key == KeyCode.SHIFT && isEditor) {
-            System.out.println("Shift is down");
-            cancelListener();
-
-            for (Node N : this.initialData.getGraphInfo()) {
-              NodeUI NUI = getNodeUIByID(N.getNodeID());
-              NUI.getI()
-                  .addEventHandler(
-                      MouseEvent.MOUSE_PRESSED,
-                      (M) -> {
-                        System.out.println("node clicked");
-                        nodesToAlign.add(NUI.getN());
-
-                        if (nodesToAlign.size() > 2) {
-                          alignNodes();
-                        }
-                      });
-            }
-          }
-
-          // record parking lot
-          int saveMode = 1;
-          if (key == KeyCode.S && !isEditor) {
-            System.out.println("S is down");
-            if (saveMode == 0) {
-              saveMode += 1;
-            } else if (saveMode == 1) {
-              saveMode -= 1;
-              for (Node N : this.initialData.getGraphInfo()) {
-                if (N.getNodeType().equals("PARK")) {
-                  NodeUI NUI = getNodeUIByID(N.getNodeID());
-                  NUI.getI()
-                      .addEventHandler(
-                          MouseEvent.MOUSE_PRESSED,
-                          (M) -> {
-                            System.out.println("node clicked");
-                            saveParkingSpot(NUI);
-                          });
-                }
-              }
-            }
-          }
-        });
   }
 
   private void alignNodes() {
@@ -983,7 +1075,6 @@ public class MapController implements AllAccessible {
 
   private void hoverResize(NodeUI N) {
     N.getI().setOnMouseEntered(new NodeEnterHandler(N, this));
-
     N.getI()
         .setOnMouseExited(
             (MouseEvent e) -> {
@@ -1020,7 +1111,7 @@ public class MapController implements AllAccessible {
                 KeyEvent.KEY_PRESSED,
                 (KeyEvent k) -> {
                   KeyCode key = k.getCode();
-                  if (key == KeyCode.SEMICOLON) {
+                  if (key == KeyCode.ALT) {
                     isEditNodeProperties = true;
                   }
                 });
@@ -1065,42 +1156,6 @@ public class MapController implements AllAccessible {
       } // end of isEditor
     }
   }
-
-  //  public void setupDraggableNodeUI(NodeUI NUI) {
-  //
-  //    NUI.getI()
-  //        .setOnMouseDragged(
-  //            event -> {
-  //              if (isEditor) {
-  //                mapScrollPane.setPannable(false);
-  //                Double x = event.getX();
-  //                Double y = event.getY();
-  //                NUI.getI().setX(x - NUI.getI().getFitWidth() / 2);
-  //                NUI.getI().setY(y - NUI.getI().getFitHeight());
-  //                NUI.setNodeCoord(x.intValue(), y.intValue());
-  //                resizeNodeUI(NUI, 2);
-  //              }
-  //            });
-  //
-  //    NUI.getI()
-  //        .setOnMouseReleased(
-  //            event -> {
-  //              if (isEditor) {
-  //                Double x = event.getX();
-  //                Double y = event.getY();
-  //                GlobalDb.getTables()
-  //                    .getNodeTable()
-  //                    .updateNodeXCoord(
-  //                        GlobalDb.getConnection(), NUI.getN().getNodeID(), x.intValue());
-  //                GlobalDb.getTables()
-  //                    .getNodeTable()
-  //                    .updateNodeYCoord(
-  //                        GlobalDb.getConnection(), NUI.getN().getNodeID(), y.intValue());
-  //                mapScrollPane.setPannable(true);
-  //                resizeNodeUI(NUI, .5);
-  //              }
-  //            });
-  //  }
 
   // ---------------------------------------Animation------------------------------------------
 
@@ -1660,6 +1715,7 @@ public class MapController implements AllAccessible {
     updateMapFromDB();
   }
 
+  @FXML
   private void importCSV() {
     FileChooser nodeChooser = new FileChooser();
     nodeChooser.setTitle("Import nodes");
@@ -1688,6 +1744,7 @@ public class MapController implements AllAccessible {
     updateMapFromDB();
   }
 
+  @FXML
   private void exportCSV() {
     FileChooser nodeChooser = new FileChooser();
     nodeChooser.setTitle("Export nodes");

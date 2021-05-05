@@ -94,4 +94,12 @@ public class Edge {
     if (startNodeID.equals(e.getEndNodeID()) && endNodeID.equals(e.getStartNodeID())) return true;
     return false;
   }
+
+  public void setStartNodeID(String startNodeID) {
+    this.startNodeID = startNodeID;
+  }
+
+  public void setEndNodeID(String endNodeID) {
+    this.endNodeID = endNodeID;
+  }
 }
