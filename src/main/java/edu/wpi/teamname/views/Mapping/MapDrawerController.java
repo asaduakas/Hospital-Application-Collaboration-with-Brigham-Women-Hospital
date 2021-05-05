@@ -583,7 +583,7 @@ public class MapDrawerController implements Initializable {
     }
   }
 
-  // --------------------------------Text Direction-----------------------------------------
+  // _____________________________________Directions__________________________________________
 
   private String endLocation = "";
 
@@ -604,12 +604,15 @@ public class MapDrawerController implements Initializable {
     }
     // ScaleDown(edges.getFirst().getStartNode());
 
-    dirText.setText("");
+    dirText.clear();
 
     edu.wpi.teamname.Astar.Node start = initialData.getNodeByID(edges.getFirst().getStartNodeID());
     edu.wpi.teamname.Astar.Node end = initialData.getNodeByID(edges.getLast().getEndNodeID());
     dirText.appendText(
         "Directions from " + start.getLongName() + " to " + end.getLongName() + ":\n");
+    System.out.println(
+        "Directions from " + start.getLongName() + " to " + end.getLongName() + ":\n");
+    System.out.println("getting text------------\n" + dirText.getText());
     setEnd(end.getShortName());
 
     // ScaleDown(edges.getFirst().getEndNode());
@@ -640,6 +643,7 @@ public class MapDrawerController implements Initializable {
       initialDirection = newDirection;
     }
     dirText.appendText("\nWelcome to " + end.getLongName() + "\n");
+    System.out.println("final text--------\n" + dirText.getText());
   }
 
   public String evalTurn(
@@ -791,7 +795,7 @@ public class MapDrawerController implements Initializable {
         layout.setBody(new Text(""));
 
         StackPane downloadedStackPane = new StackPane();
-        //        mainAnchor.getChildren().add(downloadedStackPane);
+        // .getChildren().add(downloadedStackPane);
         StackPane.setAlignment(downloadedStackPane, Pos.TOP_RIGHT);
         downloadedStackPane.setLayoutY(245);
         downloadedStackPane.setLayoutX(300);

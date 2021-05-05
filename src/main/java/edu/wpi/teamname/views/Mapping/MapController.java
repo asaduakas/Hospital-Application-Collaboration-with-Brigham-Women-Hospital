@@ -13,7 +13,6 @@ import edu.wpi.teamname.views.Mapping.Popup.Edit.AddNodeController;
 import edu.wpi.teamname.views.Mapping.Popup.Edit.EditNodeController;
 import edu.wpi.teamname.views.SceneSizeChangeListener;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
@@ -29,7 +28,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -41,9 +39,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Popup;
 import javafx.util.Duration;
@@ -645,7 +640,8 @@ public class MapController implements AllAccessible {
     } else {
       showPath();
       algorithm.multiSearch(initialData, DirectoryTargets).printPathEdges();
-      getDirections(thePath);
+      MapDrawerController myMapDrawCtrl = new MapDrawerController();
+      myMapDrawCtrl.getDirections(thePath);
     }
 
     return thePath;
@@ -660,7 +656,8 @@ public class MapController implements AllAccessible {
     } else {
       showPath();
       // algorithm.multiSearch(initialData, Targets).printPathEdges();
-      getDirections(thePath);
+      MapDrawerController myMapDrawCtrl = new MapDrawerController();
+      myMapDrawCtrl.getDirections(thePath);
     }
   }
 
@@ -1273,241 +1270,246 @@ public class MapController implements AllAccessible {
 
   // _____________________________________Directions__________________________________________
 
-  @FXML JFXButton dirBtn;
-  @FXML JFXTextArea dirText = new JFXTextArea();
-  private String endLocation = "";
-
-  private void setEnd(String end) {
-    endLocation = end;
-  }
-
-  private String getEnd() {
-    return endLocation;
-  }
-
-  @FXML
-  public void getDirections(LinkedList<Edge> edges) {
-
-    if (edges.isEmpty()) {
-      System.out.println("No Directions to Give!");
-      return;
-    }
-    // ScaleDown(edges.getFirst().getStartNode());
-
-    // if (dirText != null) {
-    dirText.clear();
-    // }
-
-    Node start = initialData.getNodeByID(edges.getFirst().getStartNodeID());
-    Node end = initialData.getNodeByID(edges.getLast().getEndNodeID());
-    dirText.appendText(
-        "Directions from " + start.getLongName() + " to " + end.getLongName() + ":\n");
-    setEnd(end.getShortName());
-
-    // ScaleDown(edges.getFirst().getEndNode());
-    String initialDirection =
-        firstMove(
-            start.getXCoord(), start.getYCoord(), start.getXCoord(), start.getYCoord(), start, end);
-
-    // used to skip first edge
-    int skip = 0;
-    for (Edge N : edges) {
-      if (skip == 0) {
-        skip++;
-        continue;
-      }
-      // ScaleDown(N.getEndNode());
-      Node startN = initialData.getNodeByID(N.getStartNodeID());
-      Node endN = initialData.getNodeByID(N.getEndNodeID());
-
-      String newDirection =
-          evalTurn(
-              initialDirection,
-              startN.getXCoord(),
-              startN.getYCoord(),
-              endN.getXCoord(),
-              endN.getYCoord(),
-              startN,
-              endN);
-      initialDirection = newDirection;
-    }
-    dirText.appendText("\nWelcome to " + end.getLongName() + "\n");
-  }
-
-  public String evalTurn(
-      String currentDirection,
-      int startX,
-      int startY,
-      int endX,
-      int endY,
-      Node startNode,
-      Node endNode) {
-    String newDirection = "";
-    int deltaX = endX - startX;
-    int deltaY = endY - startY;
-
-    System.out.println("start type: " + startNode.getNodeType());
-    System.out.println("end type: " + endNode.getNodeType());
-
-    // add handling for changing floors
-    if (startNode.getNodeType().equals("ELEV") && endNode.getNodeType().equals("ELEV")) {
-      dirText.appendText("Take the elevator towards floor " + endNode.getFloor() + "\n");
-      return "In elevator";
-
-    } else if (startNode.getNodeType().equals("ELEV") && !endNode.getNodeType().equals("ELEV")) {
-      newDirection = firstMove(startX, startY, endX, endY, startNode, endNode);
-      return newDirection;
-    } else if (startNode.getNodeType().equals("STAI") && endNode.getNodeType().equals("STAI")) {
-      dirText.appendText("Take the stairs towards floor " + endNode.getFloor() + "\n");
-      return "In stairs";
-    } else if (startNode.getNodeType().equals("STAI") && !endNode.getNodeType().equals("STAI")) {
-      newDirection = firstMove(startX, startY, endX, endY, startNode, endNode);
-      return newDirection;
-    }
-
-    // North
-    if ((deltaY < 0) && (Math.abs(deltaY) > Math.abs(deltaX))) {
-      newDirection = "North";
-    }
-    // South
-    else if ((deltaY > 0) && (deltaY > Math.abs(deltaX))) {
-      newDirection = "South";
-    }
-    // East
-    else if ((deltaX > 0) && (deltaX > Math.abs(deltaY))) {
-      newDirection = "East";
-    }
-    // West
-    else if ((deltaX < 0) && (Math.abs(deltaX) > Math.abs(deltaY))) {
-      newDirection = "West";
-    } else {
-      newDirection = "Error";
-    }
-
-    // Turn Left
-    if ((currentDirection.equals("North") && newDirection.equals("West"))
-        || (currentDirection.equals("East") && newDirection.equals("North"))
-        || (currentDirection.equals("South") && newDirection.equals("East"))
-        || (currentDirection.equals("West") && newDirection.equals("South"))) {
-      dirText.appendText("Turn Left towards " + endNode.getLongName() + "\n");
-
-    }
-    // Turn Right
-    else if ((currentDirection.equals("North") && newDirection.equals("East"))
-        || (currentDirection.equals("East") && newDirection.equals("South"))
-        || (currentDirection.equals("South") && newDirection.equals("West"))
-        || (currentDirection.equals("West") && newDirection.equals("North"))) {
-      dirText.appendText("Turn Right towards " + endNode.getLongName() + "\n");
-    }
-    // Continue Straight
-    else if (currentDirection.equals(newDirection)) {
-      if (!(startNode.getNodeType().equals("HALL") && endNode.getNodeType().equals("HALL"))) {
-        dirText.appendText("Continue Straight towards " + endNode.getLongName() + "\n");
-      }
-    }
-
-    return newDirection;
-  }
-
-  public String firstMove(
-      int startX, int startY, int endX, int endY, Node startNode, Node endNode) {
-    int deltaX = endX - startX;
-    int deltaY = endY - startY;
-
-    // add handling for changing floors
-    if (startNode.getNodeType().equals("ELEV") && endNode.getNodeType().equals("ELEV")) {
-      dirText.appendText("Take the elevator towards floor " + endNode.getFloor() + "\n");
-      return "In elevator";
-    } else if (startNode.getNodeType().equals("STAI") && endNode.getNodeType().equals("STAI")) {
-      dirText.appendText("Take the stairs towards floor " + endNode.getFloor() + "\n");
-      return "In stairs";
-    } else {
-      // North
-      if ((deltaY < 0) && (Math.abs(deltaY) > Math.abs(deltaX))) {
-        System.out.println("Head North towards " + endNode.getLongName());
-        dirText.appendText("Head North towards " + endNode.getLongName() + "\n");
-        return "North";
-      }
-      // South
-      else if ((deltaY > 0) && (deltaY > Math.abs(deltaX))) {
-        System.out.println("Head South towards " + endNode.getLongName());
-        dirText.appendText("Head South towards " + endNode.getLongName() + "\n");
-        return "South";
-      }
-      // East
-      else if ((deltaX > 0) && (deltaX > Math.abs(deltaY))) {
-        System.out.println("Head East towards " + endNode.getLongName());
-        dirText.appendText("Head East towards " + endNode.getLongName() + "\n");
-        return "East";
-      }
-      // West
-      else if ((deltaX < 0) && (Math.abs(deltaX) > Math.abs(deltaY))) {
-        System.out.println("Head West towards " + endNode.getLongName());
-        dirText.appendText("Head West towards " + endNode.getLongName() + "\n");
-        return "West";
-      } else {
-        System.out.println("Error determining turn direction towards " + endNode.getLongName());
-        return "Direction Error";
-      }
-    }
-  }
-
-  @FXML
-  public void downloadDirections(ActionEvent event) {
-    if (event.getSource() == dirBtn) {
-
-      String name = getEnd().replaceAll(" ", "") + "Directions.txt";
-
-      try {
-        FileWriter directions = new FileWriter(name);
-
-        directions.write(dirText.getText());
-        directions.close();
-
-        String DialogText = "";
-        if (getEnd().equals("")) {
-          DialogText = "Select a Start and End Before Downloading Directions";
-        } else {
-          DialogText = "Your Directions Have Been Downloaded";
-        }
-        Text header = new Text(DialogText);
-        header.setFont(Font.font("System", FontWeight.BOLD, 18));
-
-        JFXDialogLayout layout = new JFXDialogLayout();
-        layout.setHeading(header);
-        layout.setBody(new Text(""));
-
-        StackPane downloadedStackPane = new StackPane();
-        mainAnchor.getChildren().add(downloadedStackPane);
-        StackPane.setAlignment(downloadedStackPane, Pos.TOP_RIGHT);
-        downloadedStackPane.setLayoutY(245);
-        downloadedStackPane.setLayoutX(300);
-        JFXDialog submitDia =
-            new JFXDialog(downloadedStackPane, layout, JFXDialog.DialogTransition.CENTER);
-
-        JFXButton downloadedBtn = new JFXButton("Close");
-        downloadedBtn.setPrefHeight(60);
-        downloadedBtn.setPrefWidth(120);
-        downloadedBtn.setId("downloadedBtn");
-        downloadedBtn.setButtonType(JFXButton.ButtonType.FLAT);
-        downloadedBtn.setStyle("-fx-background-color: #cdcdcd;");
-
-        downloadedBtn.setOnAction(
-            new EventHandler<ActionEvent>() {
-              @Override
-              public void handle(ActionEvent event) {
-                submitDia.close();
-              }
-            });
-
-        layout.setActions(downloadedBtn);
-        submitDia.show();
-
-      } catch (IOException e) {
-        System.out.println("Unable to write to directions output file");
-      }
-    }
-  }
+  //  @FXML JFXButton dirBtn;
+  //  @FXML JFXTextArea dirText;
+  //  private String endLocation = "";
+  //
+  //  private void setEnd(String end) {
+  //    endLocation = end;
+  //  }
+  //
+  //  private String getEnd() {
+  //    return endLocation;
+  //  }
+  //
+  //  @FXML
+  //  public void getDirections(LinkedList<Edge> edges) {
+  //
+  //    if (edges.isEmpty()) {
+  //      System.out.println("No Directions to Give!");
+  //      return;
+  //    }
+  //    // ScaleDown(edges.getFirst().getStartNode());
+  //
+  //    dirText.clear();
+  //
+  //    Node start = initialData.getNodeByID(edges.getFirst().getStartNodeID());
+  //    Node end = initialData.getNodeByID(edges.getLast().getEndNodeID());
+  //    dirText.appendText(
+  //        "Directions from " + start.getLongName() + " to " + end.getLongName() + ":\n");
+  //    System.out.println(
+  //        "Directions from " + start.getLongName() + " to " + end.getLongName() + ":\n");
+  //    System.out.println("getting text------------\n" + dirText.getText());
+  //    setEnd(end.getShortName());
+  //
+  //    // ScaleDown(edges.getFirst().getEndNode());
+  //    String initialDirection =
+  //        firstMove(
+  //            start.getXCoord(), start.getYCoord(), start.getXCoord(), start.getYCoord(), start,
+  // end);
+  //
+  //    // used to skip first edge
+  //    int skip = 0;
+  //    for (Edge N : edges) {
+  //      if (skip == 0) {
+  //        skip++;
+  //        continue;
+  //      }
+  //      // ScaleDown(N.getEndNode());
+  //      Node startN = initialData.getNodeByID(N.getStartNodeID());
+  //      Node endN = initialData.getNodeByID(N.getEndNodeID());
+  //
+  //      String newDirection =
+  //          evalTurn(
+  //              initialDirection,
+  //              startN.getXCoord(),
+  //              startN.getYCoord(),
+  //              endN.getXCoord(),
+  //              endN.getYCoord(),
+  //              startN,
+  //              endN);
+  //      initialDirection = newDirection;
+  //    }
+  //    dirText.appendText("\nWelcome to " + end.getLongName() + "\n");
+  //    System.out.println("final text--------\n" + dirText.getText());
+  //  }
+  //
+  //  public String evalTurn(
+  //      String currentDirection,
+  //      int startX,
+  //      int startY,
+  //      int endX,
+  //      int endY,
+  //      Node startNode,
+  //      Node endNode) {
+  //    String newDirection = "";
+  //    int deltaX = endX - startX;
+  //    int deltaY = endY - startY;
+  //
+  //    System.out.println("start type: " + startNode.getNodeType());
+  //    System.out.println("end type: " + endNode.getNodeType());
+  //
+  //    // add handling for changing floors
+  //    if (startNode.getNodeType().equals("ELEV") && endNode.getNodeType().equals("ELEV")) {
+  //      dirText.appendText("Take the elevator towards floor " + endNode.getFloor() + "\n");
+  //      return "In elevator";
+  //
+  //    } else if (startNode.getNodeType().equals("ELEV") && !endNode.getNodeType().equals("ELEV"))
+  // {
+  //      newDirection = firstMove(startX, startY, endX, endY, startNode, endNode);
+  //      return newDirection;
+  //    } else if (startNode.getNodeType().equals("STAI") && endNode.getNodeType().equals("STAI")) {
+  //      dirText.appendText("Take the stairs towards floor " + endNode.getFloor() + "\n");
+  //      return "In stairs";
+  //    } else if (startNode.getNodeType().equals("STAI") && !endNode.getNodeType().equals("STAI"))
+  // {
+  //      newDirection = firstMove(startX, startY, endX, endY, startNode, endNode);
+  //      return newDirection;
+  //    }
+  //
+  //    // North
+  //    if ((deltaY < 0) && (Math.abs(deltaY) > Math.abs(deltaX))) {
+  //      newDirection = "North";
+  //    }
+  //    // South
+  //    else if ((deltaY > 0) && (deltaY > Math.abs(deltaX))) {
+  //      newDirection = "South";
+  //    }
+  //    // East
+  //    else if ((deltaX > 0) && (deltaX > Math.abs(deltaY))) {
+  //      newDirection = "East";
+  //    }
+  //    // West
+  //    else if ((deltaX < 0) && (Math.abs(deltaX) > Math.abs(deltaY))) {
+  //      newDirection = "West";
+  //    } else {
+  //      newDirection = "Error";
+  //    }
+  //
+  //    // Turn Left
+  //    if ((currentDirection.equals("North") && newDirection.equals("West"))
+  //        || (currentDirection.equals("East") && newDirection.equals("North"))
+  //        || (currentDirection.equals("South") && newDirection.equals("East"))
+  //        || (currentDirection.equals("West") && newDirection.equals("South"))) {
+  //      dirText.appendText("Turn Left towards " + endNode.getLongName() + "\n");
+  //
+  //    }
+  //    // Turn Right
+  //    else if ((currentDirection.equals("North") && newDirection.equals("East"))
+  //        || (currentDirection.equals("East") && newDirection.equals("South"))
+  //        || (currentDirection.equals("South") && newDirection.equals("West"))
+  //        || (currentDirection.equals("West") && newDirection.equals("North"))) {
+  //      dirText.appendText("Turn Right towards " + endNode.getLongName() + "\n");
+  //    }
+  //    // Continue Straight
+  //    else if (currentDirection.equals(newDirection)) {
+  //      if (!(startNode.getNodeType().equals("HALL") && endNode.getNodeType().equals("HALL"))) {
+  //        dirText.appendText("Continue Straight towards " + endNode.getLongName() + "\n");
+  //      }
+  //    }
+  //
+  //    return newDirection;
+  //  }
+  //
+  //  public String firstMove(
+  //      int startX, int startY, int endX, int endY, Node startNode, Node endNode) {
+  //    int deltaX = endX - startX;
+  //    int deltaY = endY - startY;
+  //
+  //    // add handling for changing floors
+  //    if (startNode.getNodeType().equals("ELEV") && endNode.getNodeType().equals("ELEV")) {
+  //      dirText.appendText("Take the elevator towards floor " + endNode.getFloor() + "\n");
+  //      return "In elevator";
+  //    } else if (startNode.getNodeType().equals("STAI") && endNode.getNodeType().equals("STAI")) {
+  //      dirText.appendText("Take the stairs towards floor " + endNode.getFloor() + "\n");
+  //      return "In stairs";
+  //    } else {
+  //      // North
+  //      if ((deltaY < 0) && (Math.abs(deltaY) > Math.abs(deltaX))) {
+  //        System.out.println("Head North towards " + endNode.getLongName());
+  //        dirText.appendText("Head North towards " + endNode.getLongName() + "\n");
+  //        return "North";
+  //      }
+  //      // South
+  //      else if ((deltaY > 0) && (deltaY > Math.abs(deltaX))) {
+  //        System.out.println("Head South towards " + endNode.getLongName());
+  //        dirText.appendText("Head South towards " + endNode.getLongName() + "\n");
+  //        return "South";
+  //      }
+  //      // East
+  //      else if ((deltaX > 0) && (deltaX > Math.abs(deltaY))) {
+  //        System.out.println("Head East towards " + endNode.getLongName());
+  //        dirText.appendText("Head East towards " + endNode.getLongName() + "\n");
+  //        return "East";
+  //      }
+  //      // West
+  //      else if ((deltaX < 0) && (Math.abs(deltaX) > Math.abs(deltaY))) {
+  //        System.out.println("Head West towards " + endNode.getLongName());
+  //        dirText.appendText("Head West towards " + endNode.getLongName() + "\n");
+  //        return "West";
+  //      } else {
+  //        System.out.println("Error determining turn direction towards " + endNode.getLongName());
+  //        return "Direction Error";
+  //      }
+  //    }
+  //  }
+  //
+  //  @FXML
+  //  public void downloadDirections(ActionEvent event) {
+  //    if (event.getSource() == dirBtn) {
+  //
+  //      String name = getEnd().replaceAll(" ", "") + "Directions.txt";
+  //
+  //      try {
+  //        FileWriter directions = new FileWriter(name);
+  //
+  //        directions.write(dirText.getText());
+  //        directions.close();
+  //
+  //        String DialogText = "";
+  //        if (getEnd().equals("")) {
+  //          DialogText = "Select a Start and End Before Downloading Directions";
+  //        } else {
+  //          DialogText = "Your Directions Have Been Downloaded";
+  //        }
+  //        Text header = new Text(DialogText);
+  //        header.setFont(Font.font("System", FontWeight.BOLD, 18));
+  //
+  //        JFXDialogLayout layout = new JFXDialogLayout();
+  //        layout.setHeading(header);
+  //        layout.setBody(new Text(""));
+  //
+  //        StackPane downloadedStackPane = new StackPane();
+  //        mainAnchor.getChildren().add(downloadedStackPane);
+  //        StackPane.setAlignment(downloadedStackPane, Pos.TOP_RIGHT);
+  //        downloadedStackPane.setLayoutY(245);
+  //        downloadedStackPane.setLayoutX(300);
+  //        JFXDialog submitDia =
+  //            new JFXDialog(downloadedStackPane, layout, JFXDialog.DialogTransition.CENTER);
+  //
+  //        JFXButton downloadedBtn = new JFXButton("Close");
+  //        downloadedBtn.setPrefHeight(60);
+  //        downloadedBtn.setPrefWidth(120);
+  //        downloadedBtn.setId("downloadedBtn");
+  //        downloadedBtn.setButtonType(JFXButton.ButtonType.FLAT);
+  //        downloadedBtn.setStyle("-fx-background-color: #cdcdcd;");
+  //
+  //        downloadedBtn.setOnAction(
+  //            new EventHandler<ActionEvent>() {
+  //              @Override
+  //              public void handle(ActionEvent event) {
+  //                submitDia.close();
+  //              }
+  //            });
+  //
+  //        layout.setActions(downloadedBtn);
+  //        submitDia.show();
+  //
+  //      } catch (IOException e) {
+  //        System.out.println("Unable to write to directions output file");
+  //      }
+  //    }
+  //  }
   // ______________________________________Popups_____________________________________________
 
   private FXMLLoader loadPopup(String fxml) throws IOException {
