@@ -162,6 +162,8 @@ public class MapDrawerController implements Initializable {
                 changePathFinderAlgo(newValue);
               }
             });
+
+    System.out.println("dirtext is Null?: " + (dirText == null));
   }
 
   public static VBox longNameMenu(String str, ArrayList<String> list, JFXTextField textField) {
@@ -644,6 +646,7 @@ public class MapDrawerController implements Initializable {
     }
     dirText.appendText("\nWelcome to " + end.getLongName() + "\n");
     System.out.println("final text--------\n" + dirText.getText());
+    dirText.setPromptText(dirText.getText());
   }
 
   public String evalTurn(

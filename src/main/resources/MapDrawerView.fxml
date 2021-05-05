@@ -24,11 +24,7 @@
             <Font size="15.0" />
          </font>
       </Label>
-      <JFXTextArea fx:id="dirText" layoutX="20.0" layoutY="629.0" prefHeight="191.0" prefWidth="360.0">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </JFXTextArea>
+      <JFXTextArea fx:id="dirText" layoutX="20.0" layoutY="629.0" prefHeight="191.0" prefWidth="360.0" />
       <GridPane fx:id="endGrid" layoutX="61.0" layoutY="106.0">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
