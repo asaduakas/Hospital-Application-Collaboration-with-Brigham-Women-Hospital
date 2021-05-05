@@ -252,4 +252,20 @@ public class EdgesTable extends AbsTables {
       e.printStackTrace();
     }
   }
+
+  public Boolean contains(Connection conn, String edgeID) {
+    Boolean isExists = false;
+    try {
+      PreparedStatement prepStmt = null;
+      prepStmt = conn.prepareStatement("SELECT * FROM Edges WHERE edgeID = ?");
+      prepStmt.setString(1, edgeID);
+      ResultSet rs = prepStmt.executeQuery();
+      if (rs.next()) {
+        isExists = true;
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    return isExists;
+  }
 }

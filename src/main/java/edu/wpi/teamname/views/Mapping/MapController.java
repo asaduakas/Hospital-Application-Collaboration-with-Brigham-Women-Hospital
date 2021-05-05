@@ -581,8 +581,15 @@ public class MapController implements AllAccessible {
   }
 
   private void deleteEdge(EdgeUI E) {
-    FDatabaseTables.getEdgeTable()
-        .deleteEntity(GlobalDb.getConnection(), "Edges", E.getE().getEdgeID());
+    if (FDatabaseTables.getEdgeTable().contains(GlobalDb.getConnection(), E.getE().getEdgeID()))
+      FDatabaseTables.getEdgeTable()
+          .deleteEntity(GlobalDb.getConnection(), "Edges", E.getE().getEdgeID());
+
+    if (FDatabaseTables.getEdgeTable()
+        .contains(GlobalDb.getConnection(), E.getE().getReverseEdgeID()))
+      FDatabaseTables.getEdgeTable()
+          .deleteEntity(GlobalDb.getConnection(), "Edges", E.getE().getReverseEdgeID());
+
     secondaryAnchor.getChildren().remove(E.getL());
     EDGES.remove(E);
   }
