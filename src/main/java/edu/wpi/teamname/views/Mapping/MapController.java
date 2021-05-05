@@ -110,6 +110,8 @@ public class MapController implements AllAccessible {
   @FXML private JFXButton csv;
   private SimpleStringProperty simpleFloor = new SimpleStringProperty("Floor " + currentFloor);
   private JFXButton ChooseFloorBtn = new JFXButton("Floor 1");
+  @FXML JFXButton helpButton;
+  @FXML ImageView imageHelp;
 
   @FXML
   private void initialize() {
@@ -1800,5 +1802,13 @@ public class MapController implements AllAccessible {
     mainAnchor.getChildren().add(csvNodeList);
 
     csvNodeList.visibleProperty().bind(toggleEditor.selectedProperty());
+  }
+
+  @FXML
+  private void helpPopUp() {
+    helpButton.setOnAction(
+        (e) -> {
+          imageHelp.getImage();
+        });
   }
 }
