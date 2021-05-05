@@ -793,15 +793,6 @@ public class MapController implements AllAccessible {
     mapScrollPane.setOnKeyPressed(
         (KeyEvent e) -> {
           KeyCode key = e.getCode();
-          if (!isEditor) {
-            if (key == KeyCode.ESCAPE) {
-              resetData();
-              clearMap();
-              drawNodeFloor(currentFloor);
-              System.out.println("Just cleared");
-            }
-            return;
-          }
           if (key == KeyCode.P) {
             pPressed.set(true);
             plusPressed.set(false);
@@ -810,6 +801,9 @@ public class MapController implements AllAccessible {
             startPressed.setValue(false);
             endPressed.setValue(false);
             shiftPressed.set(false);
+            saveMode = !saveMode;
+            alignMode = false;
+            System.out.println("I'm REAGAN");
           }
           if (key == KeyCode.SHIFT) {
             pPressed.set(false);
@@ -819,6 +813,8 @@ public class MapController implements AllAccessible {
             aPressed.set(false);
             startPressed.setValue(false);
             endPressed.setValue(false);
+            alignMode = !alignMode;
+            saveMode = false;
           }
           if (key == KeyCode.EQUALS) {
             pPressed.set(false);
@@ -864,6 +860,15 @@ public class MapController implements AllAccessible {
             minusPressed.set(false);
             aPressed.set(false);
             shiftPressed.set(false);
+          }
+          if (!isEditor) {
+            if (key == KeyCode.ESCAPE) {
+              resetData();
+              clearMap();
+              drawNodeFloor(currentFloor);
+              System.out.println("Just cleared");
+            }
+            return;
           }
         });
 
@@ -997,10 +1002,6 @@ public class MapController implements AllAccessible {
                   }
                 }
                 // Align node
-                if (shiftPressed.get()) { // toggle align mode
-                  alignMode = !alignMode;
-                  saveMode = false;
-                }
                 if (alignMode) {
                   System.out.println("node clicked");
                   nodesToAlign.add(N.getN());
@@ -1011,13 +1012,11 @@ public class MapController implements AllAccessible {
                 }
               } // end of isEditor
 
-              if (pPressed.get() && !isEditor) { // toggle save mode
-                saveMode = !saveMode;
-                alignMode = false;
-              }
               if (saveMode) {
-                System.out.println("node clicked");
-                saveParkingSpot(N);
+                if (N.getN().getNodeType().equals("PARK")) {
+                  System.out.println("node clicked");
+                  saveParkingSpot(N);
+                }
               }
             });
   }
