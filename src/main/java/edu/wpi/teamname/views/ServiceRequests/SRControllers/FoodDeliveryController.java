@@ -11,11 +11,8 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.text.Text;
 import javafx.stage.Popup;
 
 public class FoodDeliveryController extends AbsRequest
@@ -30,33 +27,6 @@ public class FoodDeliveryController extends AbsRequest
     popup = new Popup();
     // ServicePageController.popup.hide();
     super.popUpAction("Emergency.fxml");
-  }
-
-  @FXML
-  public void loadDialog(MouseEvent Event) {
-    JFXDialogLayout content = new JFXDialogLayout();
-    content.setHeading(new Text("More Information:"));
-    content.setBody(
-        new Text(
-            "All fields must be filled out before submitting"
-                + "\n"
-                + "the form. For further assistance, contact IT at"
-                + "\n"
-                + "123-456- 7890. Questions can also be sent to"
-                + "\n"
-                + "diamonddragonsIT@gmail.com. "));
-    JFXDialog dialog = new JFXDialog(stackPane1, content, JFXDialog.DialogTransition.CENTER);
-    JFXButton closeButton = new JFXButton("Close");
-    closeButton.setStyle("-fx-background-color: #cdcdcd;");
-    closeButton.setOnAction(
-        new EventHandler<ActionEvent>() {
-          @Override
-          public void handle(ActionEvent event) {
-            dialog.close();
-          }
-        });
-    content.setActions(closeButton);
-    dialog.show();
   }
 
   @FXML
@@ -76,50 +46,19 @@ public class FoodDeliveryController extends AbsRequest
     }
 
     if (super.submitButton.isDisabled() == false) {
-      JFXDialogLayout layout = new JFXDialogLayout();
-      layout.setHeading(new Text("Submitted!"));
-      layout.setBody(
-          new Text(
-              "Your request is submitted." + "\n" + "Would you like to make another request?"));
-      JFXDialog submitDia = new JFXDialog(stackPane1, layout, JFXDialog.DialogTransition.CENTER);
-
-      JFXButton okBtn = new JFXButton("Yes");
-      okBtn.setPrefHeight(20);
-      okBtn.setPrefWidth(60);
-      okBtn.setStyle("-fx-background-color: #cdcdcd;");
-      okBtn.setId("yesBtn");
-      okBtn.setButtonType(JFXButton.ButtonType.FLAT);
-      okBtn.setOnAction(
-          new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-              // ServicePageController.popup.hide();
-              try {
-                popUpAction("ServicePageView.fxml");
-              } catch (IOException e) {
-                e.printStackTrace();
-              }
-              submitDia.close();
+      dialogFactory.createTwoButtonDialog(
+          "Submitted!",
+          "Your request is submitted." + "\n" + "Would you like to make another request?",
+          "Yes",
+          () -> {
+            try {
+              popUpAction("ServicePageView.fxml");
+            } catch (IOException e) {
+              e.printStackTrace();
             }
-          });
-      JFXButton noBtn = new JFXButton("No");
-      noBtn.setPrefHeight(20);
-      noBtn.setPrefWidth(60);
-      noBtn.setId("noBtn");
-      noBtn.setButtonType(JFXButton.ButtonType.FLAT);
-      noBtn.setOnAction(
-          new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-              goHome();
-              submitDia.close();
-            }
-          });
-      noBtn.setStyle("-fx-background-color: #cdcdcd;");
-
-      layout.setActions(okBtn, noBtn);
-
-      submitDia.show();
+          },
+          "No",
+          this::goHome);
 
       GlobalDb.getTables()
           .getFoodDeliveryTable()
@@ -136,6 +75,7 @@ public class FoodDeliveryController extends AbsRequest
 
   @Override
   public void initialize(URL url, ResourceBundle rb) {
+    initDialogFactory();
     stackPane1.setPickOnBounds(false);
 
     RequiredFieldValidator firstNameValid = new RequiredFieldValidator();
