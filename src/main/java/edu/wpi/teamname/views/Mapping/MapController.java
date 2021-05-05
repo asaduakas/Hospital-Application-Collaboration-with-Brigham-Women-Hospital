@@ -413,10 +413,15 @@ public class MapController implements AllAccessible {
 
   public void drawNodeFloor(String Floor) {
     for (NodeUI NUI : NODES) {
-      if (NUI.getN().getFloor().equals(Floor)
-          && (!NUI.getN().getNodeType().equals("WALK"))
-          && (!NUI.getN().getNodeType().equals("HALL"))) {
-        addNodeUI(NUI);
+      if (NUI.getN().getFloor().equals(Floor)) {
+        if (!isEditor) {
+          if ((!NUI.getN().getNodeType().equals("WALK"))
+              && (!NUI.getN().getNodeType().equals("HALL"))) {
+            addNodeUI(NUI);
+          }
+        } else {
+          addNodeUI(NUI);
+        }
       }
     }
   }
@@ -458,13 +463,13 @@ public class MapController implements AllAccessible {
         mapScrollPane.setMapImage(F1);
         break;
     }
-    drawNodeFloor(floor);
     ChooseFloorBtn.setText("Floor " + currentFloor);
     if (isEditor) {
       drawEdgeFloor(floor);
     } else {
       showPath();
     }
+    drawNodeFloor(floor);
   }
 
   public void showPath() {
