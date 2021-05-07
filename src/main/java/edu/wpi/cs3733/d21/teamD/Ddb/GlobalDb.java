@@ -37,7 +37,7 @@ public class GlobalDb {
       // should use GlobalDB.getConnection()
       connection =
               DriverManager.getConnection("jdbc:derby:myDB;create=true;username=Admin;password=Admin");
-      System.out.println("Apache Derby connection established!");
+      System.out.println("Apache Derby connection established to the embedded DB!");
       // getConnection() gives a warning if there is already a database
       if (connection.getWarnings() == null) { // If there isn't already a populated database
 
@@ -49,6 +49,7 @@ public class GlobalDb {
       e.printStackTrace();
     }
   }
+
   public static void establishClientCon() {
     tables = new FDatabaseTables();
     try {
