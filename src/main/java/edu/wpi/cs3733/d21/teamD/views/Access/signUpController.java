@@ -5,7 +5,6 @@ import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
 import edu.wpi.cs3733.d21.teamD.Ddb.UsersTable;
 import edu.wpi.cs3733.d21.teamD.views.ControllerManager;
 import edu.wpi.cs3733.d21.teamD.views.DialogFactory;
-
 import java.io.IOException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

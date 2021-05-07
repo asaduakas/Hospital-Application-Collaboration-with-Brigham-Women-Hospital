@@ -5,8 +5,6 @@ import edu.wpi.cs3733.d21.teamD.Astar.*;
 import edu.wpi.cs3733.d21.teamD.Ddb.FDatabaseTables;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
 import edu.wpi.cs3733.d21.teamD.views.HomeController;
-import edu.wpi.teamname.Astar.*;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -50,7 +48,7 @@ public class MapDrawerController implements Initializable {
   @FXML private JFXButton importBut;
   @FXML JFXButton dirBtn;
   @FXML JFXTextArea dirText;
-  private LinkedList<Node> Targets = new LinkedList<>();
+  private LinkedList<edu.wpi.cs3733.d21.teamD.Astar.Node> Targets = new LinkedList<>();
 
   private MapController mapController;
 
@@ -576,8 +574,10 @@ public class MapDrawerController implements Initializable {
 
     dirText.clear();
 
-    Node start = initialData.getNodeByID(edges.getFirst().getStartNodeID());
-    Node end = initialData.getNodeByID(edges.getLast().getEndNodeID());
+    edu.wpi.cs3733.d21.teamD.Astar.Node start =
+        initialData.getNodeByID(edges.getFirst().getStartNodeID());
+    edu.wpi.cs3733.d21.teamD.Astar.Node end =
+        initialData.getNodeByID(edges.getLast().getEndNodeID());
     dirText.appendText(
         "Directions from " + start.getLongName() + " to " + end.getLongName() + ":\n");
     setEnd(end.getShortName());
@@ -595,8 +595,8 @@ public class MapDrawerController implements Initializable {
         continue;
       }
       // ScaleDown(N.getEndNode());
-      Node startN = initialData.getNodeByID(N.getStartNodeID());
-      Node endN = initialData.getNodeByID(N.getEndNodeID());
+      edu.wpi.cs3733.d21.teamD.Astar.Node startN = initialData.getNodeByID(N.getStartNodeID());
+      edu.wpi.cs3733.d21.teamD.Astar.Node endN = initialData.getNodeByID(N.getEndNodeID());
 
       String newDirection =
           evalTurn(
@@ -619,8 +619,8 @@ public class MapDrawerController implements Initializable {
       int startY,
       int endX,
       int endY,
-      Node startNode,
-      Node endNode) {
+      edu.wpi.cs3733.d21.teamD.Astar.Node startNode,
+      edu.wpi.cs3733.d21.teamD.Astar.Node endNode) {
     String newDirection = "";
     int deltaX = endX - startX;
     int deltaY = endY - startY;
@@ -690,8 +690,8 @@ public class MapDrawerController implements Initializable {
       int startY,
       int endX,
       int endY,
-      Node startNode,
-      Node endNode) {
+      edu.wpi.cs3733.d21.teamD.Astar.Node startNode,
+      edu.wpi.cs3733.d21.teamD.Astar.Node endNode) {
     int deltaX = endX - startX;
     int deltaY = endY - startY;
 

@@ -1,7 +1,6 @@
 package edu.wpi.cs3733.d21.teamD.Astar;
 
 import edu.wpi.cs3733.d21.teamD.Ddb.FDatabaseTables;
-
 import java.io.IOException;
 import java.sql.*;
 import java.util.*;

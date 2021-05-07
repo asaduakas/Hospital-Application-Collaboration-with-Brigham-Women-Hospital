@@ -5,7 +5,6 @@ import com.jfoenix.validation.RequiredFieldValidator;
 import edu.wpi.cs3733.d21.teamD.Ddb.FDatabaseTables;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
 import edu.wpi.cs3733.d21.teamD.views.Access.EmployeeAccessible;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;

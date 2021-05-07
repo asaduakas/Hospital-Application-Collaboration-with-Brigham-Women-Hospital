@@ -2,7 +2,6 @@ package edu.wpi.cs3733.d21.teamD.views;
 
 import edu.wpi.cs3733.d21.teamD.App;
 import edu.wpi.cs3733.d21.teamD.views.Access.*;
-import edu.wpi.teamname.views.Access.*;
 import java.io.IOException;
 import java.util.function.Consumer;
 import javafx.fxml.FXMLLoader;

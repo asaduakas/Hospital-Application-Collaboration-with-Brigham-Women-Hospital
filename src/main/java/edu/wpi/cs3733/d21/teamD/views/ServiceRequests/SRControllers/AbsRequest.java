@@ -13,7 +13,6 @@ import edu.wpi.cs3733.d21.teamD.views.AutoCompleteComboBox;
 import edu.wpi.cs3733.d21.teamD.views.ControllerManager;
 import edu.wpi.cs3733.d21.teamD.views.DialogFactory;
 import edu.wpi.cs3733.d21.teamD.views.InitPageController;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

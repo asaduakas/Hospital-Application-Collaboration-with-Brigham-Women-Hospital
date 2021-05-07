@@ -8,7 +8,6 @@ import edu.wpi.cs3733.d21.teamD.App;
 import edu.wpi.cs3733.d21.teamD.views.Access.AllAccessible;
 import edu.wpi.cs3733.d21.teamD.views.Access.LoginController;
 import edu.wpi.cs3733.d21.teamD.views.Access.UserCategory;
-import edu.wpi.teamname.views.Access.*;
 import edu.wpi.cs3733.d21.teamD.views.Mapping.MapScrollPane;
 import java.io.IOException;
 import java.util.List;

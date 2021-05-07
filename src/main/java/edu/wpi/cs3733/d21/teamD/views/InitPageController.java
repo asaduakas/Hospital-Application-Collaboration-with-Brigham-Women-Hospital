@@ -3,7 +3,6 @@ package edu.wpi.cs3733.d21.teamD.views;
 import com.jfoenix.controls.JFXButton;
 import edu.wpi.cs3733.d21.teamD.views.Access.AllAccessible;
 import edu.wpi.cs3733.d21.teamD.views.Access.LoginController;
-
 import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

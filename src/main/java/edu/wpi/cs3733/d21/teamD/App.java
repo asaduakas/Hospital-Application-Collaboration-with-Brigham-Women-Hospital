@@ -4,7 +4,6 @@ import com.jfoenix.controls.JFXButton;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
 import edu.wpi.cs3733.d21.teamD.views.ControllerManager;
 import edu.wpi.cs3733.d21.teamD.views.SceneSizeChangeListener;
-
 import java.io.IOException;
 import java.util.List;
 import javafx.application.Application;

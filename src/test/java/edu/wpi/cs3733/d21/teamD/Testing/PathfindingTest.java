@@ -1,7 +1,6 @@
 package edu.wpi.cs3733.d21.teamD.Testing;
 
 import edu.wpi.cs3733.d21.teamD.Astar.*;
-import edu.wpi.teamname.Astar.*;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
 import java.io.IOException;
 import org.junit.Before;

@@ -5,7 +5,6 @@ import com.jfoenix.controls.JFXTextField;
 import edu.wpi.cs3733.d21.teamD.Astar.Node;
 import edu.wpi.cs3733.d21.teamD.views.Mapping.MapController;
 import edu.wpi.cs3733.d21.teamD.views.Mapping.NodeUI;
-
 import java.util.Random;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
