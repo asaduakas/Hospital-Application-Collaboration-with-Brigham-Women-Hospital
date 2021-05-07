@@ -665,7 +665,7 @@ public class MapDrawerController implements Initializable {
         || (currentDirection.equals("East") && newDirection.equals("North"))
         || (currentDirection.equals("South") && newDirection.equals("East"))
         || (currentDirection.equals("West") && newDirection.equals("South"))) {
-      dirText.appendText("Turn Left towards " + endNode.getLongName() + "\n");
+      dirText.appendText("\tTurn Left towards: \n\t\t" + endNode.getLongName() + "\n");
 
     }
     // Turn Right
@@ -673,12 +673,12 @@ public class MapDrawerController implements Initializable {
         || (currentDirection.equals("East") && newDirection.equals("South"))
         || (currentDirection.equals("South") && newDirection.equals("West"))
         || (currentDirection.equals("West") && newDirection.equals("North"))) {
-      dirText.appendText("Turn Right towards " + endNode.getLongName() + "\n");
+      dirText.appendText("\tTurn Right towards: \n\t\t" + endNode.getLongName() + "\n");
     }
     // Continue Straight
     else if (currentDirection.equals(newDirection)) {
       if (!(startNode.getNodeType().equals("HALL") && endNode.getNodeType().equals("HALL"))) {
-        dirText.appendText("Continue Straight towards " + endNode.getLongName() + "\n");
+        dirText.appendText("\tContinue Straight towards: \n\t\t" + endNode.getLongName() + "\n");
       }
     }
 
@@ -706,25 +706,25 @@ public class MapDrawerController implements Initializable {
       // North
       if ((deltaY < 0) && (Math.abs(deltaY) > Math.abs(deltaX))) {
         //        System.out.println("Head North towards " + endNode.getLongName());
-        dirText.appendText("Head North towards " + endNode.getLongName() + "\n");
+        dirText.appendText("\tHead North towards: \n\t\t" + endNode.getLongName() + "\n");
         return "North";
       }
       // South
       else if ((deltaY > 0) && (deltaY > Math.abs(deltaX))) {
         //        System.out.println("Head South towards " + endNode.getLongName());
-        dirText.appendText("Head South towards " + endNode.getLongName() + "\n");
+        dirText.appendText("\tHead South towards: \n\t\t" + endNode.getLongName() + "\n");
         return "South";
       }
       // East
       else if ((deltaX > 0) && (deltaX > Math.abs(deltaY))) {
         //        System.out.println("Head East towards " + endNode.getLongName());
-        dirText.appendText("Head East towards " + endNode.getLongName() + "\n");
+        dirText.appendText("\tHead East towards: \n\t\t" + endNode.getLongName() + "\n");
         return "East";
       }
       // West
       else if ((deltaX < 0) && (Math.abs(deltaX) > Math.abs(deltaY))) {
         //        System.out.println("Head West towards " + endNode.getLongName());
-        dirText.appendText("Head West towards " + endNode.getLongName() + "\n");
+        dirText.appendText("\tHead West towards: \n\t\t" + endNode.getLongName() + "\n");
         return "West";
       } else {
         //        System.out.println("Error determining turn direction towards " +
