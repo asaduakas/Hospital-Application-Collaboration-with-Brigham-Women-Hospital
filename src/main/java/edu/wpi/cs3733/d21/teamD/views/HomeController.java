@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.List;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -20,6 +19,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -38,6 +38,7 @@ public class HomeController implements AllAccessible {
   @FXML public static Popup popup;
   @FXML public static VBox mainButtons;
   @FXML public StackPane stackPane;
+  @FXML private AnchorPane mainPane;
 
   public static UserCategory userTypeEnum;
   public static String username = null;
@@ -85,7 +86,7 @@ public class HomeController implements AllAccessible {
   }
 
   @FXML
-  public void hospitalMapView(ActionEvent event) throws IOException {
+  public void hospitalMapView(ActionEvent event) throws Exception {
 
     JFXSpinner spinner = new JFXSpinner();
     Label loading = new Label("Loading Map");
@@ -97,7 +98,6 @@ public class HomeController implements AllAccessible {
 
     Task<Parent> task =
         new Task<Parent>() {
-
           @Override
           protected Parent call() throws Exception {
             FXMLLoader fxmlLoader =
@@ -106,17 +106,16 @@ public class HomeController implements AllAccessible {
             return root;
           }
         };
-    task.addEventFilter(
+
+    mainPane.addEventHandler(
         KeyEvent.KEY_PRESSED,
-        new EventHandler<KeyEvent>() {
-          @Override
-          public void handle(KeyEvent event) {
-            if (event.getCode() == KeyCode.ESCAPE) {
-              task.cancel();
-              System.out.println("cancelled");
-            }
+        e -> {
+          if (e.getCode() == KeyCode.ESCAPE) {
+            System.out.println("cancelled");
+            task.cancel();
           }
         });
+
     task.setOnSucceeded(
         e -> {
           stackPane.setVisible(false);
@@ -162,7 +161,8 @@ public class HomeController implements AllAccessible {
 
     task.setOnFailed(e -> task.getException().printStackTrace());
     task.setOnCancelled(
-        e -> {
+        ee -> {
+          task.cancel();
           stackPane.setVisible(false);
           stackPane.setDisable(true);
         });
