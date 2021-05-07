@@ -82,9 +82,12 @@ public class LoginController implements AllAccessible {
 
     if (!userCategory.equalsIgnoreCase("admin")) {
       HBox hBox = (HBox) childrenList.get(4);
-      JFXButton usersBtn = (JFXButton) ((HBox) hBox).getChildren().get(0);
+      JFXButton usersBtn = (JFXButton) ((HBox) hBox).getChildren().get(2);
+      JFXToggleButton tb = (JFXToggleButton) ((HBox) hBox).getChildren().get(0);
       usersBtn.setVisible(false);
       usersBtn.setDisable(true);
+      tb.setVisible(false);
+      tb.setDisable(true);
     }
 
     Scene scene = App.getPrimaryStage().getScene();

@@ -8,6 +8,9 @@ import edu.wpi.cs3733.d21.teamD.views.Access.UserCategory;
 import edu.wpi.cs3733.d21.teamD.views.Mapping.MapScrollPane;
 import java.io.IOException;
 import java.util.List;
+
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -39,6 +42,7 @@ public class HomeController implements AllAccessible {
   @FXML public static VBox mainButtons;
   @FXML public StackPane stackPane;
   @FXML private AnchorPane mainPane;
+  @FXML private JFXToggleButton dbToggle;
 
   public static UserCategory userTypeEnum;
   public static String username = null;
@@ -260,6 +264,20 @@ public class HomeController implements AllAccessible {
             checkStatusButton.setDisable(false);
           }
         });
+  }
+
+  private void dbToggleSwitch(){
+      dbToggle.selectedProperty().addListener(new ChangeListener<Boolean>() {
+          @Override
+          public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+              if(dbToggle.isSelected()){
+
+              }
+              else{
+
+              }
+          }
+      });
   }
 
   public static String getUserCategory() {
