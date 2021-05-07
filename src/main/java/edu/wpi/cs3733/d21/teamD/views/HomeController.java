@@ -43,6 +43,8 @@ public class HomeController implements AllAccessible {
   @FXML public StackPane stackPane;
   @FXML private AnchorPane mainPane;
   @FXML private JFXToggleButton dbToggle;
+  private String dbToggleText[] = {"Embedded Connection", "Remote Connection"};
+  private int index = 0;
 
   public static UserCategory userTypeEnum;
   public static String username = null;
@@ -54,6 +56,20 @@ public class HomeController implements AllAccessible {
 
   // Used to reset search history for each login
   public static int historyTracker = 0;
+
+  @FXML
+  private void initialize() {
+    // dbToggle.setText("Embedded Connection");
+    dbToggle.setOnAction(
+        (ActionEvent e) -> {
+          index++;
+          if (index >= dbToggleText.length) {
+            index = 0;
+          }
+          dbToggle.setText(dbToggleText[index]);
+        });
+    dbToggleSwitch();
+  }
 
   @FXML
   private void logout(ActionEvent event) throws IOException {
@@ -266,7 +282,6 @@ public class HomeController implements AllAccessible {
         });
   }
 
-  @FXML
   private void dbToggleSwitch() {
     dbToggle
         .selectedProperty()
@@ -278,6 +293,7 @@ public class HomeController implements AllAccessible {
                   Boolean oldValue,
                   Boolean newValue) {
                 if (dbToggle.isSelected()) {
+                  System.out.println("Before remote connection established");
                   GlobalDb.establishClientCon();
                   System.out.println("Remote connection established");
                 } else {
