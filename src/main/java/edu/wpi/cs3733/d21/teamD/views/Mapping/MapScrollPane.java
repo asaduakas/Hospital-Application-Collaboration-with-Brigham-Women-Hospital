@@ -82,7 +82,7 @@ public class MapScrollPane extends ScrollPane {
     mapAnchor.setScaleY(scaleValue);
   }
 
-  private void onScroll(double wheelDelta, Point2D mousePoint) {
+  public void onScroll(double wheelDelta, Point2D mousePoint) {
     double zoomFactor = Math.exp(wheelDelta * zoomIntensity);
 
     Bounds innerBounds = zoomNode.getLayoutBounds();

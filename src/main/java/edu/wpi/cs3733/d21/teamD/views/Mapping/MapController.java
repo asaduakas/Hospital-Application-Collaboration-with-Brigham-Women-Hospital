@@ -77,6 +77,7 @@ public class MapController implements AllAccessible {
   private SimpleBooleanProperty pPressed = new SimpleBooleanProperty();
   private SimpleBooleanProperty shiftPressed = new SimpleBooleanProperty();
   private SimpleBooleanProperty fPressed = new SimpleBooleanProperty();
+  private final double buttonZoomAmount = 10;
   private EdgeUI tempEUI;
   public static boolean mapEditorIsSelected = false;
 
@@ -244,11 +245,6 @@ public class MapController implements AllAccessible {
   }
 
   // _______________________________________SET UP________________________________________
-
-  private void LoadMap(Image floor, String floorNum) {
-    mapScrollPane.setMapImage(floor);
-    LoadingNodesEdges(floorNum);
-  }
 
   private void LoadingNodesEdges(String Floor) {
     for (EdgeUI EUI : EDGES) {
@@ -767,13 +763,13 @@ public class MapController implements AllAccessible {
                   Boolean newValue) {
 
                 if (toggleEditor.isSelected()) {
+                  isEditor = true;
                   clearMap();
                   LoadingNodesEdges(currentFloor);
-                  isEditor = true;
                 } else {
+                  isEditor = false;
                   clearMap();
                   drawNodeFloor(currentFloor);
-                  isEditor = false;
                 }
               }
             });
@@ -844,6 +840,20 @@ public class MapController implements AllAccessible {
             endPressed.setValue(false);
             shiftPressed.set(false);
             fPressed.set(false);
+          }
+          if (key == KeyCode.OPEN_BRACKET) {
+            mapScrollPane.onScroll(
+                -buttonZoomAmount,
+                new Point2D(
+                    mapScrollPane.getMapImage().getFitWidth() / 2,
+                    mapScrollPane.getMapImage().getFitHeight() / 2));
+          }
+          if (key == KeyCode.CLOSE_BRACKET) {
+            mapScrollPane.onScroll(
+                buttonZoomAmount,
+                new Point2D(
+                    mapScrollPane.getMapImage().getFitWidth() / 2,
+                    mapScrollPane.getMapImage().getFitHeight() / 2));
           }
           if (key == KeyCode.MINUS) {
             pPressed.set(false);
