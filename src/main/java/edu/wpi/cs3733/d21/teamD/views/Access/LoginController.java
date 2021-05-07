@@ -80,6 +80,8 @@ public class LoginController implements AllAccessible {
 
     List<Node> childrenList = root.getChildrenUnmodifiable();
 
+    System.out.println("this is the children list for home page in login " + childrenList);
+
     if (!userCategory.equalsIgnoreCase("admin")) {
       HBox hBox = (HBox) childrenList.get(4);
       JFXButton usersBtn = (JFXButton) ((HBox) hBox).getChildren().get(2);
