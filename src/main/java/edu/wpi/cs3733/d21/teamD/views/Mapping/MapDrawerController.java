@@ -32,6 +32,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
@@ -698,6 +699,8 @@ public class MapDrawerController implements Initializable {
     // add handling for changing floors
     if (startNode.getNodeType().equals("ELEV") && endNode.getNodeType().equals("ELEV")) {
       dirText.appendText("Take the elevator towards floor " + endNode.getFloor() + "\n");
+     // Font boldFont = new Font("Verdana", FontWeight.BOLD, 14.0);
+    //  dirText.setFont();
       return "In elevator";
     } else if (startNode.getNodeType().equals("STAI") && endNode.getNodeType().equals("STAI")) {
       dirText.appendText("Take the stairs towards floor " + endNode.getFloor() + "\n");
