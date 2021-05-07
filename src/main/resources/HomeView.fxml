@@ -38,7 +38,7 @@
             <Image url="@Images/careers.aan.png" />
          </image>
       </ImageView>
-      <HBox prefHeight="60.0" prefWidth="844.0" spacing="20.0">
+      <HBox prefHeight="60.0" prefWidth="844.0" spacing="20.0" AnchorPane.topAnchor="16.0">
          <children>
             <JFXToggleButton fx:id="dbToggle" onAction="#dbToggleSwitch" text="ToggleButton" />
             <Line endX="-4.0" endY="-8.0" startX="-4.0" startY="37.0" translateX="-5.0" translateY="5.0" />

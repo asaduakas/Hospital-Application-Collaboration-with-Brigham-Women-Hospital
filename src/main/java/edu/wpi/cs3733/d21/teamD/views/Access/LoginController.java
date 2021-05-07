@@ -21,6 +21,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 
 public class LoginController implements AllAccessible {
@@ -84,12 +85,18 @@ public class LoginController implements AllAccessible {
 
     if (!userCategory.equalsIgnoreCase("admin")) {
       HBox hBox = (HBox) childrenList.get(4);
-      JFXButton usersBtn = (JFXButton) ((HBox) hBox).getChildren().get(2);
       JFXToggleButton tb = (JFXToggleButton) ((HBox) hBox).getChildren().get(0);
+      Line toggleLine = (Line) ((HBox) hBox).getChildren().get(1);
+      JFXButton usersBtn = (JFXButton) ((HBox) hBox).getChildren().get(2);
+      Line tableLine = (Line) ((HBox) hBox).getChildren().get(3);
       usersBtn.setVisible(false);
       usersBtn.setDisable(true);
+      toggleLine.setVisible(false);
+      toggleLine.setDisable(true);
       tb.setVisible(false);
       tb.setDisable(true);
+      tableLine.setVisible(false);
+      tableLine.setDisable(true);
     }
 
     Scene scene = App.getPrimaryStage().getScene();
