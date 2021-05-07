@@ -1,4 +1,4 @@
-// MUST HAVE JAVAMAIL AND JAF IN CLASSPATH
+package edu.wpi.cs3733.d21.teamD.views;// MUST HAVE JAVAMAIL AND JAF IN CLASSPATH
 
 import java.util.*;
 import javax.mail.*;
@@ -7,6 +7,7 @@ import javax.activation.*;
 
 public class Email {
 
+    public static void sendEmail() {
         // RECIPIENT EMAIL
         // Note: while you DO need sender username and password you do NOT need recipients (obviously)
         String to = "recipient email goes here";
