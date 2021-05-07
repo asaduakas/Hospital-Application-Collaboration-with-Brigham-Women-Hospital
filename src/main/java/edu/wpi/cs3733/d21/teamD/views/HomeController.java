@@ -2,13 +2,13 @@ package edu.wpi.cs3733.d21.teamD.views;
 
 import com.jfoenix.controls.*;
 import edu.wpi.cs3733.d21.teamD.App;
+import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
 import edu.wpi.cs3733.d21.teamD.views.Access.AllAccessible;
 import edu.wpi.cs3733.d21.teamD.views.Access.LoginController;
 import edu.wpi.cs3733.d21.teamD.views.Access.UserCategory;
 import edu.wpi.cs3733.d21.teamD.views.Mapping.MapScrollPane;
 import java.io.IOException;
 import java.util.List;
-
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
@@ -266,18 +266,26 @@ public class HomeController implements AllAccessible {
         });
   }
 
-  private void dbToggleSwitch(){
-      dbToggle.selectedProperty().addListener(new ChangeListener<Boolean>() {
-          @Override
-          public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-              if(dbToggle.isSelected()){
-
+  @FXML
+  private void dbToggleSwitch() {
+    dbToggle
+        .selectedProperty()
+        .addListener(
+            new ChangeListener<Boolean>() {
+              @Override
+              public void changed(
+                  ObservableValue<? extends Boolean> observable,
+                  Boolean oldValue,
+                  Boolean newValue) {
+                if (dbToggle.isSelected()) {
+                  GlobalDb.establishClientCon();
+                  System.out.println("Remote connection established");
+                } else {
+                  GlobalDb.establishCon();
+                  System.out.println("Switched back to embedded");
+                }
               }
-              else{
-
-              }
-          }
-      });
+            });
   }
 
   public static String getUserCategory() {

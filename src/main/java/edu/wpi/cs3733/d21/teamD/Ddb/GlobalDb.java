@@ -26,7 +26,7 @@ public class GlobalDb {
       System.out.println("File | Project Structure, Modules, Dependency tab");
       System.out.println("Add by clicking on the green plus icon on the right of the window");
       System.out.println(
-              "Select JARs or directories. Go to the folder where the database JAR is located");
+          "Select JARs or directories. Go to the folder where the database JAR is located");
       System.out.println("Click OK, now you can compile your program and run it.");
       e.printStackTrace();
       return;
@@ -36,13 +36,13 @@ public class GlobalDb {
       // this should be the only connection established in the ENTIRE application, every other time
       // should use GlobalDB.getConnection()
       connection =
-              DriverManager.getConnection("jdbc:derby:myDB;create=true;username=Admin;password=Admin");
+          DriverManager.getConnection("jdbc:derby:myDB;create=true;username=Admin;password=Admin");
       System.out.println("Apache Derby connection established to the embedded DB!");
       // getConnection() gives a warning if there is already a database
       if (connection.getWarnings() == null) { // If there isn't already a populated database
 
         GlobalDb.getTables()
-                .createAllTables(); // might not be doing what we want with the connections, but this
+            .createAllTables(); // might not be doing what we want with the connections, but this
       }
     } catch (SQLException e) {
       System.out.println("Connection failed. Check output console.");

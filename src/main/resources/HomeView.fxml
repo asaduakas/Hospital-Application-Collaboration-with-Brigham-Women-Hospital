@@ -19,7 +19,7 @@
          <children>
             <HBox layoutX="358.0" layoutY="24.0" prefHeight="60.0" prefWidth="844.0" spacing="20.0">
                <children>
-                  <JFXToggleButton fx:id="dbToggle" text="ToggleButton" />
+                  <JFXToggleButton fx:id="dbToggle" onAction="#dbToggleSwitch" text="ToggleButton" />
                   <Line endX="-4.0" endY="-8.0" startX="-4.0" startY="37.0" translateX="-5.0" translateY="5.0" />
                   <JFXButton fx:id="usersBtn" onAction="#usersView" style="-fx-font-weight: Bold; -fx-font-size: 14;" text="Users Table">
                      <graphic>
