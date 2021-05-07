@@ -242,11 +242,6 @@ public class MapController implements AllAccessible {
 
   // _______________________________________SET UP________________________________________
 
-  private void LoadMap(Image floor, String floorNum) {
-    mapScrollPane.setMapImage(floor);
-    LoadingNodesEdges(floorNum);
-  }
-
   private void LoadingNodesEdges(String Floor) {
     for (EdgeUI EUI : EDGES) {
       if (initialData.getNodeByID(EUI.getE().getStartNodeID()).getFloor().equals(Floor)
@@ -764,13 +759,13 @@ public class MapController implements AllAccessible {
                   Boolean newValue) {
 
                 if (toggleEditor.isSelected()) {
+                  isEditor = true;
                   clearMap();
                   LoadingNodesEdges(currentFloor);
-                  isEditor = true;
                 } else {
+                  isEditor = false;
                   clearMap();
                   drawNodeFloor(currentFloor);
-                  isEditor = false;
                 }
               }
             });
