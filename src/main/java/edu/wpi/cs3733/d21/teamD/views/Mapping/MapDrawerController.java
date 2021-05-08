@@ -555,6 +555,8 @@ public class MapDrawerController implements Initializable {
   // _____________________________________Directions__________________________________________
 
   private String endLocation = "";
+  private Font hFont = Font.font("Verdana", FontWeight.BOLD, FontPosture.REGULAR, 16.0);
+  private Font pFont = Font.font("Verdana", FontWeight.NORMAL, FontPosture.REGULAR, 10.0);
 
   private void setEnd(String end) {
     endLocation = end;
@@ -579,8 +581,14 @@ public class MapDrawerController implements Initializable {
         initialData.getNodeByID(edges.getFirst().getStartNodeID());
     edu.wpi.cs3733.d21.teamD.Astar.Node end =
         initialData.getNodeByID(edges.getLast().getEndNodeID());
-    dirText.appendText(
-        "Directions from " + start.getLongName() + " to " + end.getLongName() + ":\n");
+    // dirText.setFont(hFont);
+
+    Text aText =
+        new Text("Directions from " + start.getLongName() + " to " + end.getLongName() + ":\n");
+    aText.setFont(hFont);
+    dirText.appendText(aText.getText());
+    // dirText.appendText("Directions from " + start.getLongName() + " to " + end.getLongName() +
+    // ":\n");
     setEnd(end.getShortName());
 
     // ScaleDown(edges.getFirst().getEndNode());
@@ -610,7 +618,11 @@ public class MapDrawerController implements Initializable {
               endN);
       initialDirection = newDirection;
     }
-    dirText.appendText("\nWelcome to " + end.getLongName() + "\n");
+    // dirText.setFont(hFont);
+    Text endText = new Text("\nWelcome to " + end.getLongName() + "\n");
+    endText.setFont(hFont);
+    dirText.appendText(endText.getText());
+    // dirText.appendText("\nWelcome to " + end.getLongName() + "\n");
     dirText.setPromptText(dirText.getText());
   }
 
@@ -628,13 +640,18 @@ public class MapDrawerController implements Initializable {
 
     // add handling for changing floors
     if (startNode.getNodeType().equals("ELEV") && endNode.getNodeType().equals("ELEV")) {
-      dirText.appendText("Take the elevator towards floor " + endNode.getFloor() + "\n");
+      Text elvText = new Text("Take the elevator towards floor " + endNode.getFloor() + "\n");
+      elvText.setFont(hFont);
+      dirText.appendText(elvText.getText());
+      // dirText.setFont(hFont);
+      // dirText.appendText("Take the elevator towards floor " + endNode.getFloor() + "\n");
       return "In elevator";
 
     } else if (startNode.getNodeType().equals("ELEV") && !endNode.getNodeType().equals("ELEV")) {
       newDirection = firstMove(startX, startY, endX, endY, startNode, endNode);
       return newDirection;
     } else if (startNode.getNodeType().equals("STAI") && endNode.getNodeType().equals("STAI")) {
+      //  dirText.setFont(hFont);
       dirText.appendText("Take the stairs towards floor " + endNode.getFloor() + "\n");
       return "In stairs";
     } else if (startNode.getNodeType().equals("STAI") && !endNode.getNodeType().equals("STAI")) {
@@ -666,7 +683,11 @@ public class MapDrawerController implements Initializable {
         || (currentDirection.equals("East") && newDirection.equals("North"))
         || (currentDirection.equals("South") && newDirection.equals("East"))
         || (currentDirection.equals("West") && newDirection.equals("South"))) {
-      dirText.appendText("\tTurn Left towards: \n\t\t" + endNode.getLongName() + "\n");
+      // dirText.setFont(pFont);
+      Text lText = new Text("\tTurn Left towards: \n\t\t" + endNode.getLongName() + "\n");
+      lText.setFont(pFont);
+      dirText.appendText(lText.getText());
+      // dirText.appendText("\tTurn Left towards: \n\t\t" + endNode.getLongName() + "\n");
 
     }
     // Turn Right
@@ -674,12 +695,20 @@ public class MapDrawerController implements Initializable {
         || (currentDirection.equals("East") && newDirection.equals("South"))
         || (currentDirection.equals("South") && newDirection.equals("West"))
         || (currentDirection.equals("West") && newDirection.equals("North"))) {
-      dirText.appendText("\tTurn Right towards: \n\t\t" + endNode.getLongName() + "\n");
+      // dirText.setFont(pFont);
+      Text rText = new Text("\tTurn Right towards: \n\t\t" + endNode.getLongName() + "\n");
+      rText.setFont(pFont);
+      dirText.appendText(rText.getText());
+      // dirText.appendText("\tTurn Right towards: \n\t\t" + endNode.getLongName() + "\n");
     }
     // Continue Straight
     else if (currentDirection.equals(newDirection)) {
       if (!(startNode.getNodeType().equals("HALL") && endNode.getNodeType().equals("HALL"))) {
-        dirText.appendText("\tContinue Straight towards: \n\t\t" + endNode.getLongName() + "\n");
+        // dirText.setFont(pFont);
+        Text sText = new Text("\tContinue Straight towards: \n\t\t" + endNode.getLongName() + "\n");
+        sText.setFont(pFont);
+        dirText.appendText(sText.getText());
+        // dirText.appendText("\tContinue Straight towards: \n\t\t" + endNode.getLongName() + "\n");
       }
     }
 
@@ -698,35 +727,39 @@ public class MapDrawerController implements Initializable {
 
     // add handling for changing floors
     if (startNode.getNodeType().equals("ELEV") && endNode.getNodeType().equals("ELEV")) {
+      // dirText.setFont(hFont);
       dirText.appendText("Take the elevator towards floor " + endNode.getFloor() + "\n");
-     // Font boldFont = new Font("Verdana", FontWeight.BOLD, 14.0);
-    //  dirText.setFont();
       return "In elevator";
     } else if (startNode.getNodeType().equals("STAI") && endNode.getNodeType().equals("STAI")) {
+      // dirText.setFont(hFont);
       dirText.appendText("Take the stairs towards floor " + endNode.getFloor() + "\n");
       return "In stairs";
     } else {
       // North
       if ((deltaY < 0) && (Math.abs(deltaY) > Math.abs(deltaX))) {
         //        System.out.println("Head North towards " + endNode.getLongName());
+        //   dirText.setFont(pFont);
         dirText.appendText("\tHead North towards: \n\t\t" + endNode.getLongName() + "\n");
         return "North";
       }
       // South
       else if ((deltaY > 0) && (deltaY > Math.abs(deltaX))) {
         //        System.out.println("Head South towards " + endNode.getLongName());
+        // dirText.setFont(pFont);
         dirText.appendText("\tHead South towards: \n\t\t" + endNode.getLongName() + "\n");
         return "South";
       }
       // East
       else if ((deltaX > 0) && (deltaX > Math.abs(deltaY))) {
         //        System.out.println("Head East towards " + endNode.getLongName());
+        //   dirText.setFont(pFont);
         dirText.appendText("\tHead East towards: \n\t\t" + endNode.getLongName() + "\n");
         return "East";
       }
       // West
       else if ((deltaX < 0) && (Math.abs(deltaX) > Math.abs(deltaY))) {
         //        System.out.println("Head West towards " + endNode.getLongName());
+        //  dirText.setFont(pFont);
         dirText.appendText("\tHead West towards: \n\t\t" + endNode.getLongName() + "\n");
         return "West";
       } else {
