@@ -2,7 +2,9 @@ package edu.wpi.cs3733.d21.teamD.chatbot;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.stream.Collectors;
 import opennlp.tools.doccat.*;
 import opennlp.tools.lemmatizer.LemmatizerME;
 import opennlp.tools.lemmatizer.LemmatizerModel;
@@ -71,7 +73,8 @@ public class chatbot {
 
     String tokens[] = tokenizer.tokenize(sentence);
 
-    //        for (String a : tokens) System.out.println(a);
+    System.out.println("Tokens: ");
+    for (String a : tokens) System.out.println(a);
     is.close();
     return tokens;
   }
@@ -86,8 +89,10 @@ public class chatbot {
 
       // Tag sentence.
       String[] posTokens = myCategorizer.tag(tokens);
-      //      System.out.println("POS Tags : " +
-      // Arrays.stream(posTokens).collect(Collectors.joining(" | ")));
+
+      System.out.println("POS Tags: ");
+      System.out.println(
+          "POS Tags : " + Arrays.stream(posTokens).collect(Collectors.joining(" | ")));
 
       return posTokens;
     }
@@ -103,8 +108,10 @@ public class chatbot {
       // Tag sentence.
       LemmatizerME myCategorizer = new LemmatizerME(new LemmatizerModel(modelIn));
       String[] lemmaTokens = myCategorizer.lemmatize(tokens, posTags);
-      //      System.out.println("Lemmatizer : " +
-      // Arrays.stream(lemmaTokens).collect(Collectors.joining(" | ")));
+
+      System.out.println("Lemmas: ");
+      System.out.println(
+          "Lemmatizer : " + Arrays.stream(lemmaTokens).collect(Collectors.joining(" | ")));
 
       return lemmaTokens;
     }

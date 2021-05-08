@@ -42,14 +42,14 @@ public class App extends Application {
     chatbot bot = new chatbot();
     DoccatModel categoryModel = bot.trainCategorizerModel();
 
-    String[] sentences =
-        bot.SentenceDetect("Hello! How are you doing? What is the price of the treatment?");
+    String[] sentences = bot.SentenceDetect("I forgot my username, can you help me retrieve it");
     for (String sentence : sentences) {
       System.out.println(sentence);
       String[] tokens = bot.Tokenize(sentence);
       String[] posTags = bot.detectPOSTags(tokens);
       String[] lemmas = bot.lemmatizeTokens(tokens, posTags);
       String category = bot.detectCategory(categoryModel, lemmas);
+      System.out.println("-----x-----");
     }
 
     App.primaryStage = primaryStage;
