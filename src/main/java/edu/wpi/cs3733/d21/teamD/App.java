@@ -2,11 +2,9 @@ package edu.wpi.cs3733.d21.teamD;
 
 import com.jfoenix.controls.JFXButton;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
-import edu.wpi.cs3733.d21.teamD.chatbot.chatbot;
 import edu.wpi.cs3733.d21.teamD.views.ControllerManager;
 import edu.wpi.cs3733.d21.teamD.views.SceneSizeChangeListener;
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -17,7 +15,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import opennlp.tools.doccat.DoccatModel;
 
 public class App extends Application {
 
@@ -39,27 +36,6 @@ public class App extends Application {
   @Override
   public void start(Stage primaryStage) throws IOException {
     GlobalDb.getTables().getUserTable().dispUsers(GlobalDb.getConnection());
-
-    chatbot bot = new chatbot();
-    DoccatModel categoryModel = bot.trainCategorizerModel();
-
-    //    modelTraining trainUsernameModel = new modelTraining();
-    //    trainUsernameModel.usernameModelTraining();
-
-    LinkedList<String> username = bot.findUserName("my username is wwong");
-    System.out.println(username);
-
-    /*
-    String[] sentences = bot.SentenceDetect("whats my passwrd?");
-    for (String sentence : sentences) {
-      System.out.println(sentence);
-      String[] tokens = bot.Tokenize(sentence);
-      String[] posTags = bot.detectPOSTags(tokens);
-      String[] lemmas = bot.lemmatizeTokens(tokens, posTags);
-      String category = bot.detectCategory(categoryModel, lemmas);
-      System.out.println("-----x-----");
-    }
-     */
 
     App.primaryStage = primaryStage;
 

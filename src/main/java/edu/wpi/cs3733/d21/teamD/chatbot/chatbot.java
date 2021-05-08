@@ -90,7 +90,6 @@ public class chatbot {
       // Tag sentence.
       String[] posTokens = myCategorizer.tag(tokens);
 
-      System.out.println("POS Tags: ");
       System.out.println(
           "POS Tags : " + Arrays.stream(posTokens).collect(Collectors.joining(" | ")));
 
@@ -109,7 +108,6 @@ public class chatbot {
       LemmatizerME myCategorizer = new LemmatizerME(new LemmatizerModel(modelIn));
       String[] lemmaTokens = myCategorizer.lemmatize(tokens, posTags);
 
-      System.out.println("Lemmas: ");
       System.out.println(
           "Lemmatizer : " + Arrays.stream(lemmaTokens).collect(Collectors.joining(" | ")));
 
