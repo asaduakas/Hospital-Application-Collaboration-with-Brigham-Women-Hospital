@@ -16,6 +16,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import opennlp.tools.doccat.DoccatModel;
 
 public class App extends Application {
 
@@ -37,16 +38,19 @@ public class App extends Application {
   @Override
   public void start(Stage primaryStage) throws IOException {
     GlobalDb.getTables().getUserTable().dispUsers(GlobalDb.getConnection());
-    chatbot bot = new chatbot();
 
-    //    String[] sentences = bot.SentenceDetect("Hi! How are you? My name is Kushal. How are
-    // you?");
-    //    System.out.println(sentences[0]);
-    //    System.out.println(sentences[1]);
-    //    System.out.println(sentences[2]);
-    //
-    //    bot.Tokenize("Hi, My name isn't Mike!");
-    bot.findName();
+    chatbot bot = new chatbot();
+    DoccatModel categoryModel = bot.trainCategorizerModel();
+
+    String[] sentences =
+        bot.SentenceDetect("Hello! How are you doing? What is the price of the treatment?");
+    for (String sentence : sentences) {
+      System.out.println(sentence);
+      String[] tokens = bot.Tokenize(sentence);
+      String[] posTags = bot.detectPOSTags(tokens);
+      String[] lemmas = bot.lemmatizeTokens(tokens, posTags);
+      String category = bot.detectCategory(categoryModel, lemmas);
+    }
 
     App.primaryStage = primaryStage;
 
