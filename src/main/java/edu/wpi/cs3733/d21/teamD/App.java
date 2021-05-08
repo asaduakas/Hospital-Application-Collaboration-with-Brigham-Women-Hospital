@@ -6,6 +6,7 @@ import edu.wpi.cs3733.d21.teamD.chatbot.chatbot;
 import edu.wpi.cs3733.d21.teamD.views.ControllerManager;
 import edu.wpi.cs3733.d21.teamD.views.SceneSizeChangeListener;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -42,7 +43,14 @@ public class App extends Application {
     chatbot bot = new chatbot();
     DoccatModel categoryModel = bot.trainCategorizerModel();
 
-    String[] sentences = bot.SentenceDetect("I forgot my username, can you help me retrieve it");
+    //    modelTraining trainUsernameModel = new modelTraining();
+    //    trainUsernameModel.usernameModelTraining();
+
+    LinkedList<String> username = bot.findUserName("my username is wwong");
+    System.out.println(username);
+
+    /*
+    String[] sentences = bot.SentenceDetect("whats my passwrd?");
     for (String sentence : sentences) {
       System.out.println(sentence);
       String[] tokens = bot.Tokenize(sentence);
@@ -51,6 +59,7 @@ public class App extends Application {
       String category = bot.detectCategory(categoryModel, lemmas);
       System.out.println("-----x-----");
     }
+     */
 
     App.primaryStage = primaryStage;
 

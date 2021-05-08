@@ -130,14 +130,14 @@ public class chatbot {
     return category;
   }
 
-  // Name Finder
+  // Username Name Finder
   // If there is any punctuation before or after the name, it wont recognize
-  public LinkedList<String> findName(String paragraph) throws IOException {
+  public LinkedList<String> findUserName(String paragraph) throws IOException {
 
     LinkedList<String> names = new LinkedList<String>();
 
     String[] sentence = paragraph.split(" ");
-    InputStream is = new FileInputStream("openNLP/en-ner-person.bin");
+    InputStream is = new FileInputStream("openNLP/en-username.bin");
 
     TokenNameFinderModel model = new TokenNameFinderModel(is);
     is.close();
