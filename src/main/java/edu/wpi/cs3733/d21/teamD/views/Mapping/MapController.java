@@ -121,6 +121,8 @@ public class MapController implements AllAccessible {
 
   private MapDrawerController drawerController;
 
+  public MapController() {}
+
   @FXML
   private void initialize() {
 
