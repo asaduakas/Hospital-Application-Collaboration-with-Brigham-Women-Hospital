@@ -1137,13 +1137,7 @@ public class MapController implements AllAccessible {
     initialFavs.add(getNodeUIByLongName("Cafe"));
 
     for (NodeUI N : initialFavs) {
-      FDatabaseTables.getNodeTable()
-          .addToFavoriteNodes(
-              GlobalDb.getConnection(),
-              HomeController.username,
-              N.getN().getNodeID(),
-              N.getN().getLongName());
-      N.getI().setImage(favImage);
+      favorite(N);
     }
   }
 
