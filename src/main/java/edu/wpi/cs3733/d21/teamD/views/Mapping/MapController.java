@@ -319,6 +319,7 @@ public class MapController implements AllAccessible {
       setupDraggableNodeUI(Temp);
       NODES.add(Temp);
     }
+    initializeFavs();
   }
 
   private void initializeEdges() {
@@ -1120,6 +1121,29 @@ public class MapController implements AllAccessible {
     } else {
       N.setSizeHeight(N.getSizeHeight() + 60);
       N.setSizeWidth(N.getSizeWidth() + 60);
+    }
+  }
+
+  private void initializeFavs() {
+    LinkedList<NodeUI> initialFavs = new LinkedList<NodeUI>();
+    initialFavs.add(getNodeUIByLongName("Elevator S 01"));
+    initialFavs.add(getNodeUIByLongName("Restroom S elevator 1st floor"));
+    initialFavs.add(getNodeUIByLongName("Cafe Stairs"));
+    initialFavs.add(getNodeUIByLongName("Waiting Room 1 Floor 1"));
+    initialFavs.add(getNodeUIByLongName("Connors Center Security Desk Floor 1"));
+    initialFavs.add(getNodeUIByLongName("Shattuck Street Lobby Exit"));
+    initialFavs.add(getNodeUIByLongName("Emergency Department Entrance"));
+    initialFavs.add(getNodeUIByLongName("Parking Garage L2"));
+    initialFavs.add(getNodeUIByLongName("Cafe"));
+
+    for (NodeUI N : initialFavs) {
+      FDatabaseTables.getNodeTable()
+          .addToFavoriteNodes(
+              GlobalDb.getConnection(),
+              HomeController.username,
+              N.getN().getNodeID(),
+              N.getN().getLongName());
+      N.getI().setImage(favImage);
     }
   }
 
