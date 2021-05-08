@@ -556,7 +556,7 @@ public class MapDrawerController implements Initializable {
 
   private String endLocation = "";
   private Font hFont = Font.font("Verdana", FontWeight.BOLD, FontPosture.REGULAR, 16.0);
-  private Font pFont = Font.font("Verdana", FontWeight.NORMAL, FontPosture.REGULAR, 10.0);
+  private Font pFont = Font.font("Verdana", FontWeight.NORMAL, FontPosture.REGULAR, 14.0);
 
   private void setEnd(String end) {
     endLocation = end;
@@ -581,7 +581,7 @@ public class MapDrawerController implements Initializable {
         initialData.getNodeByID(edges.getFirst().getStartNodeID());
     edu.wpi.cs3733.d21.teamD.Astar.Node end =
         initialData.getNodeByID(edges.getLast().getEndNodeID());
-    // dirText.setFont(hFont);
+    dirText.setFont(pFont);
 
     Text aText =
         new Text("Directions from " + start.getLongName() + " to " + end.getLongName() + ":\n");
