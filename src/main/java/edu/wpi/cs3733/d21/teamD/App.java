@@ -2,6 +2,7 @@ package edu.wpi.cs3733.d21.teamD;
 
 import com.jfoenix.controls.JFXButton;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
+import edu.wpi.cs3733.d21.teamD.chatbot.chatbot;
 import edu.wpi.cs3733.d21.teamD.views.ControllerManager;
 import edu.wpi.cs3733.d21.teamD.views.SceneSizeChangeListener;
 import java.io.IOException;
@@ -36,6 +37,17 @@ public class App extends Application {
   @Override
   public void start(Stage primaryStage) throws IOException {
     GlobalDb.getTables().getUserTable().dispUsers(GlobalDb.getConnection());
+    chatbot bot = new chatbot();
+
+    //    String[] sentences = bot.SentenceDetect("Hi! How are you? My name is Kushal. How are
+    // you?");
+    //    System.out.println(sentences[0]);
+    //    System.out.println(sentences[1]);
+    //    System.out.println(sentences[2]);
+    //
+    //    bot.Tokenize("Hi, My name isn't Mike!");
+    bot.findName();
+
     App.primaryStage = primaryStage;
 
     ControllerManager.attemptLoadPage("initPageView.fxml", fxmlLoader -> initLoader(fxmlLoader));
