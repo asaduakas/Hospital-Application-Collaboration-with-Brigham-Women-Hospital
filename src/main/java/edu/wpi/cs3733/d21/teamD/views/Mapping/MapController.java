@@ -32,6 +32,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -227,13 +228,14 @@ public class MapController implements AllAccessible {
   public void changeChildrenMapView(List<javafx.scene.Node> nodeList) {
     JFXTreeView treeView = (JFXTreeView) nodeList.get(1);
     Label label = (Label) nodeList.get(2);
-    JFXTextArea textDirection = (JFXTextArea) nodeList.get(3);
+    ScrollPane textDirection = (ScrollPane) nodeList.get(3);
     JFXButton dirBtn = (JFXButton) nodeList.get(7);
 
     treeView.setPrefHeight(App.getPrimaryStage().getScene().getHeight() / 2.5);
     label.setLayoutY(treeView.getLayoutY() + treeView.getPrefHeight() + 10);
     label.setLayoutX(10);
-    textDirection.setLayoutY(label.getLayoutY() + label.getHeight() + 30);
+    textDirection.setLayoutY(label.getLayoutY() + label.getHeight() + 40);
+    textDirection.setPrefHeight(App.getPrimaryStage().getScene().getHeight() / 3);
     dirBtn.setLayoutY(textDirection.getLayoutY() + textDirection.getPrefHeight() + 20);
   }
 
