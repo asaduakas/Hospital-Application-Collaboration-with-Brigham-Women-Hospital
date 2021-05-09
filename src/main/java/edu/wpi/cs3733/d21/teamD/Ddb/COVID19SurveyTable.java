@@ -85,10 +85,11 @@ public class COVID19SurveyTable extends AbsTables {
     }
   }
 
-  public void sendEmail(Connection conn, String id) {
+  public void sendCovidEmail(Connection conn, String id) {
     // use id to get email
     // if any constraint is checked, send email of STAY TF HOME
     // if all good is checked, send email of GO ON PEASANT
+
   }
 
   public ObservableList<COVIDSurveyResultsNodeInfo> addIntoCOVIDSurveyList(
