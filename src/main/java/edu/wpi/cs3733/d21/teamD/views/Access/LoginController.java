@@ -158,6 +158,12 @@ public class LoginController implements AllAccessible {
     stackPane.setLayoutY(
         (App.getPrimaryStage().getScene().getHeight() - stackPane.getHeight()) / 2);
     stackPane.setPickOnBounds(false);
+
+    ImageView chatbot = (ImageView) nodeList.get(8);
+    //    chatbot.setLayoutY(logoutButton.getLayoutY() - 20);
+    //    chatbot.setLayoutX(logoutButton.getLayoutX() - logoutButton.getWidth() - 10);
+    chatbot.setLayoutY(logoutButton.getLayoutY() - logoutButton.getWidth());
+    chatbot.setLayoutX(exitButton.getLayoutX() + 10);
   }
 
   @FXML

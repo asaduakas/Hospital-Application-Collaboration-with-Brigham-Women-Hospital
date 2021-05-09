@@ -20,7 +20,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -284,9 +283,13 @@ public class HomeController implements AllAccessible {
         "ChatbotView.fxml",
         (fxmlLoader) -> {
           ControllerManager.popup.setX(
-              chatbotImage.getLayoutX() - ControllerManager.popup.getWidth());
+              chatbotImage.getLayoutX()
+                  - ControllerManager.popup.getWidth()
+                  - chatbotImage.getFitWidth() / 2);
           ControllerManager.popup.setY(
-              chatbotImage.getLayoutY() - ControllerManager.popup.getHeight());
+              chatbotImage.getLayoutY()
+                  - ControllerManager.popup.getHeight()
+                  + (chatbotImage.getFitHeight()));
         });
 
     ControllerManager.popup.setAutoHide(true);
