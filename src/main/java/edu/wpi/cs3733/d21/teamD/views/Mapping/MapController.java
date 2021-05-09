@@ -226,17 +226,19 @@ public class MapController implements AllAccessible {
 
   public void changeChildrenMapView(List<javafx.scene.Node> nodeList) {
     AnchorPane secondAnchor = (AnchorPane) nodeList.get(0);
+    JFXButton findPathBtn = (JFXButton) secondAnchor.getChildren().get(0);
     JFXTreeView treeView = (JFXTreeView) secondAnchor.getChildren().get(1);
     Label label = (Label) secondAnchor.getChildren().get(2);
     ScrollPane textDirection = (ScrollPane) secondAnchor.getChildren().get(3);
     JFXButton dirBtn = (JFXButton) secondAnchor.getChildren().get(7);
 
     secondAnchor.setPrefHeight(App.getPrimaryStage().getScene().getHeight());
-    treeView.setPrefHeight(App.getPrimaryStage().getScene().getHeight() / 2.5);
+    treeView.setPrefHeight(secondAnchor.getPrefHeight() / 2.75);
+    treeView.setLayoutY(findPathBtn.getLayoutY() + findPathBtn.getHeight() + 30);
     label.setLayoutY(treeView.getLayoutY() + treeView.getPrefHeight() + 10);
     label.setLayoutX(10);
     textDirection.setLayoutY(label.getLayoutY() + label.getHeight() + 40);
-    textDirection.setPrefHeight(App.getPrimaryStage().getScene().getHeight() / 3);
+    textDirection.setPrefHeight(secondAnchor.getPrefHeight() / 3.3);
     dirBtn.setLayoutY(textDirection.getLayoutY() + textDirection.getPrefHeight() + 20);
   }
 
