@@ -97,6 +97,7 @@ public class MapController implements AllAccessible {
   public static final Image RETL = new Image("Images/retailpin.png");
   public static final Image SERV = new Image("Images/service.png");
   public static final Image favImage = new Image("Images/favIcon_good.png");
+  public static final Image warning = new Image("Images/warning_red.png");
   private Image up = new Image("Images/up-arrow.png");
   private Image down = new Image("Images/redArrow.png");
   private Image endImage = new Image("Images/endingIcon_white.png");
@@ -263,78 +264,89 @@ public class MapController implements AllAccessible {
     String clearanceLevel =
         FDatabaseTables.getUserTable()
             .validateClearance(GlobalDb.getConnection(), HomeController.username);
-//    initialData.getGraphInfo().
-//    NodeUI enterance = new NodeUI(N, Marker, nodeNormalWidth, nodeNormalHeight);
+    RoomGraph rg = new RoomGraph(GlobalDb.getConnection());
     if (clearanceLevel.equals("emergencyEntrance")) {
       System.out.println("I think it is working... maybe (in mapController init Nodes)");
-
+      Node N = rg.getNodeByID("dWALK02701"); // 75 lobby
+      ImageView Marker = new ImageView(warning);
+      Marker.setFitWidth(50);
+      Marker.setFitHeight(50);
+      Marker.setX(N.getXCoord() - 50 / 2);
+      Marker.setY(N.getYCoord() - 50);
+      NodeUI enterance = new NodeUI(N, Marker, 50, 50);
+      NODES.add(enterance);
     }
     if (clearanceLevel.equals("normalEntrance")) {
+      Node N = rg.getNodeByID("FEXIT00301"); // 75 lobby
+      ImageView Marker = new ImageView(warning);
+      Marker.setFitWidth(50);
+      Marker.setFitHeight(50);
+      Marker.setX(N.getXCoord() - 50 / 2);
+      Marker.setY(N.getYCoord() - 50);
+      NodeUI enterance = new NodeUI(N, Marker, 50, 50);
+      NODES.add(enterance);
       System.out.println("normal so I think it is working... maybe (in mapController init Nodes)");
-    }
-    if (clearanceLevel.equals("prettyGood")) {
-      System.out.println(
-          "this is null so I think it is working... maybe (in mapController init Nodes)");
-    }
+    } else if (clearanceLevel.equals("prettyGood")) {
 
-    NODES.clear();
+      NODES.clear();
 
-    for (Node N : initialData.getGraphInfo()) {
-      ImageView Marker = new ImageView();
-      Marker.setFitWidth(nodeNormalWidth);
-      Marker.setFitHeight(nodeNormalHeight);
-      Marker.setX(N.getXCoord() - nodeNormalWidth / 2);
-      Marker.setY(N.getYCoord() - nodeNormalHeight);
-      if (FDatabaseTables.getNodeTable()
-          .FavContains(GlobalDb.getConnection(), N.getNodeID(), HomeController.username)) {
-        Marker.setImage(favImage);
-      } else {
-        switch (N.getNodeType()) {
-          case "PARK":
-            Marker.setImage(PARK);
-            break;
-          case "ELEV":
-            Marker.setImage(ELEV);
-            break;
-          case "REST":
-            Marker.setImage(REST);
-            break;
-          case "STAI":
-            Marker.setImage(STAI);
-            break;
-          case "DEPT":
-            Marker.setImage(DEPT);
-            break;
-          case "LABS":
-            Marker.setImage(LABS);
-            break;
-          case "INFO":
-            Marker.setImage(INFO);
-            break;
-          case "CONF":
-            Marker.setImage(CONF);
-            break;
-          case "EXIT":
-            Marker.setImage(EXIT);
-            break;
-          case "RETL":
-            Marker.setImage(RETL);
-            break;
-          case "SERV":
-            Marker.setImage(SERV);
-            break;
-          default:
-            Marker.setImage(DEFAULT);
-            break;
+      for (Node N : initialData.getGraphInfo()) {
+        ImageView Marker = new ImageView();
+        Marker.setFitWidth(nodeNormalWidth);
+        Marker.setFitHeight(nodeNormalHeight);
+        Marker.setX(N.getXCoord() - nodeNormalWidth / 2);
+        Marker.setY(N.getYCoord() - nodeNormalHeight);
+        if (FDatabaseTables.getNodeTable()
+            .FavContains(GlobalDb.getConnection(), N.getNodeID(), HomeController.username)) {
+          Marker.setImage(favImage);
+        } else {
+          switch (N.getNodeType()) {
+            case "PARK":
+              Marker.setImage(PARK);
+              break;
+            case "ELEV":
+              Marker.setImage(ELEV);
+              break;
+            case "REST":
+              Marker.setImage(REST);
+              break;
+            case "STAI":
+              Marker.setImage(STAI);
+              break;
+            case "DEPT":
+              Marker.setImage(DEPT);
+              break;
+            case "LABS":
+              Marker.setImage(LABS);
+              break;
+            case "INFO":
+              Marker.setImage(INFO);
+              break;
+            case "CONF":
+              Marker.setImage(CONF);
+              break;
+            case "EXIT":
+              Marker.setImage(EXIT);
+              break;
+            case "RETL":
+              Marker.setImage(RETL);
+              break;
+            case "SERV":
+              Marker.setImage(SERV);
+              break;
+            default:
+              Marker.setImage(DEFAULT);
+              break;
+          }
         }
-      }
 
-      NodeUI Temp = new NodeUI(N, Marker, nodeNormalWidth, nodeNormalHeight);
-      pathListener_AddEdge(Temp);
-      hoverResize(Temp);
-      deleteNodeListener(Temp);
-      setupDraggableNodeUI(Temp);
-      NODES.add(Temp);
+        NodeUI Temp = new NodeUI(N, Marker, nodeNormalWidth, nodeNormalHeight);
+        pathListener_AddEdge(Temp);
+        hoverResize(Temp);
+        deleteNodeListener(Temp);
+        setupDraggableNodeUI(Temp);
+        NODES.add(Temp);
+      }
     }
   }
 
