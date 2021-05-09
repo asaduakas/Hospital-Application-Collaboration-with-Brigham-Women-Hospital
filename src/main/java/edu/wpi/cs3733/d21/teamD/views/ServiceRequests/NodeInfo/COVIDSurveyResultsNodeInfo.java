@@ -7,6 +7,7 @@ import javafx.beans.property.StringProperty;
 public class COVIDSurveyResultsNodeInfo extends RecursiveTreeObject<COVIDSurveyResultsNodeInfo> {
 
   public SimpleStringProperty id = new SimpleStringProperty();
+  public StringProperty type = new SimpleStringProperty();
   public StringProperty firstName = new SimpleStringProperty();
   public StringProperty lastName = new SimpleStringProperty();
   public StringProperty contactInfo = new SimpleStringProperty();
@@ -27,7 +28,7 @@ public class COVIDSurveyResultsNodeInfo extends RecursiveTreeObject<COVIDSurveyR
   //    public IntegerProperty feelGoodCheck = new SimpleIntegerProperty();
 
   public COVIDSurveyResultsNodeInfo(
-      String id,
+      String type,
       String firstName,
       String lastName,
       String contactInfo,
@@ -39,7 +40,7 @@ public class COVIDSurveyResultsNodeInfo extends RecursiveTreeObject<COVIDSurveyR
       String closeContactCheck,
       String selfIsolateCheck,
       String feelGoodCheck) {
-    this.id = new SimpleStringProperty(id);
+    this.type = new SimpleStringProperty(type);
     this.firstName = new SimpleStringProperty(firstName);
     this.lastName = new SimpleStringProperty(lastName);
     this.contactInfo = new SimpleStringProperty(contactInfo);
@@ -57,6 +58,14 @@ public class COVIDSurveyResultsNodeInfo extends RecursiveTreeObject<COVIDSurveyR
     //        this.closeContactCheck = new SimpleIntegerProperty(closeContactCheck);
     //        this.selfIsolateCheck = new SimpleIntegerProperty(selfIsolateCheck);
     //        this.feelGoodCheck = new SimpleIntegerProperty(feelGoodCheck);
+  }
+
+  public String getType() {
+    return type.get();
+  }
+
+  public StringProperty typeProperty() {
+    return type;
   }
 
   public String getId() {

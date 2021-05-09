@@ -25,6 +25,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.cell.ComboBoxTreeTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -273,6 +274,8 @@ public class UsersController extends AbsRequest
         new JFXTreeTableColumn<UsersNodeInfo, String>("Password");
     JFXTreeTableColumn<UsersNodeInfo, String> nameCol =
         new JFXTreeTableColumn<UsersNodeInfo, String>("Full Name");
+    JFXTreeTableColumn<UsersNodeInfo, String> clearanceCol =
+        new JFXTreeTableColumn<UsersNodeInfo, String>("COVID-19 Clearance");
 
     categoryCol.setCellValueFactory(
         (TreeTableColumn.CellDataFeatures<UsersNodeInfo, String> p) -> {
@@ -282,7 +285,6 @@ public class UsersController extends AbsRequest
             return categoryCol.getComputedValue(p);
           }
         });
-
     idCol.setCellValueFactory(
         (TreeTableColumn.CellDataFeatures<UsersNodeInfo, String> p) -> {
           if (idCol.validateValue(p)) {
@@ -307,6 +309,16 @@ public class UsersController extends AbsRequest
             return nameCol.getComputedValue(p);
           }
         });
+    clearanceCol.setCellValueFactory(
+        (TreeTableColumn.CellDataFeatures<UsersNodeInfo, String> p) -> {
+          if (clearanceCol.validateValue(p)) {
+            return p.getValue().getValue().clearance;
+          } else {
+            return clearanceCol.getComputedValue(p);
+          }
+        });
+    clearanceCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn("Cleared", "Not Cleared"));
+
     patientTable.setEditable(true);
     categoryCol.setEditable(false);
     idCol.setEditable(false);
@@ -314,7 +326,7 @@ public class UsersController extends AbsRequest
 
     patientTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
-    patientTable.getColumns().setAll(categoryCol, idCol, passCol, nameCol);
+    patientTable.getColumns().setAll(categoryCol, idCol, passCol, nameCol, clearanceCol);
 
     patientTable.setPlaceholder(new Label("There are currently no patients"));
   }

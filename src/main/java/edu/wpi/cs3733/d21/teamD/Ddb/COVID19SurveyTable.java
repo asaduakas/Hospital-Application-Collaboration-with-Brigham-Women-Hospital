@@ -16,17 +16,18 @@ public class COVID19SurveyTable extends AbsTables {
       String query =
           "CREATE TABLE COVID19SurveyResults ("
               + "id INT GENERATED ALWAYS AS IDENTITY,"
+              + "serviceType VARCHAR(100) DEFAULT 'COVID-19 Survey',"
               + "firstName VARCHAR(100),"
               + "lastName VARCHAR(200),"
               + "contactInfo VARCHAR(100),"
               + "email VARCHAR(100),"
               + "assignedTo VARCHAR(100) DEFAULT '',"
               + "status VARCHAR(100) DEFAULT 'Disapproved',"
-              + "positiveTestCheck INT DEFAULT 0 NOT NULL,"
-              + "symptomCheck INT DEFAULT 0 NOT NULL,"
-              + "closeContactCheck INT DEFAULT 0 NOT NULL,"
-              + "selfIsolateCheck INT DEFAULT 0 NOT NULL,"
-              + "feelGoodCheck INT DEFAULT 0 NOT NULL,"
+              + "positiveTestCheck VARCHAR(5) DEFAULT 'No' NOT NULL,"
+              + "symptomCheck VARCHAR(5) DEFAULT 'No' NOT NULL,"
+              + "closeContactCheck VARCHAR(5) DEFAULT 'No' NOT NULL,"
+              + "selfIsolateCheck VARCHAR(5) DEFAULT 'No' NOT NULL,"
+              + "feelGoodCheck VARCHAR(5) DEFAULT 'No' NOT NULL,"
               + "PRIMARY KEY(id)"
               //              + "CONSTRAINT COV_id_FK FOREIGN KEY (id) REFERENCES Users (id)"
               //              + "CONSTRAINT COV_positiveTestCheck_check CHECK (positiveTestCheck IN
@@ -49,28 +50,30 @@ public class COVID19SurveyTable extends AbsTables {
 
   public void addEntity(
       Connection conn,
+      String type,
       String firstName,
       String lastName,
       String contactInfo,
       String email,
-      int positiveTestCheck,
-      int symptomCheck,
-      int closeContactCheck,
-      int selfIsolateCheck,
-      int feelGoodCheck) {
+      String positiveTestCheck,
+      String symptomCheck,
+      String closeContactCheck,
+      String selfIsolateCheck,
+      String feelGoodCheck) {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
-              "INSERT INTO COVID19SurveyResults (firstName, lastName, contactInfo, email, positiveTestCheck, symptomCheck, closeContactCheck, selfIsolateCheck, feelGoodCheck) VALUES(?,?,?,?,?,?,?,?,?)");
+              "INSERT INTO COVID19SurveyResults (firstName, lastName, contactInfo, email, positiveTestCheck, symptomCheck, closeContactCheck, selfIsolateCheck, feelGoodCheck, serviceType) VALUES(?,?,?,?,?,?,?,?,?,?)");
       stmt.setString(1, firstName);
       stmt.setString(2, lastName);
       stmt.setString(3, contactInfo);
       stmt.setString(4, email);
-      stmt.setInt(5, positiveTestCheck);
-      stmt.setInt(6, symptomCheck);
-      stmt.setInt(7, closeContactCheck);
-      stmt.setInt(8, selfIsolateCheck);
-      stmt.setInt(9, feelGoodCheck);
+      stmt.setString(5, positiveTestCheck);
+      stmt.setString(6, symptomCheck);
+      stmt.setString(7, closeContactCheck);
+      stmt.setString(8, selfIsolateCheck);
+      stmt.setString(9, feelGoodCheck);
+      stmt.setString(10, type);
       stmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -92,7 +95,7 @@ public class COVID19SurveyTable extends AbsTables {
       while (rs.next()) {
         COVIDSurveyData.add(
             new COVIDSurveyResultsNodeInfo(
-                rs.getString("id"),
+                rs.getString("serviceType"),
                 rs.getString("firstName"),
                 rs.getString("lastName"),
                 rs.getString("contactInfo"),

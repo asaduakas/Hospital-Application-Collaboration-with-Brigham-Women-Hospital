@@ -22,6 +22,7 @@ public class UsersTable extends AbsTables {
               + "password VARCHAR(50) DEFAULT '',"
               + "name VARCHAR(50) DEFAULT '',"
               + "category VARCHAR(8) NOT NULL,"
+              + "clearance VARCHAR(30) DEFAULT '',"
               + "PRIMARY KEY(id),"
               + "CONSTRAINT USE_role_check CHECK (category IN ('Employee', 'Patient', 'Admin')))";
       stmt.executeUpdate(query);
@@ -33,6 +34,48 @@ public class UsersTable extends AbsTables {
     }
   }
 
+  //  public void populateTable(Connection conn, String filePath) {
+  //    if (filePath.isEmpty()) filePath = "Users.csv";
+  //    try {
+  //      Scanner sc = new Scanner(UsersTable.class.getResourceAsStream("/csv/" + filePath));
+  //      Statement stmt = conn.createStatement();
+  //
+  //      sc.nextLine();
+  //      while (sc.hasNextLine()) {
+  //        try {
+  //          String[] row = sc.nextLine().split(",");
+  //          String query =
+  //              "INSERT INTO Users VALUES("
+  //                  + "'"
+  //                  + row[0]
+  //                  + "',"
+  //                  + "'"
+  //                  + row[1]
+  //                  + "',"
+  //                  + "'"
+  //                  + row[2]
+  //                  + "',"
+  //                  + "'"
+  //                  + row[3]
+  //                  + "',"
+  //                  + "'"
+  //                  + row[4]
+  //                  + "')";
+  //          stmt.execute(query);
+  //        } catch (Exception e) {
+  //          System.out.println("User table did not populate");
+  //          e.printStackTrace();
+  //        }
+  //      }
+  //      conn.commit();
+  //      System.out.println("User Table populated");
+  //    } catch (Exception e) {
+  //      System.out.println("User table did not populate");
+  //      e.printStackTrace();
+  //      return;
+  //    }
+  //  }
+
   public void populateTable(Connection conn, String filePath) {
     if (filePath.isEmpty()) filePath = "Users.csv";
     try {
@@ -43,26 +86,19 @@ public class UsersTable extends AbsTables {
       while (sc.hasNextLine()) {
         try {
           String[] row = sc.nextLine().split(",");
-          String query =
-              "INSERT INTO Users VALUES("
-                  + "'"
-                  + row[0]
-                  + "',"
-                  + "'"
-                  + row[1]
-                  + "',"
-                  + "'"
-                  + row[2]
-                  + "',"
-                  + "'"
-                  + row[3]
-                  + "')";
-          stmt.execute(query);
+          PreparedStatement ps = conn.prepareStatement("INSERT INTO Users VALUES (?,?,?,?,NULL)");
+          ps.setString(1, row[0]);
+          ps.setString(2, row[1]);
+          ps.setString(3, row[2]);
+          ps.setString(4, row[3]);
+          //                    ps.setNull(5, );
+          ps.executeUpdate();
         } catch (Exception e) {
           System.out.println("User table did not populate");
           e.printStackTrace();
         }
       }
+
       conn.commit();
       System.out.println("User Table populated");
     } catch (Exception e) {
@@ -93,7 +129,7 @@ public class UsersTable extends AbsTables {
       stmt = conn.createStatement();
       String query = "SELECT * FROM Users";
       ResultSet rs = stmt.executeQuery(query);
-      System.out.println("id \tpassword \tname \tcategory");
+      System.out.println("id \tpassword \tname \tcategory \tclearance");
       while (rs.next()) {
         System.out.println(
             rs.getString("id")
@@ -102,7 +138,9 @@ public class UsersTable extends AbsTables {
                 + " \t"
                 + rs.getString("name")
                 + " \t"
-                + rs.getString("category"));
+                + rs.getString("category")
+                + " \t"
+                + rs.getString("clearance"));
         System.out.println(" ");
       }
     } catch (SQLException throwables) {
@@ -164,7 +202,7 @@ public class UsersTable extends AbsTables {
 
       if (rs.next()) { // If there is a user
         String pw = rs.getString("password");
-        System.out.println(pw + " this is rs");
+        //        System.out.println(pw + " this is rs");
         if (!password.equals(pw)) {
           return false;
         } else {
@@ -205,7 +243,8 @@ public class UsersTable extends AbsTables {
                 rs.getString("id"),
                 rs.getString("password"),
                 rs.getString("name"),
-                rs.getString("category")));
+                rs.getString("category"),
+                rs.getString("clearance")));
       }
     } catch (SQLException throwables) {
       throwables.printStackTrace();
@@ -224,7 +263,8 @@ public class UsersTable extends AbsTables {
                 rs.getString("id"),
                 rs.getString("password"),
                 rs.getString("name"),
-                rs.getString("category")));
+                rs.getString("category"),
+                rs.getString("clearance")));
       }
     } catch (SQLException throwables) {
       throwables.printStackTrace();
@@ -243,7 +283,8 @@ public class UsersTable extends AbsTables {
                 rs.getString("id"),
                 rs.getString("password"),
                 rs.getString("name"),
-                rs.getString("category")));
+                rs.getString("category"),
+                rs.getString("clearance")));
       }
     } catch (SQLException throwables) {
       throwables.printStackTrace();
@@ -265,5 +306,42 @@ public class UsersTable extends AbsTables {
       }
     }
     return userData;
+  }
+
+  public void changeClearance(Connection conn, String clearance, String id) {
+    try {
+      PreparedStatement stmt =
+          GlobalDb.getConnection().prepareStatement("UPDATE Users SET clearance = ? WHERE id = ?");
+      stmt.setString(1, clearance);
+      stmt.setString(2, id);
+      stmt.executeUpdate();
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+  }
+
+  public String validateClearance(Connection conn, String id) {
+    String clearance = null;
+    try {
+      PreparedStatement stmt =
+          GlobalDb.getConnection().prepareStatement("SELECT clearance FROM Users WHERE id = ?");
+      stmt.setString(1, id);
+      stmt.execute();
+      ResultSet rs = stmt.getResultSet();
+      if (rs.next()) {
+        String clearanceLevel = rs.getString("clearance");
+        if (clearanceLevel.equals("normalEntrance")) {
+          clearance = "normalEntrance";
+        }
+        if (clearanceLevel.equals("emergencyEntrance")) {
+          clearance = "emergencyEntrance";
+        } else {
+          clearance = "prettyGood";
+        }
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    return clearance;
   }
 }

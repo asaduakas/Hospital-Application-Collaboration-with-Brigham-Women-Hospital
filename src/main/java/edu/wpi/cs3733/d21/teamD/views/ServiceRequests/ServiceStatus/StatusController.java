@@ -2102,7 +2102,7 @@ public class StatusController extends AbsRequest
 
   private void COVIDSurveyResultsTableSetup() {
     JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> idCol =
-        new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("User ID");
+        new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("Request Type");
     JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> firstNameCol =
         new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("User First Name");
     JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> lastNameCol =
@@ -2115,22 +2115,22 @@ public class StatusController extends AbsRequest
         new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("Assigned To");
 
     JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> positiveTestCheckCol =
-        new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("positiveTestCheck");
+        new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("positiveTest");
     JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> symptomCheckCol =
-        new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("symptomCheck");
+        new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("symptom");
     JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> closeContactCheckCol =
-        new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("closeContactCheck");
+        new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("closeContact");
     JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> selfIsolateCol =
-        new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("selfIsolateCheck");
+        new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("selfIsolate");
     JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> feelGoodCheckCol =
-        new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("feelGoodCheck");
+        new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("feelGood");
     JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> statusCol =
         new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("Status");
 
     idCol.setCellValueFactory(
         (TreeTableColumn.CellDataFeatures<COVIDSurveyResultsNodeInfo, String> p) -> {
           if (idCol.validateValue(p)) {
-            return p.getValue().getValue().id;
+            return p.getValue().getValue().type;
           } else {
             return idCol.getComputedValue(p);
           }

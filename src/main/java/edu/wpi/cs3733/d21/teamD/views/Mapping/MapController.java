@@ -260,6 +260,23 @@ public class MapController implements AllAccessible {
 
   private void initializeNodes() {
 
+    String clearanceLevel =
+        FDatabaseTables.getUserTable()
+            .validateClearance(GlobalDb.getConnection(), HomeController.username);
+//    initialData.getGraphInfo().
+//    NodeUI enterance = new NodeUI(N, Marker, nodeNormalWidth, nodeNormalHeight);
+    if (clearanceLevel.equals("emergencyEntrance")) {
+      System.out.println("I think it is working... maybe (in mapController init Nodes)");
+
+    }
+    if (clearanceLevel.equals("normalEntrance")) {
+      System.out.println("normal so I think it is working... maybe (in mapController init Nodes)");
+    }
+    if (clearanceLevel.equals("prettyGood")) {
+      System.out.println(
+          "this is null so I think it is working... maybe (in mapController init Nodes)");
+    }
+
     NODES.clear();
 
     for (Node N : initialData.getGraphInfo()) {

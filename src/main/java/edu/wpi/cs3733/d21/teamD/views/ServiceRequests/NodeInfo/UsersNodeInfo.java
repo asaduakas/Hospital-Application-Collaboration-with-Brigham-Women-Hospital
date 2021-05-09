@@ -9,12 +9,26 @@ public class UsersNodeInfo extends RecursiveTreeObject<UsersNodeInfo> {
   public StringProperty password;
   public StringProperty name;
   public StringProperty category;
+  public StringProperty clearance;
 
-  public UsersNodeInfo(String id, String password, String name, String category) {
+  public UsersNodeInfo(String id, String password, String name, String category, String clearance) {
     this.id = new SimpleStringProperty(id);
     this.password = new SimpleStringProperty(password);
     this.name = new SimpleStringProperty(name);
     this.category = new SimpleStringProperty(category);
+    this.clearance = new SimpleStringProperty(clearance);
+  }
+
+  public String getClearance() {
+    return clearance.get();
+  }
+
+  public StringProperty clearanceProperty() {
+    return clearance;
+  }
+
+  public void setClearance(String clearance) {
+    this.clearance.set(clearance);
   }
 
   public String getId() {
