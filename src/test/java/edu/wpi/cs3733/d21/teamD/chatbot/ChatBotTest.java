@@ -6,7 +6,6 @@ import edu.wpi.cs3733.d21.teamD.App;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
 import edu.wpi.cs3733.d21.teamD.Testing.JavaFXThreadingRule;
 import edu.wpi.cs3733.d21.teamD.views.ControllerManager;
-import edu.wpi.cs3733.d21.teamD.views.SceneSizeChangeListener;
 import java.io.IOException;
 import java.util.*;
 import javafx.scene.Node;
@@ -151,15 +150,15 @@ public class ChatBotTest {
           Scene scene = App.primaryStage.getScene();
           App.changeChildrenInitPage(childrenList);
           // Overriding the method inside the object of fullScreenListener
-          SceneSizeChangeListener listener =
-              new SceneSizeChangeListener(scene, root, childrenList) {
-                @Override
-                public void changeChildren(List<Node> nodeList) {
-                  App.changeChildrenInitPage(childrenList);
-                }
-              };
-          scene.widthProperty().addListener(listener);
-          scene.heightProperty().addListener(listener);
+          //          SceneSizeChangeListener listener =
+          //              new SceneSizeChangeListener(scene, root, childrenList) {
+          //                @Override
+          //                public void changeChildren(List<Node> nodeList) {
+          //                  App.changeChildrenInitPage(childrenList);
+          //                }
+          //              };
+          //          scene.widthProperty().addListener(listener);
+          //          scene.heightProperty().addListener(listener);
         });
 
     chatbot bot = new chatbot();
@@ -167,7 +166,7 @@ public class ChatBotTest {
 
     System.out.println("##### You:");
     String userInput =
-        "Hello bot! My username is Kushal! I want to make a request."; // scanner.nextLine();
+        "Hello bot! My username is DEATHMETAL64! help there's a robbery"; // scanner.nextLine();
 
     // Break users chat input into sentences using sentence detection.
     String[] sentences = bot.SentenceDetect(userInput);
@@ -192,13 +191,34 @@ public class ChatBotTest {
       String category = bot.detectCategory(categoryModel, lemmas);
 
       // Get predefined answer from given category & add to answer.
-      if (category.equals("Navigation")) {
-        ControllerManager.attemptLoadPage("ServicePageView.fxml");
-      }
-      if (category.equals("Username-Info")) {
+      if (category.equals("Audio-Visual")) {
+        ControllerManager.attemptLoadPage("AVRequestView.fxml");
+      } else if (category.equals("Computer-Request")) {
+        ControllerManager.attemptLoadPage("ComputerServiceView.fxml");
+      } else if (category.equals("Ex-Trans")) {
+        ControllerManager.attemptLoadPage("ExternalTransportationView.fxml");
+      } else if (category.equals("Facilities-Request")) {
+        ControllerManager.attemptLoadPage("FacilitiesMaintenanceView.fxml");
+      } else if (category.equals("Floral-Delivery")) {
+        ControllerManager.attemptLoadPage("FloralDeliveryView.fxml");
+      } else if (category.equals("Food-Delivery")) {
+        ControllerManager.attemptLoadPage("FoodDeliveryView.fxml");
+      } else if (category.equals("Internal-Trans")) {
+        ControllerManager.attemptLoadPage("InternalTransportationView.fxml");
+      } else if (category.equals("Lang-Interpret")) {
+        ControllerManager.attemptLoadPage("LanguageInterpreterView.fxml");
+      } else if (category.equals("Laundry-Request")) {
+        ControllerManager.attemptLoadPage("LaundryView.fxml");
+      } else if (category.equals("Med-Delivery")) {
+        ControllerManager.attemptLoadPage("MedicineView.fxml");
+      } else if (category.equals("Sanitation-Request")) {
+        ControllerManager.attemptLoadPage("SanitationView.fxml");
+      } else if (category.equals("Security-Request")) {
+        ControllerManager.attemptLoadPage("SecurityServicesView.fxml");
+      } else if (category.equals("Username-Info")) {
         for (int i = 0; i < tokens.length; i++) {
           if ((posTags[i].equals("NNP")
-                  || posTags[i].equals("NN") && !tokens[i].equals("username"))) {
+              || posTags[i].equals("NN") && !tokens[i].equals("username"))) {
             answer = answer + " Username inputted is: " + tokens[i] + ".";
             break;
           }

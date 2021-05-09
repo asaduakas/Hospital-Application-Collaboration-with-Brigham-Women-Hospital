@@ -18,7 +18,6 @@ import opennlp.tools.tokenize.Tokenizer;
 import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
 import opennlp.tools.util.*;
-import opennlp.tools.util.model.ModelUtil;
 
 public class chatbot {
 
@@ -43,8 +42,12 @@ public class chatbot {
     DoccatFactory factory =
         new DoccatFactory(new FeatureGenerator[] {new BagOfWordsFeatureGenerator()});
 
-    TrainingParameters params = ModelUtil.createDefaultTrainingParameters();
-    params.put(TrainingParameters.CUTOFF_PARAM, 0);
+    //    TrainingParameters params = ModelUtil.createDefaultTrainingParameters();
+    //    params.put(TrainingParameters.CUTOFF_PARAM, 0);
+
+    TrainingParameters params = new TrainingParameters();
+    params.put(TrainingParameters.ITERATIONS_PARAM, 700);
+    params.put(TrainingParameters.CUTOFF_PARAM, 1);
 
     // Train a model with classifications from above file.
     DoccatModel model = DocumentCategorizerME.train("en", sampleStream, params, factory);
