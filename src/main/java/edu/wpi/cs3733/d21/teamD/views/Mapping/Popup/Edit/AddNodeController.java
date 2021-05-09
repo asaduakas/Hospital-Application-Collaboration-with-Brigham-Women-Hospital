@@ -1,5 +1,6 @@
 package edu.wpi.cs3733.d21.teamD.views.Mapping.Popup.Edit;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import edu.wpi.cs3733.d21.teamD.Astar.Node;
@@ -15,9 +16,9 @@ public class AddNodeController {
   @FXML public JFXComboBox FloorBox;
   @FXML public JFXComboBox NodeType;
   @FXML public JFXTextField building;
-  @FXML public JFXTextField nodeType;
   @FXML public JFXTextField longName;
   @FXML public JFXTextField shortName;
+  @FXML public JFXButton submitBtn;
 
   double X;
   double Y;
@@ -42,10 +43,19 @@ public class AddNodeController {
             "Exit",
             "Retail",
             "Service");
+    submitBtn
+        .disableProperty()
+        .bind(
+            NodeType.valueProperty()
+                .isNull()
+                .or(building.textProperty().isEmpty())
+                .or(longName.textProperty().isEmpty())
+                .or(shortName.textProperty().isEmpty()));
   }
 
   @FXML
   private void newNodeUI() {
+
     Node node = buildNode();
     NodeUI NUI =
         new NodeUI(

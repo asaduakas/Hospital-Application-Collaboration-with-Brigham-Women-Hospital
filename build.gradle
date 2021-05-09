@@ -44,6 +44,7 @@ dependencies {
             'org.mockito:mockito-core:3.3.3',
             'org.mockito:mockito-junit-jupiter:3.3.3',
     )
+    compile files('derbyclient.jar')
 
     compile 'com.google.cloud:google-cloud-bigquery'
     compile 'com.google.cloud:google-cloud-dialogflow-cx:0.6.1'

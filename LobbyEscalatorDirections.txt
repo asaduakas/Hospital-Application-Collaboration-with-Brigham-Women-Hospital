@@ -1,0 +1,10 @@
+Directions from Staircase K1 Floor 1 to Lobby Escalator:
+Take the stairs towards floor 1
+	Turn Left towards: 
+		Lobby Hallway 6
+	Turn Right towards: 
+		Lobby Hallway 3
+	Continue Straight towards: 
+		Lobby Escalator
+
+Welcome to Lobby Escalator

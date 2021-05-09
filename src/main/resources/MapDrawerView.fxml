@@ -16,12 +16,12 @@
    <children>
       <JFXButton fx:id="findPathButton" layoutX="213.0" layoutY="162.0" onAction="#tiasSpecialFunction" prefHeight="1.0" prefWidth="84.0" style="-fx-background-color: #366CDB; -fx-background-radius: 6px;" text="Find Path" textFill="WHITE" />
       <JFXTreeView fx:id="directoryTreeView" layoutY="191.0" prefWidth="400.0" stylesheets="@tree.css" />
-      <Label layoutY="601.0" text="Text Direction">
+      <Label layoutY="601.0" text="Pathfinding Directions">
          <font>
-            <Font size="15.0" />
+            <Font name="System Bold" size="18.0" />
          </font>
       </Label>
-      <JFXTextArea fx:id="dirText" layoutX="20.0" layoutY="629.0" prefHeight="191.0" prefWidth="360.0" />
+      <JFXTextArea fx:id="dirText" layoutX="20.0" layoutY="629.0" prefHeight="300.0" prefWidth="360.0" wrapText="true" />
       <GridPane fx:id="endGrid" layoutX="61.0" layoutY="106.0">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />

@@ -1,9 +1,6 @@
 package edu.wpi.cs3733.d21.teamD.views;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDrawer;
-import com.jfoenix.controls.JFXNodesList;
-import com.jfoenix.controls.JFXToggleButton;
+import com.jfoenix.controls.*;
 import edu.wpi.cs3733.d21.teamD.App;
 import edu.wpi.cs3733.d21.teamD.views.Access.AllAccessible;
 import edu.wpi.cs3733.d21.teamD.views.Access.LoginController;
@@ -11,19 +8,27 @@ import edu.wpi.cs3733.d21.teamD.views.Access.UserCategory;
 import edu.wpi.cs3733.d21.teamD.views.Mapping.MapScrollPane;
 import java.io.IOException;
 import java.util.List;
-import javafx.application.Application;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 
-public class HomeController extends Application implements AllAccessible {
+public class HomeController implements AllAccessible {
 
   @FXML private JFXButton exitButton; // Btn to exit program
   @FXML private JFXButton logoutButton;
@@ -34,6 +39,12 @@ public class HomeController extends Application implements AllAccessible {
   @FXML private JFXButton covidButton;
   @FXML public static Popup popup;
   @FXML public static VBox mainButtons;
+  @FXML public StackPane stackPane;
+  @FXML private AnchorPane mainPane;
+  @FXML private Pane thePane;
+
+  @FXML public ImageView chatbotImage;
+  private Boolean mouseOnPopup = false;
 
   public static UserCategory userTypeEnum;
   public static String username = null;
@@ -45,6 +56,11 @@ public class HomeController extends Application implements AllAccessible {
 
   // Used to reset search history for each login
   public static int historyTracker = 0;
+
+  @FXML
+  private void initialize() {
+    chatbotImage.setOnMousePressed((e) -> chatbotPopUp());
+  }
 
   @FXML
   private void logout(ActionEvent event) throws IOException {
@@ -81,17 +97,58 @@ public class HomeController extends Application implements AllAccessible {
   }
 
   @FXML
-  public void hospitalMapView() throws IOException {
-    if (LoginController.getUserCategory() != null) {
-      this.userCategory = LoginController.getUserCategory();
-    } else {
-      this.userCategory = InitPageController.getUserCategory();
-    }
+  public void hospitalMapView(ActionEvent event) throws Exception {
 
-    ControllerManager.attemptLoadPage(
-        "MapView.fxml",
-        fxmlLoader -> {
-          Pane root = (Pane) fxmlLoader.getRoot();
+    JFXSpinner spinner = new JFXSpinner();
+    Label loading = new Label("Loading Map");
+    Text text = new Text("Press ESC to cancel load map");
+    loading.setStyle("-fx-font-weight: Bold; -fx-font-size: 20");
+    text.setStyle("-fx-font-size: 20");
+
+    spinner.setMaxHeight(150);
+    spinner.setMaxWidth(150);
+    stackPane.setStyle("-fx-background-color: #ffffff");
+    stackPane.getChildren().addAll(loading, spinner, text);
+    stackPane.setMargin(text, new Insets(200, 0, 0, 20));
+
+    Task<Parent> task =
+        new Task<Parent>() {
+          @Override
+          protected Parent call() throws Exception {
+            FXMLLoader fxmlLoader =
+                new FXMLLoader(getClass().getClassLoader().getResource("MapView.fxml"));
+            Pane root = fxmlLoader.load();
+            return root;
+          }
+        };
+
+    mainPane.addEventHandler(
+        KeyEvent.KEY_PRESSED,
+        e -> {
+          if (e.getCode() == KeyCode.ESCAPE) {
+            System.out.println("cancelled");
+            task.cancel();
+          }
+        });
+
+    task.setOnSucceeded(
+        e -> {
+          stackPane.setVisible(false);
+
+          if (LoginController.getUserCategory() != null) {
+            this.userCategory = LoginController.getUserCategory();
+          } else {
+            this.userCategory = InitPageController.getUserCategory();
+          }
+
+          Pane root = (Pane) task.getValue();
+          Scene scene = new Scene(root);
+
+          App.getPrimaryStage().setMaximized(true);
+          App.getPrimaryStage().close();
+          App.getPrimaryStage().setScene(scene);
+          App.getPrimaryStage().show();
+
           List<Node> childrenList = root.getChildren();
           System.out.println("this is childrenList of the map" + childrenList);
           JFXToggleButton mapEditing = (JFXToggleButton) childrenList.get(4);
@@ -100,7 +157,6 @@ public class HomeController extends Application implements AllAccessible {
             mapEditing.setDisable(true);
           }
 
-          Scene scene = App.getPrimaryStage().getScene();
           changeChildrenMapView(childrenList);
           this.sizeListener =
               new SceneSizeChangeListener(scene, root, childrenList) {
@@ -113,6 +169,17 @@ public class HomeController extends Application implements AllAccessible {
           scene.widthProperty().addListener(sizeListener);
           scene.heightProperty().addListener(sizeListener);
           updateMapScrollPane(childrenList);
+        });
+
+    Thread thread = new Thread(task);
+    thread.start();
+
+    task.setOnFailed(e -> task.getException().printStackTrace());
+    task.setOnCancelled(
+        ee -> {
+          task.cancel();
+          stackPane.setVisible(false);
+          stackPane.setDisable(true);
         });
   }
 
@@ -210,6 +277,24 @@ public class HomeController extends Application implements AllAccessible {
         });
   }
 
+  @FXML
+  public void chatbotPopUp() {
+    ControllerManager.attemptLoadPopup(
+        "ChatbotView.fxml",
+        (fxmlLoader) -> {
+          ControllerManager.popup.setX(
+              chatbotImage.getLayoutX()
+                  - ControllerManager.popup.getWidth()
+                  - chatbotImage.getFitWidth() / 2);
+          ControllerManager.popup.setY(
+              chatbotImage.getLayoutY()
+                  - ControllerManager.popup.getHeight()
+                  + (chatbotImage.getFitHeight()));
+        });
+
+    ControllerManager.popup.setAutoHide(true);
+  }
+
   public static String getUserCategory() {
     return userCategory;
   }
@@ -218,6 +303,6 @@ public class HomeController extends Application implements AllAccessible {
     return userTypeEnum;
   }
 
-  @Override
-  public void start(Stage primaryStage) throws Exception {}
+  //  @Override
+  //  public void start(Stage primaryStage) throws Exception {}
 }

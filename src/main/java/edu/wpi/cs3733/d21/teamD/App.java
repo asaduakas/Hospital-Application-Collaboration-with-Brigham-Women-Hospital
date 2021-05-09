@@ -29,7 +29,8 @@ public class App extends Application {
   @Override
   public void init() {
 
-    GlobalDb.establishCon();
+    GlobalDb.establishCon(); // this will be for embedded
+    // if adminClientBool is true --> call establishClientConn()
     System.out.println("Starting Up");
   }
 

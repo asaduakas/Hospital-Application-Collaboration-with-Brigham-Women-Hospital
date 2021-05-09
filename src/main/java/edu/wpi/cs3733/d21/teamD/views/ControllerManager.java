@@ -12,7 +12,7 @@ import javafx.stage.Popup;
 
 public class ControllerManager {
 
-  private static Popup popup = null;
+  public static Popup popup = null;
 
   private static boolean isPermissible(Class<?> controllerClass) {
     if (AllAccessible.class.isAssignableFrom(controllerClass)) {

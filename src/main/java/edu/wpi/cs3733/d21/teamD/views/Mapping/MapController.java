@@ -121,6 +121,8 @@ public class MapController implements AllAccessible {
 
   private MapDrawerController drawerController;
 
+  public MapController() {}
+
   @FXML
   private void initialize() {
 
@@ -242,11 +244,6 @@ public class MapController implements AllAccessible {
 
   // _______________________________________SET UP________________________________________
 
-  private void LoadMap(Image floor, String floorNum) {
-    mapScrollPane.setMapImage(floor);
-    LoadingNodesEdges(floorNum);
-  }
-
   private void LoadingNodesEdges(String Floor) {
     for (EdgeUI EUI : EDGES) {
       if (initialData.getNodeByID(EUI.getE().getStartNodeID()).getFloor().equals(Floor)
@@ -322,6 +319,7 @@ public class MapController implements AllAccessible {
       setupDraggableNodeUI(Temp);
       NODES.add(Temp);
     }
+    initializeFavs();
   }
 
   private void initializeEdges() {
@@ -764,13 +762,13 @@ public class MapController implements AllAccessible {
                   Boolean newValue) {
 
                 if (toggleEditor.isSelected()) {
+                  isEditor = true;
                   clearMap();
                   LoadingNodesEdges(currentFloor);
-                  isEditor = true;
                 } else {
+                  isEditor = false;
                   clearMap();
                   drawNodeFloor(currentFloor);
-                  isEditor = false;
                 }
               }
             });
@@ -1123,6 +1121,23 @@ public class MapController implements AllAccessible {
     } else {
       N.setSizeHeight(N.getSizeHeight() + 60);
       N.setSizeWidth(N.getSizeWidth() + 60);
+    }
+  }
+
+  private void initializeFavs() {
+    LinkedList<NodeUI> initialFavs = new LinkedList<NodeUI>();
+    initialFavs.add(getNodeUIByLongName("Elevator S 01"));
+    initialFavs.add(getNodeUIByLongName("Restroom S elevator 1st floor"));
+    initialFavs.add(getNodeUIByLongName("Cafe Stairs"));
+    initialFavs.add(getNodeUIByLongName("Waiting Room 1 Floor 1"));
+    initialFavs.add(getNodeUIByLongName("Connors Center Security Desk Floor 1"));
+    initialFavs.add(getNodeUIByLongName("Shattuck Street Lobby Exit"));
+    initialFavs.add(getNodeUIByLongName("Emergency Department Entrance"));
+    initialFavs.add(getNodeUIByLongName("Parking Garage L2"));
+    initialFavs.add(getNodeUIByLongName("Cafe"));
+
+    for (NodeUI N : initialFavs) {
+      favorite(N);
     }
   }
 
