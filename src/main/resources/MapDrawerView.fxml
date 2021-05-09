@@ -15,49 +15,53 @@
 
 <AnchorPane prefHeight="640.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.cs3733.d21.teamD.views.Mapping.MapDrawerController">
    <children>
-      <JFXButton fx:id="findPathButton" layoutX="213.0" layoutY="162.0" onAction="#tiasSpecialFunction" prefHeight="1.0" prefWidth="84.0" style="-fx-background-color: #366CDB; -fx-background-radius: 6px;" text="Find Path" textFill="WHITE" />
-      <JFXTreeView fx:id="directoryTreeView" layoutY="191.0" prefWidth="400.0" stylesheets="@tree.css" />
-      <Label layoutY="601.0" text="Pathfinding Directions">
-         <font>
-            <Font name="System Bold" size="18.0" />
-         </font>
-      </Label>
-      <ScrollPane fx:id="textScrollPane" fitToWidth="true" layoutX="20.0" prefHeight="200.0" prefWidth="360.0" stylesheets="@mapScrollpane.css">
-         <content>
-            <TextFlow fx:id="dirText" />
-         </content>
-      </ScrollPane>
-      <GridPane fx:id="endGrid" layoutX="61.0" layoutY="106.0">
-         <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-         </columnConstraints>
-         <rowConstraints>
-            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-         </rowConstraints>
+      <AnchorPane>
          <children>
-            <JFXTextField fx:id="endField" prefHeight="25.0" prefWidth="210.0" promptText="End Location:">
+            <JFXButton fx:id="findPathButton" layoutX="213.0" layoutY="162.0" onAction="#tiasSpecialFunction" prefHeight="1.0" prefWidth="84.0" style="-fx-background-color: #366CDB; -fx-background-radius: 6px;" text="Find Path" textFill="WHITE" />
+            <JFXTreeView fx:id="directoryTreeView" layoutY="191.0" prefWidth="400.0" stylesheets="@tree.css" />
+            <Label layoutY="601.0" text="Pathfinding Directions">
                <font>
-                  <Font size="15.0" />
+                  <Font name="System Bold" size="18.0" />
                </font>
-            </JFXTextField>
+            </Label>
+            <ScrollPane fx:id="textScrollPane" fitToWidth="true" layoutX="20.0" prefHeight="200.0" prefWidth="360.0" stylesheets="@mapScrollpane.css">
+               <content>
+                  <TextFlow fx:id="dirText" />
+               </content>
+            </ScrollPane>
+            <GridPane fx:id="endGrid" layoutX="61.0" layoutY="106.0">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <JFXTextField fx:id="endField" prefHeight="25.0" prefWidth="210.0" promptText="End Location:">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </JFXTextField>
+               </children>
+            </GridPane>
+            <GridPane fx:id="startGrid" layoutX="61.0" layoutY="55.0">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <JFXTextField fx:id="startField" prefHeight="25.0" prefWidth="210.0" promptText="Start Location:">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </JFXTextField>
+               </children>
+            </GridPane>
+            <JFXComboBox fx:id="algoVersion" layoutX="188.0" layoutY="14.0" prefHeight="25.0" prefWidth="195.0" promptText="Pathfinding Algorithm" style="-fx-font-size: 14;" />
+            <JFXButton fx:id="dirBtn" layoutX="271.0" layoutY="599.0" onAction="#downloadDirections" style="-fx-background-color: #366CDB; -fx-background-radius: 6px;" text="Download Direction" textFill="WHITE" />
          </children>
-      </GridPane>
-      <GridPane fx:id="startGrid" layoutX="61.0" layoutY="55.0">
-         <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-         </columnConstraints>
-         <rowConstraints>
-            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-         </rowConstraints>
-         <children>
-            <JFXTextField fx:id="startField" prefHeight="25.0" prefWidth="210.0" promptText="Start Location:">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </JFXTextField>
-         </children>
-      </GridPane>
-      <JFXComboBox fx:id="algoVersion" layoutX="188.0" layoutY="14.0" prefHeight="25.0" prefWidth="195.0" promptText="Pathfinding Algorithm" style="-fx-font-size: 14;" />
-      <JFXButton fx:id="dirBtn" layoutX="271.0" layoutY="599.0" onAction="#downloadDirections" style="-fx-background-color: #366CDB; -fx-background-radius: 6px;" text="Download Direction" textFill="WHITE" />
+      </AnchorPane>
    </children>
 </AnchorPane>

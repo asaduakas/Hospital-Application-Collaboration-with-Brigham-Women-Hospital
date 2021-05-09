@@ -209,7 +209,6 @@ public class MapController implements AllAccessible {
     Pane root = (Pane) loader.getRoot();
     List<javafx.scene.Node> childrenList = root.getChildren();
     System.out.println("this is childrenList of the drawer " + childrenList);
-    root.setMinHeight(App.getPrimaryStage().getScene().getHeight());
     Scene scene = App.getPrimaryStage().getScene();
     changeChildrenMapView(childrenList);
     sizeListener =
@@ -226,11 +225,13 @@ public class MapController implements AllAccessible {
   }
 
   public void changeChildrenMapView(List<javafx.scene.Node> nodeList) {
-    JFXTreeView treeView = (JFXTreeView) nodeList.get(1);
-    Label label = (Label) nodeList.get(2);
-    ScrollPane textDirection = (ScrollPane) nodeList.get(3);
-    JFXButton dirBtn = (JFXButton) nodeList.get(7);
+    AnchorPane secondAnchor = (AnchorPane) nodeList.get(0);
+    JFXTreeView treeView = (JFXTreeView) secondAnchor.getChildren().get(1);
+    Label label = (Label) secondAnchor.getChildren().get(2);
+    ScrollPane textDirection = (ScrollPane) secondAnchor.getChildren().get(3);
+    JFXButton dirBtn = (JFXButton) secondAnchor.getChildren().get(7);
 
+    secondAnchor.setPrefHeight(App.getPrimaryStage().getScene().getHeight());
     treeView.setPrefHeight(App.getPrimaryStage().getScene().getHeight() / 2.5);
     label.setLayoutY(treeView.getLayoutY() + treeView.getPrefHeight() + 10);
     label.setLayoutX(10);
