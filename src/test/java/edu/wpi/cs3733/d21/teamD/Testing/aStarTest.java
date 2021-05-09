@@ -1,4 +1,4 @@
-package edu.wpi.cs3733.d21.teamD.PathFinding;
+package edu.wpi.cs3733.d21.teamD.Testing;
 
 import static org.junit.Assert.*;
 

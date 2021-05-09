@@ -1,4 +1,4 @@
-package edu.wpi.cs3733.d21.teamD.PathFinding;
+package edu.wpi.cs3733.d21.teamD.Testing;
 
 import edu.wpi.cs3733.d21.teamD.Astar.*;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;

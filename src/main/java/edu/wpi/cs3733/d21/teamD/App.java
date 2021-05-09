@@ -18,7 +18,7 @@ import javafx.stage.Stage;
 
 public class App extends Application {
 
-  private static Stage primaryStage;
+  public static Stage primaryStage;
 
   /*
   private boolean isInJar(){

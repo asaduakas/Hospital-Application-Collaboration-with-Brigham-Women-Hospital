@@ -2,22 +2,35 @@ package edu.wpi.cs3733.d21.teamD.chatbot;
 
 import static org.junit.Assert.*;
 
+import edu.wpi.cs3733.d21.teamD.App;
+import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
+import edu.wpi.cs3733.d21.teamD.Testing.JavaFXThreadingRule;
+import edu.wpi.cs3733.d21.teamD.views.ControllerManager;
+import edu.wpi.cs3733.d21.teamD.views.SceneSizeChangeListener;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
+import javafx.stage.Popup;
+import javafx.stage.Stage;
 import opennlp.tools.doccat.DoccatModel;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class ChatBotTest {
 
   private Map<String, String> questionAnswer = new HashMap<>();
+  private static Popup popup = null;
 
-  /*
-   * Define answers for each given category.
-   */
+  @Rule public JavaFXThreadingRule javafxRule = new JavaFXThreadingRule();
+
+  //  @BeforeClass
+  //  public static void initApp() {
+  //    App.launch(App.class, new String[0]);
+  //  }
+
   @Before
   public void setup() {
     questionAnswer.put("greeting", "Hello, how can I help you?");
@@ -117,5 +130,83 @@ public class ChatBotTest {
     //      break;
     //    }
     //    }
+  }
+
+  @Test
+  public void navigationTest() throws IOException, InterruptedException {
+
+    GlobalDb.establishCon();
+    System.out.println("Starting Up");
+
+    App.primaryStage = new Stage();
+
+    ControllerManager.attemptLoadPage(
+        "initPageView.fxml",
+        (fxmlLoader) -> {
+          Pane root = fxmlLoader.getRoot();
+          List<Node> childrenList = root.getChildren();
+          App.primaryStage.setMinHeight(135 * 4);
+          App.primaryStage.setMinWidth(240 * 4);
+          Scene scene = App.primaryStage.getScene();
+          App.changeChildrenInitPage(childrenList);
+          // Overriding the method inside the object of fullScreenListener
+          SceneSizeChangeListener listener =
+              new SceneSizeChangeListener(scene, root, childrenList) {
+                @Override
+                public void changeChildren(List<Node> nodeList) {
+                  App.changeChildrenInitPage(childrenList);
+                }
+              };
+          scene.widthProperty().addListener(listener);
+          scene.heightProperty().addListener(listener);
+        });
+
+    chatbot bot = new chatbot();
+    DoccatModel categoryModel = bot.trainCategorizerModel();
+
+    System.out.println("##### You:");
+    String userInput =
+        "Hello bot! My username is Kushal! I want to make a request."; // scanner.nextLine();
+
+    // Break users chat input into sentences using sentence detection.
+    String[] sentences = bot.SentenceDetect(userInput);
+
+    String answer = "";
+    //    boolean conversationComplete = false;
+
+    // Loop through sentences.
+    for (String sentence : sentences) {
+
+      // Separate words from each sentence using tokenizer.
+      String[] tokens = bot.Tokenize(sentence);
+
+      // Tag separated words with POS tags to understand their gramatical structure.
+      String[] posTags = bot.detectPOSTags(tokens);
+
+      // Lemmatize each word so that its easy to categorize.
+      String[] lemmas = bot.lemmatizeTokens(tokens, posTags);
+
+      // Determine BEST category using lemmatized tokens used a mode that we trained
+      // at start.
+      String category = bot.detectCategory(categoryModel, lemmas);
+
+      // Get predefined answer from given category & add to answer.
+      if (category.equals("Navigation")) {
+        ControllerManager.attemptLoadPage("ServicePageView.fxml");
+      }
+      if (category.equals("Username-Info")) {
+        for (int i = 0; i < tokens.length; i++) {
+          if (posTags[i].equals("NNP")) {
+            answer = answer + " Username inputted is: " + tokens[i] + ".";
+            break;
+          }
+        }
+      } else {
+        answer = answer + " " + questionAnswer.get(category);
+      }
+
+      // Print answer back to user
+      System.out.println("##### Chat Bot: " + answer);
+    }
   }
 }
