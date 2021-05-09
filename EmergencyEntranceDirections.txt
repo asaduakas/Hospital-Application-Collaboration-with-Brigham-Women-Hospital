@@ -1,0 +1,25 @@
+Directions from Parking Space #5 in Left Francis Street Parking Lot to Emergency Department Entrance:
+	Turn Left towards: 
+		Walkway Node #81 Right of Right Francis Street Parking Lot
+	Continue Straight towards: 
+		Exit/Entrance to Francis Street Left Parking Lot
+	Turn Right towards: 
+		Walkway Node #2 Right of Left Francis Street Parking Lot
+	Continue Straight towards: 
+		Walkway Node #3 Bottom Left Corner of Intersection of Binny and Francis Street
+	Continue Straight towards: 
+		Walkway Node #6 Bottom Right Corner of Intersection of Binny and Francis Street
+	Turn Left towards: 
+		Walkway Node #5 Top Right Corner of Intersection of Binny and Francis Street
+	Turn Right towards: 
+		Walkway Node #22 Francis Street to the Left of Valet Entrance
+	Continue Straight towards: 
+		Walkway Node #49 Left of 75 Francis Valet Entrance
+	Continue Straight towards: 
+		Walkway Node #23 Francis Street to the Right of Valet Entrance
+	Turn Left towards: 
+		Walkway Node #24 Right of Emergency Entrance of 75 Francis
+	Turn Left towards: 
+		Walkway Node #25 Outside Entrance to Emergency Exit 75 Francis
+
+Welcome to Emergency Department Entrance

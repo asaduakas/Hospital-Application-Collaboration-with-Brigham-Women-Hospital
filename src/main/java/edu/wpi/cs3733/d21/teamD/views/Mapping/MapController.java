@@ -258,6 +258,8 @@ public class MapController implements AllAccessible {
     }
   }
 
+  int hasInitializedFavs = 0;
+
   private void initializeNodes() {
 
     NODES.clear();
@@ -319,7 +321,11 @@ public class MapController implements AllAccessible {
       setupDraggableNodeUI(Temp);
       NODES.add(Temp);
     }
-    initializeFavs();
+
+    if (hasInitializedFavs == 0) {
+      initializeFavs();
+      hasInitializedFavs++;
+    }
   }
 
   private void initializeEdges() {
@@ -1137,6 +1143,8 @@ public class MapController implements AllAccessible {
     initialFavs.add(getNodeUIByLongName("Cafe"));
 
     for (NodeUI N : initialFavs) {
+      FDatabaseTables.getNodeTable()
+          .deleteFav(GlobalDb.getConnection(), N.getN().getNodeID(), HomeController.username);
       FDatabaseTables.getNodeTable()
           .addToFavoriteNodes(
               GlobalDb.getConnection(),
