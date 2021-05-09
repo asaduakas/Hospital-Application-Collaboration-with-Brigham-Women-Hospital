@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXDrawer?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -95,8 +94,7 @@
             <Cursor fx:constant="HAND" />
          </cursor></JFXButton>
       <StackPane fx:id="stackPane" layoutX="530.0" layoutY="264.0" prefHeight="150.0" prefWidth="200.0" />
-      <JFXDrawer fx:id="chatbotDrawer" layoutX="850.0" layoutY="267.0" prefHeight="406.0" prefWidth="350.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-      <ImageView fx:id="chatbotImage" fitHeight="52.0" fitWidth="49.0" layoutX="881.0" layoutY="601.0" pickOnBounds="true">
+      <ImageView fx:id="chatbotImage" fitHeight="52.0" fitWidth="49.0" layoutX="881.0" layoutY="601.0" onMousePressed="#chatbotPopUp" pickOnBounds="true">
          <image>
             <Image url="@Images/diamondDragon.png" />
          </image>
