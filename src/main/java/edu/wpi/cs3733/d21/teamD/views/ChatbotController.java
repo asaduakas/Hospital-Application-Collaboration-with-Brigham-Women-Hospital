@@ -9,18 +9,17 @@ import java.util.HashMap;
 import java.util.Map;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.scene.text.TextFlow;
 import opennlp.tools.doccat.DoccatModel;
 
 public class ChatbotController implements AllAccessible {
@@ -89,7 +88,7 @@ public class ChatbotController implements AllAccessible {
     ImageView icon = new ImageView();
     if (message != null) {
       if (turn.equals("user")) {
-        textPadding = new Insets(0, 10, 0, 100);
+        textPadding = new Insets(0, 40, 0, 100);
         alignment = TextAlignment.RIGHT;
         msgBgColor = Color.WHITE;
         icon.setImage(userIconImg);
@@ -97,7 +96,7 @@ public class ChatbotController implements AllAccessible {
         icon.setFitHeight(30);
         dispMessage = HomeController.username + ": " + message + "\n";
       } else if (turn.equals("bot")) {
-        textPadding = new Insets(0, 100, 0, 10);
+        textPadding = new Insets(0, 100, 0, 20);
         alignment = TextAlignment.LEFT;
         msgBgColor = Color.BLUE;
         icon.setImage(botIconImg);
@@ -110,19 +109,13 @@ public class ChatbotController implements AllAccessible {
       dispText.maxHeight(20);
       dispText.setStyle(
           " -fx-font-style: Italic; -fx-font-weight: Bold; -fx-font-size: 20; -fx-background-color: #093fc6");
-      //      if (turn.equals("user")) icon.setX(chatTextFlow.getPrefWidth() / 2);
-      //      chatTextFlow.getChildren().addAll(icon, dispText);
-      //      chatTextFlow.setTextAlignment(alignment);
-      // chatTextFlow.setPadding(textPadding);
-      //      chatTextFlow.setStyle("-fx-background-color: White");
-
-      HBox hBox = new HBox();
-      hBox.getChildren().addAll(icon, dispText);
-      hBox.setMaxWidth(textBox.getPrefWidth());
-      if (turn.equals("user")) hBox.setAlignment(Pos.BASELINE_RIGHT);
-      else hBox.setAlignment(Pos.BASELINE_LEFT);
-      textBox.getChildren().add(hBox);
-      // textBox.setSpacing(10);
+      chatAreaScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+      TextFlow test = new TextFlow();
+      test.setPrefWidth(chatAreaScroll.getPrefWidth());
+      test.getChildren().addAll(icon, dispText);
+      test.setTextAlignment(alignment);
+      test.setPadding(textPadding);
+      textBox.getChildren().add(test);
     }
   }
 
