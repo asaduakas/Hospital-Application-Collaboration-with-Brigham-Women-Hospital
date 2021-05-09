@@ -44,6 +44,7 @@ public class MapDrawerController implements Initializable {
   @FXML private ScrollPane textScrollPane;
   @FXML JFXButton dirBtn;
   @FXML TextFlow dirText;
+  TextArea downloadText = new TextArea();
   private LinkedList<edu.wpi.cs3733.d21.teamD.Astar.Node> Targets = new LinkedList<>();
 
   private MapController mapController;
@@ -97,6 +98,7 @@ public class MapDrawerController implements Initializable {
   @Override
   public void initialize(URL url, ResourceBundle rb) {
 
+    downloadText.setVisible(false);
     textScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
     textScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
     textScrollPane.setStyle(
@@ -577,6 +579,7 @@ public class MapDrawerController implements Initializable {
     // ScaleDown(edges.getFirst().getStartNode());
 
     dirText.getChildren().clear();
+    downloadText.clear();
 
     edu.wpi.cs3733.d21.teamD.Astar.Node start =
         initialData.getNodeByID(edges.getFirst().getStartNodeID());
@@ -588,6 +591,8 @@ public class MapDrawerController implements Initializable {
         new Text("Directions from " + start.getLongName() + " to " + end.getLongName() + ":\n");
     aText.setFont(hFont);
     dirText.getChildren().add(aText);
+    downloadText.appendText(
+        "Directions from " + start.getLongName() + " to " + end.getLongName() + ":\n");
     // dirText.appendText("Directions from " + start.getLongName() + " to " + end.getLongName() +
     // ":\n");
     setEnd(end.getShortName());
@@ -623,8 +628,9 @@ public class MapDrawerController implements Initializable {
     Text endText = new Text("\nWelcome to " + end.getLongName() + "\n");
     endText.setFont(hFont);
     dirText.getChildren().add(endText);
+    downloadText.appendText("\nWelcome to " + end.getLongName() + "\n");
     // dirText.appendText("\nWelcome to " + end.getLongName() + "\n");
-    //    dirText.setPromptText(dirText.getText());
+    // dirText.setPromptText(dirText.getText());
   }
 
   public String evalTurn(
@@ -645,6 +651,8 @@ public class MapDrawerController implements Initializable {
           new Text("\t" + "Take the elevator towards floor " + endNode.getFloor() + "\n");
       elvText.setFont(pFont);
       //      dirText.getChildren().add(elvText);
+      downloadText.appendText(
+          "\t" + "Take the elevator towards floor " + endNode.getFloor() + "\n");
       try {
         ImageView EleImage =
             new ImageView(new Image(new FileInputStream("src/main/resources/Images/elevator.png")));
@@ -665,6 +673,7 @@ public class MapDrawerController implements Initializable {
       //  dirText.setFont(hFont);
       Text text = new Text("\t" + "Take the stairs towards floor " + endNode.getFloor() + "\n");
       text.setFont(pFont);
+      downloadText.appendText("\t" + "Take the stairs towards floor " + endNode.getFloor() + "\n");
       try {
         ImageView Image =
             new ImageView(new Image(new FileInputStream("src/main/resources/Images/stairs.png")));
@@ -707,6 +716,7 @@ public class MapDrawerController implements Initializable {
       // dirText.setFont(pFont);
       Text lText = new Text("\tTurn Left towards: \n\t\t" + endNode.getLongName() + "\n");
       lText.setFont(pFont);
+      downloadText.appendText("\tTurn Left towards: \n\t\t" + endNode.getLongName() + "\n");
       try {
         ImageView Image =
             new ImageView(new Image(new FileInputStream("src/main/resources/Images/left.png")));
@@ -727,6 +737,7 @@ public class MapDrawerController implements Initializable {
       // dirText.setFont(pFont);
       Text rText = new Text("\tTurn Right towards: \n\t\t" + endNode.getLongName() + "\n");
       rText.setFont(pFont);
+      downloadText.appendText("\tTurn Right towards: \n\t\t" + endNode.getLongName() + "\n");
       try {
         ImageView Image =
             new ImageView(new Image(new FileInputStream("src/main/resources/Images/right.png")));
@@ -744,6 +755,8 @@ public class MapDrawerController implements Initializable {
         // dirText.setFont(pFont);
         Text sText = new Text("\tContinue Straight towards: \n\t\t" + endNode.getLongName() + "\n");
         sText.setFont(pFont);
+        downloadText.appendText(
+            "\tContinue Straight towards: \n\t\t" + endNode.getLongName() + "\n");
         try {
           ImageView Image =
               new ImageView(new Image(new FileInputStream("src/main/resources/Images/up.png")));
@@ -791,6 +804,7 @@ public class MapDrawerController implements Initializable {
       // dirText.setFont(hFont);
       Text text = new Text("Take the stairs towards floor " + endNode.getFloor() + "\n");
       text.setFont(pFont);
+      downloadText.appendText("Take the stairs towards floor " + endNode.getFloor() + "\n");
       try {
         ImageView Image =
             new ImageView(new Image(new FileInputStream("src/main/resources/Images/stairs.png")));
@@ -807,6 +821,7 @@ public class MapDrawerController implements Initializable {
         //        System.out.println("Head North towards " + endNode.getLongName());
         Text text = new Text("\tHead North towards: \n\t\t" + endNode.getLongName() + "\n");
         text.setFont(pFont);
+        downloadText.appendText("\tHead North towards: \n\t\t" + endNode.getLongName() + "\n");
         try {
           ImageView Image =
               new ImageView(
@@ -826,6 +841,7 @@ public class MapDrawerController implements Initializable {
         //        System.out.println("Head South towards " + endNode.getLongName());
         Text text = new Text("\tHead South towards: \n\t\t" + endNode.getLongName() + "\n");
         text.setFont(pFont);
+        downloadText.appendText("\tHead South towards: \n\t\t" + endNode.getLongName() + "\n");
         try {
           ImageView Image =
               new ImageView(
@@ -843,6 +859,7 @@ public class MapDrawerController implements Initializable {
         //        System.out.println("Head East towards " + endNode.getLongName());
         Text text = new Text("\tHead East towards: \n\t\t" + endNode.getLongName() + "\n");
         text.setFont(pFont);
+        downloadText.appendText("\tHead East towards: \n\t\t" + endNode.getLongName() + "\n");
         try {
           ImageView Image =
               new ImageView(
@@ -860,6 +877,7 @@ public class MapDrawerController implements Initializable {
         //        System.out.println("Head West towards " + endNode.getLongName());
         Text text = new Text("\tHead West towards: \n\t\t" + endNode.getLongName() + "\n");
         text.setFont(pFont);
+        downloadText.appendText("\tHead West towards: \n\t\t" + endNode.getLongName() + "\n");
         try {
           ImageView Image =
               new ImageView(
@@ -888,7 +906,8 @@ public class MapDrawerController implements Initializable {
       try {
         FileWriter directions = new FileWriter(name);
 
-        directions.write(dirText.getChildren().toString());
+        directions.write(downloadText.getText());
+
         directions.close();
 
         String DialogText = "";

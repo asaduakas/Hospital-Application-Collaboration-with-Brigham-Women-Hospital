@@ -1,0 +1,4 @@
+[Text[text="Directions from Emergency Department Entrance to Lobby Shattuck Street Stairs:
+", x=0.0, y=0.0, alignment=LEFT, origin=BASELINE, boundsType=LOGICAL, font=Font[name=Verdana Bold, family=Verdana, style=Bold, size=16.0], fontSmoothingType=GRAY, fill=0x000000ff], Text[text="
+Welcome to Lobby Shattuck Street Stairs
+", x=0.0, y=0.0, alignment=LEFT, origin=BASELINE, boundsType=LOGICAL, font=Font[name=Verdana Bold, family=Verdana, style=Bold, size=16.0], fontSmoothingType=GRAY, fill=0x000000ff]]
