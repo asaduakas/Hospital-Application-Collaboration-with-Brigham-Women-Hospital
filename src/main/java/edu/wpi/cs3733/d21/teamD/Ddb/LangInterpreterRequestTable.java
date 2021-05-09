@@ -121,7 +121,7 @@ public class LangInterpreterRequestTable extends AbsTables {
     LinkedList<LocalStatus> LocalStatus = new LinkedList<>();
     try {
       PreparedStatement stmt =
-          conn.prepareStatement("SELECT location, status FROM AudVisServiceRequest");
+          conn.prepareStatement("SELECT location, status FROM LangInterpRequest");
 
       ResultSet rs = stmt.executeQuery();
       while (rs.next()) {

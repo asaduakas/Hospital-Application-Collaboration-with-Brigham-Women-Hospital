@@ -118,7 +118,7 @@ public class FacilitiesRequestTable extends AbsTables {
     LinkedList<LocalStatus> LocalStatus = new LinkedList<>();
     try {
       PreparedStatement stmt =
-          conn.prepareStatement("SELECT location, status FROM AudVisServiceRequest");
+          conn.prepareStatement("SELECT location, status FROM FacilitiesServiceRequest");
 
       ResultSet rs = stmt.executeQuery();
       while (rs.next()) {

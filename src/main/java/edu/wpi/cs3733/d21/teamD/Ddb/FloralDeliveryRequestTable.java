@@ -120,7 +120,7 @@ public class FloralDeliveryRequestTable extends AbsTables {
     LinkedList<LocalStatus> LocalStatus = new LinkedList<>();
     try {
       PreparedStatement stmt =
-          conn.prepareStatement("SELECT location, status FROM AudVisServiceRequest");
+          conn.prepareStatement("SELECT location, status FROM FloralRequests");
 
       ResultSet rs = stmt.executeQuery();
       while (rs.next()) {

@@ -114,7 +114,7 @@ public class InternalTransRequestTable extends AbsTables {
     LinkedList<LocalStatus> LocalStatus = new LinkedList<>();
     try {
       PreparedStatement stmt =
-          conn.prepareStatement("SELECT destination, status FROM AudVisServiceRequest");
+          conn.prepareStatement("SELECT destination, status FROM InternalTransReq");
 
       ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
