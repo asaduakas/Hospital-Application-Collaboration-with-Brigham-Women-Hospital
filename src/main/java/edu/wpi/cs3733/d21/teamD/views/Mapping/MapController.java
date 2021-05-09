@@ -98,6 +98,7 @@ public class MapController implements AllAccessible {
   public static final Image RETL = new Image("Images/retailpin.png");
   public static final Image SERV = new Image("Images/service.png");
   public static final Image favImage = new Image("Images/favIcon_good.png");
+  public static final Image AudioVisual = new Image("Images/audio-visual_white.png");
   private Image up = new Image("Images/up-arrow.png");
   private Image down = new Image("Images/redArrow.png");
   private Image endImage = new Image("Images/endingIcon_white.png");
@@ -1663,8 +1664,15 @@ public class MapController implements AllAccessible {
 
   @FXML
   private void LoadServices() {
+    clearMap();
 
     for (LocalStatus LS :
-        FDatabaseTables.getAudVisTable().getLocalStatus(GlobalDb.getConnection())) {}
+        FDatabaseTables.getAudVisTable().getLocalStatus(GlobalDb.getConnection())) {
+
+      for (Node E: FDatabaseTables.getNodeTable().convertNodesToLL(GlobalDb.getConnection()))
+      {
+
+      }
+    }
   }
 }
