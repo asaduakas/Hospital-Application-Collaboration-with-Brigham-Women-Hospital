@@ -12,6 +12,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class MapScrollPane extends ScrollPane {
   private double minimumScale;
   private double maximumScale;
@@ -116,5 +119,34 @@ public class MapScrollPane extends ScrollPane {
         (valX + adjustment.getX()) / (updatedInnerBounds.getWidth() - viewportBounds.getWidth()));
     this.setVvalue(
         (valY + adjustment.getY()) / (updatedInnerBounds.getHeight() - viewportBounds.getHeight()));
+  }
+
+  private Point2D getClosestCorner(double x, double y){
+    final double width = mapImage.getImage().getWidth();
+    final double height = mapImage.getImage().getHeight();
+    List<Point2D> corners = Arrays.asList(
+            new Point2D(0, 0), new Point2D(width, 0), new Point2D(0, height), new Point2D(width, height)
+    );
+    return corners.stream().min((p1, p2) -> (int) (p1.distance(x, y) - p2.distance(x, y))).get();
+  }
+
+  private void setScaleForCenter(double x, double y){
+    //What is the minimum scale such that, if (x,y) is the center, none of the corners show up in the viewport bounds?
+
+    final double width = mapImage.getImage().getWidth();
+    final double height = mapImage.getImage().getHeight();
+
+    final Point2D corner = getClosestCorner(x, y);
+    final double maxVWidth = 2 * Math.abs(x - corner.getX()); //How wide could viewport get without showing corner?
+    final double maxVHeight = 2 * Math.abs(y - corner.getY()); //How tall ...
+
+    scaleValue = Math.max(width / maxVWidth, height / maxVHeight);
+    updateScale();
+  }
+
+  public void setCenter(double x, double y) {
+    setScaleForCenter(x, y);
+    this.setHvalue(x / mapImage.getImage().getWidth());
+    this.setVvalue(y / mapImage.getImage().getHeight());
   }
 }
