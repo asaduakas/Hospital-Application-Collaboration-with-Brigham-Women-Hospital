@@ -3,9 +3,7 @@ package edu.wpi.cs3733.d21.teamD.chatbot;
 import static org.junit.Assert.*;
 
 import edu.wpi.cs3733.d21.teamD.App;
-import edu.wpi.cs3733.d21.teamD.Ddb.FDatabaseTables;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
-import edu.wpi.cs3733.d21.teamD.Ddb.UsersTable;
 import edu.wpi.cs3733.d21.teamD.Testing.JavaFXThreadingRule;
 import edu.wpi.cs3733.d21.teamD.views.ControllerManager;
 import edu.wpi.cs3733.d21.teamD.views.HomeController;
@@ -70,11 +68,11 @@ public class ChatBotTest {
 
     // Get chat input from user.
     System.out.println("##### You:");
-    String userInput =
-        "Hello bot! what is my password? Can you help me change it"; // scanner.nextLine();
+    String userInput = "Hello bot! Change my Username? What is it?"; // scanner.nextLine();
 
     // Break users chat input into sentences using sentence detection.
     String[] sentences = bot.SentenceDetect(userInput);
+    String prevCategory = " ";
 
     String answer = "";
     //    boolean conversationComplete = false;
@@ -96,34 +94,39 @@ public class ChatBotTest {
       String category = bot.detectCategory(categoryModel, lemmas);
 
       // Get predefined answer from given category & add to answer.
-      if (category.equals("Username-Info")) {
-        for (int i = 0; i < tokens.length; i++) {
-          if ((posTags[i].equals("NNP")
-              || posTags[i].equals("NN") && !tokens[i].equals("username"))) {
-            answer = answer + " Username inputted is: " + HomeController.username + ".";
-            break;
-          }
-        }
+      if (category.equals("Arbitrary")) {
+        category = prevCategory;
+        System.out.println(category);
       }
-      if (category.equals("Username-Change")) {
-        GlobalDb.establishCon();
-        FDatabaseTables.getUserTable();
-        FDatabaseTables.getUserTable().dispUsers(GlobalDb.getConnection());
+      if (category.equals("Username-Info")) {
+        prevCategory = "Username-Change";
+        //        for (int i = 0; i < tokens.length; i++) {
+        //          if ((posTags[i].equals("NNP")
+        //              || posTags[i].equals("NN") && !tokens[i].equals("username"))) {
+        //            answer = answer + " Username inputted is: " + HomeController.username + ".";
+        //            break;
+        //          }
+        //        }
+        answer = answer + " Your current username is " + HomeController.username + ".";
+
+      } else if (category.equals("Username-Change")) {
+        prevCategory = "Username-Info";
         // get the login username
         // HomeController.getUsername
         answer = answer + " What would you like your new username to be?";
         // take the input from textfield fxxml, which will be new username, replace "elaine" with
         // whatever the new username is in below function
         // write to the database
-       UsersTable.updateUsername(GlobalDb.getConnection(), HomeController.username, "elaine");
-      }
-      if (category.equals("Password-Change")) {
+        //        UsersTable.updateUsername(GlobalDb.getConnection(), HomeController.username,
+        // "elaine");
+      } else if (category.equals("Password-Change")) {
+        prevCategory = "Password-Info";
         answer = answer + " What would you like your new password to be?";
         // take the input from the textfield
         // update the new passwd
         // write to database
-        UsersTable.updateUserPassword(
-            GlobalDb.getConnection(), HomeController.username, "newPasswd");
+        //        UsersTable.updateUserPassword(
+        //            GlobalDb.getConnection(), HomeController.username, "newPasswd");
       } else {
         answer = answer + " " + questionAnswer.get(category);
       }
