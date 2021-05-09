@@ -10,6 +10,7 @@ public class COVIDSurveyResultsNodeInfo extends RecursiveTreeObject<COVIDSurveyR
   public StringProperty firstName = new SimpleStringProperty();
   public StringProperty lastName = new SimpleStringProperty();
   public StringProperty contactInfo = new SimpleStringProperty();
+  public StringProperty email = new SimpleStringProperty();
   public StringProperty assignedEmployee = new SimpleStringProperty();
   public StringProperty status = new SimpleStringProperty();
 
@@ -30,6 +31,7 @@ public class COVIDSurveyResultsNodeInfo extends RecursiveTreeObject<COVIDSurveyR
       String firstName,
       String lastName,
       String contactInfo,
+      String email,
       String assignedEmployee,
       String status,
       String positiveTestCheck,
@@ -41,6 +43,7 @@ public class COVIDSurveyResultsNodeInfo extends RecursiveTreeObject<COVIDSurveyR
     this.firstName = new SimpleStringProperty(firstName);
     this.lastName = new SimpleStringProperty(lastName);
     this.contactInfo = new SimpleStringProperty(contactInfo);
+    this.email = new SimpleStringProperty(email);
     this.assignedEmployee = new SimpleStringProperty(assignedEmployee);
     this.status = new SimpleStringProperty(status);
     this.positiveTestCheck = new SimpleStringProperty(positiveTestCheck);
@@ -70,6 +73,18 @@ public class COVIDSurveyResultsNodeInfo extends RecursiveTreeObject<COVIDSurveyR
 
   public String getFirstName() {
     return firstName.get();
+  }
+
+  public String getEmail() {
+    return email.get();
+  }
+
+  public StringProperty emailProperty() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email.set(email);
   }
 
   public StringProperty firstNameProperty() {
