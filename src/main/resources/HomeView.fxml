@@ -14,7 +14,7 @@
 <AnchorPane fx:id="mainPane" prefHeight="675.0" prefWidth="1200.0" styleClass="bodybg" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.cs3733.d21.teamD.views.HomeController">
    <children>
 
-      <Pane prefHeight="85.0" prefWidth="200.0" style="-fx-background-color: #ffffff;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      <Pane fx:id="thePane" prefHeight="85.0" prefWidth="200.0" style="-fx-background-color: #ffffff;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
       <ImageView fitHeight="590.0" fitWidth="1248.0" layoutX="-48.0" y="87.0">
          <image>
             <Image url="@Images/Brigham-and-Women’s-Innovation-Hub-1500x1125(2).jpg" />

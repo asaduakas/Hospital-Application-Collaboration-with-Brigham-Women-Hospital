@@ -42,9 +42,10 @@ public class HomeController implements AllAccessible {
   @FXML public static VBox mainButtons;
   @FXML public StackPane stackPane;
   @FXML private AnchorPane mainPane;
+  @FXML private Pane thePane;
 
   @FXML public ImageView chatbotImage;
-  private Boolean mouseOnPopup;
+  private Boolean mouseOnPopup = false;
 
   public static UserCategory userTypeEnum;
   public static String username = null;
@@ -58,7 +59,9 @@ public class HomeController implements AllAccessible {
   public static int historyTracker = 0;
 
   @FXML
-  private void initialize() {}
+  private void initialize() {
+    chatbotImage.setOnMousePressed((e) -> chatbotPopUp());
+  }
 
   @FXML
   private void logout(ActionEvent event) throws IOException {
@@ -280,29 +283,13 @@ public class HomeController implements AllAccessible {
     ControllerManager.attemptLoadPopup(
         "ChatbotView.fxml",
         (fxmlLoader) -> {
-          ControllerManager.popup.setX(chatbotImage.getX() - popup.getWidth());
-          ControllerManager.popup.setY(chatbotImage.getY() - popup.getHeight());
-        });
-    mainPane.setOnMousePressed(
-        (e) -> {
-          System.out.println("mouse clicked");
-          if (!mouseOnPopup) {
-            ControllerManager.popup.hide();
-          }
+          ControllerManager.popup.setX(
+              chatbotImage.getLayoutX() - ControllerManager.popup.getWidth());
+          ControllerManager.popup.setY(
+              chatbotImage.getLayoutY() - ControllerManager.popup.getHeight());
         });
 
-    ControllerManager.popup.addEventHandler(
-        MouseEvent.MOUSE_ENTERED,
-        (e) -> {
-          System.out.println("mouse entered popup");
-          mouseOnPopup = true;
-        });
-    ControllerManager.popup.addEventHandler(
-        MouseEvent.MOUSE_EXITED,
-        (e) -> {
-          System.out.println("mouse exited popup");
-          mouseOnPopup = false;
-        });
+    ControllerManager.popup.setAutoHide(true);
   }
 
   public static String getUserCategory() {
