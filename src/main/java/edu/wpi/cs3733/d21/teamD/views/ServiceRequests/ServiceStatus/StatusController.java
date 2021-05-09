@@ -2109,6 +2109,8 @@ public class StatusController extends AbsRequest
         new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("User Last Name");
     JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> contactInfoCol =
         new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("Contact Information");
+    JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> emailCol =
+        new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("Email Address");
     JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> assignedCol =
         new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("Assigned To");
 
@@ -2124,20 +2126,6 @@ public class StatusController extends AbsRequest
         new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("feelGoodCheck");
     JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> statusCol =
         new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("Status");
-
-    //        JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, Integer> positiveTestCheckCol =
-    //                new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo,
-    // Integer>("positiveTestCheck");
-    //        JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, Integer> symptomCheckCol =
-    //                new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, Integer>("symptomCheck");
-    //        JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, Integer> closeContactCheckCol =
-    //                new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo,
-    // Integer>("closeContactCheck");
-    //        JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, Integer> selfIsolateCol =
-    //                new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo,
-    // Integer>("selfIsolateCheck");
-    //        JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, Integer> feelGoodCheckCol =
-    //                new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, Integer>("feelGoodCheck");
 
     idCol.setCellValueFactory(
         (TreeTableColumn.CellDataFeatures<COVIDSurveyResultsNodeInfo, String> p) -> {
@@ -2170,6 +2158,15 @@ public class StatusController extends AbsRequest
             return p.getValue().getValue().contactInfo;
           } else {
             return contactInfoCol.getComputedValue(p);
+          }
+        });
+
+    emailCol.setCellValueFactory(
+        (TreeTableColumn.CellDataFeatures<COVIDSurveyResultsNodeInfo, String> p) -> {
+          if (emailCol.validateValue(p)) {
+            return p.getValue().getValue().email;
+          } else {
+            return emailCol.getComputedValue(p);
           }
         });
 
@@ -2253,6 +2250,7 @@ public class StatusController extends AbsRequest
     firstNameCol.setEditable(false);
     lastNameCol.setEditable(false);
     contactInfoCol.setEditable(false);
+    emailCol.setEditable(false);
     assignedCol.setEditable(true);
     statusCol.setEditable(true);
     positiveTestCheckCol.setEditable(false);
@@ -2269,6 +2267,7 @@ public class StatusController extends AbsRequest
             firstNameCol,
             lastNameCol,
             contactInfoCol,
+            emailCol,
             assignedCol,
             statusCol,
             positiveTestCheckCol,
