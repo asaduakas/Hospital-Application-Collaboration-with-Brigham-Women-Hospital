@@ -18,6 +18,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
+
+import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.AudVisNodeInfo;
 import javafx.animation.*;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -1657,4 +1659,22 @@ public class MapController implements AllAccessible {
           helpImage.getImage();
         });
   }
+
+  //_________________________________________Service View_____________________________________
+
+  private void LoadServices (){
+
+
+
+
+
+
+
+
+  }
+
+
+
+
+
 }

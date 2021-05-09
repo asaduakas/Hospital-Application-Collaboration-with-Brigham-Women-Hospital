@@ -3,6 +3,8 @@ package edu.wpi.cs3733.d21.teamD.Ddb;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.AudVisNodeInfo;
 import java.io.IOException;
 import java.sql.*;
+import java.util.LinkedList;
+
 import javafx.collections.ObservableList;
 
 public class AudVisRequestTable extends AbsTables {
