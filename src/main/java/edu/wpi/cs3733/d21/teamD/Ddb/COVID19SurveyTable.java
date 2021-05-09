@@ -19,6 +19,7 @@ public class COVID19SurveyTable extends AbsTables {
               + "firstName VARCHAR(100),"
               + "lastName VARCHAR(200),"
               + "contactInfo VARCHAR(100),"
+              + "email VARCHAR(200),"
               + "assignedTo VARCHAR(100) DEFAULT '',"
               + "status VARCHAR(100) DEFAULT 'Disapproved',"
               //              + "positiveTestCheck VARCHAR(500),"
@@ -57,6 +58,7 @@ public class COVID19SurveyTable extends AbsTables {
       String firstName,
       String lastName,
       String contactInfo,
+      String email,
       int positiveTestCheck,
       int symptomCheck,
       int closeContactCheck,
@@ -70,15 +72,16 @@ public class COVID19SurveyTable extends AbsTables {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
-              "INSERT INTO COVID19SurveyResults (firstName, lastName, contactInfo, positiveTestCheck, symptomCheck, closeContactCheck, selfIsolateCheck, feelGoodCheck) VALUES(?,?,?,?,?,?,?,?)");
+              "INSERT INTO COVID19SurveyResults (firstName, lastName, contactInfo, email, positiveTestCheck, symptomCheck, closeContactCheck, selfIsolateCheck, feelGoodCheck) VALUES(?,?,?,?,?,?,?,?,?)");
       stmt.setString(1, firstName);
       stmt.setString(2, lastName);
       stmt.setString(3, contactInfo);
-      stmt.setInt(4, positiveTestCheck);
-      stmt.setInt(5, symptomCheck);
-      stmt.setInt(6, closeContactCheck);
-      stmt.setInt(7, selfIsolateCheck);
-      stmt.setInt(8, feelGoodCheck);
+      stmt.setString(4, email);
+      stmt.setInt(5, positiveTestCheck);
+      stmt.setInt(6, symptomCheck);
+      stmt.setInt(7, closeContactCheck);
+      stmt.setInt(8, selfIsolateCheck);
+      stmt.setInt(9, feelGoodCheck);
       stmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -104,6 +107,7 @@ public class COVID19SurveyTable extends AbsTables {
                 rs.getString("firstName"),
                 rs.getString("lastName"),
                 rs.getString("contactInfo"),
+                rs.getString("email"),
                 rs.getString("assignedTo"),
                 rs.getString("status"),
                 rs.getString("positiveTestCheck"),

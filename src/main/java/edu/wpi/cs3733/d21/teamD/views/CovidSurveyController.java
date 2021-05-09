@@ -31,6 +31,7 @@ public class CovidSurveyController implements Initializable, AllAccessible {
   @FXML private JFXTextField firstName;
   @FXML private JFXTextField lastName;
   @FXML private JFXTextField phoneNumber;
+  @FXML private JFXTextField email;
   @FXML private JFXCheckBox positiveCheck;
   @FXML private JFXCheckBox symptomCheck;
   @FXML private JFXCheckBox closeContactCheck;
@@ -123,6 +124,7 @@ public class CovidSurveyController implements Initializable, AllAccessible {
             firstName.getText(),
             lastName.getText(),
             phoneNumber.getText(),
+            email.getText(),
             posBool,
             sympBool,
             conBool,
