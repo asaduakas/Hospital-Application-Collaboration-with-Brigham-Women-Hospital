@@ -141,8 +141,7 @@ public class LaundryRequestTable extends AbsTables {
   public LinkedList<LocalStatus> getLocalStatus(Connection conn) {
     LinkedList<LocalStatus> LocalStatus = new LinkedList<>();
     try {
-      PreparedStatement stmt =
-          conn.prepareStatement("SELECT location, status FROM LaundryRequest");
+      PreparedStatement stmt = conn.prepareStatement("SELECT location, status FROM LaundryRequest");
 
       ResultSet rs = stmt.executeQuery();
       while (rs.next()) {

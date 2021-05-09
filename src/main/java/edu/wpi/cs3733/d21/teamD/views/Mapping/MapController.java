@@ -325,7 +325,7 @@ public class MapController implements AllAccessible {
       setupDraggableNodeUI(Temp);
       NODES.add(Temp);
     }
-    initializeFavs();
+    // initializeFavs();
   }
 
   private void initializeEdges() {
