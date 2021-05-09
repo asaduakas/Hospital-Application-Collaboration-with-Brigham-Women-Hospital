@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXDrawer?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -87,12 +88,22 @@
       <JFXButton fx:id="logoutButton" layoutX="960.0" layoutY="613.0" onAction="#logout" prefHeight="39.0" prefWidth="97.0" style="-fx-background-color: #cdcdcd; -fx-background-radius: 10px; -fx-font-weight: Bold; -fx-font-size: 18;" text="Logout">
          <cursor>
             <Cursor fx:constant="HAND" />
-         </cursor></JFXButton>
+         </cursor>
+      </JFXButton>
       <JFXButton fx:id="exitButton" layoutX="1076.0" layoutY="613.0" onAction="#closeApp" prefHeight="39.0" prefWidth="97.0" style="-fx-background-color: #cdcdcd; -fx-background-radius: 10px; -fx-font-weight: Bold; -fx-font-size: 18;" text="Exit">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></JFXButton>
       <StackPane fx:id="stackPane" layoutX="530.0" layoutY="264.0" prefHeight="150.0" prefWidth="200.0" />
+      <JFXDrawer fx:id="chatbotDrawer" layoutX="850.0" layoutY="267.0" prefHeight="406.0" prefWidth="350.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      <ImageView fx:id="chatbotImage" fitHeight="52.0" fitWidth="49.0" layoutX="881.0" layoutY="601.0" pickOnBounds="true">
+         <image>
+            <Image url="@Images/diamondDragon.png" />
+         </image>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </ImageView>
    </children>
 
 </AnchorPane>

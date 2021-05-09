@@ -20,6 +20,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -42,6 +43,8 @@ public class HomeController implements AllAccessible {
   @FXML public StackPane stackPane;
   @FXML private AnchorPane mainPane;
 
+  @FXML public ImageView chatbotImage;
+
   public static UserCategory userTypeEnum;
   public static String username = null;
   public static String password = null;
@@ -52,6 +55,12 @@ public class HomeController implements AllAccessible {
 
   // Used to reset search history for each login
   public static int historyTracker = 0;
+
+  @FXML
+  private void initialize() {
+
+
+  }
 
   @FXML
   private void logout(ActionEvent event) throws IOException {
