@@ -294,9 +294,12 @@ public class HomeController implements AllAccessible {
                   Boolean newValue) {
                 if (dbToggle.isSelected()) {
                   System.out.println("Before remote connection established");
+                  // drop tables from auto embedded
+                  GlobalDb.getTables().deleteAllTables();
                   GlobalDb.establishClientCon();
                   System.out.println("Remote connection established");
                 } else {
+                  GlobalDb.getTables().createAllTables();
                   GlobalDb.establishCon();
                   System.out.println("Switched back to embedded");
                 }

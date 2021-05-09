@@ -19,6 +19,7 @@ public class FDatabaseTables {
   private static SanitationServRequestTable sanitationServiceTable;
   private static SecurityRequestTable securityRequestTable;
   private static COVID19SurveyTable covid19SurveyTable;
+  private static EmployeeTable employeeTable;
 
   public FDatabaseTables() {
     this.audVisTable = new AudVisRequestTable();
@@ -38,6 +39,7 @@ public class FDatabaseTables {
     this.sanitationServiceTable = new SanitationServRequestTable();
     this.securityRequestTable = new SecurityRequestTable();
     this.covid19SurveyTable = new COVID19SurveyTable();
+    this.employeeTable = new EmployeeTable();
   }
 
   public static AudVisRequestTable getAudVisTable() {
@@ -108,6 +110,10 @@ public class FDatabaseTables {
     return covid19SurveyTable;
   }
 
+  public static EmployeeTable getEmployeeTable() {
+    return employeeTable;
+  }
+
   // src/main/resources/csv/MapDAllEdges.csv
   // src/main/resources/csv/MapDAllNodes.csv
   public void createAllTables() {
@@ -133,6 +139,28 @@ public class FDatabaseTables {
     sanitationServiceTable.createTable(GlobalDb.getConnection());
     covid19SurveyTable.createTable(GlobalDb.getConnection());
     securityRequestTable.createTable(GlobalDb.getConnection());
+    // employeeTable.createTable(GlobalDb.getConnection());
+  }
+
+  public void deleteAllTables() {
+    userTable.clearTable(GlobalDb.getConnection(), "Users");
+    nodeTable.clearTable(GlobalDb.getConnection(), "Nodes");
+    nodeTable.clearTable(GlobalDb.getConnection(), "FavoriteNodes");
+    edgeTable.clearTable(GlobalDb.getConnection(), "Edges");
+    searchHistoryTable.clearTable(GlobalDb.getConnection(), "AudVisServiceRequest");
+    audVisTable.clearTable(GlobalDb.getConnection(), "AudVisServiceRequest");
+    compRequestTable.clearTable(GlobalDb.getConnection(), "ComputerServiceRequest");
+    externalTransportTable.clearTable(GlobalDb.getConnection(), "ExternalTransRequests");
+    facilitiesTable.clearTable(GlobalDb.getConnection(), "FacilitiesServiceRequest");
+    floralDeliveryTable.clearTable(GlobalDb.getConnection(), "FloralRequests");
+    foodDeliveryTable.clearTable(GlobalDb.getConnection(), "FoodDeliveryServiceRequest");
+    internalDeliveryTable.clearTable(GlobalDb.getConnection(), "InternalTransReq");
+    langInterpreterTable.clearTable(GlobalDb.getConnection(), "LangInterpRequest");
+    laundryRequestTable.clearTable(GlobalDb.getConnection(), "LaundryRequest");
+    medDeliveryTable.clearTable(GlobalDb.getConnection(), "MedicineDelivery");
+    sanitationServiceTable.clearTable(GlobalDb.getConnection(), "SanitationRequest");
+    covid19SurveyTable.clearTable(GlobalDb.getConnection(), "COVID19SurveyResults");
+    securityRequestTable.clearTable(GlobalDb.getConnection(), "SecurityRequest");
   }
 
   public void createAudVisTable() {
