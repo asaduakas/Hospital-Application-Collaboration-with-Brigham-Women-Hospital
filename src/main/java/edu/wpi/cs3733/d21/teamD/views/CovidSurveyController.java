@@ -37,7 +37,6 @@ public class CovidSurveyController implements Initializable, AllAccessible {
   @FXML private JFXCheckBox closeContactCheck;
   @FXML private JFXCheckBox isolateCheck;
   @FXML private JFXCheckBox goodCheck;
-  @FXML private JFXTextField emailAddress;
 
   private DialogFactory dialogFactory;
 
@@ -85,7 +84,7 @@ public class CovidSurveyController implements Initializable, AllAccessible {
                 .isEmpty()
                 .or(lastName.textProperty().isEmpty())
                 .or(phoneNumber.textProperty().isEmpty())
-                .or(emailAddress.textProperty().isEmpty()));
+                .or(email.textProperty().isEmpty()));
 
     if (submitButton.isDisabled()) {
       popupWarning(event);
@@ -170,7 +169,7 @@ public class CovidSurveyController implements Initializable, AllAccessible {
     validationPaneFormatter(firstName);
     validationPaneFormatter(lastName);
     validationPaneFormatter(phoneNumber);
-    validationPaneFormatter(emailAddress);
+    validationPaneFormatter(email);
 
     RequiredFieldValidator firstNameValid = new RequiredFieldValidator();
     firstNameValid.setMessage("Enter patient's first name");
@@ -216,13 +215,13 @@ public class CovidSurveyController implements Initializable, AllAccessible {
             });
 
     RequiredFieldValidator emailValid = new RequiredFieldValidator();
-    emailValid.setMessage("Enter phone number");
-    emailAddress.getValidators().add(emailValid);
-    emailAddress
+    emailValid.setMessage("Please enter an email address.");
+    email.getValidators().add(emailValid);
+    email
         .focusedProperty()
         .addListener(
             (o, oldVal, newVal) -> {
-              if (!newVal) emailAddress.validate();
+              if (!newVal) email.validate();
             });
   }
 

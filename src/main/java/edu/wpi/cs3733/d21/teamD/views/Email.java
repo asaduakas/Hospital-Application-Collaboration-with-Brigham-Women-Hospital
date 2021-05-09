@@ -7,13 +7,13 @@ import javax.mail.internet.*;
 
 public class Email {
 
-  public static void sendEmail() {
+  public static void sendPassEmail(String to, boolean pass) {
     // RECIPIENT EMAIL
     // Note: while you DO need sender username and password you do NOT need recipients (obviously)
-    String to = "recipient email goes here";
+    // String to = "recipient email goes here";
 
     // SENDER EMAIL
-    String from = "your email goes here";
+    String from = "diamondDdragons@gmail.com";
 
     // SEND EMAIL USING GMAIL SERVERS
     String host = "smtp.gmail.com";
@@ -35,8 +35,7 @@ public class Email {
             new javax.mail.Authenticator() {
               protected PasswordAuthentication getPasswordAuthentication() {
                 // PUT SENDER USERNAME AND PASSWORD HERE
-                return new PasswordAuthentication(
-                    "your username goes here", "your password goes here");
+                return new PasswordAuthentication("admin", "admin");
               }
             });
 
@@ -46,11 +45,19 @@ public class Email {
       message.setFrom(new InternetAddress(from));
       message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
 
-      // THIS STRING IS THE SUBJECT
-      message.setSubject("Email Test!");
+      if (pass) {
+        // THIS STRING IS THE SUBJECT
+        message.setSubject("EMAIL CONFIRMATION");
 
-      // THIS STRING IS THE BODY OF THE EMAIL
-      message.setText("custom email test");
+        // THIS STRING IS THE BODY OF THE EMAIL
+        message.setText("Go on peasant");
+      } else {
+        // THIS STRING IS THE SUBJECT
+        message.setSubject("EMAIL CONFIRMATION");
+
+        // THIS STRING IS THE BODY OF THE EMAIL
+        message.setText("stay tf home");
+      }
 
       // Send message
       Transport.send(message);
