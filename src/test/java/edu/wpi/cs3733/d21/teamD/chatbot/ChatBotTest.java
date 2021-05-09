@@ -3,9 +3,12 @@ package edu.wpi.cs3733.d21.teamD.chatbot;
 import static org.junit.Assert.*;
 
 import edu.wpi.cs3733.d21.teamD.App;
+import edu.wpi.cs3733.d21.teamD.Ddb.FDatabaseTables;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
+import edu.wpi.cs3733.d21.teamD.Ddb.UsersTable;
 import edu.wpi.cs3733.d21.teamD.Testing.JavaFXThreadingRule;
 import edu.wpi.cs3733.d21.teamD.views.ControllerManager;
+import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.SceneSizeChangeListener;
 import java.io.IOException;
 import java.util.*;
@@ -55,18 +58,6 @@ public class ChatBotTest {
     LinkedList<String> username = bot.findUserName("my username is wwong");
     System.out.println("--------------------------------------------------------------------");
     System.out.println(username);
-
-    /*
-    String[] sentences = bot.SentenceDetect("whats my passwrd?");
-    for (String sentence : sentences) {
-      System.out.println(sentence);
-      String[] tokens = bot.Tokenize(sentence);
-      String[] posTags = bot.detectPOSTags(tokens);
-      String[] lemmas = bot.lemmatizeTokens(tokens, posTags);
-      String category = bot.detectCategory(categoryModel, lemmas);
-      System.out.println("-----x-----");
-    }
-     */
   }
 
   @Test
@@ -81,7 +72,7 @@ public class ChatBotTest {
     // Get chat input from user.
     System.out.println("##### You:");
     String userInput =
-        "Hello bot! My username is curtis! I want to make a request."; // scanner.nextLine();
+        "Hello bot! what is my password? Can you help me change my password"; // scanner.nextLine();
 
     // Break users chat input into sentences using sentence detection.
     String[] sentences = bot.SentenceDetect(userInput);
@@ -110,10 +101,30 @@ public class ChatBotTest {
         for (int i = 0; i < tokens.length; i++) {
           if ((posTags[i].equals("NNP")
               || posTags[i].equals("NN") && !tokens[i].equals("username"))) {
-            answer = answer + " Username inputted is: " + tokens[i] + ".";
+            answer = answer + " Username inputted is: " + HomeController.username + ".";
             break;
           }
         }
+      }
+      if (category.equals("Username-Change")) {
+        GlobalDb.establishCon();
+        FDatabaseTables.getUserTable();
+        FDatabaseTables.getUserTable().dispUsers(GlobalDb.getConnection());
+        // get the login username
+        // HomeController.getUsername
+        answer = answer + " What would you like your new username to be?";
+        // take the input from textfield fxxml, which will be new username, replace "elaine" with
+        // whatever the new username is in below function
+        // write to the database
+        UsersTable.updateUsername(GlobalDb.getConnection(), HomeController.username, "elaine");
+      }
+      if (category.equals("Password-Change")) {
+        answer = answer + " What would you like your new password to be?";
+        // take the input from the textfield
+        // update the new passwd
+        // write to database
+        UsersTable.updateUserPassword(
+            GlobalDb.getConnection(), HomeController.username, "newPasswd");
       } else {
         answer = answer + " " + questionAnswer.get(category);
       }
@@ -198,7 +209,7 @@ public class ChatBotTest {
       if (category.equals("Username-Info")) {
         for (int i = 0; i < tokens.length; i++) {
           if ((posTags[i].equals("NNP")
-                  || posTags[i].equals("NN") && !tokens[i].equals("username"))) {
+              || posTags[i].equals("NN") && !tokens[i].equals("username"))) {
             answer = answer + " Username inputted is: " + tokens[i] + ".";
             break;
           }
