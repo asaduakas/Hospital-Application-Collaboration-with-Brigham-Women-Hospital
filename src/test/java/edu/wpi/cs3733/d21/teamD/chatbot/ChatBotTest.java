@@ -81,7 +81,7 @@ public class ChatBotTest {
     // Get chat input from user.
     System.out.println("##### You:");
     String userInput =
-        "Hello bot! My username is Curtis! I want to make a request."; // scanner.nextLine();
+        "Hello bot! My username is curtis! I want to make a request."; // scanner.nextLine();
 
     // Break users chat input into sentences using sentence detection.
     String[] sentences = bot.SentenceDetect(userInput);
@@ -108,7 +108,8 @@ public class ChatBotTest {
       // Get predefined answer from given category & add to answer.
       if (category.equals("Username-Info")) {
         for (int i = 0; i < tokens.length; i++) {
-          if (posTags[i].equals("NNP")) {
+          if ((posTags[i].equals("NNP")
+              || posTags[i].equals("NN") && !tokens[i].equals("username"))) {
             answer = answer + " Username inputted is: " + tokens[i] + ".";
             break;
           }
@@ -196,7 +197,8 @@ public class ChatBotTest {
       }
       if (category.equals("Username-Info")) {
         for (int i = 0; i < tokens.length; i++) {
-          if (posTags[i].equals("NNP")) {
+          if ((posTags[i].equals("NNP")
+                  || posTags[i].equals("NN") && !tokens[i].equals("username"))) {
             answer = answer + " Username inputted is: " + tokens[i] + ".";
             break;
           }
