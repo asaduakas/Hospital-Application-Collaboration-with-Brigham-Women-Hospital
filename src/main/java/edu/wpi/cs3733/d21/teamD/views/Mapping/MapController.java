@@ -6,6 +6,7 @@ import edu.wpi.cs3733.d21.teamD.App;
 import edu.wpi.cs3733.d21.teamD.Astar.*;
 import edu.wpi.cs3733.d21.teamD.Ddb.FDatabaseTables;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
+import edu.wpi.cs3733.d21.teamD.Ddb.LocalStatus;
 import edu.wpi.cs3733.d21.teamD.views.Access.AllAccessible;
 import edu.wpi.cs3733.d21.teamD.views.Access.LoginController;
 import edu.wpi.cs3733.d21.teamD.views.ControllerManager;
@@ -18,8 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
-
-import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.AudVisNodeInfo;
 import javafx.animation.*;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -1660,21 +1659,12 @@ public class MapController implements AllAccessible {
         });
   }
 
-  //_________________________________________Service View_____________________________________
+  // _________________________________________Service View_____________________________________
 
-  private void LoadServices (){
+  @FXML
+  private void LoadServices() {
 
-
-
-
-
-
-
-
+    for (LocalStatus LS :
+        FDatabaseTables.getAudVisTable().getLocalStatus(GlobalDb.getConnection())) {}
   }
-
-
-
-
-
 }

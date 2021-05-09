@@ -3,9 +3,7 @@ package edu.wpi.cs3733.d21.teamD.Ddb;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.AudVisNodeInfo;
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.LinkedList;
-
 import javafx.collections.ObservableList;
 
 public class AudVisRequestTable extends AbsTables {
@@ -110,19 +108,19 @@ public class AudVisRequestTable extends AbsTables {
   }
 
   public LinkedList<LocalStatus> getLocalStatus(Connection conn) {
-    LinkedList<LocalStatus> audVisLocalStatus = new LinkedList<>();
+    LinkedList<LocalStatus> LocalStatus = new LinkedList<>();
     try {
       PreparedStatement stmt =
-              conn.prepareStatement("SELECT longName AND status FROM AudVisServiceRequest");
+          conn.prepareStatement("SELECT location, status FROM AudVisServiceRequest");
+
       ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
-        LocalStatus localStatus = new LocalStatus(rs.getString("longName"), rs.getString("status"));
-        audVisLocalStatus.add(localStatus);
+        LocalStatus localStatus = new LocalStatus(rs.getString("location"), rs.getString("status"));
+        LocalStatus.add(localStatus);
       }
     } catch (SQLException throwables) {
       throwables.printStackTrace();
     }
-    return audVisLocalStatus;
+    return LocalStatus;
   }
-
 }

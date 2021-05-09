@@ -423,7 +423,7 @@ public class MapDrawerController implements Initializable {
           (String) ((TreeItem) directoryTreeView.getSelectionModel().getSelectedItem()).getValue();
       for (NodeUI NUI : mapController.NODES) {
         if (NUI.getN().getLongName().equals(clickname)) {
-          System.out.println(NUI.getN().getLongName());
+          // System.out.println(NUI.getN().getLongName());
           if (!Targets.contains(NUI.getN())) {
             Targets.add(NUI.getN());
           }

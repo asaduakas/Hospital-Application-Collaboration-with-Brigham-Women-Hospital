@@ -3,6 +3,7 @@ package edu.wpi.cs3733.d21.teamD.Ddb;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.FloralDelivNodeInfo;
 import java.io.IOException;
 import java.sql.*;
+import java.util.LinkedList;
 import javafx.collections.ObservableList;
 
 public class FloralDeliveryRequestTable extends AbsTables {
@@ -113,5 +114,22 @@ public class FloralDeliveryRequestTable extends AbsTables {
       }
     }
     return floralData;
+  }
+
+  public LinkedList<LocalStatus> getLocalStatus(Connection conn) {
+    LinkedList<LocalStatus> LocalStatus = new LinkedList<>();
+    try {
+      PreparedStatement stmt =
+          conn.prepareStatement("SELECT location, status FROM AudVisServiceRequest");
+
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        LocalStatus localStatus = new LocalStatus(rs.getString("location"), rs.getString("status"));
+        LocalStatus.add(localStatus);
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    return LocalStatus;
   }
 }
