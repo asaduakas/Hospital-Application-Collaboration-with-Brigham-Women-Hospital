@@ -2110,7 +2110,7 @@ public class StatusController extends AbsRequest
     JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> contactInfoCol =
         new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("Contact Information");
     JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> emailCol =
-        new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("Email Address");
+        new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("Email");
     JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String> assignedCol =
         new JFXTreeTableColumn<COVIDSurveyResultsNodeInfo, String>("Assigned To");
 
