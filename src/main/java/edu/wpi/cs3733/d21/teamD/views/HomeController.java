@@ -135,9 +135,10 @@ public class HomeController implements AllAccessible {
           Pane root = (Pane) task.getValue();
           Scene scene = new Scene(root);
 
-          App.getPrimaryStage().setMaximized(true);
-          App.getPrimaryStage().close();
+          //          App.getPrimaryStage().close();
           App.getPrimaryStage().setScene(scene);
+          App.getPrimaryStage().setMaximized(false);
+          App.getPrimaryStage().setMaximized(true);
           App.getPrimaryStage().show();
 
           List<Node> childrenList = root.getChildren();
