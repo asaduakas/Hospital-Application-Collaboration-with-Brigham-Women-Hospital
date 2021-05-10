@@ -75,6 +75,7 @@ public class Email {
       mex.printStackTrace();
     }
   }
+
   public static void sendSignUpEmail(String to, String name, String username) {
     // RECIPIENT EMAIL
     // Note: while you DO need sender username and password you do NOT need recipients (obviously)
@@ -101,14 +102,14 @@ public class Email {
 
     // something something internet session who cares
     Session session =
-            Session.getDefaultInstance(
-                    props,
-                    new javax.mail.Authenticator() {
-                      protected PasswordAuthentication getPasswordAuthentication() {
-                        // PUT SENDER USERNAME AND PASSWORD HERE
-                        return new PasswordAuthentication("diamondddragons@gmail.com", "wpics3733d");
-                      }
-                    });
+        Session.getDefaultInstance(
+            props,
+            new javax.mail.Authenticator() {
+              protected PasswordAuthentication getPasswordAuthentication() {
+                // PUT SENDER USERNAME AND PASSWORD HERE
+                return new PasswordAuthentication("diamondddragons@gmail.com", "wpics3733d");
+              }
+            });
 
     try {
       // DONT TOUCH THESE LINES
@@ -117,11 +118,17 @@ public class Email {
       message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
       message.setSubject("HOSPITAL ACCOUNT CONFIRMATION");
 
-        // THIS STRING IS THE BODY OF THE EMAIL
-        message.setText(
-                "Dear Mx." + name + "\n"
-                        + "Thank you for creating an account at Brigham and Women's Hospital. Here are your credentials\n"
-                        + "Username: " + username + "\n" + "Regards,\nDiamond Dragons Support Team");
+      // THIS STRING IS THE BODY OF THE EMAIL
+      message.setText(
+          "Dear Mx." + name + ","
+              + "\n"
+              + "\n"
+              + "Thank you for creating an account at Brigham and Women's Hospital. Here are your credentials\n"
+              + "Username: "
+              + username
+              + "\n"
+              + "\n"
+              + "Regards,\nDiamond Dragons Support Team");
 
       // Send message
       Transport.send(message);
@@ -132,5 +139,4 @@ public class Email {
       mex.printStackTrace();
     }
   }
-
 }

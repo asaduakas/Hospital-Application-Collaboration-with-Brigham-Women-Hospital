@@ -12,7 +12,8 @@ public class UsersNodeInfo extends RecursiveTreeObject<UsersNodeInfo> {
   public StringProperty clearance;
   public StringProperty email;
 
-  public UsersNodeInfo(String id, String password, String name, String category, String clearance, String email) {
+  public UsersNodeInfo(
+      String id, String password, String name, String category, String clearance, String email) {
     this.id = new SimpleStringProperty(id);
     this.password = new SimpleStringProperty(password);
     this.name = new SimpleStringProperty(name);
