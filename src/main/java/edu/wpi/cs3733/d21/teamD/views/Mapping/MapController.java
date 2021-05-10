@@ -815,6 +815,9 @@ public class MapController implements AllAccessible {
                   LoadingNodesEdges(currentFloor);
                 } else {
                   isEditor = false;
+                  if (popup.isShowing()) {
+                    popup.hide();
+                  }
                   clearMap();
                   drawNodeFloor(currentFloor);
                 }

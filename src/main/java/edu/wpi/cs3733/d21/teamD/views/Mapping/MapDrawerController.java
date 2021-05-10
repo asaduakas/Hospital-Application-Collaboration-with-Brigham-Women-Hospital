@@ -194,6 +194,7 @@ public class MapDrawerController implements Initializable {
   }
 
   public static void blockedCallStuff() {
+    blockedList.clear();
     if (blockedList.size()
         != FDatabaseTables.getNodeTable().fetchLongNameBlocked(GlobalDb.getConnection()).size()) {
       blockedList = FDatabaseTables.getNodeTable().fetchLongNameBlocked(GlobalDb.getConnection());
