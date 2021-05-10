@@ -4,6 +4,7 @@
 <?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import com.jfoenix.controls.JFXTreeView?>
+<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -61,6 +62,7 @@
             </GridPane>
             <JFXComboBox fx:id="algoVersion" layoutX="188.0" layoutY="14.0" prefHeight="25.0" prefWidth="195.0" promptText="Pathfinding Algorithm" style="-fx-font-size: 14;" />
             <JFXButton fx:id="dirBtn" layoutX="271.0" layoutY="599.0" onAction="#downloadDirections" style="-fx-background-color: #366CDB; -fx-background-radius: 6px;" text="Download Direction" textFill="WHITE" />
+            <Hyperlink fx:id="googleAPI" layoutX="295.0" layoutY="213.0" fx:value="https://maps.googleapis.com/maps/api/js?key=AIzaSyBK_RlCvnFoj5Bd7mQuurg8zZmnfMVXAGs&callback=initMap" prefHeight="23.0" prefWidth="108.0" text="Google Maps API" />
          </children>
       </AnchorPane>
    </children>

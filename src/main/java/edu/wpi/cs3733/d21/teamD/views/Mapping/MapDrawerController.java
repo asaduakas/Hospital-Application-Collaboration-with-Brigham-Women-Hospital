@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -1065,5 +1066,16 @@ public class MapDrawerController implements Initializable {
     }
     // start_choice.setPromptText(recentStart);
     // end_choice.setPromptText(recentEnd);
+  }
+
+  // ------------Google Maps API-----------
+
+  public void googleLink(ActionEvent e) throws IOException {
+    // https://maps.googleapis.com/maps/api/js?key=AIzaSyBK_RlCvnFoj5Bd7mQuurg8zZmnfMVXAGs&callback=initMap
+    URL url =
+        new URL(
+            "https://maps.googleapis.com/maps/api/js?key=AIzaSyBK_RlCvnFoj5Bd7mQuurg8zZmnfMVXAGs&callback=initMap");
+    URLConnection conn = url.openConnection();
+    url.getContent();
   }
 }
