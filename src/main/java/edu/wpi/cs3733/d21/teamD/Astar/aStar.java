@@ -50,31 +50,34 @@ public class aStar extends IntermediaryAlgo implements IPathFinding {
         if (edges != null) {
           for (Edge edge : edges) { // iterate through each edge
             Node child = data.getNodeByID(edge.getEndNodeID());
-            double totalWeight =
-                costs.get(edge.getStartNodeID())
-                    + edge.getCost(); // calculate cost to get to this node
 
-            if (!openList.contains(child)
-                && !closedList.contains(child)) { // if neither list contain, put into queue
-              nodesTo.put(child.getNodeID(), edge);
-              costs.put(child.getNodeID(), totalWeight);
-              scores.put(
-                  child.getNodeID(),
-                  costs.get(child.getNodeID()) + calculateHeuristic(child, target));
-              openList.add(child);
-            } else {
-              if (totalWeight
-                  < costs.get(
-                      child.getNodeID())) { // if this cost is smaller than previous recorded cost
+            if (!child.isBlocked()) {
+              double totalWeight =
+                  costs.get(edge.getStartNodeID())
+                      + edge.getCost(); // calculate cost to get to this node
+
+              if (!openList.contains(child)
+                  && !closedList.contains(child)) { // if neither list contain, put into queue
                 nodesTo.put(child.getNodeID(), edge);
                 costs.put(child.getNodeID(), totalWeight);
                 scores.put(
                     child.getNodeID(),
                     costs.get(child.getNodeID()) + calculateHeuristic(child, target));
+                openList.add(child);
+              } else {
+                if (totalWeight
+                    < costs.get(
+                        child.getNodeID())) { // if this cost is smaller than previous recorded cost
+                  nodesTo.put(child.getNodeID(), edge);
+                  costs.put(child.getNodeID(), totalWeight);
+                  scores.put(
+                      child.getNodeID(),
+                      costs.get(child.getNodeID()) + calculateHeuristic(child, target));
 
-                if (closedList.contains(child)) { // move back from closed list to open list
-                  closedList.remove(child);
-                  openList.add(child);
+                  if (closedList.contains(child)) { // move back from closed list to open list
+                    closedList.remove(child);
+                    openList.add(child);
+                  }
                 }
               }
             }

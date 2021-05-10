@@ -33,11 +33,13 @@ public class singleBFS extends IntermediaryAlgo implements IPathFinding {
         LinkedList<Edge> edges = (LinkedList<Edge>) data.getNode(node).getEdges();
         for (Edge edge : edges) { // for each edge connected to node
           Node child = data.getNodeByID(edge.getEndNodeID());
-          if (child == target) hasPath = true;
-          if (!visited.contains(child)) { // if we haven't visited child, enqueue
-            searchQueue.add(child);
-            visited.add(child);
-            nodesTo.put(child, edge);
+          if (!child.isBlocked()) {
+            if (child == target) hasPath = true;
+            if (!visited.contains(child)) { // if we haven't visited child, enqueue
+              searchQueue.add(child);
+              visited.add(child);
+              nodesTo.put(child, edge);
+            }
           }
         }
       }
