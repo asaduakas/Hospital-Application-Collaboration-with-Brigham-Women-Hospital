@@ -90,10 +90,10 @@ public class ChatbotController implements AllAccessible {
     } else if (changeUsernameFlag) {
       String newUsername = this.userMessage.getText();
       if (newUsername != null) {
-        HomeController.username = newUsername;
         dispMessageBot("user", newUsername);
         this.userMessage.setText(null);
         UsersTable.updateUsername(GlobalDb.getConnection(), HomeController.username, newUsername);
+        HomeController.username = newUsername;
         dispMessageBot("bot", "Your username has been updated successfully to: " + newUsername);
         changeUsernameFlag = false;
       }
