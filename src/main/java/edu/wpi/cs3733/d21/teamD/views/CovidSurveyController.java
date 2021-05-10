@@ -1,5 +1,7 @@
 package edu.wpi.cs3733.d21.teamD.views;
 
+import static edu.wpi.cs3733.d21.teamD.views.Email.sendPassEmail;
+
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.base.IFXLabelFloatControl;
 import com.jfoenix.skins.JFXTextFieldSkin;
@@ -130,6 +132,15 @@ public class CovidSurveyController implements Initializable, AllAccessible {
             ControllerManager::exitPopup);
       }
     }
+
+    //Sending email
+    Boolean pass = false;
+    if (goodBool == 1) {
+      pass = true;
+    }
+    String emailString = email.getText();
+    sendPassEmail(emailString, pass);
+
 
     FDatabaseTables.getCovid19SurveyTable()
         .addEntity(

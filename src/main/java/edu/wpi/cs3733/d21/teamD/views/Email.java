@@ -19,23 +19,26 @@ public class Email {
     String host = "smtp.gmail.com";
 
     // Get system properties
-    Properties properties = System.getProperties();
+    Properties props = System.getProperties();
 
     // SETUP : DO NOT TOUCH
-    properties.setProperty("mail.smtp.host", host);
-    properties.put("mail.smtp.socketFactory.port", "465"); // must be included, default 25
-    properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-    properties.put("mail.smtp.auth", "true"); // requires username and password (needed)
-    properties.put("mail.smtp.port", "465"); // must be included, default 25
+    props.setProperty("mail.transport.protocol", "smtp");
+    props.setProperty("mail.host", "smtp.gmail.com");
+    props.put("mail.smtp.auth", "true");
+    props.put("mail.smtp.port", "465");
+    props.put("mail.debug", "true");
+    props.put("mail.smtp.socketFactory.port", "465");
+    props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+    props.put("mail.smtp.socketFactory.fallback", "false");
 
     // something something internet session who cares
     Session session =
         Session.getDefaultInstance(
-            properties,
+            props,
             new javax.mail.Authenticator() {
               protected PasswordAuthentication getPasswordAuthentication() {
                 // PUT SENDER USERNAME AND PASSWORD HERE
-                return new PasswordAuthentication("admin", "admin");
+                return new PasswordAuthentication("diamondddragons@gmail.com", "wpics3733d");
               }
             });
 
