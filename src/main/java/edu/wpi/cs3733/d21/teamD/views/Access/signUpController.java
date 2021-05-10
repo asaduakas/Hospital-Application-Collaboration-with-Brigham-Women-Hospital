@@ -1,5 +1,7 @@
 package edu.wpi.cs3733.d21.teamD.views.Access;
 
+import static edu.wpi.cs3733.d21.teamD.views.Email.sendSignUpEmail;
+
 import com.jfoenix.controls.*;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
 import edu.wpi.cs3733.d21.teamD.Ddb.UsersTable;
@@ -19,6 +21,7 @@ public class signUpController implements AllAccessible {
   @FXML Button signUpButton;
   @FXML JFXTextField nameField;
   @FXML JFXTextField usernameField;
+  @FXML JFXTextField emailField;
   @FXML JFXPasswordField passwordField;
   @FXML JFXComboBox category;
   @FXML StackPane signUPstackPane;
@@ -56,13 +59,21 @@ public class signUpController implements AllAccessible {
             usernameField.getText(),
             passwordField.getText().toString(),
             nameField.getText(),
-            categoryName);
+            categoryName,
+            "NULL",
+            emailField.getText());
         /*InitPageController.popup.hide();
         App.getPrimaryStage().close();
         App takeToInit = new App();
         takeToInit.start(App.getPrimaryStage());
          */
         ControllerManager.exitPopup();
+
+        // Send Email
+        String email = emailField.getText();
+        String name = nameField.getText();
+        String userName = usernameField.getText();
+        sendSignUpEmail(email, name, userName);
       }
     }
   }

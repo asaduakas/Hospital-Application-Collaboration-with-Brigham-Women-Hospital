@@ -1,4 +1,4 @@
-id,password,name,category,clearance
+id,password,name,category,clearance,email
 admin,admin,ll,Admin,
 testAdmin,admin,testing,Admin,
 patient,patient,qq,Patient,
