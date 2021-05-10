@@ -117,8 +117,9 @@ public class ChatBotTest {
         // take the input from textfield fxxml, which will be new username, replace "elaine" with
         // whatever the new username is in below function
         // write to the database
-        //        UsersTable.updateUsername(GlobalDb.getConnection(), HomeController.username,
-        // "elaine");
+        //                UsersTable.updateUsername(GlobalDb.getConnection(),
+        // HomeController.username,
+        //         "elaine");
       } else if (category.equals("Password-Change")) {
         prevCategory = "Password-Info";
         answer = answer + " What would you like your new password to be?";

@@ -2,6 +2,8 @@ package edu.wpi.cs3733.d21.teamD.views;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
+import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
+import edu.wpi.cs3733.d21.teamD.Ddb.UsersTable;
 import edu.wpi.cs3733.d21.teamD.chatbot.chatbot;
 import edu.wpi.cs3733.d21.teamD.views.Access.AllAccessible;
 import java.io.IOException;
@@ -37,6 +39,8 @@ public class ChatbotController implements AllAccessible {
   @FXML public Image botIconImg;
   private Map<String, String> questionAnswer = new HashMap<>();
   private chatbot bot = new chatbot();
+  private Boolean changeUsernameFlag = false;
+  private Boolean changePsswdFlag = false;
 
   @FXML
   private void initialize() {
@@ -70,12 +74,29 @@ public class ChatbotController implements AllAccessible {
 
   @FXML
   public void sendMessage() throws IOException, InterruptedException {
-    String userMessage = null;
-    if (this.userMessage != null) {
-      userMessage = this.userMessage.getText();
+    if (!changeUsernameFlag && !changePsswdFlag) {
+      String userMessage = null;
+      if (this.userMessage != null) {
+        userMessage = this.userMessage.getText();
+        this.userMessage.setText(null);
+        dispMessageBot("user", userMessage);
+        dispMessageBot("bot", interpretInput(userMessage));
+      }
+    } else if (changeUsernameFlag) {
+      String newUsername = this.userMessage.getText();
+      HomeController.username = newUsername;
+      dispMessageBot("user", newUsername);
       this.userMessage.setText(null);
-      dispMessageBot("user", userMessage);
-      dispMessageBot("bot", interpretInput(userMessage));
+      UsersTable.updateUsername(GlobalDb.getConnection(), HomeController.username, newUsername);
+      dispMessageBot("bot", "Your username has been updated successfully to: " + newUsername);
+      changeUsernameFlag = false;
+    } else if (changePsswdFlag) {
+      String newPasswd = this.userMessage.getText();
+      dispMessageBot("user", newPasswd);
+      this.userMessage.setText(null);
+      UsersTable.updateUserPassword(GlobalDb.getConnection(), HomeController.username, newPasswd);
+      dispMessageBot("bot", "Your password has been updated successfully to: " + newPasswd);
+      changePsswdFlag = false;
     }
   }
 
@@ -128,13 +149,11 @@ public class ChatbotController implements AllAccessible {
 
     DoccatModel categoryModel = bot.trainCategorizerModel();
 
-    System.out.println("##### You:");
-    String userInput = input; // scanner.nextLine();
-
     // Break users chat input into sentences using sentence detection.
-    String[] sentences = bot.SentenceDetect(userInput);
+    String[] sentences = bot.SentenceDetect(input);
 
     String answer = "";
+    String prevCategory = " ";
     //    boolean conversationComplete = false;
 
     // Loop through sentences.
@@ -152,8 +171,10 @@ public class ChatbotController implements AllAccessible {
       // Determine BEST category using lemmatized tokens used a mode that we trained
       // at start.
       String category = bot.detectCategory(categoryModel, lemmas);
-
       // Get predefined answer from given category & add to answer.
+      if (category.equals("Arbitrary")) {
+        category = prevCategory;
+      }
       if (category.equals("Audio-Visual")) {
         ControllerManager.attemptLoadPopupBlur("AVRequestView.fxml");
       } else if (category.equals("Computer-Request")) {
@@ -179,12 +200,27 @@ public class ChatbotController implements AllAccessible {
       } else if (category.equals("Security-Request")) {
         ControllerManager.attemptLoadPopupBlur("SecurityServicesView.fxml");
       } else if (category.equals("Username-Info")) {
-        for (int i = 0; i < tokens.length; i++) {
-          if ((posTags[i].equals("NNP")
-              || posTags[i].equals("NN") && !tokens[i].equals("username"))) {
-            answer = answer + " Username inputted is: " + tokens[i] + ".";
-            break;
-          }
+        prevCategory = "Username-Change";
+        answer = "Your username is: " + HomeController.username;
+      } else if (category.equals("Username-Change")) {
+        prevCategory = "Username-Info";
+        if (!(HomeController.username.equals("Guest"))) {
+          answer = answer + " What would you like your new username to be?";
+          changeUsernameFlag = true;
+        } else {
+          answer = answer + "Sorry, you need to be logged in first!";
+        }
+      } else if (category.equals("Password-Info")) {
+        prevCategory = "Password-Change";
+        // need to read the password from the database
+        //        answer = "Your username is: " + HomeController.username;
+      } else if (category.equals("Password-Change")) {
+        prevCategory = "Password-Info";
+        if (!(HomeController.username.equals("Guest"))) {
+          answer = answer + " What would you like your new password to be?";
+          changePsswdFlag = true;
+        } else {
+          answer = answer + "Sorry, you need to be logged in first!";
         }
       } else {
         answer = answer + " " + questionAnswer.get(category);

@@ -4,6 +4,7 @@ import com.jfoenix.controls.*;
 import edu.wpi.cs3733.d21.teamD.App;
 import edu.wpi.cs3733.d21.teamD.Ddb.FDatabaseTables;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
+import edu.wpi.cs3733.d21.teamD.views.ChatbotController;
 import edu.wpi.cs3733.d21.teamD.views.ControllerManager;
 import edu.wpi.cs3733.d21.teamD.views.DialogFactory;
 import edu.wpi.cs3733.d21.teamD.views.SceneSizeChangeListener;
@@ -40,7 +41,6 @@ public class LoginController implements AllAccessible {
     final BooleanProperty focused = new SimpleBooleanProperty();
     dialogFactory = new DialogFactory(loginStackPane);
     loginStackPane.setPickOnBounds(false);
-
     anchor.addEventHandler(
         KeyEvent.KEY_PRESSED,
         e -> {
@@ -54,6 +54,14 @@ public class LoginController implements AllAccessible {
   @FXML
   private void login(ActionEvent event) throws IOException {
 
+    if (ChatbotController.textBox.getChildren().size() > 0) {
+      System.out.println(ChatbotController.textBox.getChildren().size());
+      for (int i = 0; i < ChatbotController.textBox.getChildren().size(); i++) {
+        ChatbotController.textBox.getChildren().remove(i);
+        System.out.println(ChatbotController.textBox.getChildren().size());
+      }
+      System.out.println(ChatbotController.textBox.getChildren());
+    }
     if (usernameField.getText().isEmpty() || passwordField.getText().isEmpty()) {
       popupWarning(event, "Please fill out the required fields.");
     } else if (!FDatabaseTables.getUserTable()

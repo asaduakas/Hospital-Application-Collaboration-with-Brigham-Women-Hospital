@@ -292,7 +292,7 @@ public class HomeController implements AllAccessible {
                   + (chatbotImage.getFitHeight()));
         });
 
-    ControllerManager.popup.setAutoHide(true);
+    //    ControllerManager.popup.setAutoHide(true);
   }
 
   public static String getUserCategory() {
