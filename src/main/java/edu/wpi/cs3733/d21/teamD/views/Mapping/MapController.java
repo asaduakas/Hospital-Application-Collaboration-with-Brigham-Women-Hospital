@@ -6,7 +6,6 @@ import edu.wpi.cs3733.d21.teamD.App;
 import edu.wpi.cs3733.d21.teamD.Astar.*;
 import edu.wpi.cs3733.d21.teamD.Ddb.FDatabaseTables;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
-import edu.wpi.cs3733.d21.teamD.Ddb.LocalStatus;
 import edu.wpi.cs3733.d21.teamD.views.Access.AllAccessible;
 import edu.wpi.cs3733.d21.teamD.views.Access.LoginController;
 import edu.wpi.cs3733.d21.teamD.views.ControllerManager;
@@ -15,6 +14,7 @@ import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.Mapping.Popup.Edit.AddNodeController;
 import edu.wpi.cs3733.d21.teamD.views.Mapping.Popup.Edit.EditNodeController;
 import edu.wpi.cs3733.d21.teamD.views.SceneSizeChangeListener;
+import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.AllServiceNodeInfo;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -98,7 +98,7 @@ public class MapController implements AllAccessible {
   public static final Image RETL = new Image("Images/retailpin.png");
   public static final Image SERV = new Image("Images/service.png");
   public static final Image favImage = new Image("Images/favIcon_good.png");
-  public static final Image AudioVisual = new Image("Images/audio-visual_white.png");
+  public static final Image AudioVisual = new Image("Images/audio-visual.png");
   private Image up = new Image("Images/up-arrow.png");
   private Image down = new Image("Images/redArrow.png");
   private Image endImage = new Image("Images/endingIcon_white.png");
@@ -209,7 +209,7 @@ public class MapController implements AllAccessible {
     mapDrawer.setSidePane(menuBtns);
     Pane root = (Pane) loader.getRoot();
     List<javafx.scene.Node> childrenList = root.getChildren();
-    System.out.println("this is childrenList of the drawer " + childrenList);
+    // System.out.println("this is childrenList of the drawer " + childrenList);
     root.setMinHeight(App.getPrimaryStage().getScene().getHeight());
     Scene scene = App.getPrimaryStage().getScene();
     changeChildrenMapView(childrenList);
@@ -1663,15 +1663,198 @@ public class MapController implements AllAccessible {
   // _________________________________________Service View_____________________________________
 
   @FXML
-  private void LoadServices() {
+  private void LoadServices() throws IOException {
     clearMap();
+    Image I = new Image("Images/Service Icons/exTrans_green.png");
 
-    for (LocalStatus LS :
-        FDatabaseTables.getAudVisTable().getLocalStatus(GlobalDb.getConnection())) {
+    for (AllServiceNodeInfo S : FDatabaseTables.getAllServiceTable().ListServices()) {
 
-      for (Node E: FDatabaseTables.getNodeTable().convertNodesToLL(GlobalDb.getConnection()))
-      {
+      for (NodeUI N : NODES) {
+        if (N.getN().getLongName().equals(S.getLocation())) {
+          ImageView Service = new ImageView();
+          Service.setX(N.getN().getXCoord());
+          Service.setY(N.getN().getYCoord());
+          Service.setFitWidth(30);
+          Service.setFitHeight(30);
 
+          System.out.println(S.getStatus());
+
+          switch (S.getType()) {
+            case "EXT":
+              switch (S.getStatus()) {
+                case "Complete":
+                  I = new Image("Images/Service Icons/exTrans_green.png");
+                  break;
+                case "In Progress":
+                  I = new Image("Images/Service Icons/exTrans_yellow.png");
+                  break;
+                case "Incomplete":
+                  I = new Image("Images/Service Icons/exTrans_red.png");
+                  break;
+              }
+              Service.setImage(I);
+              break;
+            case "FLOW":
+              switch (S.getStatus()) {
+                case "Complete":
+                  I = new Image("Images/Service Icons/floral_green.png");
+                  break;
+                case "In Progress":
+                  I = new Image("Images/Service Icons/floral_yellow.png");
+                  break;
+                case "Incomplete":
+                  I = new Image("Images/Service Icons/floral_red.png");
+                  break;
+              }
+              Service.setImage(I);
+              break;
+            case "FOOD":
+              switch (S.getStatus()) {
+                case "Complete":
+                  I = new Image("Images/Service Icons/food_green.png");
+                  break;
+                case "In Progress":
+                  I = new Image("Images/Service Icons/food_yellow.png");
+                  break;
+                case "Incomplete":
+                  I = new Image("Images/Service Icons/food_red.png");
+                  break;
+              }
+              Service.setImage(I);
+              break;
+            case "LAUN":
+              switch (S.getStatus()) {
+                case "Complete":
+                  I = new Image("Images/Service Icons/laundry_green.png");
+                  break;
+                case "In Progress":
+                  I = new Image("Images/Service Icons/laundry_yellow.png");
+                  break;
+                case "Incomplete":
+                  I = new Image("Images/Service Icons/laundry_red.png");
+                  break;
+              }
+              Service.setImage(I);
+              break;
+            case "LANG":
+              switch (S.getStatus()) {
+                case "Complete":
+                  I = new Image("Images/Service Icons/translate_green.png");
+                  break;
+                case "In Progress":
+                  I = new Image("Images/Service Icons/translate_yellow.png");
+                  break;
+                case "Incomplete":
+                  I = new Image("Images/Service Icons/translate_red.png");
+                  break;
+              }
+              Service.setImage(I);
+              break;
+            case "ITRAN":
+              switch (S.getStatus()) {
+                case "Complete":
+                  I = new Image("Images/Service Icons/wheelchair_green.png");
+                  break;
+                case "In Progress":
+                  I = new Image("Images/Service Icons/wheelchair_yellow.png");
+                  break;
+                case "Incomplete":
+                  I = new Image("Images/Service Icons/wheelchair_red.png");
+                  break;
+              }
+              Service.setImage(I);
+              break;
+            case "SECUR":
+              switch (S.getStatus()) {
+                case "Complete":
+                  I = new Image("Images/Service Icons/security_green.png");
+                  break;
+                case "In Progress":
+                  I = new Image("Images/Service Icons/security_yellow.png");
+                  break;
+                case "Incomplete":
+                  I = new Image("Images/Service Icons/security_red.png");
+                  break;
+              }
+              Service.setImage(I);
+              break;
+            case "FACIL":
+              switch (S.getStatus()) {
+                case "Complete":
+                  I = new Image("Images/Service Icons/maintenance_green.png");
+                  break;
+                case "In Progress":
+                  I = new Image("Images/Service Icons/maintenance_yellow.png");
+                  break;
+                case "Incomplete":
+                  I = new Image("Images/Service Icons/maintenance_red.png");
+                  break;
+              }
+              Service.setImage(I);
+              break;
+            case "COMP":
+              switch (S.getStatus()) {
+                case "Complete":
+                  I = new Image("Images/Service Icons/Computer_green.png");
+                  break;
+                case "In Progress":
+                  I = new Image("Images/Service Icons/Computer_yellow.png");
+                  break;
+                case "Incomplete":
+                  I = new Image("Images/Service Icons/Computer_red.png");
+                  break;
+              }
+              Service.setImage(I);
+              break;
+            case "AUD":
+              switch (S.getStatus()) {
+                case "Complete":
+                  I = new Image("Images/Service Icons/exTrans_green.png");
+                  break;
+                case "In Progress":
+                  I = new Image("Images/Service Icons/exTrans_yellow.png");
+                  break;
+                case "Incomplete":
+                  I = new Image("Images/Service Icons/exTrans_red.png");
+                  break;
+              }
+              I = new Image("Images/Service Icons/exTrans_green.png");
+              Service.setImage(I);
+              break;
+            case "SANI":
+              switch (S.getStatus()) {
+                case "Complete":
+                  I = new Image("Images/Service Icons/sanitization_green.png");
+                  break;
+                case "In Progress":
+                  I = new Image("Images/Service Icons/sanitization_yellow.png");
+                  break;
+                case "Incomplete":
+                  I = new Image("Images/Service Icons/sanitization_red.png");
+                  break;
+              }
+              Service.setImage(I);
+              break;
+            case "MEDD":
+              switch (S.getStatus()) {
+                case "Complete":
+                  I = new Image("Images/Service Icons/medicine_green.png");
+                  break;
+                case "In Progress":
+                  I = new Image("Images/Service Icons/medicine_yellow.png");
+                  break;
+                case "Incomplete":
+                  I = new Image("Images/Service Icons/medicine_red.png");
+                  break;
+              }
+              Service.setImage(I);
+              break;
+          }
+
+          if (N.getN().getFloor().equals(currentFloor)) {
+            secondaryAnchor.getChildren().add(Service);
+          }
+        }
       }
     }
   }

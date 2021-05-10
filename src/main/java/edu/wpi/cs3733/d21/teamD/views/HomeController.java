@@ -141,7 +141,7 @@ public class HomeController implements AllAccessible {
           App.getPrimaryStage().show();
 
           List<Node> childrenList = root.getChildren();
-          System.out.println("this is childrenList of the map" + childrenList);
+          // System.out.println("this is childrenList of the map" + childrenList);
           JFXToggleButton mapEditing = (JFXToggleButton) childrenList.get(4);
           if (!userCategory.equalsIgnoreCase("admin")) {
             mapEditing.setVisible(false);
@@ -188,8 +188,8 @@ public class HomeController implements AllAccessible {
     JFXButton helpBtn = (JFXButton) nodeList.get(6);
     ImageView helpImage = (ImageView) nodeList.get(7);
     StackPane stackPane = (StackPane) nodeList.get(8);
-    JFXNodesList floorBtns = (JFXNodesList) nodeList.get(9);
-    JFXNodesList csvBtns = (JFXNodesList) nodeList.get(10);
+    JFXNodesList floorBtns = (JFXNodesList) nodeList.get(10);
+    JFXNodesList csvBtns = (JFXNodesList) nodeList.get(11);
 
     drawer.setLayoutX(-270);
     drawer.setLayoutY(0);
