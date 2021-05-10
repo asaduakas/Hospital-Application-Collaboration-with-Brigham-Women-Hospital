@@ -276,7 +276,7 @@ public class NodesTable extends AbsTables {
       stmt.setString(1, nodeId);
       stmt.setString(2, username);
       stmt.executeUpdate();
-      System.out.println("deleted favNode");
+      // System.out.println("deleted favNode");
     } catch (Exception e) {
       e.printStackTrace();
     }
