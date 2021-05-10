@@ -727,11 +727,9 @@ public class MapController implements AllAccessible {
     if (thePath.isEmpty()) {
       Targets.clear();
     } else {
-      switchFloor(currentFloor);
-
-      // Center path on screen
-      final Node start = DirectoryTargets.get(0);
-      final Node end = getCenteringEnd(DirectoryTargets.get(1));
+      final Node start = DirectoryTargets.getFirst();
+      switchFloor(start.getFloor());
+      final Node end = getCenteringEnd(DirectoryTargets.getLast());
       System.out.println("End node (for centering) is " + end.getLongName());
       mapScrollPane.centerOnPath(
           start.getXCoord(), start.getYCoord(), end.getXCoord(), end.getYCoord());
