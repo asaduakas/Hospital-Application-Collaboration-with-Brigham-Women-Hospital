@@ -33,6 +33,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -98,7 +99,6 @@ public class MapController implements AllAccessible {
   public static final Image RETL = new Image("Images/retailpin.png");
   public static final Image SERV = new Image("Images/service.png");
   public static final Image favImage = new Image("Images/favIcon_good.png");
-  public static final Image AudioVisual = new Image("Images/audio-visual.png");
   private Image up = new Image("Images/up-arrow.png");
   private Image down = new Image("Images/redArrow.png");
   private Image endImage = new Image("Images/endingIcon_white.png");
@@ -227,15 +227,20 @@ public class MapController implements AllAccessible {
   }
 
   public void changeChildrenMapView(List<javafx.scene.Node> nodeList) {
-    JFXTreeView treeView = (JFXTreeView) nodeList.get(1);
-    Label label = (Label) nodeList.get(2);
-    JFXTextArea textDirection = (JFXTextArea) nodeList.get(3);
-    JFXButton dirBtn = (JFXButton) nodeList.get(7);
+    AnchorPane secondAnchor = (AnchorPane) nodeList.get(0);
+    JFXButton findPathBtn = (JFXButton) secondAnchor.getChildren().get(0);
+    JFXTreeView treeView = (JFXTreeView) secondAnchor.getChildren().get(1);
+    Label label = (Label) secondAnchor.getChildren().get(2);
+    ScrollPane textDirection = (ScrollPane) secondAnchor.getChildren().get(3);
+    JFXButton dirBtn = (JFXButton) secondAnchor.getChildren().get(7);
 
-    treeView.setPrefHeight(App.getPrimaryStage().getScene().getHeight() / 2.5);
+    secondAnchor.setPrefHeight(App.getPrimaryStage().getScene().getHeight());
+    treeView.setPrefHeight(secondAnchor.getPrefHeight() / 2.75);
+    treeView.setLayoutY(findPathBtn.getLayoutY() + findPathBtn.getHeight() + 30);
     label.setLayoutY(treeView.getLayoutY() + treeView.getPrefHeight() + 10);
     label.setLayoutX(10);
-    textDirection.setLayoutY(label.getLayoutY() + label.getHeight() + 30);
+    textDirection.setLayoutY(label.getLayoutY() + label.getHeight() + 40);
+    textDirection.setPrefHeight(secondAnchor.getPrefHeight() / 3.3);
     dirBtn.setLayoutY(textDirection.getLayoutY() + textDirection.getPrefHeight() + 20);
   }
 
@@ -321,7 +326,7 @@ public class MapController implements AllAccessible {
       setupDraggableNodeUI(Temp);
       NODES.add(Temp);
     }
-    initializeFavs();
+    // initializeFavs();
   }
 
   private void initializeEdges() {
