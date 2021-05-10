@@ -75,6 +75,7 @@ public class MapController implements AllAccessible {
   private SimpleBooleanProperty minusPressed = new SimpleBooleanProperty();
   private SimpleBooleanProperty aPressed = new SimpleBooleanProperty();
   private SimpleBooleanProperty pPressed = new SimpleBooleanProperty();
+  private SimpleBooleanProperty bPressed = new SimpleBooleanProperty();
   private SimpleBooleanProperty shiftPressed = new SimpleBooleanProperty();
   private SimpleBooleanProperty fPressed = new SimpleBooleanProperty();
   private final double buttonZoomAmount = 10;
@@ -99,6 +100,7 @@ public class MapController implements AllAccessible {
   public static final Image RETL = new Image("Images/retailpin.png");
   public static final Image SERV = new Image("Images/service.png");
   public static final Image favImage = new Image("Images/favIcon_good.png");
+  public static final Image blockedNode = new Image("Images/blockedNode.png");
   private Image up = new Image("Images/up-arrow.png");
   private Image down = new Image("Images/redArrow.png");
   private Image endImage = new Image("Images/endingIcon_white.png");
@@ -278,6 +280,9 @@ public class MapController implements AllAccessible {
       if (FDatabaseTables.getNodeTable()
           .FavContains(GlobalDb.getConnection(), N.getNodeID(), HomeController.username)) {
         Marker.setImage(favImage);
+      } else if (FDatabaseTables.getNodeTable()
+          .blockedContains(GlobalDb.getConnection(), N.getNodeID())) {
+        Marker.setImage(blockedNode);
       } else {
         switch (N.getNodeType()) {
           case "PARK":
@@ -441,8 +446,10 @@ public class MapController implements AllAccessible {
     for (NodeUI NUI : NODES) {
       if (NUI.getN().getFloor().equals(Floor)) {
         if (!isEditor) {
-          if ((!NUI.getN().getNodeType().equals("WALK"))
-              && (!NUI.getN().getNodeType().equals("HALL"))) {
+          if (((!NUI.getN().getNodeType().equals("WALK"))
+                  && (!NUI.getN().getNodeType().equals("HALL")))
+              || FDatabaseTables.getNodeTable()
+                  .blockedContains(GlobalDb.getConnection(), NUI.getN().getNodeID())) {
             addNodeUI(NUI);
           }
         } else {
@@ -808,6 +815,9 @@ public class MapController implements AllAccessible {
                   LoadingNodesEdges(currentFloor);
                 } else {
                   isEditor = false;
+                  if (popup.isShowing()) {
+                    popup.hide();
+                  }
                   clearMap();
                   drawNodeFloor(currentFloor);
                 }
@@ -846,6 +856,7 @@ public class MapController implements AllAccessible {
             endPressed.setValue(false);
             shiftPressed.set(false);
             fPressed.set(false);
+            bPressed.set(false);
             saveMode = !saveMode;
             alignMode = false;
           }
@@ -858,6 +869,18 @@ public class MapController implements AllAccessible {
             endPressed.setValue(false);
             shiftPressed.set(false);
             fPressed.set(true);
+            bPressed.set(false);
+          }
+          if (key == KeyCode.B) {
+            pPressed.set(false);
+            plusPressed.set(false);
+            minusPressed.set(false);
+            aPressed.set(false);
+            startPressed.setValue(false);
+            endPressed.setValue(false);
+            shiftPressed.set(false);
+            fPressed.set(false);
+            bPressed.set(true);
           }
           if (key == KeyCode.SHIFT) {
             pPressed.set(false);
@@ -870,6 +893,7 @@ public class MapController implements AllAccessible {
             fPressed.set(false);
             alignMode = !alignMode;
             saveMode = false;
+            bPressed.set(false);
           }
           if (key == KeyCode.EQUALS) {
             pPressed.set(false);
@@ -880,6 +904,7 @@ public class MapController implements AllAccessible {
             endPressed.setValue(false);
             shiftPressed.set(false);
             fPressed.set(false);
+            bPressed.set(false);
           }
           if (key == KeyCode.OPEN_BRACKET) {
             mapScrollPane.onScroll(
@@ -904,6 +929,7 @@ public class MapController implements AllAccessible {
             endPressed.setValue(false);
             shiftPressed.set(false);
             fPressed.set(false);
+            bPressed.set(false);
           }
           if (key == KeyCode.A) {
             pPressed.set(false);
@@ -914,6 +940,7 @@ public class MapController implements AllAccessible {
             endPressed.setValue(false);
             shiftPressed.set(false);
             fPressed.set(false);
+            bPressed.set(false);
           }
           if (key == KeyCode.S) {
             startPressed.setValue(true);
@@ -924,6 +951,7 @@ public class MapController implements AllAccessible {
             aPressed.set(false);
             shiftPressed.set(false);
             fPressed.set(false);
+            bPressed.set(false);
           }
           if (key == KeyCode.E) {
             endPressed.setValue(true);
@@ -934,6 +962,7 @@ public class MapController implements AllAccessible {
             aPressed.set(false);
             shiftPressed.set(false);
             fPressed.set(false);
+            bPressed.set(false);
           }
           if (!isEditor) {
             if (key == KeyCode.ESCAPE) {
@@ -956,6 +985,7 @@ public class MapController implements AllAccessible {
           aPressed.set(false);
           shiftPressed.set(false);
           fPressed.set(false);
+          bPressed.set(false);
         });
   }
 
@@ -1083,6 +1113,10 @@ public class MapController implements AllAccessible {
                   if (nodesToAlign.size() > 2) {
                     alignNodes();
                   }
+                }
+
+                if (bPressed.get()) {
+                  blockNode(N);
                 }
               } // end of isEditor
 
@@ -1256,6 +1290,74 @@ public class MapController implements AllAccessible {
       }
     }
     MapDrawerController.favCallStuff();
+  }
+
+  private void blockNode(NodeUI N) {
+    // TODO: REPLACE FAVE DB NODE STUFF WITH BLOCKED NODE DB
+    if (FDatabaseTables.getNodeTable()
+        .blockedContains(GlobalDb.getConnection(), N.getN().getNodeID())) {
+      FDatabaseTables.getNodeTable().deleteBlocked(GlobalDb.getConnection(), N.getN().getNodeID());
+      switch (N.getN().getNodeType()) {
+        case "PARK":
+          N.getI().setImage(PARK);
+          break;
+        case "ELEV":
+          N.getI().setImage(ELEV);
+          break;
+        case "REST":
+          N.getI().setImage(REST);
+          break;
+        case "STAI":
+          N.getI().setImage(STAI);
+          break;
+        case "DEPT":
+          N.getI().setImage(DEPT);
+          break;
+        case "LABS":
+          N.getI().setImage(LABS);
+          break;
+        case "INFO":
+          N.getI().setImage(INFO);
+          break;
+        case "CONF":
+          N.getI().setImage(CONF);
+          break;
+        case "EXIT":
+          N.getI().setImage(EXIT);
+          break;
+        case "RETL":
+          N.getI().setImage(RETL);
+          break;
+        case "SERV":
+          N.getI().setImage(SERV);
+          break;
+        default:
+          N.getI().setImage(DEFAULT);
+          break;
+      }
+      initialData.getNodeByID(N.getN().getNodeID()).setBlocked(false);
+    } else {
+      if (HomeController.username == null) { // should never get in here
+        dialogFactory.createTwoButtonDialog(
+            "You're in guest view",
+            "Please login or Sign up to add favorite",
+            "Sign up",
+            () -> {
+              ControllerManager.attemptLoadPopupBlur("signUpView.fxml");
+            },
+            "Just view map",
+            () -> {});
+      } else { // TODO: replace with new DB stuff and image
+        FDatabaseTables.getNodeTable()
+            .addToBlockedNodes(
+                GlobalDb.getConnection(), N.getN().getNodeID(), N.getN().getLongName());
+        initialData.getNodeByID(N.getN().getNodeID()).setBlocked(true);
+        N.getI().setImage(blockedNode);
+        N.setSizeHeight(50);
+        N.setSizeWidth(50);
+      }
+    }
+    MapDrawerController.blockedCallStuff();
   }
 
   private void hoverResize(NodeUI N) {

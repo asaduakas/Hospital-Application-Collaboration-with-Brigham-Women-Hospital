@@ -43,9 +43,11 @@ public class Dijkstras extends IntermediaryAlgo implements IPathFinding {
         if (edges != null) {
           for (Edge edge : edges) { // iterate through each edge
             Node child = data.getNodeByID(edge.getEndNodeID());
-            if (!openList.contains(child) && !closedList.contains(child)) {
-              nodesTo.put(child.getNodeID(), edge);
-              openList.add(child);
+            if (!child.isBlocked()) {
+              if (!openList.contains(child) && !closedList.contains(child)) {
+                nodesTo.put(child.getNodeID(), edge);
+                openList.add(child);
+              }
             }
           }
         }
