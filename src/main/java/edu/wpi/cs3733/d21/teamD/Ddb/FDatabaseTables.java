@@ -123,6 +123,8 @@ public class FDatabaseTables {
     nodeTable.populateTable(GlobalDb.getConnection(), "");
     nodeTable.createFavoriteNodeTable(GlobalDb.getConnection());
     nodeTable.populateFavoriteNodeTable(GlobalDb.getConnection(), "");
+    nodeTable.createBlockedNodeTable(GlobalDb.getConnection());
+    nodeTable.populateBlockedNodeTable(GlobalDb.getConnection(), "");
     edgeTable.createTable(GlobalDb.getConnection());
     edgeTable.populateTable(GlobalDb.getConnection(), "");
     searchHistoryTable.createTable(GlobalDb.getConnection());

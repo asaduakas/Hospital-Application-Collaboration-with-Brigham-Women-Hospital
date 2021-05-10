@@ -280,6 +280,9 @@ public class MapController implements AllAccessible {
       if (FDatabaseTables.getNodeTable()
           .FavContains(GlobalDb.getConnection(), N.getNodeID(), HomeController.username)) {
         Marker.setImage(favImage);
+      } else if (FDatabaseTables.getNodeTable()
+          .blockedContains(GlobalDb.getConnection(), N.getNodeID())) {
+        Marker.setImage(blockedNode);
       } else {
         switch (N.getNodeType()) {
           case "PARK":
@@ -1277,9 +1280,8 @@ public class MapController implements AllAccessible {
   private void blockNode(NodeUI N) {
     // TODO: REPLACE FAVE DB NODE STUFF WITH BLOCKED NODE DB
     if (FDatabaseTables.getNodeTable()
-        .FavContains(GlobalDb.getConnection(), N.getN().getNodeID(), HomeController.username)) {
-      FDatabaseTables.getNodeTable()
-          .deleteFav(GlobalDb.getConnection(), N.getN().getNodeID(), HomeController.username);
+        .blockedContains(GlobalDb.getConnection(), N.getN().getNodeID())) {
+      FDatabaseTables.getNodeTable().deleteBlocked(GlobalDb.getConnection(), N.getN().getNodeID());
       switch (N.getN().getNodeType()) {
         case "PARK":
           N.getI().setImage(PARK);
@@ -1331,11 +1333,8 @@ public class MapController implements AllAccessible {
             () -> {});
       } else { // TODO: replace with new DB stuff and image
         FDatabaseTables.getNodeTable()
-            .addToFavoriteNodes(
-                GlobalDb.getConnection(),
-                HomeController.username,
-                N.getN().getNodeID(),
-                N.getN().getLongName());
+            .addToBlockedNodes(
+                GlobalDb.getConnection(), N.getN().getNodeID(), N.getN().getLongName());
         N.getI().setImage(blockedNode);
         N.setSizeHeight(50);
         N.setSizeWidth(50);
