@@ -12,6 +12,7 @@ public class Node {
   private String longName;
   private String shortName;
   private LinkedList<Edge> edges;
+  private boolean blocked;
 
   public Node(
       String nodeID,
@@ -31,6 +32,7 @@ public class Node {
     this.longName = longName;
     this.shortName = shortName;
     this.edges = new LinkedList<Edge>();
+    this.blocked = false;
   }
 
   public Node() {
@@ -42,6 +44,7 @@ public class Node {
     this.nodeType = "nodeType";
     this.longName = "longName";
     this.shortName = "shortName";
+    this.blocked = false;
     this.edges = new LinkedList<Edge>();
   }
 
@@ -144,6 +147,14 @@ public class Node {
 
   public void addEdge(Edge edge) {
     this.edges.add(edge);
+  }
+
+  public boolean isBlocked() {
+    return blocked;
+  }
+
+  public void setBlocked(boolean blocked) {
+    this.blocked = blocked;
   }
 
   public int compareFloor(Node other) {

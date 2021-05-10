@@ -194,4 +194,39 @@ public class PathfindingTest {
     RoomGraph graph = new RoomGraph(GlobalDb.getConnection());
     graph.printGraph();
   }
+
+  @Test
+  public void blockedTest() {
+    GlobalDb.establishCon();
+    RoomGraph data = new RoomGraph(GlobalDb.getConnection());
+    PathAlgoPicker pathfinder = new PathAlgoPicker();
+    Node start = data.getNodeByID("FSTAI00201");
+    Node target = data.getNodeByID("dRETL00101");
+
+    data.getNodeByID("FEXIT00201").setBlocked(true);
+
+    System.out.println("-----------------Starting aStar print--------------------------------");
+
+    pathfinder.setAlgorithm(new aStar());
+    pathfinder.search(data, start, target);
+    pathfinder.printPathTo();
+
+    System.out.println("-----------------Starting BFS print--------------------------------");
+
+    pathfinder.setAlgorithm(new singleBFS());
+    pathfinder.search(data, start, target);
+    pathfinder.printPathTo();
+
+    System.out.println("-----------------Starting DFS print--------------------------------");
+
+    pathfinder.setAlgorithm(new singleDFS());
+    pathfinder.search(data, start, target);
+    pathfinder.printPathTo();
+
+    System.out.println("-----------------Starting Dijkstras print--------------------------------");
+
+    pathfinder.setAlgorithm(new Dijkstras());
+    pathfinder.search(data, start, target);
+    pathfinder.printPathTo();
+  }
 }
