@@ -1,5 +1,6 @@
 package edu.wpi.cs3733.d21.teamD.Ddb;
 
+import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.FoodDelivNodeInfo;
 import java.io.IOException;
 import java.sql.*;
@@ -27,7 +28,8 @@ public class FoodDeliveryRequestTable extends AbsTables {
               + "assignedEmployee VARCHAR(100) DEFAULT '',"
               + "specialNeeds VARCHAR(500) DEFAULT '',"
               + "PRIMARY KEY(id),"
-              + "CONSTRAINT FD_employee_FK FOREIGN KEY (assignedEmployee) REFERENCES Users (id),"
+              //              + "CONSTRAINT FD_employee_FK FOREIGN KEY (assignedEmployee) REFERENCES
+              // Users (id),"
               // + "CONSTRAINT FD_location_FK FOREIGN KEY (location) REFERENCES Nodes (nodeID),"
               + "CONSTRAINT FD_status_check CHECK (status IN ('Incomplete', 'Complete', 'In Progress')))";
       stmt.executeUpdate(query);
@@ -82,18 +84,16 @@ public class FoodDeliveryRequestTable extends AbsTables {
       String lastName,
       String contactInfo,
       String location,
-      String assignedEmployee,
       String specialNeeds) {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
-              "INSERT INTO FoodDeliveryServiceRequest (firstName, lastName, contactInfo, location, assignedEmployee, specialNeeds) VALUES(?,?,?,?,?,?)");
+              "INSERT INTO FoodDeliveryServiceRequest (firstName, lastName, contactInfo, location, specialNeeds) VALUES(?,?,?,?,?)");
       stmt.setString(1, firstName);
       stmt.setString(2, lastName);
       stmt.setString(3, contactInfo);
       stmt.setString(4, location);
-      stmt.setString(5, assignedEmployee);
-      stmt.setString(6, specialNeeds);
+      stmt.setString(5, specialNeeds);
       stmt.executeUpdate();
     } catch (Exception e) {
       e.printStackTrace();
@@ -122,11 +122,24 @@ public class FoodDeliveryRequestTable extends AbsTables {
     }
   }
 
-  public void addIntoFoodDelivDataList(ObservableList<FoodDelivNodeInfo> foodData)
-      throws IOException {
+  public void addIntoFoodDelivDataList(
+      ObservableList<FoodDelivNodeInfo> foodData, boolean employeeAccess) throws IOException {
+    PreparedStatement stmt = null;
+    Connection conn = GlobalDb.getConnection();
     try {
-      String query = "SELECT * FROM FoodDeliveryServiceRequest";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      if (employeeAccess) {
+        stmt =
+            conn.prepareStatement(
+                "SELECT * FROM FoodDeliveryServiceRequest WHERE assignedEmployee = ? OR assignedEmployee = ''");
+        stmt.setString(1, HomeController.username);
+        //        System.out.println(
+        //            "this is trying to add data into the employee table " +
+        // HomeController.username);
+        //        System.out.println("this is getting the userType " + HomeController.userTypeEnum);
+      } else {
+        stmt = conn.prepareStatement("SELECT * FROM FoodDeliveryServiceRequest");
+      }
+      ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
         foodData.add(
             new FoodDelivNodeInfo(

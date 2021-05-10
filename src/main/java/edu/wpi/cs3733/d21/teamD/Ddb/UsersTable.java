@@ -335,6 +335,8 @@ public class UsersTable extends AbsTables {
 
   public String validateClearance(Connection conn, String id) {
     String clearance = null;
+    String approve = FDatabaseTables.getCovid19SurveyTable().fetchStatus(conn, id);
+    System.out.println("this is the approve status in userTable " + approve);
     try {
       PreparedStatement stmt =
           GlobalDb.getConnection().prepareStatement("SELECT clearance FROM Users WHERE id = ?");
@@ -343,11 +345,15 @@ public class UsersTable extends AbsTables {
       ResultSet rs = stmt.getResultSet();
       if (rs.next()) {
         String clearanceLevel = rs.getString("clearance");
-        if (clearanceLevel == null) {
+        if (clearanceLevel == null
+            || clearanceLevel.equalsIgnoreCase("cleared")
+            || approve.equalsIgnoreCase("Approved")) {
           clearance = "prettyGood";
-        } else if (clearanceLevel.equals("normalEntrance")) {
+        } else if (clearanceLevel.equals("normalEntrance")
+            || approve.equalsIgnoreCase("Inconclusive")) {
           clearance = "normalEntrance";
-        } else if (clearanceLevel.equals("emergencyEntrance")) {
+        } else if (clearanceLevel.equals("emergencyEntrance")
+            || approve.equalsIgnoreCase("Disapproved")) {
           clearance = "emergencyEntrance";
         }
       }

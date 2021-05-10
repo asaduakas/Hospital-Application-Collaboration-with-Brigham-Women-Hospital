@@ -317,7 +317,8 @@ public class UsersController extends AbsRequest
             return clearanceCol.getComputedValue(p);
           }
         });
-    clearanceCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn("Cleared", "Not Cleared"));
+    clearanceCol.setCellFactory(
+        ComboBoxTreeTableCell.forTreeTableColumn("Cleared", "emergencyEntrance", "normalEntrance"));
 
     patientTable.setEditable(true);
     categoryCol.setEditable(false);

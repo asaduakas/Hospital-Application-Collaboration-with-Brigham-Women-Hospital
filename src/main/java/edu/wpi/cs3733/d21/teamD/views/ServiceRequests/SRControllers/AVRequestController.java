@@ -73,7 +73,6 @@ public class AVRequestController extends AbsRequest
               super.lastName.getText(),
               super.contactInfo.getText(),
               super.locationBox.getValue(),
-              staffAssigned.getValue(),
               issueDescription.getText());
     }
   }

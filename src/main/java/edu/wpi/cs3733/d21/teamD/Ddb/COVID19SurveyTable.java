@@ -1,5 +1,6 @@
 package edu.wpi.cs3733.d21.teamD.Ddb;
 
+import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.COVIDSurveyResultsNodeInfo;
 import java.io.IOException;
 import java.sql.*;
@@ -17,6 +18,7 @@ public class COVID19SurveyTable extends AbsTables {
           "CREATE TABLE COVID19SurveyResults ("
               + "id INT GENERATED ALWAYS AS IDENTITY,"
               + "serviceType VARCHAR(100) DEFAULT 'COVID-19 Survey',"
+              + "username VARCHAR(100) NOT NULL,"
               + "firstName VARCHAR(100),"
               + "lastName VARCHAR(200),"
               + "contactInfo VARCHAR(100),"
@@ -51,6 +53,7 @@ public class COVID19SurveyTable extends AbsTables {
   public void addEntity(
       Connection conn,
       String type,
+      String username,
       String firstName,
       String lastName,
       String contactInfo,
@@ -63,7 +66,7 @@ public class COVID19SurveyTable extends AbsTables {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
-              "INSERT INTO COVID19SurveyResults (firstName, lastName, contactInfo, email, positiveTestCheck, symptomCheck, closeContactCheck, selfIsolateCheck, feelGoodCheck, serviceType) VALUES(?,?,?,?,?,?,?,?,?,?)");
+              "INSERT INTO COVID19SurveyResults (firstName, lastName, contactInfo, email, positiveTestCheck, symptomCheck, closeContactCheck, selfIsolateCheck, feelGoodCheck, serviceType, username) VALUES(?,?,?,?,?,?,?,?,?,?,?)");
       stmt.setString(1, firstName);
       stmt.setString(2, lastName);
       stmt.setString(3, contactInfo);
@@ -74,6 +77,7 @@ public class COVID19SurveyTable extends AbsTables {
       stmt.setString(8, selfIsolateCheck);
       stmt.setString(9, feelGoodCheck);
       stmt.setString(10, type);
+      stmt.setString(11, username);
       stmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -86,16 +90,29 @@ public class COVID19SurveyTable extends AbsTables {
     // if all good is checked, send email of GO ON PEASANT
   }
 
-  public ObservableList<COVIDSurveyResultsNodeInfo> addIntoCOVIDSurveyList(
-      ObservableList<COVIDSurveyResultsNodeInfo> COVIDSurveyData) throws IOException {
-    // COVIDSurveyData = FXCollections.observableArrayList();
+  public void addIntoCOVIDSurveyList(
+      ObservableList<COVIDSurveyResultsNodeInfo> COVIDSurveyData, boolean employeeAccess)
+      throws IOException {
+    PreparedStatement stmt = null;
+    Connection conn = GlobalDb.getConnection();
     try {
-      String query = "SELECT * FROM COVID19SurveyResults";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      if (employeeAccess) {
+        stmt =
+            conn.prepareStatement(
+                "SELECT * FROM COVID19SurveyResults WHERE assignedTo = ? OR assignedTo = ''");
+        stmt.setString(1, HomeController.username);
+        //        System.out.println(
+        //            "this is trying to add data into the employee table " +
+        // HomeController.username);
+      } else {
+        stmt = conn.prepareStatement("SELECT * FROM COVID19SurveyResults");
+      }
+      ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
         COVIDSurveyData.add(
             new COVIDSurveyResultsNodeInfo(
                 rs.getString("serviceType"),
+                rs.getString("username"),
                 rs.getString("firstName"),
                 rs.getString("lastName"),
                 rs.getString("contactInfo"),
@@ -107,16 +124,11 @@ public class COVID19SurveyTable extends AbsTables {
                 rs.getString("closeContactCheck"),
                 rs.getString("selfIsolateCheck"),
                 rs.getString("feelGoodCheck")));
-        //                                rs.getInt("positiveTestCheck"),
-        //                                rs.getInt("symptomCheck"),
-        //                                rs.getInt("closeContactCheck"),
-        //                                rs.getInt("selfIsolateCheck"),
-        //                                rs.getInt("feelGoodCheck")));
       }
     } catch (SQLException throwables) {
       throwables.printStackTrace();
     }
-    return COVIDSurveyData;
+    //    return COVIDSurveyData;
   }
 
   public ObservableList<COVIDSurveyResultsNodeInfo> changeCOVIDSurveyData(
@@ -128,10 +140,10 @@ public class COVID19SurveyTable extends AbsTables {
           stmt =
               GlobalDb.getConnection()
                   .prepareStatement(
-                      "UPDATE COVID19SurveyResults SET status = ?, assignedTo = ? WHERE id=?");
+                      "UPDATE COVID19SurveyResults SET status = ?, assignedTo = ? WHERE username = ?");
           stmt.setString(1, info.getStatus());
           stmt.setString(2, info.getAssignedEmployee());
-          stmt.setString(3, info.getId());
+          stmt.setString(3, info.getUsername());
           stmt.executeUpdate();
         } catch (SQLException throwables) {
           throwables.printStackTrace();
@@ -161,7 +173,7 @@ public class COVID19SurveyTable extends AbsTables {
                 + " \t"
                 + rs.getString("contactInfo")
                 + " \t"
-                + rs.getString("contactInfo")
+                + rs.getString("email")
                 + " \t"
                 + rs.getString("assignedTo")
                 + " \t"
@@ -181,5 +193,22 @@ public class COVID19SurveyTable extends AbsTables {
     } catch (SQLException throwables) {
       throwables.printStackTrace();
     }
+  }
+
+  public String fetchStatus(Connection conn, String username) {
+    String status = "disapproved";
+    try {
+      PreparedStatement stmt =
+          conn.prepareStatement("SELECT status FROM COVID19SurveyResults WHERE username = ?");
+      stmt.setString(1, username);
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        status = rs.getString("status");
+        System.out.println("this is in the covid table and this is status " + status);
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    return status;
   }
 }

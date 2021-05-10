@@ -329,25 +329,51 @@ public class MapController implements AllAccessible {
   }
 
   private void clearanceLevelNodes() {
-    String clearanceLevel =
-        FDatabaseTables.getUserTable()
-            .validateClearance(GlobalDb.getConnection(), HomeController.username);
-    if (clearanceLevel.equals("emergencyEntrance")) {
-      System.out.println("I think it is working... maybe (in mapController init Nodes)");
-      NodeUI N = getNodeUIByID("FEXIT00301");
-      N.getI().setImage(warning);
-      N.setSizeHeight(100);
-      N.setSizeWidth(100);
-      addNodeUI(N);
-    } else if (clearanceLevel.equals("normalEntrance")) {
-      NodeUI N = getNodeUIByID("dWALK02701");
-      N.getI().setImage(warning);
-      N.setSizeHeight(100);
-      N.setSizeWidth(100);
-      addNodeUI(N);
-      System.out.println("normal so I think it is working... maybe (in mapController init Nodes)");
-    } else {
+    if (HomeController.username == null) {
       switchFloor("1");
+    } else {
+      String clearanceLevel =
+          FDatabaseTables.getUserTable()
+              .validateClearance(GlobalDb.getConnection(), HomeController.username);
+      if (clearanceLevel.equals("emergencyEntrance")) {
+        NodeUI N = getNodeUIByID("FEXIT00301");
+        mapHam.setDisable(true);
+        N.getI().setImage(warning);
+        N.setSizeHeight(100);
+        N.setSizeWidth(100);
+        addNodeUI(N);
+        N.getI()
+            .setOnMouseClicked(
+                e -> {
+                  dialogFactory.createOneButtonDialog(
+                      "Please Take Action",
+                      "Please proceed to the destinated location"
+                          + "\n"
+                          + "A nurse will check for further action",
+                      "OK",
+                      () -> {});
+                });
+      } else if (clearanceLevel.equals("normalEntrance")) {
+        NodeUI N = getNodeUIByID("dWALK02701");
+        mapHam.setDisable(true);
+        N.getI().setImage(warning);
+        N.setSizeHeight(100);
+        N.setSizeWidth(100);
+        addNodeUI(N);
+        N.getI()
+            .setOnMouseClicked(
+                e -> {
+                  dialogFactory.createOneButtonDialog(
+                      "Please Take Action",
+                      "Please proceed to the destinated location"
+                          + "\n"
+                          + "A nurse will check for further action",
+                      "OK",
+                      () -> {});
+                });
+      } else {
+        switchFloor("1");
+      }
     }
     // initializeFavs();
   }

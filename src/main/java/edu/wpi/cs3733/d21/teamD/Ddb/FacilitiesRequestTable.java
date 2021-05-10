@@ -1,5 +1,6 @@
 package edu.wpi.cs3733.d21.teamD.Ddb;
 
+import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.FacilitiesNodeInfo;
 import java.io.IOException;
 import java.sql.*;
@@ -28,7 +29,8 @@ public class FacilitiesRequestTable extends AbsTables {
               + "urgencyLevel VARCHAR(450) NOT NULL,"
               + "descriptionOfIssue VARCHAR(500) DEFAULT '',"
               + "PRIMARY KEY(id),"
-              + "CONSTRAINT FAC_employee_FK FOREIGN KEY (assignedEmployee) REFERENCES Users (id),"
+              //              + "CONSTRAINT FAC_employee_FK FOREIGN KEY (assignedEmployee)
+              // REFERENCES Users (id),"
               // + "CONSTRAINT FAC_location_FK FOREIGN KEY (location) REFERENCES Nodes (nodeID),"
               + "CONSTRAINT FAC_status_check CHECK (status IN ('Incomplete', 'Complete', 'In Progress')),"
               + "CONSTRAINT FAC_urgency_check CHECK (urgencyLevel IN ('Low Priority', 'Medium Priority', 'High Priority')))";
@@ -48,31 +50,43 @@ public class FacilitiesRequestTable extends AbsTables {
       String lastName,
       String contactInfo,
       String location,
-      String assignedEmployee,
       String urgencyLevel,
       String descriptionOfIssue) {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
-              "INSERT INTO FacilitiesServiceRequest (firstName, lastName, contactInfo, location, assignedEmployee, urgencyLevel, descriptionOfIssue) VALUES(?,?,?,?,?,?,?)");
+              "INSERT INTO FacilitiesServiceRequest (firstName, lastName, contactInfo, location, urgencyLevel, descriptionOfIssue) VALUES(?,?,?,?,?,?)");
       stmt.setString(1, firstName);
       stmt.setString(2, lastName);
       stmt.setString(3, contactInfo);
       stmt.setString(4, location);
-      stmt.setString(5, assignedEmployee);
-      stmt.setString(6, urgencyLevel);
-      stmt.setString(7, descriptionOfIssue);
+      stmt.setString(5, urgencyLevel);
+      stmt.setString(6, descriptionOfIssue);
       stmt.executeUpdate();
     } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
-  public void addIntoFacilitiesDataList(ObservableList<FacilitiesNodeInfo> facilitiesData)
+  public void addIntoFacilitiesDataList(
+      ObservableList<FacilitiesNodeInfo> facilitiesData, boolean employeeAccess)
       throws IOException {
+    PreparedStatement stmt = null;
+    Connection conn = GlobalDb.getConnection();
     try {
-      String query = "SELECT * FROM FacilitiesServiceRequest";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      if (employeeAccess) {
+        stmt =
+            conn.prepareStatement(
+                "SELECT * FROM FacilitiesServiceRequest WHERE assignedEmployee = ? OR assignedEmployee = ''");
+        stmt.setString(1, HomeController.username);
+        //        System.out.println(
+        //            "this is trying to add data into the employee table " +
+        // HomeController.username);
+        //        System.out.println("this is getting the userType " + HomeController.userTypeEnum);
+      } else {
+        stmt = conn.prepareStatement("SELECT * FROM FacilitiesServiceRequest");
+      }
+      ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
         facilitiesData.add(
             new FacilitiesNodeInfo(

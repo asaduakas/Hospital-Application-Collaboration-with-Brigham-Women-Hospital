@@ -1,5 +1,6 @@
 package edu.wpi.cs3733.d21.teamD.Ddb;
 
+import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.AudVisNodeInfo;
 import java.io.IOException;
 import java.sql.*;
@@ -27,7 +28,8 @@ public class AudVisRequestTable extends AbsTables {
               + "assignedEmployee VARCHAR(100) DEFAULT '',"
               + "descriptionOfProblem VARCHAR(500) NOT NULL,"
               + "PRIMARY KEY(id),"
-              + "CONSTRAINT AVSR_employee_FK FOREIGN KEY (assignedEmployee) REFERENCES Users (id),"
+              //              + "CONSTRAINT AVSR_employee_FK FOREIGN KEY (assignedEmployee)
+              // REFERENCES Users (id),"
               // + "CONSTRAINT AVSR_location_FK FOREIGN KEY (location) REFERENCES Nodes(nodeID),"
               + "CONSTRAINT AVSR_status_chk CHECK (status IN ('Incomplete', 'Complete', 'In Progress')))";
       stmt.executeUpdate(query);
@@ -45,28 +47,40 @@ public class AudVisRequestTable extends AbsTables {
       String lastName,
       String contactInfo,
       String location,
-      String assignedEmployee,
       String descriptionOfProblem) {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
-              "INSERT INTO AudVisServiceRequest (firstName, lastName, contactInfo, location, assignedEmployee, descriptionOfProblem) VALUES(?,?,?,?,?,?)");
+              "INSERT INTO AudVisServiceRequest (firstName, lastName, contactInfo, location, descriptionOfProblem) VALUES(?,?,?,?,?)");
       stmt.setString(1, firstName);
       stmt.setString(2, lastName);
       stmt.setString(3, contactInfo);
       stmt.setString(4, location);
-      stmt.setString(5, assignedEmployee);
-      stmt.setString(6, descriptionOfProblem);
+      stmt.setString(5, descriptionOfProblem);
       stmt.executeUpdate();
     } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
-  public void addIntoAudVisDataList(ObservableList<AudVisNodeInfo> audVisData) throws IOException {
+  public void addIntoAudVisDataList(
+      ObservableList<AudVisNodeInfo> audVisData, boolean employeeAccess) throws IOException {
+    Connection conn = GlobalDb.getConnection();
+    PreparedStatement stmt = null;
     try {
-      String query = "SELECT * FROM AudVisServiceRequest";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      if (employeeAccess) {
+        stmt =
+            conn.prepareStatement(
+                "SELECT * FROM AudVisServiceRequest WHERE assignedEmployee = ? OR assignedEmployee = ''");
+        stmt.setString(1, HomeController.username);
+        //        System.out.println(
+        //            "this is trying to add data into the employee table " +
+        // HomeController.username);
+        //        System.out.println("this is getting the userType " + HomeController.userTypeEnum);
+      } else {
+        stmt = conn.prepareStatement("SELECT * FROM AudVisServiceRequest");
+      }
+      ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
         audVisData.add(
             new AudVisNodeInfo(

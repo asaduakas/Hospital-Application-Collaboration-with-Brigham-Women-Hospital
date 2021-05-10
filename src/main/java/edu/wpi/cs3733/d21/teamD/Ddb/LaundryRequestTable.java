@@ -1,5 +1,6 @@
 package edu.wpi.cs3733.d21.teamD.Ddb;
 
+import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.LaundryNodeInfo;
 import java.io.IOException;
 import java.sql.*;
@@ -23,7 +24,7 @@ public class LaundryRequestTable extends AbsTables {
               + "location VARCHAR(100) NOT NULL,"
               + "assignedEmployee VARCHAR(100) DEFAULT '',"
               + "PRIMARY KEY(id),"
-              + "CONSTRAINT LAU_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
+//              + "CONSTRAINT LAU_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
               + "CONSTRAINT LAU_status_check CHECK (status IN ('Incomplete', 'Complete', 'In Progress')))";
       // + "CONSTRAINT LAU_location_FK FOREIGN KEY(location) REFERENCES Nodes(nodeID))";
       stmt.executeUpdate(query);
@@ -42,18 +43,16 @@ public class LaundryRequestTable extends AbsTables {
       String firstName,
       String lastName,
       String contactInfo,
-      String location,
-      String assignedEmployee) {
+      String location) {
     PreparedStatement stmt = null;
     String query =
-        "INSERT INTO LaundryRequest (firstName, lastName, contactInfo, location, assignedEmployee) VALUES(?,?,?,?,?)";
+        "INSERT INTO LaundryRequest (firstName, lastName, contactInfo, location) VALUES(?,?,?,?)";
     try {
       stmt = conn.prepareStatement(query);
       stmt.setString(1, firstName);
       stmt.setString(2, lastName);
       stmt.setString(3, contactInfo);
       stmt.setString(4, location);
-      stmt.setString(5, assignedEmployee);
 
       int count = stmt.executeUpdate();
 
@@ -94,11 +93,24 @@ public class LaundryRequestTable extends AbsTables {
     }
   }
 
-  public void addIntoLaundServiceList(ObservableList<LaundryNodeInfo> laundryData)
-      throws IOException {
+  public void addIntoLaundServiceList(
+      ObservableList<LaundryNodeInfo> laundryData, boolean employeeAccess) throws IOException {
+    PreparedStatement stmt = null;
+    Connection conn = GlobalDb.getConnection();
     try {
-      String query = "SELECT * FROM LaundryRequest";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      if (employeeAccess) {
+        stmt =
+            conn.prepareStatement(
+                "SELECT * FROM LaundryRequest WHERE assignedEmployee = ? OR assignedEmployee = ''");
+        stmt.setString(1, HomeController.username);
+        //        System.out.println(
+        //            "this is trying to add data into the employee table " +
+        // HomeController.username);
+        //        System.out.println("this is getting the userType " + HomeController.userTypeEnum);
+      } else {
+        stmt = conn.prepareStatement("SELECT * FROM LaundryRequest");
+      }
+      ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
         laundryData.add(
             new LaundryNodeInfo(

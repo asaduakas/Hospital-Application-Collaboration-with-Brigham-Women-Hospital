@@ -1,5 +1,6 @@
 package edu.wpi.cs3733.d21.teamD.Ddb;
 
+import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.InternalTransNodeInfo;
 import java.io.IOException;
 import java.sql.*;
@@ -26,7 +27,7 @@ public class InternalTransRequestTable extends AbsTables {
               + "assignedEmployee VARCHAR(100) DEFAULT '',"
               + "typeOfTransport VARCHAR(100) NOT NULL,"
               + "PRIMARY KEY(id),"
-              + "CONSTRAINT INT_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
+//              + "FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
               + "CONSTRAINT INT_status_check CHECK (status IN ('Incomplete', 'Complete', 'In Progress')))";
       // + "CONSTRAINT INT_location_FK FOREIGN KEY(destination) REFERENCES Nodes(nodeID))";
       stmt.executeUpdate(query);
@@ -46,30 +47,42 @@ public class InternalTransRequestTable extends AbsTables {
       String lastName,
       String contactInfo,
       String destination,
-      String assignedEmp,
       String typeOfTransport) {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
               "INSERT INTO InternalTransReq (firstName, lastName, contactInfo,"
-                  + "destination, assignedEmployee, typeOfTransport) VALUES(?,?,?,?,?,?)");
+                  + "destination, typeOfTransport) VALUES(?,?,?,?,?)");
       stmt.setString(1, firstName);
       stmt.setString(2, lastName);
       stmt.setString(3, contactInfo);
       stmt.setString(4, destination);
-      stmt.setString(5, assignedEmp);
-      stmt.setString(6, typeOfTransport);
+      stmt.setString(5, typeOfTransport);
       stmt.executeUpdate();
     } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
-  public void addIntoInternalTransList(ObservableList<InternalTransNodeInfo> internalTransData)
+  public void addIntoInternalTransList(
+      ObservableList<InternalTransNodeInfo> internalTransData, boolean employeeAccess)
       throws IOException {
+    PreparedStatement stmt = null;
+    Connection conn = GlobalDb.getConnection();
     try {
-      String query = "SELECT * FROM InternalTransReq";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      if (employeeAccess) {
+        stmt =
+            conn.prepareStatement(
+                "SELECT * FROM InternalTransReq WHERE assignedEmployee = ? OR assignedEmployee = ''");
+        stmt.setString(1, HomeController.username);
+        //        System.out.println(
+        //            "this is trying to add data into the employee table " +
+        // HomeController.username);
+        //        System.out.println("this is getting the userType " + HomeController.userTypeEnum);
+      } else {
+        stmt = conn.prepareStatement("SELECT * FROM InternalTransReq");
+      }
+      ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
         internalTransData.add(
             new InternalTransNodeInfo(

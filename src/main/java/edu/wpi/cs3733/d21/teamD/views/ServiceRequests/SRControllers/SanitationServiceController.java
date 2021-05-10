@@ -71,7 +71,6 @@ public class SanitationServiceController extends AbsRequest
               super.lastName.getText(),
               super.contactInfo.getText(),
               super.locationBox.getValue(),
-              staffAssigned.getValue(),
               issueDescription.getText(),
               urgencyLevel.getValue());
     }

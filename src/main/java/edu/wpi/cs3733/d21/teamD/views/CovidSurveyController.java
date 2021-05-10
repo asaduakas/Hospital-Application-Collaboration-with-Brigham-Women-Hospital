@@ -146,6 +146,7 @@ public class CovidSurveyController implements Initializable, AllAccessible {
         .addEntity(
             GlobalDb.getConnection(),
             "COVID-19 Survey",
+            HomeController.username,
             firstName.getText(),
             lastName.getText(),
             phoneNumber.getText(),

@@ -1,5 +1,6 @@
 package edu.wpi.cs3733.d21.teamD.Ddb;
 
+import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.LangInterpNodeInfo;
 import java.io.IOException;
 import java.sql.*;
@@ -29,7 +30,7 @@ public class LangInterpreterRequestTable extends AbsTables {
               + "languageRequested VARCHAR(100) NOT NULL,"
               + "dateRequested DATE NOT NULL," // YYYY-MM-DD format
               + "PRIMARY KEY(id),"
-              + "CONSTRAINT LANG_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
+//              + "CONSTRAINT LANG_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
               + "CONSTRAINT LANG_status_check CHECK (status IN ('Incomplete', 'Complete', 'In Progress')),"
               + "CONSTRAINT LANG_langRequested_check CHECK (languageRequested IN ('Chinese', 'French', 'German', 'Italian', 'Spanish', 'Portuguese')))";
       // + "CONSTRAINT LANG_location_FK FOREIGN KEY(location) REFERENCES Nodes(nodeID))";
@@ -50,32 +51,44 @@ public class LangInterpreterRequestTable extends AbsTables {
       String lastName,
       String contactInfo,
       String location,
-      String assignedEmp,
       String languageRequested,
       LocalDate dateRequested) {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
               "INSERT INTO LangInterpRequest (firstName, lastName, contactInfo,"
-                  + "location, assignedEmployee, languageRequested, dateRequested) VALUES(?,?,?,?,?,?,?)");
+                  + "location, languageRequested, dateRequested) VALUES(?,?,?,?,?,?)");
       stmt.setString(1, firstName);
       stmt.setString(2, lastName);
       stmt.setString(3, contactInfo);
       stmt.setString(4, location);
-      stmt.setString(5, assignedEmp);
-      stmt.setString(6, languageRequested);
-      stmt.setDate(7, Date.valueOf(dateRequested));
+      stmt.setString(5, languageRequested);
+      stmt.setDate(6, Date.valueOf(dateRequested));
       stmt.executeUpdate();
     } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
-  public void addIntoLangInterpreterList(ObservableList<LangInterpNodeInfo> langInterpData)
+  public void addIntoLangInterpreterList(
+      ObservableList<LangInterpNodeInfo> langInterpData, boolean employeeAccess)
       throws IOException {
+    PreparedStatement stmt = null;
+    Connection conn = GlobalDb.getConnection();
     try {
-      String query = "SELECT * FROM LangInterpRequest";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      if (employeeAccess) {
+        stmt =
+            conn.prepareStatement(
+                "SELECT * FROM LangInterpRequest WHERE assignedEmployee = ? OR assignedEmployee = ''");
+        stmt.setString(1, HomeController.username);
+        //        System.out.println(
+        //            "this is trying to add data into the employee table " +
+        // HomeController.username);
+        //        System.out.println("this is getting the userType " + HomeController.userTypeEnum);
+      } else {
+        stmt = conn.prepareStatement("SELECT * FROM LangInterpRequest");
+      }
+      ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
         langInterpData.add(
             new LangInterpNodeInfo(

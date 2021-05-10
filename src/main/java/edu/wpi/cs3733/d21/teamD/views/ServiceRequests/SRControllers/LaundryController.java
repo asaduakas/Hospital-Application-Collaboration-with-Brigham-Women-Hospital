@@ -67,8 +67,7 @@ public class LaundryController extends AbsRequest
               super.firstName.getText(),
               super.lastName.getText(),
               super.contactInfo.getText(),
-              super.locationBox.getValue(),
-              staffAssigned.getValue());
+              super.locationBox.getValue());
     }
   }
 

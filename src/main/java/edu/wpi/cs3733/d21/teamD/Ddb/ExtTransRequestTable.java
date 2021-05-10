@@ -1,5 +1,6 @@
 package edu.wpi.cs3733.d21.teamD.Ddb;
 
+import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.ExtTransNodeInfo;
 import java.io.IOException;
 import java.sql.*;
@@ -27,7 +28,7 @@ public class ExtTransRequestTable extends AbsTables {
               + "assignedTo VARCHAR(100) DEFAULT '',"
               + "status VARCHAR(20) DEFAULT 'Incomplete',"
               + "CONSTRAINT EXT_REQUESTID PRIMARY KEY(id),"
-              + "CONSTRAINT EXT_employee_FK FOREIGN KEY(assignedTo) REFERENCES Users(id),"
+              // + "CONSTRAINT EXT_employee_FK FOREIGN KEY(assignedTo) REFERENCES Users(id),"
               // + "CONSTRAINT EXT_location_FK FOREIGN KEY(location) REFERENCES Nodes(nodeID),"
               + "CONSTRAINT EXT_status_check CHECK (status IN ('Incomplete', 'Complete', 'In Progress')))";
       stmt.executeUpdate(query);
@@ -72,11 +73,10 @@ public class ExtTransRequestTable extends AbsTables {
       String pLN,
       String contact,
       String loca,
-      String transType,
-      String assigned) {
+      String transType) {
     PreparedStatement stmt = null;
     String query =
-        "INSERT INTO ExternalTransRequests(serviceType, pFirstName, pLastName, contactInfo, location, transType, assignedTo) VALUES(?,?,?,?,?,?,?)";
+        "INSERT INTO ExternalTransRequests(serviceType, pFirstName, pLastName, contactInfo, location, transType) VALUES(?,?,?,?,?,?)";
     try {
       stmt = conn.prepareStatement(query);
       stmt.setString(1, serTy);
@@ -85,7 +85,6 @@ public class ExtTransRequestTable extends AbsTables {
       stmt.setString(4, contact);
       stmt.setString(5, loca);
       stmt.setString(6, transType);
-      stmt.setString(7, assigned);
 
       int count = stmt.executeUpdate();
 
@@ -131,12 +130,23 @@ public class ExtTransRequestTable extends AbsTables {
     }
   }
 
-  public void addIntoExTransDataList(ObservableList<ExtTransNodeInfo> ExTransData)
-      throws IOException {
-    // ExTransData = FXCollections.observableArrayList();
+  public void addIntoExTransDataList(
+      ObservableList<ExtTransNodeInfo> ExTransData, boolean employeeAccess) throws IOException {
+    Connection conn = GlobalDb.getConnection();
+    PreparedStatement stmt = null;
     try {
-      String query = "SELECT * FROM ExternalTransRequests";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      if (employeeAccess) {
+        stmt =
+            conn.prepareStatement(
+                "SELECT * FROM ExternalTransRequests WHERE assignedTo = ? OR assignedTo = ''");
+        stmt.setString(1, HomeController.username);
+        //        System.out.println(
+        //            "this is trying to add data into the employee table " +
+        // HomeController.username);
+      } else {
+        stmt = conn.prepareStatement("SELECT * FROM ExternalTransRequests");
+      }
+      ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
         ExTransData.add(
             new ExtTransNodeInfo(
@@ -153,7 +163,7 @@ public class ExtTransRequestTable extends AbsTables {
     } catch (SQLException throwables) {
       throwables.printStackTrace();
     }
-    // return ExTransData;
+    //     return ExTransData;
   }
 
   public ObservableList<ExtTransNodeInfo> changeExTransData(
@@ -183,7 +193,6 @@ public class ExtTransRequestTable extends AbsTables {
     try {
       PreparedStatement stmt =
           conn.prepareStatement("SELECT location, status FROM ExternalTransRequests");
-
       ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
         LocalStatus localStatus = new LocalStatus(rs.getString("location"), rs.getString("status"));

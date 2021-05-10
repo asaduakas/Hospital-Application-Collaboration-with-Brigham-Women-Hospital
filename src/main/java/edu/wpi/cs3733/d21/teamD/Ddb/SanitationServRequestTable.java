@@ -1,5 +1,6 @@
 package edu.wpi.cs3733.d21.teamD.Ddb;
 
+import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.SanitationNodeInfo;
 import java.io.IOException;
 import java.sql.*;
@@ -27,7 +28,7 @@ public class SanitationServRequestTable extends AbsTables {
               + "descriptionOfIssue VARCHAR(100) NOT NULL,"
               + "urgencyLevel VARCHAR(25) NOT NULL,"
               + "PRIMARY KEY(id),"
-              + "CONSTRAINT SAN_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
+//              + "CONSTRAINT SAN_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
               // + "CONSTRAINT SAN_location_FK FOREIGN KEY(location) REFERENCES Nodes(nodeID),"
               + "CONSTRAINT SAN_status_check CHECK (status IN ('Incomplete', 'Complete', 'In Progress')),"
               + "CONSTRAINT SAN_urgency_check CHECK (urgencyLevel IN ('Low Priority', 'Medium Priority', 'High Priority')))";
@@ -48,32 +49,44 @@ public class SanitationServRequestTable extends AbsTables {
       String lastName,
       String contactInfo,
       String location,
-      String assignedEmp,
       String sanitationType,
       String urgencyLev) {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
               "INSERT INTO SanitationRequest (firstName, lastName, contactInfo,"
-                  + "location, assignedEmployee, descriptionOfIssue, urgencyLevel) VALUES(?,?,?,?,?,?,?)");
+                  + "location, descriptionOfIssue, urgencyLevel) VALUES(?,?,?,?,?,?)");
       stmt.setString(1, firstName);
       stmt.setString(2, lastName);
       stmt.setString(3, contactInfo);
       stmt.setString(4, location);
-      stmt.setString(5, assignedEmp);
-      stmt.setString(6, sanitationType);
-      stmt.setString(7, urgencyLev);
+      stmt.setString(5, sanitationType);
+      stmt.setString(6, urgencyLev);
       stmt.executeUpdate();
     } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
-  public void addIntoSanitationList(ObservableList<SanitationNodeInfo> sanitationData)
+  public void addIntoSanitationList(
+      ObservableList<SanitationNodeInfo> sanitationData, boolean employeeAccess)
       throws IOException {
+    PreparedStatement stmt = null;
+    Connection conn = GlobalDb.getConnection();
     try {
-      String query = "SELECT * FROM SanitationRequest";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      if (employeeAccess) {
+        stmt =
+            conn.prepareStatement(
+                "SELECT * FROM SanitationRequest WHERE assignedEmployee = ? OR assignedEmployee = ''");
+        stmt.setString(1, HomeController.username);
+        //        System.out.println(
+        //            "this is trying to add data into the employee table " +
+        // HomeController.username);
+        //        System.out.println("this is getting the userType " + HomeController.userTypeEnum);
+      } else {
+        stmt = conn.prepareStatement("SELECT * FROM SanitationRequest");
+      }
+      ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
         sanitationData.add(
             new SanitationNodeInfo(

@@ -8,6 +8,7 @@ public class COVIDSurveyResultsNodeInfo extends RecursiveTreeObject<COVIDSurveyR
 
   public SimpleStringProperty id = new SimpleStringProperty();
   public StringProperty type = new SimpleStringProperty();
+  public StringProperty username = new SimpleStringProperty();
   public StringProperty firstName = new SimpleStringProperty();
   public StringProperty lastName = new SimpleStringProperty();
   public StringProperty contactInfo = new SimpleStringProperty();
@@ -29,6 +30,7 @@ public class COVIDSurveyResultsNodeInfo extends RecursiveTreeObject<COVIDSurveyR
 
   public COVIDSurveyResultsNodeInfo(
       String type,
+      String username,
       String firstName,
       String lastName,
       String contactInfo,
@@ -41,6 +43,7 @@ public class COVIDSurveyResultsNodeInfo extends RecursiveTreeObject<COVIDSurveyR
       String selfIsolateCheck,
       String feelGoodCheck) {
     this.type = new SimpleStringProperty(type);
+    this.username = new SimpleStringProperty(username);
     this.firstName = new SimpleStringProperty(firstName);
     this.lastName = new SimpleStringProperty(lastName);
     this.contactInfo = new SimpleStringProperty(contactInfo);
@@ -58,6 +61,14 @@ public class COVIDSurveyResultsNodeInfo extends RecursiveTreeObject<COVIDSurveyR
     //        this.closeContactCheck = new SimpleIntegerProperty(closeContactCheck);
     //        this.selfIsolateCheck = new SimpleIntegerProperty(selfIsolateCheck);
     //        this.feelGoodCheck = new SimpleIntegerProperty(feelGoodCheck);
+  }
+
+  public String getUsername() {
+    return username.get();
+  }
+
+  public StringProperty usernameProperty() {
+    return username;
   }
 
   public String getType() {
