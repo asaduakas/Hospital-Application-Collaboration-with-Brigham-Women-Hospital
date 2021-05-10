@@ -4,7 +4,6 @@ import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.MedDelivNodeInfo;
 import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
-import java.util.LinkedList;
 import javafx.collections.ObservableList;
 
 public class MedDeliveryRequestTable extends AbsTables {
@@ -17,7 +16,7 @@ public class MedDeliveryRequestTable extends AbsTables {
     try {
       stmt = conn.createStatement();
       String query =
-          "CREATE TABLE MedicineDelivery ("
+          "CREATE TABLE MedicineDelivery("
               + "id INT GENERATED ALWAYS AS IDENTITY NOT NULL,"
               + "status VARCHAR(100) DEFAULT 'Incomplete',"
               + "firstName VARCHAR(100) NOT NULL,"
@@ -64,6 +63,16 @@ public class MedDeliveryRequestTable extends AbsTables {
       stmt.setString(6, medicineType);
       stmt.setDate(7, Date.valueOf(dropOffDate));
       stmt.executeUpdate();
+
+      FDatabaseTables.getAllServiceTable()
+          .addEntity(
+              GlobalDb.getConnection(),
+              this.getID(GlobalDb.getConnection()),
+              location,
+              "Incomplete",
+              assignedEmp,
+              "MEDD");
+
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -107,6 +116,13 @@ public class MedDeliveryRequestTable extends AbsTables {
           stmt.setString(3, medDelInfo.getId());
           stmt.executeUpdate();
 
+          AllServiceTable.updateEntity(
+              GlobalDb.getConnection(),
+              medDelInfo.getId(),
+              medDelInfo.getStatus(),
+              medDelInfo.getAssignedEmployee(),
+              "MEDD");
+
         } catch (SQLException throwables) {
           throwables.printStackTrace();
         }
@@ -115,20 +131,20 @@ public class MedDeliveryRequestTable extends AbsTables {
     return medDelivData;
   }
 
-  public LinkedList<LocalStatus> getLocalStatus(Connection conn) {
-    LinkedList<LocalStatus> LocalStatus = new LinkedList<>();
+  public int getID(Connection conn) {
+    int id = 420;
     try {
-      PreparedStatement stmt =
-          conn.prepareStatement("SELECT location, status FROM MedicineDelivery");
-
+      PreparedStatement stmt = conn.prepareStatement("SELECT id FROM MedicineDelivery");
       ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
-        LocalStatus localStatus = new LocalStatus(rs.getString("location"), rs.getString("status"));
-        LocalStatus.add(localStatus);
+        System.out.println("LOOK HERE:" + id);
+        id = rs.getInt(1);
+        System.out.println("LOOK HERE:" + id);
       }
     } catch (SQLException throwables) {
       throwables.printStackTrace();
     }
-    return LocalStatus;
+    System.out.println();
+    return id;
   }
 }
