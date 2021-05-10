@@ -65,6 +65,16 @@ public class SecurityRequestTable extends AbsTables {
       stmt.setString(6, urgencyLev);
       stmt.setString(7, des);
       stmt.executeUpdate();
+
+      FDatabaseTables.getAllServiceTable()
+          .addEntity(
+              GlobalDb.getConnection(),
+              this.getID(GlobalDb.getConnection()),
+              location,
+              "Incomplete",
+              assignedEmp,
+              "SECUR");
+
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -108,11 +118,35 @@ public class SecurityRequestTable extends AbsTables {
           stmt.setString(3, securityInfo.getId());
           stmt.executeUpdate();
 
+          AllServiceTable.updateEntity(
+              GlobalDb.getConnection(),
+              securityInfo.getId(),
+              securityInfo.getStatus(),
+              securityInfo.getAssignedEmployee(),
+              "SECUR");
+
         } catch (SQLException throwables) {
           throwables.printStackTrace();
         }
       }
     }
     return securityData;
+  }
+
+  public int getID(Connection conn) {
+    int id = 420;
+    try {
+      PreparedStatement stmt = conn.prepareStatement("SELECT id FROM SecurityRequest");
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        System.out.println("LOOK HERE:" + id);
+        id = rs.getInt(1);
+        System.out.println("LOOK HERE:" + id);
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    System.out.println();
+    return id;
   }
 }

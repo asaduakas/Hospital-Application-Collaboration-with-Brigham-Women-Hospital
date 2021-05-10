@@ -15,7 +15,7 @@ public class SanitationServRequestTable extends AbsTables {
     try {
       stmt = conn.createStatement();
       String query =
-          "CREATE TABLE SanitationRequest ("
+          "CREATE TABLE SanitationRequest("
               + "id INT GENERATED ALWAYS AS IDENTITY NOT NULL,"
               + "status VARCHAR(100) DEFAULT 'Incomplete',"
               + "firstName VARCHAR(100) NOT NULL,"
@@ -63,6 +63,15 @@ public class SanitationServRequestTable extends AbsTables {
       stmt.setString(6, sanitationType);
       stmt.setString(7, urgencyLev);
       stmt.executeUpdate();
+
+      FDatabaseTables.getAllServiceTable()
+          .addEntity(
+              GlobalDb.getConnection(),
+              this.getID(GlobalDb.getConnection()),
+              location,
+              "Incomplete",
+              assignedEmp,
+              "SANI");
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -106,11 +115,37 @@ public class SanitationServRequestTable extends AbsTables {
           stmt.setString(3, sanitationInfo.getId());
           stmt.executeUpdate();
 
+          System.out.println("ID: " + sanitationInfo.getId());
+
+          AllServiceTable.updateEntity(
+              GlobalDb.getConnection(),
+              sanitationInfo.getId(),
+              sanitationInfo.getStatus(),
+              sanitationInfo.getAssignedEmployee(),
+              "SANI");
+
         } catch (SQLException throwables) {
           throwables.printStackTrace();
         }
       }
     }
     return sanitationData;
+  }
+
+  public int getID(Connection conn) {
+    int id = 420;
+    try {
+      PreparedStatement stmt = conn.prepareStatement("SELECT id FROM SanitationRequest");
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        System.out.println("LOOK HERE:" + id);
+        id = rs.getInt(1);
+        System.out.println("LOOK HERE:" + id);
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    System.out.println();
+    return id;
   }
 }

@@ -57,6 +57,16 @@ public class ComputerRequestTable extends AbsTables {
       stmt.setString(5, assignedEmployee);
       stmt.setString(6, descriptionOfIssue);
       stmt.executeUpdate();
+
+      FDatabaseTables.getAllServiceTable()
+          .addEntity(
+              GlobalDb.getConnection(),
+              this.getID(GlobalDb.getConnection()),
+              location,
+              "Incomplete",
+              assignedEmployee,
+              "COMP");
+
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -99,11 +109,35 @@ public class ComputerRequestTable extends AbsTables {
           stmt.setString(3, computerInfo.getId());
           stmt.executeUpdate();
 
+          AllServiceTable.updateEntity(
+              GlobalDb.getConnection(),
+              computerInfo.getId(),
+              computerInfo.getStatus(),
+              computerInfo.getAssignedEmployee(),
+              "COMP");
+
         } catch (SQLException throwables) {
           throwables.printStackTrace();
         }
       }
     }
     return computerData;
+  }
+
+  public int getID(Connection conn) {
+    int id = 420;
+    try {
+      PreparedStatement stmt = conn.prepareStatement("SELECT id FROM ComputerServiceRequest");
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        System.out.println("LOOK HERE:" + id);
+        id = rs.getInt(1);
+        System.out.println("LOOK HERE:" + id);
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    System.out.println();
+    return id;
   }
 }

@@ -36,7 +36,7 @@ public class LaundryRequestTable extends AbsTables {
 
   public void populateTable(Connection conn, String filePath) {}
 
-  public static void addEntity(
+  public void addEntity(
       Connection conn,
       String firstName,
       String lastName,
@@ -53,8 +53,16 @@ public class LaundryRequestTable extends AbsTables {
       stmt.setString(3, contactInfo);
       stmt.setString(4, location);
       stmt.setString(5, assignedEmployee);
+      stmt.executeUpdate();
 
-      int count = stmt.executeUpdate();
+      FDatabaseTables.getAllServiceTable()
+          .addEntity(
+              GlobalDb.getConnection(),
+              this.getID(GlobalDb.getConnection()),
+              location,
+              "Incomplete",
+              assignedEmployee,
+              "LAUN");
 
     } catch (SQLException throwables) {
       throwables.printStackTrace();
@@ -129,11 +137,35 @@ public class LaundryRequestTable extends AbsTables {
           stmt.setString(3, laundryInfo.getId());
           stmt.executeUpdate();
 
+          AllServiceTable.updateEntity(
+              GlobalDb.getConnection(),
+              laundryInfo.getId(),
+              laundryInfo.getStatus(),
+              laundryInfo.getAssignedEmployee(),
+              "LAUN");
+
         } catch (SQLException throwables) {
           throwables.printStackTrace();
         }
       }
     }
     return laundryData;
+  }
+
+  public int getID(Connection conn) {
+    int id = 420;
+    try {
+      PreparedStatement stmt = conn.prepareStatement("SELECT id FROM LaundryRequest");
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        System.out.println("LOOK HERE:" + id);
+        id = rs.getInt(1);
+        System.out.println("LOOK HERE:" + id);
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    System.out.println();
+    return id;
   }
 }

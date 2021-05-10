@@ -57,6 +57,16 @@ public class AudVisRequestTable extends AbsTables {
       stmt.setString(5, assignedEmployee);
       stmt.setString(6, descriptionOfProblem);
       stmt.executeUpdate();
+
+      FDatabaseTables.getAllServiceTable()
+          .addEntity(
+              GlobalDb.getConnection(),
+              this.getID(GlobalDb.getConnection()),
+              location,
+              "Incomplete",
+              assignedEmployee,
+              "AUD");
+
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -97,6 +107,12 @@ public class AudVisRequestTable extends AbsTables {
           stmt.setString(2, audVisInfo.getAssignedEmployee());
           stmt.setString(3, audVisInfo.getId());
           stmt.executeUpdate();
+          AllServiceTable.updateEntity(
+              GlobalDb.getConnection(),
+              audVisInfo.getId(),
+              audVisInfo.getStatus(),
+              audVisInfo.getAssignedEmployee(),
+              "AUD");
 
         } catch (SQLException throwables) {
           throwables.printStackTrace();
@@ -104,5 +120,22 @@ public class AudVisRequestTable extends AbsTables {
       }
     }
     return audVisData;
+  }
+
+  public int getID(Connection conn) {
+    int id = 420;
+    try {
+      PreparedStatement stmt = conn.prepareStatement("SELECT id FROM AudVisServiceRequest");
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        System.out.println("LOOK HERE:" + id);
+        id = rs.getInt(1);
+        System.out.println("LOOK HERE:" + id);
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    System.out.println();
+    return id;
   }
 }

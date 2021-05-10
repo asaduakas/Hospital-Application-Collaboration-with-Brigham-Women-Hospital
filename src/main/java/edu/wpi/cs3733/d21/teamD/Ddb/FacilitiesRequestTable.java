@@ -62,6 +62,16 @@ public class FacilitiesRequestTable extends AbsTables {
       stmt.setString(6, urgencyLevel);
       stmt.setString(7, descriptionOfIssue);
       stmt.executeUpdate();
+
+      FDatabaseTables.getAllServiceTable()
+          .addEntity(
+              GlobalDb.getConnection(),
+              this.getID(GlobalDb.getConnection()),
+              location,
+              "Incomplete",
+              assignedEmployee,
+              "FACIL");
+
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -105,11 +115,35 @@ public class FacilitiesRequestTable extends AbsTables {
           stmt.setString(3, facilitiesInfo.getId());
           stmt.executeUpdate();
 
+          AllServiceTable.updateEntity(
+              GlobalDb.getConnection(),
+              facilitiesInfo.getId(),
+              facilitiesInfo.getStatus(),
+              facilitiesInfo.getAssignedEmployee(),
+              "EXT");
+
         } catch (SQLException throwables) {
           throwables.printStackTrace();
         }
       }
     }
     return facilitiesData;
+  }
+
+  public int getID(Connection conn) {
+    int id = 420;
+    try {
+      PreparedStatement stmt = conn.prepareStatement("SELECT id FROM FacilitiesServiceRequest");
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        System.out.println("LOOK HERE:" + id);
+        id = rs.getInt(1);
+        System.out.println("LOOK HERE:" + id);
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    System.out.println();
+    return id;
   }
 }

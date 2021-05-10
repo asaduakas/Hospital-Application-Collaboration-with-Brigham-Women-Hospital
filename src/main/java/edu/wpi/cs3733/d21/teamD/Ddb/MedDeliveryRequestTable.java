@@ -16,7 +16,7 @@ public class MedDeliveryRequestTable extends AbsTables {
     try {
       stmt = conn.createStatement();
       String query =
-          "CREATE TABLE MedicineDelivery ("
+          "CREATE TABLE MedicineDelivery("
               + "id INT GENERATED ALWAYS AS IDENTITY NOT NULL,"
               + "status VARCHAR(100) DEFAULT 'Incomplete',"
               + "firstName VARCHAR(100) NOT NULL,"
@@ -63,6 +63,16 @@ public class MedDeliveryRequestTable extends AbsTables {
       stmt.setString(6, medicineType);
       stmt.setDate(7, Date.valueOf(dropOffDate));
       stmt.executeUpdate();
+
+      FDatabaseTables.getAllServiceTable()
+          .addEntity(
+              GlobalDb.getConnection(),
+              this.getID(GlobalDb.getConnection()),
+              location,
+              "Incomplete",
+              assignedEmp,
+              "MEDD");
+
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -106,11 +116,35 @@ public class MedDeliveryRequestTable extends AbsTables {
           stmt.setString(3, medDelInfo.getId());
           stmt.executeUpdate();
 
+          AllServiceTable.updateEntity(
+              GlobalDb.getConnection(),
+              medDelInfo.getId(),
+              medDelInfo.getStatus(),
+              medDelInfo.getAssignedEmployee(),
+              "MEDD");
+
         } catch (SQLException throwables) {
           throwables.printStackTrace();
         }
       }
     }
     return medDelivData;
+  }
+
+  public int getID(Connection conn) {
+    int id = 420;
+    try {
+      PreparedStatement stmt = conn.prepareStatement("SELECT id FROM MedicineDelivery");
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        System.out.println("LOOK HERE:" + id);
+        id = rs.getInt(1);
+        System.out.println("LOOK HERE:" + id);
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    System.out.println();
+    return id;
   }
 }

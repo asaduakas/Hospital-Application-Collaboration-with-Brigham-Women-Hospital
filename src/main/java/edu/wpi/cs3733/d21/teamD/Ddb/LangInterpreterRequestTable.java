@@ -65,6 +65,16 @@ public class LangInterpreterRequestTable extends AbsTables {
       stmt.setString(6, languageRequested);
       stmt.setDate(7, Date.valueOf(dateRequested));
       stmt.executeUpdate();
+
+      FDatabaseTables.getAllServiceTable()
+          .addEntity(
+              GlobalDb.getConnection(),
+              this.getID(GlobalDb.getConnection()),
+              location,
+              "Incomplete",
+              assignedEmp,
+              "LANG");
+
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -108,11 +118,35 @@ public class LangInterpreterRequestTable extends AbsTables {
           stmt.setString(3, langInterpInfo.getId());
           stmt.executeUpdate();
 
+          AllServiceTable.updateEntity(
+              GlobalDb.getConnection(),
+              langInterpInfo.getId(),
+              langInterpInfo.getStatus(),
+              langInterpInfo.getAssignedEmployee(),
+              "LANG");
+
         } catch (SQLException throwables) {
           throwables.printStackTrace();
         }
       }
     }
     return langInterpData;
+  }
+
+  public int getID(Connection conn) {
+    int id = 420;
+    try {
+      PreparedStatement stmt = conn.prepareStatement("SELECT id FROM LangInterpRequest");
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        System.out.println("LOOK HERE:" + id);
+        id = rs.getInt(1);
+        System.out.println("LOOK HERE:" + id);
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    System.out.println();
+    return id;
   }
 }

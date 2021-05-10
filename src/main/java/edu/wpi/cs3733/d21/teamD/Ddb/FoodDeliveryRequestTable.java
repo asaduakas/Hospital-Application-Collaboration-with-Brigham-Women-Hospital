@@ -94,12 +94,22 @@ public class FoodDeliveryRequestTable extends AbsTables {
       stmt.setString(5, assignedEmployee);
       stmt.setString(6, specialNeeds);
       stmt.executeUpdate();
+
+      FDatabaseTables.getAllServiceTable()
+          .addEntity(
+              GlobalDb.getConnection(),
+              this.getID(GlobalDb.getConnection()),
+              location,
+              "Incomplete",
+              assignedEmployee,
+              "FOOD");
+
     } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
-  public void addEntityNoNeeds(
+  /*public void addEntityNoNeeds(
       Connection conn,
       String firstName,
       String lastName,
@@ -116,10 +126,11 @@ public class FoodDeliveryRequestTable extends AbsTables {
       stmt.setString(4, location);
       stmt.setString(5, assignedEmployee);
       stmt.executeUpdate();
+
     } catch (Exception e) {
       e.printStackTrace();
     }
-  }
+  }*/
 
   public void addIntoFoodDelivDataList(ObservableList<FoodDelivNodeInfo> foodData)
       throws IOException {
@@ -159,11 +170,35 @@ public class FoodDeliveryRequestTable extends AbsTables {
           stmt.setString(4, foodInfo.getId());
           stmt.executeUpdate();
 
+          AllServiceTable.updateEntity(
+              GlobalDb.getConnection(),
+              foodInfo.getId(),
+              foodInfo.getStatus(),
+              foodInfo.getAssignedEmployee(),
+              "FOOD");
+
         } catch (SQLException throwables) {
           throwables.printStackTrace();
         }
       }
     }
     return foodData;
+  }
+
+  public int getID(Connection conn) {
+    int id = 420;
+    try {
+      PreparedStatement stmt = conn.prepareStatement("SELECT id FROM FoodDeliveryServiceRequest");
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        System.out.println("LOOK HERE:" + id);
+        id = rs.getInt(1);
+        System.out.println("LOOK HERE:" + id);
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    System.out.println();
+    return id;
   }
 }

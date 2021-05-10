@@ -63,6 +63,16 @@ public class FloralDeliveryRequestTable extends AbsTables {
       stmt.setString(7, fromFlower);
       stmt.setString(8, assignedEmployee);
       stmt.executeUpdate();
+
+      FDatabaseTables.getAllServiceTable()
+          .addEntity(
+              GlobalDb.getConnection(),
+              this.getID(GlobalDb.getConnection()),
+              location,
+              "Incomplete",
+              assignedEmployee,
+              "FLOW");
+
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -107,11 +117,35 @@ public class FloralDeliveryRequestTable extends AbsTables {
           stmt.setString(3, floralInfo.getId());
           stmt.executeUpdate();
 
+          AllServiceTable.updateEntity(
+              GlobalDb.getConnection(),
+              floralInfo.getId(),
+              floralInfo.getStatus(),
+              floralInfo.getAssignedEmployee(),
+              "FLOW");
+
         } catch (SQLException throwables) {
           throwables.printStackTrace();
         }
       }
     }
     return floralData;
+  }
+
+  public int getID(Connection conn) {
+    int id = 420;
+    try {
+      PreparedStatement stmt = conn.prepareStatement("SELECT id FROM FloralRequests");
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        System.out.println("LOOK HERE:" + id);
+        id = rs.getInt(1);
+        System.out.println("LOOK HERE:" + id);
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    System.out.println();
+    return id;
   }
 }
