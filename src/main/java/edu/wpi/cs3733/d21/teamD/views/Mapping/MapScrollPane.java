@@ -80,6 +80,8 @@ public class MapScrollPane extends ScrollPane {
   }
 
   private void updateScale() {
+    if (scaleValue < minimumScale) scaleValue = minimumScale;
+    if (scaleValue > maximumScale) scaleValue = maximumScale;
     mapAnchor.setScaleX(scaleValue);
     mapAnchor.setScaleY(scaleValue);
     System.out.println("Scale is " + scaleValue);
@@ -121,41 +123,26 @@ public class MapScrollPane extends ScrollPane {
         (valY + adjustment.getY()) / (updatedInnerBounds.getHeight() - viewportBounds.getHeight()));
   }
 
-  private Point2D getClosestCorner(double x, double y) {
+  private double getScaleForCenter(double startX, double startY, double endX, double endY) {
     final double width = mapImage.getImage().getWidth();
     final double height = mapImage.getImage().getHeight();
-    List<Point2D> corners =
-        Arrays.asList(
-            new Point2D(0, 0),
-            new Point2D(width, 0),
-            new Point2D(0, height),
-            new Point2D(width, height));
-    return corners.stream().min((p1, p2) -> (int) (p1.distance(x, y) - p2.distance(x, y))).get();
+    final double factor = 0.5;
+
+    return factor
+        * Math.min(width / Math.abs(startX - endX), height / Math.abs(startY - endY))
+        * minimumScale;
   }
 
-  private double getScaleForCenter(double x, double y) {
-    // What is the minimum scale such that, if (x,y) is the center, none of the corners show up in
-    // the viewport bounds?
-
-    final double width = mapImage.getImage().getWidth();
-    final double height = mapImage.getImage().getHeight();
-
-    final Point2D corner = getClosestCorner(x, y);
-    final double maxVWidth =
-        2 * Math.abs(x - corner.getX()); // How wide could viewport get without showing corner?
-    final double maxVHeight = 2 * Math.abs(y - corner.getY()); // How tall ...
-
-    return Math.max(width / maxVWidth, height / maxVHeight);
-  }
-
-  public void setCenter(double x, double y) {
-    scaleValue = getScaleForCenter(x, y);
+  public void centerOnPath(double startX, double startY, double endX, double endY) {
+    scaleValue = getScaleForCenter(startX, startY, endX, endY);
     updateScale();
     this.layout();
 
     Bounds innerBounds = zoomNode.getLayoutBounds();
     Bounds viewportBounds = getViewportBounds();
-    Point2D centerInZoomNode = zoomNode.localToParent(mapAnchor.localToParent(x, y));
+    Point2D centerInZoomNode =
+        zoomNode.localToParent(
+            mapAnchor.localToParent((startX + endX) / 2.0, (startY + endY) / 2.0));
 
     this.setHvalue(
         (centerInZoomNode.getX() - 0.5 * viewportBounds.getWidth())

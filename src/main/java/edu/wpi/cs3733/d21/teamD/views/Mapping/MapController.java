@@ -731,11 +731,9 @@ public class MapController implements AllAccessible {
 
       // Center path on screen
       final Node start = DirectoryTargets.get(0);
-      // final Node end = DirectoryTargets.get(1);
-      // mapScrollPane.setCenter(
-      //    (start.getXCoord() + end.getXCoord()) / 2.0, (start.getYCoord() + end.getYCoord()) /
-      // 2.0);
-      mapScrollPane.setCenter(start.getXCoord(), start.getYCoord());
+      final Node end = DirectoryTargets.get(1);
+      mapScrollPane.centerOnPath(
+          start.getXCoord(), start.getYCoord(), end.getXCoord(), end.getYCoord());
 
       //      algorithm.multiSearch(initialData, DirectoryTargets).printPathEdges();
       drawerController.getDirections(thePath);
