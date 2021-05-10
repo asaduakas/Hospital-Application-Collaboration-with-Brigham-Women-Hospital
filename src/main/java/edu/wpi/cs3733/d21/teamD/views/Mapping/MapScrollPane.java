@@ -78,8 +78,11 @@ public class MapScrollPane extends ScrollPane {
   }
 
   private void updateScale() {
+    if (scaleValue < minimumScale) scaleValue = minimumScale;
+    if (scaleValue > maximumScale) scaleValue = maximumScale;
     mapAnchor.setScaleX(scaleValue);
     mapAnchor.setScaleY(scaleValue);
+    System.out.println("Scale is " + scaleValue);
   }
 
   public void onScroll(double wheelDelta, Point2D mousePoint) {
@@ -116,5 +119,34 @@ public class MapScrollPane extends ScrollPane {
         (valX + adjustment.getX()) / (updatedInnerBounds.getWidth() - viewportBounds.getWidth()));
     this.setVvalue(
         (valY + adjustment.getY()) / (updatedInnerBounds.getHeight() - viewportBounds.getHeight()));
+  }
+
+  private double getScaleForCenter(double startX, double startY, double endX, double endY) {
+    final double width = mapImage.getImage().getWidth();
+    final double height = mapImage.getImage().getHeight();
+    final double factor = 0.5;
+
+    return factor
+        * Math.min(width / Math.abs(startX - endX), height / Math.abs(startY - endY))
+        * minimumScale;
+  }
+
+  public void centerOnPath(double startX, double startY, double endX, double endY) {
+    scaleValue = getScaleForCenter(startX, startY, endX, endY);
+    updateScale();
+    this.layout();
+
+    Bounds innerBounds = zoomNode.getLayoutBounds();
+    Bounds viewportBounds = getViewportBounds();
+    Point2D centerInZoomNode =
+        zoomNode.localToParent(
+            mapAnchor.localToParent((startX + endX) / 2.0, (startY + endY) / 2.0));
+
+    this.setHvalue(
+        (centerInZoomNode.getX() - 0.5 * viewportBounds.getWidth())
+            / (innerBounds.getWidth() - viewportBounds.getWidth()));
+    this.setVvalue(
+        (centerInZoomNode.getY() - 0.5 * viewportBounds.getHeight())
+            / (innerBounds.getHeight() - viewportBounds.getHeight()));
   }
 }

@@ -93,7 +93,7 @@ public class UsersTable extends AbsTables {
       stmt = conn.createStatement();
       String query = "SELECT * FROM Users";
       ResultSet rs = stmt.executeQuery(query);
-      System.out.println("id \tpassword \tname \tcategory");
+      //      System.out.println("id \tpassword \tname \tcategory");
       while (rs.next()) {
         System.out.println(
             rs.getString("id")
