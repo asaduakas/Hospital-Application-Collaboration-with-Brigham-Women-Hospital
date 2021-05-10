@@ -70,6 +70,11 @@ public class ChatbotController implements AllAccessible {
     }
     userIconImg = new Image("Images/userIconBot.png");
     botIconImg = new Image("Images/diamondDragonIcon.png");
+
+    chatAreaScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+    chatAreaScroll
+        .vvalueProperty()
+        .bind(textBox.heightProperty()); // auto scrolling if height of the content increases
   }
 
   @FXML
@@ -134,7 +139,7 @@ public class ChatbotController implements AllAccessible {
       dispText.maxHeight(20);
       dispText.setStyle(
           " -fx-font-style: Italic; -fx-font-weight: Bold; -fx-font-size: 20; -fx-background-color: #093fc6");
-      chatAreaScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+
       TextFlow test = new TextFlow();
       test.setPrefWidth(chatAreaScroll.getPrefWidth());
       test.getChildren().addAll(icon, dispText);
