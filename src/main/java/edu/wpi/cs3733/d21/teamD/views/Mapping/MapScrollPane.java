@@ -153,7 +153,15 @@ public class MapScrollPane extends ScrollPane {
     updateScale();
     this.layout();
 
-    this.setHvalue(x / mapImage.getImage().getWidth());
-    this.setVvalue(y / mapImage.getImage().getHeight());
+    Bounds innerBounds = zoomNode.getLayoutBounds();
+    Bounds viewportBounds = getViewportBounds();
+    Point2D centerInZoomNode = zoomNode.localToParent(mapAnchor.localToParent(x, y));
+
+    this.setHvalue(
+        (centerInZoomNode.getX() - 0.5 * viewportBounds.getWidth())
+            / (innerBounds.getWidth() - viewportBounds.getWidth()));
+    this.setVvalue(
+        (centerInZoomNode.getY() - 0.5 * viewportBounds.getHeight())
+            / (innerBounds.getHeight() - viewportBounds.getHeight()));
   }
 }
