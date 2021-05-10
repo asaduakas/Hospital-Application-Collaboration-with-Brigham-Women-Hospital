@@ -16,7 +16,7 @@ public class MedDeliveryRequestTable extends AbsTables {
     try {
       stmt = conn.createStatement();
       String query =
-          "CREATE TABLE MedicineDelivery ("
+          "CREATE TABLE MedicineDelivery("
               + "id INT GENERATED ALWAYS AS IDENTITY NOT NULL,"
               + "status VARCHAR(100) DEFAULT 'Incomplete',"
               + "firstName VARCHAR(100) NOT NULL,"

@@ -15,7 +15,7 @@ public class SanitationServRequestTable extends AbsTables {
     try {
       stmt = conn.createStatement();
       String query =
-          "CREATE TABLE SanitationRequest ("
+          "CREATE TABLE SanitationRequest("
               + "id INT GENERATED ALWAYS AS IDENTITY NOT NULL,"
               + "status VARCHAR(100) DEFAULT 'Incomplete',"
               + "firstName VARCHAR(100) NOT NULL,"
@@ -62,6 +62,7 @@ public class SanitationServRequestTable extends AbsTables {
       stmt.setString(5, assignedEmp);
       stmt.setString(6, sanitationType);
       stmt.setString(7, urgencyLev);
+      stmt.executeUpdate();
 
       FDatabaseTables.getAllServiceTable()
           .addEntity(
@@ -71,8 +72,6 @@ public class SanitationServRequestTable extends AbsTables {
               "Incomplete",
               assignedEmp,
               "SANI");
-
-      stmt.executeUpdate();
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -115,6 +114,8 @@ public class SanitationServRequestTable extends AbsTables {
           stmt.setString(2, sanitationInfo.getAssignedEmployee());
           stmt.setString(3, sanitationInfo.getId());
           stmt.executeUpdate();
+
+          System.out.println("ID: " + sanitationInfo.getId());
 
           AllServiceTable.updateEntity(
               GlobalDb.getConnection(),

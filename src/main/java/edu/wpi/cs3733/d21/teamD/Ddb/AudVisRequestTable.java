@@ -56,6 +56,7 @@ public class AudVisRequestTable extends AbsTables {
       stmt.setString(4, location);
       stmt.setString(5, assignedEmployee);
       stmt.setString(6, descriptionOfProblem);
+      stmt.executeUpdate();
 
       FDatabaseTables.getAllServiceTable()
           .addEntity(
@@ -66,7 +67,6 @@ public class AudVisRequestTable extends AbsTables {
               assignedEmployee,
               "AUD");
 
-      stmt.executeUpdate();
     } catch (Exception e) {
       e.printStackTrace();
     }

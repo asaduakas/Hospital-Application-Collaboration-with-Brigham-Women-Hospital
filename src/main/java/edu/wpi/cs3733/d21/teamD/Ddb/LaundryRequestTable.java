@@ -53,6 +53,7 @@ public class LaundryRequestTable extends AbsTables {
       stmt.setString(3, contactInfo);
       stmt.setString(4, location);
       stmt.setString(5, assignedEmployee);
+      stmt.executeUpdate();
 
       FDatabaseTables.getAllServiceTable()
           .addEntity(
@@ -62,8 +63,6 @@ public class LaundryRequestTable extends AbsTables {
               "Incomplete",
               assignedEmployee,
               "LAUN");
-
-      int count = stmt.executeUpdate();
 
     } catch (SQLException throwables) {
       throwables.printStackTrace();
