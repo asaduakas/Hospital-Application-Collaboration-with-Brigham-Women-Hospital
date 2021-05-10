@@ -100,6 +100,7 @@ public class MapController implements AllAccessible {
   public static final Image RETL = new Image("Images/retailpin.png");
   public static final Image SERV = new Image("Images/service.png");
   public static final Image favImage = new Image("Images/favIcon_good.png");
+  public static final Image blockedNode = new Image("Images/blockedNode.png");
   private Image up = new Image("Images/up-arrow.png");
   private Image down = new Image("Images/redArrow.png");
   private Image endImage = new Image("Images/endingIcon_white.png");
@@ -1274,11 +1275,11 @@ public class MapController implements AllAccessible {
   }
 
   private void blockNode(NodeUI N) {
-    //TODO: REPLACE FAVE DB NODE STUFF WITH BLOCKED NODE DB
+    // TODO: REPLACE FAVE DB NODE STUFF WITH BLOCKED NODE DB
     if (FDatabaseTables.getNodeTable()
-            .FavContains(GlobalDb.getConnection(), N.getN().getNodeID(), HomeController.username)) {
+        .FavContains(GlobalDb.getConnection(), N.getN().getNodeID(), HomeController.username)) {
       FDatabaseTables.getNodeTable()
-              .deleteFav(GlobalDb.getConnection(), N.getN().getNodeID(), HomeController.username);
+          .deleteFav(GlobalDb.getConnection(), N.getN().getNodeID(), HomeController.username);
       switch (N.getN().getNodeType()) {
         case "PARK":
           N.getI().setImage(PARK);
@@ -1318,24 +1319,24 @@ public class MapController implements AllAccessible {
           break;
       }
     } else {
-      if (HomeController.username == null) {//should never get in here
+      if (HomeController.username == null) { // should never get in here
         dialogFactory.createTwoButtonDialog(
-                "You're in guest view",
-                "Please login or Sign up to add favorite",
-                "Sign up",
-                () -> {
-                  ControllerManager.attemptLoadPopupBlur("signUpView.fxml");
-                },
-                "Just view map",
-                () -> {});
-      } else {//TODO: replace with new DB stuff and image
+            "You're in guest view",
+            "Please login or Sign up to add favorite",
+            "Sign up",
+            () -> {
+              ControllerManager.attemptLoadPopupBlur("signUpView.fxml");
+            },
+            "Just view map",
+            () -> {});
+      } else { // TODO: replace with new DB stuff and image
         FDatabaseTables.getNodeTable()
-                .addToFavoriteNodes(
-                        GlobalDb.getConnection(),
-                        HomeController.username,
-                        N.getN().getNodeID(),
-                        N.getN().getLongName());
-        N.getI().setImage(favImage);
+            .addToFavoriteNodes(
+                GlobalDb.getConnection(),
+                HomeController.username,
+                N.getN().getNodeID(),
+                N.getN().getLongName());
+        N.getI().setImage(blockedNode);
       }
     }
   }
