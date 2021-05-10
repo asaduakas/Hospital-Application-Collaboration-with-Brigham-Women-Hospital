@@ -330,13 +330,12 @@ public class UsersTable extends AbsTables {
       ResultSet rs = stmt.getResultSet();
       if (rs.next()) {
         String clearanceLevel = rs.getString("clearance");
-        if (clearanceLevel.equals("normalEntrance")) {
-          clearance = "normalEntrance";
-        }
-        if (clearanceLevel.equals("emergencyEntrance")) {
-          clearance = "emergencyEntrance";
-        } else {
+        if (clearanceLevel == null) {
           clearance = "prettyGood";
+        } else if (clearanceLevel.equals("normalEntrance")) {
+          clearance = "normalEntrance";
+        } else if (clearanceLevel.equals("emergencyEntrance")) {
+          clearance = "emergencyEntrance";
         }
       }
     } catch (SQLException throwables) {
