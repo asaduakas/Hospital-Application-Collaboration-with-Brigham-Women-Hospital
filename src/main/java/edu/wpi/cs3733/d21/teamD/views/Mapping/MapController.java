@@ -730,11 +730,17 @@ public class MapController implements AllAccessible {
   // For Directory
   public LinkedList<Edge> runPathFindingDirectory(LinkedList<Node> DirectoryTargets)
       throws IOException {
+    Targets.clear();
+    Targets.add(DirectoryTargets.getFirst());
+    Targets.add(DirectoryTargets.getLast());
+    resetNodeSizes();
     thePath = algorithm.multiSearch(initialData, DirectoryTargets).getPathEdges();
     if (thePath.isEmpty()) {
       Targets.clear();
     } else {
       switchFloor(currentFloor);
+      resizeNodeUI(getNodeUIByID(DirectoryTargets.getFirst().getNodeID()), 2);
+      resizeNodeUI(getNodeUIByID(DirectoryTargets.getLast().getNodeID()), 2);
       //      algorithm.multiSearch(initialData, DirectoryTargets).printPathEdges();
       drawerController.getDirections(thePath);
     }
