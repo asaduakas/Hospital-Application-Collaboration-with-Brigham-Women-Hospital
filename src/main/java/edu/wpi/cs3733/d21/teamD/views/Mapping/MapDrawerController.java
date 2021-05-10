@@ -173,6 +173,7 @@ public class MapDrawerController implements Initializable {
   }
 
   public static void favCallStuff() {
+    favList.clear();
     if (favList.size()
         != FDatabaseTables.getNodeTable()
             .fetchLongNameFavorites(GlobalDb.getConnection(), HomeController.username)
