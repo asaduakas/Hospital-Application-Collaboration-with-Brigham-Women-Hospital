@@ -198,8 +198,6 @@ public class MapController implements AllAccessible {
           toggleEditor.setText(toggleText[index]);
         });
     dialogFactory = new DialogFactory(stackPane);
-
-    this.drawerController.getSearchHistory(GlobalDb.getConnection());
   }
 
   public void mapDrawerView() throws IOException {
@@ -226,20 +224,6 @@ public class MapController implements AllAccessible {
         };
     scene.widthProperty().addListener(sizeListener);
     scene.heightProperty().addListener(sizeListener);
-
-    // Store longnames so we can display most recent search in bar
-    String startName = this.drawerController.startField.getText();
-    String endName = this.drawerController.endField.getText();
-
-    this.drawerController.recentStart = startName;
-    this.drawerController.recentEnd = endName;
-
-    this.drawerController.setSearchHistory(
-        GlobalDb.getConnection(),
-        this.drawerController.recentStart,
-        this.drawerController.recentEnd);
-    HomeController.historyTracker = 1;
-    this.drawerController.getSearchHistory(GlobalDb.getConnection());
   }
 
   public void changeChildrenMapView(List<javafx.scene.Node> nodeList) {

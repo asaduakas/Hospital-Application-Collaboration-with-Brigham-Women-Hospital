@@ -94,6 +94,13 @@ public class MapDrawerController implements Initializable {
     Targets.add(mapController.getNodeUIByLongName(endText).getN());
 
     mapController.runPathFindingDirectory(Targets);
+
+    recentStart = startText;
+    recentEnd = endText;
+
+    setSearchHistory(GlobalDb.getConnection(), recentStart, recentEnd);
+    HomeController.historyTracker = 1;
+    getSearchHistory(GlobalDb.getConnection());
   }
 
   @Override
@@ -171,6 +178,7 @@ public class MapDrawerController implements Initializable {
               }
             });
     favCallStuff();
+    getSearchHistory(GlobalDb.getConnection());
   }
 
   public static void favCallStuff() {
