@@ -445,8 +445,10 @@ public class MapController implements AllAccessible {
     for (NodeUI NUI : NODES) {
       if (NUI.getN().getFloor().equals(Floor)) {
         if (!isEditor) {
-          if ((!NUI.getN().getNodeType().equals("WALK"))
-              && (!NUI.getN().getNodeType().equals("HALL"))) {
+          if (((!NUI.getN().getNodeType().equals("WALK"))
+                  && (!NUI.getN().getNodeType().equals("HALL")))
+              || FDatabaseTables.getNodeTable()
+                  .blockedContains(GlobalDb.getConnection(), NUI.getN().getNodeID())) {
             addNodeUI(NUI);
           }
         } else {
@@ -1320,6 +1322,7 @@ public class MapController implements AllAccessible {
           N.getI().setImage(DEFAULT);
           break;
       }
+      initialData.getNodeByID(N.getN().getNodeID()).setBlocked(false);
     } else {
       if (HomeController.username == null) { // should never get in here
         dialogFactory.createTwoButtonDialog(
@@ -1335,6 +1338,7 @@ public class MapController implements AllAccessible {
         FDatabaseTables.getNodeTable()
             .addToBlockedNodes(
                 GlobalDb.getConnection(), N.getN().getNodeID(), N.getN().getLongName());
+        initialData.getNodeByID(N.getN().getNodeID()).setBlocked(true);
         N.getI().setImage(blockedNode);
         N.setSizeHeight(50);
         N.setSizeWidth(50);

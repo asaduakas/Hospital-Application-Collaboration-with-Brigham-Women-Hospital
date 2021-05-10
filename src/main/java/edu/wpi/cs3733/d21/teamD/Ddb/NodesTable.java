@@ -318,7 +318,7 @@ public class NodesTable extends AbsTables {
           "CREATE TABLE BlockedNodes("
               + "nodeID VARCHAR(100) NOT NULL,"
               + "longName VARCHAR(450) NOT NULL,"
-              + "CONSTRAINT nodeID_FK FOREIGN KEY (nodeID) REFERENCES Nodes(nodeID))";
+              + "CONSTRAINT nodeID2_FK FOREIGN KEY (nodeID) REFERENCES Nodes(nodeID))";
       // + "CONSTRAINT longName_FK FOREIGN KEY (longName) REFERENCES Nodes(longName));
       stmt.executeUpdate(query);
       System.out.println("Blocked node table created");
@@ -658,6 +658,9 @@ public class NodesTable extends AbsTables {
                 rs.getString("longName"),
                 rs.getString("shortName"));
         graphInfo.add(node);
+        if (blockedContains(GlobalDb.getConnection(), nodeID)) {
+          node.setBlocked(true);
+        }
       }
     } catch (SQLException e) {
       e.printStackTrace();

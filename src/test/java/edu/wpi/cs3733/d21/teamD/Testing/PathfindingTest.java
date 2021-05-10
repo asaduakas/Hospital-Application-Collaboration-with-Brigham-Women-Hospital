@@ -200,8 +200,8 @@ public class PathfindingTest {
     GlobalDb.establishCon();
     RoomGraph data = new RoomGraph(GlobalDb.getConnection());
     PathAlgoPicker pathfinder = new PathAlgoPicker();
-    Node start = data.getNodeByID("FSTAI00201");
-    Node target = data.getNodeByID("dRETL00101");
+    Node start = data.getNodeByID("dRETL00101");
+    Node target = data.getNodeByID("WELEV00M01");
 
     data.getNodeByID("FEXIT00201").setBlocked(true);
 
