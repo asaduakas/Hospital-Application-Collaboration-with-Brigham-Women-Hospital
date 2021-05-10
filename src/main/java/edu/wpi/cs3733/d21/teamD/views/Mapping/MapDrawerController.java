@@ -1071,11 +1071,12 @@ public class MapDrawerController implements Initializable {
   // ------------Google Maps API-----------
 
   public void googleLink(ActionEvent e) throws IOException {
-    // https://maps.googleapis.com/maps/api/js?key=AIzaSyBK_RlCvnFoj5Bd7mQuurg8zZmnfMVXAGs&callback=initMap
     URL url =
         new URL(
             "https://maps.googleapis.com/maps/api/js?key=AIzaSyBK_RlCvnFoj5Bd7mQuurg8zZmnfMVXAGs&callback=initMap");
     URLConnection conn = url.openConnection();
+    conn.connect();
+    conn.getContent();
     url.getContent();
   }
 }
