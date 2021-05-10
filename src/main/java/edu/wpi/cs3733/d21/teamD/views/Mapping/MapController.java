@@ -490,15 +490,16 @@ public class MapController implements AllAccessible {
     floorBtn.setText("Fl " + currentFloor);
     if (isEditor) {
       drawEdgeFloor(floor);
+      drawNodeFloor(floor);
     } else {
       showPath();
     }
-    drawNodeFloor(floor);
   }
 
   public void showPath() {
     if (thePath.isEmpty()) {
       System.out.println("No path to show!");
+      drawNodeFloor(currentFloor);
     } else {
       System.out.println("Path Exists!");
       clearEdges(); // for previous paths
@@ -524,6 +525,8 @@ public class MapController implements AllAccessible {
       endPin.setFitHeight(30);
       endPin.setX(endNode.getSimpXcoord() - 15);
       endPin.setY(endNode.getSimpYcoord() - 30);
+
+      drawNodeFloor(currentFloor);
 
       if (startNode.getN().getFloor().equals(currentFloor)) {
         secondaryAnchor.getChildren().add(startPin);
