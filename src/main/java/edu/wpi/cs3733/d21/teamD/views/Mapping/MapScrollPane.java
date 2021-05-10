@@ -133,7 +133,7 @@ public class MapScrollPane extends ScrollPane {
     return corners.stream().min((p1, p2) -> (int) (p1.distance(x, y) - p2.distance(x, y))).get();
   }
 
-  private void setScaleForCenter(double x, double y) {
+  private double getScaleForCenter(double x, double y) {
     // What is the minimum scale such that, if (x,y) is the center, none of the corners show up in
     // the viewport bounds?
 
@@ -145,32 +145,15 @@ public class MapScrollPane extends ScrollPane {
         2 * Math.abs(x - corner.getX()); // How wide could viewport get without showing corner?
     final double maxVHeight = 2 * Math.abs(y - corner.getY()); // How tall ...
 
-    scaleValue = Math.max(width / maxVWidth, height / maxVHeight) * minimumScale;
-    updateScale();
+    return Math.max(width / maxVWidth, height / maxVHeight);
   }
 
   public void setCenter(double x, double y) {
-    // setScaleForCenter(x, y);
-    scaleValue = maximumScale;
+    scaleValue = getScaleForCenter(x, y);
     updateScale();
-
-    // (content - viewport) * val / max + viewport/2 = center
-    // val = (center - viewport/2) * max / (content - viewport)
-
-    //Bounds innerBounds = zoomNode.getLayoutBounds();
-    //seBounds viewportBounds = getViewportBounds();
+    this.layout();
 
     this.setHvalue(x / mapImage.getImage().getWidth());
     this.setVvalue(y / mapImage.getImage().getHeight());
-    /*
-    this.setHvalue(
-        this.getHmax()
-            * (x - viewportBounds.getWidth() / 2)
-            / (innerBounds.getWidth() - viewportBounds.getWidth()));
-    this.setVvalue(
-        this.getVmax()
-            * (y - viewportBounds.getHeight() / 2)
-            / (innerBounds.getHeight() - viewportBounds.getHeight()));
-     */
   }
 }
