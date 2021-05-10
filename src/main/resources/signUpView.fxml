@@ -85,14 +85,14 @@
                   <JFXDialog />
                </children>
             </StackPane>
-            <JFXPasswordField fx:id="emailField" focusColor="#537eff" layoutX="58.0" layoutY="328.0" prefHeight="25.0" prefWidth="231.0" promptText="Email:">
+            <JFXTextField fx:id="emailField" focusColor="#255bff" layoutX="59.0" layoutY="325.0" prefHeight="30.0" prefWidth="231.0" promptText="Email:">
                <font>
                   <Font size="14.0" />
                </font>
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
-            </JFXPasswordField>
+            </JFXTextField>
             </children>
         </AnchorPane>
     </children>

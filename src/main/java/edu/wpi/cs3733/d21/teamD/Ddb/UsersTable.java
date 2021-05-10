@@ -110,13 +110,14 @@ public class UsersTable extends AbsTables {
   }
 
   public static void addEntity(
-      Connection conn, String id, String password, String name, String category) {
+      Connection conn, String id, String password, String name, String category, String email) {
     try {
-      PreparedStatement stmt = conn.prepareStatement("INSERT INTO Users VALUES(?,?,?,?)");
+      PreparedStatement stmt = conn.prepareStatement("INSERT INTO Users VALUES(?,?,?,?,?)");
       stmt.setString(1, id);
       stmt.setString(2, password);
       stmt.setString(3, name);
       stmt.setString(4, category);
+      stmt.setString(5, email);
       stmt.executeUpdate();
     } catch (Exception e) {
       e.printStackTrace();
@@ -245,7 +246,8 @@ public class UsersTable extends AbsTables {
                 rs.getString("password"),
                 rs.getString("name"),
                 rs.getString("category"),
-                rs.getString("clearance")));
+                rs.getString("clearance"),
+                rs.getString("email")));
       }
     } catch (SQLException throwables) {
       throwables.printStackTrace();
@@ -265,7 +267,8 @@ public class UsersTable extends AbsTables {
                 rs.getString("password"),
                 rs.getString("name"),
                 rs.getString("category"),
-                rs.getString("clearance")));
+                rs.getString("clearance"),
+                rs.getString("email")));
       }
     } catch (SQLException throwables) {
       throwables.printStackTrace();
@@ -285,7 +288,8 @@ public class UsersTable extends AbsTables {
                 rs.getString("password"),
                 rs.getString("name"),
                 rs.getString("category"),
-                rs.getString("clearance")));
+                rs.getString("clearance"),
+                rs.getString("email")));
       }
     } catch (SQLException throwables) {
       throwables.printStackTrace();

@@ -19,6 +19,7 @@ public class signUpController implements AllAccessible {
   @FXML Button signUpButton;
   @FXML JFXTextField nameField;
   @FXML JFXTextField usernameField;
+  @FXML JFXTextField emailField;
   @FXML JFXPasswordField passwordField;
   @FXML JFXComboBox category;
   @FXML StackPane signUPstackPane;
@@ -56,7 +57,8 @@ public class signUpController implements AllAccessible {
             usernameField.getText(),
             passwordField.getText().toString(),
             nameField.getText(),
-            categoryName);
+            categoryName,
+            emailField.getText());
         /*InitPageController.popup.hide();
         App.getPrimaryStage().close();
         App takeToInit = new App();
