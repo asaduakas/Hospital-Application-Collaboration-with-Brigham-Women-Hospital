@@ -279,6 +279,9 @@ public class HomeController implements AllAccessible {
 
   @FXML
   public void chatbotPopUp() {
+    if (ChatbotController.textBox.getChildren().size() > 0) {
+      ChatbotController.textBox.getChildren().clear();
+    }
     ControllerManager.attemptLoadPopup(
         "ChatbotView.fxml",
         (fxmlLoader) -> {
