@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
@@ -32,8 +33,8 @@ import javafx.scene.text.*;
 
 public class MapDrawerController implements Initializable {
   @FXML private JFXTreeView<String> directoryTreeView;
-  @FXML private JFXTextField startField;
-  @FXML private JFXTextField endField;
+  @FXML public JFXTextField startField;
+  @FXML public JFXTextField endField;
   @FXML private JFXButton findPathButton;
   @FXML private VBox vBox;
   @FXML private GridPane startGrid;
@@ -957,4 +958,59 @@ public class MapDrawerController implements Initializable {
   }
 
   public void tableSetup() {}
+
+  // -------------Search History-----------------
+
+  public String recentStart = "";
+  public String recentEnd = "";
+
+  public void setSearchHistory(Connection conn, String startName, String endName) {
+
+    PreparedStatement stmt = null;
+    try {
+      System.out.println("set stuff-----" + startName + endName);
+      stmt = conn.prepareStatement("INSERT INTO SearchHistory VALUES (?, ?)");
+      stmt.setString(1, startName);
+      stmt.setString(2, endName);
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public void getSearchHistory(Connection conn) {
+    Statement stmt = null;
+    ResultSet rs = null;
+
+    try {
+      stmt = conn.createStatement();
+
+      String query = "SELECT * FROM SearchHistory";
+
+      rs = stmt.executeQuery(query);
+
+      // conn.setAutoCommit(false);
+
+      while (rs.next()) {
+        recentStart = rs.getString("startName");
+        recentEnd = rs.getString("endName");
+        System.out.println("start-" + rs.getString("startName"));
+        System.out.println("end-" + rs.getString("endName"));
+      }
+      rs.close();
+
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+
+    // Initialize search menus with most recent searches
+    System.out.println(recentStart + "-------------------");
+    System.out.println(recentEnd + "----------------------");
+    if (HomeController.historyTracker == 1) {
+      startField.setText(recentStart);
+      endField.setText(recentEnd);
+    }
+    // start_choice.setPromptText(recentStart);
+    // end_choice.setPromptText(recentEnd);
+  }
 }
