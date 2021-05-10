@@ -731,7 +731,8 @@ public class MapController implements AllAccessible {
 
       // Center path on screen
       final Node start = DirectoryTargets.get(0);
-      final Node end = DirectoryTargets.get(1);
+      final Node end = getCenteringEnd(DirectoryTargets.get(1));
+      System.out.println("End node (for centering) is " + end.getLongName());
       mapScrollPane.centerOnPath(
           start.getXCoord(), start.getYCoord(), end.getXCoord(), end.getYCoord());
 
@@ -739,6 +740,23 @@ public class MapController implements AllAccessible {
       drawerController.getDirections(thePath);
     }
     return thePath;
+  }
+
+  private Node getCenteringEnd(Node trueEnd) {
+    return getNodeUIByID(
+            thePath.stream()
+                .filter(
+                    edge -> {
+                      final Node start = getNodeUIByID(edge.getStartNodeID()).getN();
+                      final Node end = getNodeUIByID(edge.getEndNodeID()).getN();
+                      if (trueEnd.getNodeID().equals(start.getNodeID())
+                          || trueEnd.getNodeID().equals(end.getNodeID())) return true;
+                      return start.compareFloor(end) != 0;
+                    })
+                .findFirst()
+                .get()
+                .getStartNodeID())
+        .getN();
   }
 
   public void runPathFindingClick() {

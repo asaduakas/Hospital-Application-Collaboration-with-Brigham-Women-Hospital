@@ -1,8 +1,6 @@
 package edu.wpi.cs3733.d21.teamD.views.Mapping;
 
 import edu.wpi.cs3733.d21.teamD.App;
-import java.util.Arrays;
-import java.util.List;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
