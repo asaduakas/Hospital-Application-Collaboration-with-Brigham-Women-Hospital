@@ -39,12 +39,11 @@ public class GlobalDb {
       // should use GlobalDB.getConnection()
 
       connection =
-
           // jdbc:derby://localhost:1527/MyDbTest;create=true
           // jdbc:derby:myDB;create=true -- this is for embedded
           DriverManager.getConnection(
               "jdbc:derby://localhost:1527/MyDbTest;create=true;username=Admin;password=Admin");
-
+      System.out.println("the client-server connection was established");
       if (connection == null) System.out.println("Apache Derby connection established!");
 
       // getConnection() gives a warning if there is already a database
@@ -58,16 +57,16 @@ public class GlobalDb {
         connection =
             DriverManager.getConnection(
                 "jdbc:derby:myDB;create=true;username=Admin;password=Admin");
+        System.out.println("the embedded database is being used");
         if (connection.getWarnings() == null) { // If there isn't already a populated database
-          GlobalDb.getTables()
-              .createAllTables(); // might not be doing what we want with the connections, but this
+          GlobalDb.getTables().createAllTables();
         }
       } catch (SQLException throwables) {
         System.out.println("Connection failed. Check output console.");
         throwables.printStackTrace();
       }
-      //      System.out.println("Connection failed. Check output console.");
-      //      e.printStackTrace();
+      System.out.println("Connection failed. Check output console.");
+      e.printStackTrace();
     }
   }
 }

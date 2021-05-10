@@ -4,6 +4,7 @@ import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.LangInterpNodeInf
 import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.LinkedList;
 import javafx.collections.ObservableList;
 
 public class LangInterpreterRequestTable extends AbsTables {
@@ -114,5 +115,22 @@ public class LangInterpreterRequestTable extends AbsTables {
       }
     }
     return langInterpData;
+  }
+
+  public LinkedList<LocalStatus> getLocalStatus(Connection conn) {
+    LinkedList<LocalStatus> LocalStatus = new LinkedList<>();
+    try {
+      PreparedStatement stmt =
+          conn.prepareStatement("SELECT location, status FROM LangInterpRequest");
+
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        LocalStatus localStatus = new LocalStatus(rs.getString("location"), rs.getString("status"));
+        LocalStatus.add(localStatus);
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    return LocalStatus;
   }
 }

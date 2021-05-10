@@ -12,6 +12,7 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -23,6 +24,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 
@@ -90,11 +92,15 @@ public class HomeController implements AllAccessible {
 
     JFXSpinner spinner = new JFXSpinner();
     Label loading = new Label("Loading Map");
+    Text text = new Text("Press ESC to cancel load map");
+    loading.setStyle("-fx-font-weight: Bold; -fx-font-size: 20");
+    text.setStyle("-fx-font-size: 20");
 
     spinner.setMaxHeight(150);
     spinner.setMaxWidth(150);
     stackPane.setStyle("-fx-background-color: #ffffff");
-    stackPane.getChildren().addAll(loading, spinner);
+    stackPane.getChildren().addAll(loading, spinner, text);
+    stackPane.setMargin(text, new Insets(200, 0, 0, 20));
 
     Task<Parent> task =
         new Task<Parent>() {

@@ -6,6 +6,7 @@ import edu.wpi.cs3733.d21.teamD.App;
 import edu.wpi.cs3733.d21.teamD.Astar.*;
 import edu.wpi.cs3733.d21.teamD.Ddb.FDatabaseTables;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
+import edu.wpi.cs3733.d21.teamD.Ddb.LocalStatus;
 import edu.wpi.cs3733.d21.teamD.views.Access.AllAccessible;
 import edu.wpi.cs3733.d21.teamD.views.Access.LoginController;
 import edu.wpi.cs3733.d21.teamD.views.ControllerManager;
@@ -32,6 +33,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -208,7 +210,6 @@ public class MapController implements AllAccessible {
     Pane root = (Pane) loader.getRoot();
     List<javafx.scene.Node> childrenList = root.getChildren();
     System.out.println("this is childrenList of the drawer " + childrenList);
-    root.setMinHeight(App.getPrimaryStage().getScene().getHeight());
     Scene scene = App.getPrimaryStage().getScene();
     changeChildrenMapView(childrenList);
     sizeListener =
@@ -225,15 +226,20 @@ public class MapController implements AllAccessible {
   }
 
   public void changeChildrenMapView(List<javafx.scene.Node> nodeList) {
-    JFXTreeView treeView = (JFXTreeView) nodeList.get(1);
-    Label label = (Label) nodeList.get(2);
-    JFXTextArea textDirection = (JFXTextArea) nodeList.get(3);
-    JFXButton dirBtn = (JFXButton) nodeList.get(7);
+    AnchorPane secondAnchor = (AnchorPane) nodeList.get(0);
+    JFXButton findPathBtn = (JFXButton) secondAnchor.getChildren().get(0);
+    JFXTreeView treeView = (JFXTreeView) secondAnchor.getChildren().get(1);
+    Label label = (Label) secondAnchor.getChildren().get(2);
+    ScrollPane textDirection = (ScrollPane) secondAnchor.getChildren().get(3);
+    JFXButton dirBtn = (JFXButton) secondAnchor.getChildren().get(7);
 
-    treeView.setPrefHeight(App.getPrimaryStage().getScene().getHeight() / 2.5);
+    secondAnchor.setPrefHeight(App.getPrimaryStage().getScene().getHeight());
+    treeView.setPrefHeight(secondAnchor.getPrefHeight() / 2.75);
+    treeView.setLayoutY(findPathBtn.getLayoutY() + findPathBtn.getHeight() + 30);
     label.setLayoutY(treeView.getLayoutY() + treeView.getPrefHeight() + 10);
     label.setLayoutX(10);
-    textDirection.setLayoutY(label.getLayoutY() + label.getHeight() + 30);
+    textDirection.setLayoutY(label.getLayoutY() + label.getHeight() + 40);
+    textDirection.setPrefHeight(secondAnchor.getPrefHeight() / 3.3);
     dirBtn.setLayoutY(textDirection.getLayoutY() + textDirection.getPrefHeight() + 20);
   }
 
@@ -319,6 +325,7 @@ public class MapController implements AllAccessible {
       setupDraggableNodeUI(Temp);
       NODES.add(Temp);
     }
+    // initializeFavs();
   }
 
   private void initializeEdges() {
@@ -1123,6 +1130,23 @@ public class MapController implements AllAccessible {
     }
   }
 
+  private void initializeFavs() {
+    LinkedList<NodeUI> initialFavs = new LinkedList<NodeUI>();
+    initialFavs.add(getNodeUIByLongName("Elevator S 01"));
+    initialFavs.add(getNodeUIByLongName("Restroom S elevator 1st floor"));
+    initialFavs.add(getNodeUIByLongName("Cafe Stairs"));
+    initialFavs.add(getNodeUIByLongName("Waiting Room 1 Floor 1"));
+    initialFavs.add(getNodeUIByLongName("Connors Center Security Desk Floor 1"));
+    initialFavs.add(getNodeUIByLongName("Shattuck Street Lobby Exit"));
+    initialFavs.add(getNodeUIByLongName("Emergency Department Entrance"));
+    initialFavs.add(getNodeUIByLongName("Parking Garage L2"));
+    initialFavs.add(getNodeUIByLongName("Cafe"));
+
+    for (NodeUI N : initialFavs) {
+      favorite(N);
+    }
+  }
+
   private void favorite(NodeUI N) {
     if (FDatabaseTables.getNodeTable()
         .FavContains(GlobalDb.getConnection(), N.getN().getNodeID(), HomeController.username)) {
@@ -1638,5 +1662,14 @@ public class MapController implements AllAccessible {
         (e) -> {
           helpImage.getImage();
         });
+  }
+
+  // _________________________________________Service View_____________________________________
+
+  @FXML
+  private void LoadServices() {
+
+    for (LocalStatus LS :
+        FDatabaseTables.getAudVisTable().getLocalStatus(GlobalDb.getConnection())) {}
   }
 }

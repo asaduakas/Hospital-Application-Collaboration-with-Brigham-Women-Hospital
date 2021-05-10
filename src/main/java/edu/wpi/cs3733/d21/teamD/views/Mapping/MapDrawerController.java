@@ -21,19 +21,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TreeCell;
-import javafx.scene.control.TreeItem;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
+import javafx.scene.text.*;
 
 public class MapDrawerController implements Initializable {
   @FXML private JFXTreeView<String> directoryTreeView;
@@ -46,8 +41,10 @@ public class MapDrawerController implements Initializable {
   @FXML private JFXComboBox<String> algoVersion;
   @FXML private JFXButton exportBut;
   @FXML private JFXButton importBut;
+  @FXML private ScrollPane textScrollPane;
   @FXML JFXButton dirBtn;
-  @FXML JFXTextArea dirText;
+  @FXML TextFlow dirText;
+  TextArea downloadText = new TextArea();
   private LinkedList<edu.wpi.cs3733.d21.teamD.Astar.Node> Targets = new LinkedList<>();
 
   private MapController mapController;
@@ -100,6 +97,13 @@ public class MapDrawerController implements Initializable {
 
   @Override
   public void initialize(URL url, ResourceBundle rb) {
+
+    downloadText.setVisible(false);
+    textScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+    textScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+    textScrollPane.setStyle(
+        "-fx-background-color: transparent; -fx-padding: 0; -fx-background-insets: 0");
+    //    textScrollPane.
 
     directoryTreeView
         .getSelectionModel()
@@ -422,7 +426,7 @@ public class MapDrawerController implements Initializable {
           (String) ((TreeItem) directoryTreeView.getSelectionModel().getSelectedItem()).getValue();
       for (NodeUI NUI : mapController.NODES) {
         if (NUI.getN().getLongName().equals(clickname)) {
-          System.out.println(NUI.getN().getLongName());
+          // System.out.println(NUI.getN().getLongName());
           if (!Targets.contains(NUI.getN())) {
             Targets.add(NUI.getN());
           }
@@ -554,6 +558,8 @@ public class MapDrawerController implements Initializable {
   // _____________________________________Directions__________________________________________
 
   private String endLocation = "";
+  private Font hFont = Font.font("Verdana", FontWeight.BOLD, FontPosture.REGULAR, 16.0);
+  private Font pFont = Font.font("Verdana", FontWeight.NORMAL, FontPosture.REGULAR, 14.0);
 
   private void setEnd(String end) {
     endLocation = end;
@@ -572,14 +578,23 @@ public class MapDrawerController implements Initializable {
     }
     // ScaleDown(edges.getFirst().getStartNode());
 
-    dirText.clear();
+    dirText.getChildren().clear();
+    downloadText.clear();
 
     edu.wpi.cs3733.d21.teamD.Astar.Node start =
         initialData.getNodeByID(edges.getFirst().getStartNodeID());
     edu.wpi.cs3733.d21.teamD.Astar.Node end =
         initialData.getNodeByID(edges.getLast().getEndNodeID());
-    dirText.appendText(
+    //    dirText.getChildren().setFont(pFont);
+
+    Text aText =
+        new Text("Directions from " + start.getLongName() + " to " + end.getLongName() + ":\n");
+    aText.setFont(hFont);
+    dirText.getChildren().add(aText);
+    downloadText.appendText(
         "Directions from " + start.getLongName() + " to " + end.getLongName() + ":\n");
+    // dirText.appendText("Directions from " + start.getLongName() + " to " + end.getLongName() +
+    // ":\n");
     setEnd(end.getShortName());
 
     // ScaleDown(edges.getFirst().getEndNode());
@@ -609,8 +624,13 @@ public class MapDrawerController implements Initializable {
               endN);
       initialDirection = newDirection;
     }
-    dirText.appendText("\nWelcome to " + end.getLongName() + "\n");
-    dirText.setPromptText(dirText.getText());
+    // dirText.setFont(hFont);
+    Text endText = new Text("\nWelcome to " + end.getLongName() + "\n");
+    endText.setFont(hFont);
+    dirText.getChildren().add(endText);
+    downloadText.appendText("\nWelcome to " + end.getLongName() + "\n");
+    // dirText.appendText("\nWelcome to " + end.getLongName() + "\n");
+    // dirText.setPromptText(dirText.getText());
   }
 
   public String evalTurn(
@@ -627,14 +647,42 @@ public class MapDrawerController implements Initializable {
 
     // add handling for changing floors
     if (startNode.getNodeType().equals("ELEV") && endNode.getNodeType().equals("ELEV")) {
-      dirText.appendText("Take the elevator towards floor " + endNode.getFloor() + "\n");
+      Text elvText =
+          new Text("\t" + "Take the elevator towards floor " + endNode.getFloor() + "\n");
+      elvText.setFont(pFont);
+      //      dirText.getChildren().add(elvText);
+      downloadText.appendText(
+          "\t" + "Take the elevator towards floor " + endNode.getFloor() + "\n");
+      try {
+        ImageView EleImage =
+            new ImageView(new Image(new FileInputStream("src/main/resources/Images/elevator.png")));
+        EleImage.setFitHeight(30);
+        EleImage.setFitWidth(30);
+        dirText.getChildren().addAll(EleImage, elvText);
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
+      // dirText.setFont(hFont);
+      // dirText.appendText("Take the elevator towards floor " + endNode.getFloor() + "\n");
       return "In elevator";
 
     } else if (startNode.getNodeType().equals("ELEV") && !endNode.getNodeType().equals("ELEV")) {
       newDirection = firstMove(startX, startY, endX, endY, startNode, endNode);
       return newDirection;
     } else if (startNode.getNodeType().equals("STAI") && endNode.getNodeType().equals("STAI")) {
-      dirText.appendText("Take the stairs towards floor " + endNode.getFloor() + "\n");
+      //  dirText.setFont(hFont);
+      Text text = new Text("\t" + "Take the stairs towards floor " + endNode.getFloor() + "\n");
+      text.setFont(pFont);
+      downloadText.appendText("\t" + "Take the stairs towards floor " + endNode.getFloor() + "\n");
+      try {
+        ImageView Image =
+            new ImageView(new Image(new FileInputStream("src/main/resources/Images/stairs.png")));
+        Image.setFitHeight(30);
+        Image.setFitWidth(30);
+        dirText.getChildren().addAll(Image, text);
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
       return "In stairs";
     } else if (startNode.getNodeType().equals("STAI") && !endNode.getNodeType().equals("STAI")) {
       newDirection = firstMove(startX, startY, endX, endY, startNode, endNode);
@@ -665,7 +713,20 @@ public class MapDrawerController implements Initializable {
         || (currentDirection.equals("East") && newDirection.equals("North"))
         || (currentDirection.equals("South") && newDirection.equals("East"))
         || (currentDirection.equals("West") && newDirection.equals("South"))) {
-      dirText.appendText("Turn Left towards " + endNode.getLongName() + "\n");
+      // dirText.setFont(pFont);
+      Text lText = new Text("\tTurn Left towards: \n\t\t" + endNode.getLongName() + "\n");
+      lText.setFont(pFont);
+      downloadText.appendText("\tTurn Left towards: \n\t\t" + endNode.getLongName() + "\n");
+      try {
+        ImageView Image =
+            new ImageView(new Image(new FileInputStream("src/main/resources/Images/left.png")));
+        Image.setFitHeight(30);
+        Image.setFitWidth(30);
+        dirText.getChildren().addAll(Image, lText);
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
+      // dirText.appendText("\tTurn Left towards: \n\t\t" + endNode.getLongName() + "\n");
 
     }
     // Turn Right
@@ -673,12 +734,39 @@ public class MapDrawerController implements Initializable {
         || (currentDirection.equals("East") && newDirection.equals("South"))
         || (currentDirection.equals("South") && newDirection.equals("West"))
         || (currentDirection.equals("West") && newDirection.equals("North"))) {
-      dirText.appendText("Turn Right towards " + endNode.getLongName() + "\n");
+      // dirText.setFont(pFont);
+      Text rText = new Text("\tTurn Right towards: \n\t\t" + endNode.getLongName() + "\n");
+      rText.setFont(pFont);
+      downloadText.appendText("\tTurn Right towards: \n\t\t" + endNode.getLongName() + "\n");
+      try {
+        ImageView Image =
+            new ImageView(new Image(new FileInputStream("src/main/resources/Images/right.png")));
+        Image.setFitHeight(30);
+        Image.setFitWidth(30);
+        dirText.getChildren().addAll(Image, rText);
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
+      // dirText.appendText("\tTurn Right towards: \n\t\t" + endNode.getLongName() + "\n");
     }
     // Continue Straight
     else if (currentDirection.equals(newDirection)) {
       if (!(startNode.getNodeType().equals("HALL") && endNode.getNodeType().equals("HALL"))) {
-        dirText.appendText("Continue Straight towards " + endNode.getLongName() + "\n");
+        // dirText.setFont(pFont);
+        Text sText = new Text("\tContinue Straight towards: \n\t\t" + endNode.getLongName() + "\n");
+        sText.setFont(pFont);
+        downloadText.appendText(
+            "\tContinue Straight towards: \n\t\t" + endNode.getLongName() + "\n");
+        try {
+          ImageView Image =
+              new ImageView(new Image(new FileInputStream("src/main/resources/Images/up.png")));
+          Image.setFitHeight(30);
+          Image.setFitWidth(30);
+          dirText.getChildren().addAll(Image, sText);
+        } catch (FileNotFoundException e) {
+          e.printStackTrace();
+        }
+        // dirText.appendText("\tContinue Straight towards: \n\t\t" + endNode.getLongName() + "\n");
       }
     }
 
@@ -697,34 +785,109 @@ public class MapDrawerController implements Initializable {
 
     // add handling for changing floors
     if (startNode.getNodeType().equals("ELEV") && endNode.getNodeType().equals("ELEV")) {
-      dirText.appendText("Take the elevator towards floor " + endNode.getFloor() + "\n");
+      // dirText.setFont(hFont);
+      Text text = new Text("Take the elevator towards floor " + endNode.getFloor() + "\n");
+      text.setFont(pFont);
+      try {
+        ImageView EleImage =
+            new ImageView(new Image(new FileInputStream("src/main/resources/Images/elevator.png")));
+        EleImage.setFitHeight(30);
+        EleImage.setFitWidth(30);
+        //        dirText.getChildren().addAll(EleImage, text);
+        dirText.getChildren().add(EleImage);
+        System.out.println("this is adding elevatorImage");
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
       return "In elevator";
     } else if (startNode.getNodeType().equals("STAI") && endNode.getNodeType().equals("STAI")) {
-      dirText.appendText("Take the stairs towards floor " + endNode.getFloor() + "\n");
+      // dirText.setFont(hFont);
+      Text text = new Text("Take the stairs towards floor " + endNode.getFloor() + "\n");
+      text.setFont(pFont);
+      downloadText.appendText("Take the stairs towards floor " + endNode.getFloor() + "\n");
+      try {
+        ImageView Image =
+            new ImageView(new Image(new FileInputStream("src/main/resources/Images/stairs.png")));
+        Image.setFitHeight(30);
+        Image.setFitWidth(30);
+        dirText.getChildren().addAll(Image, text);
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
       return "In stairs";
     } else {
       // North
       if ((deltaY < 0) && (Math.abs(deltaY) > Math.abs(deltaX))) {
         //        System.out.println("Head North towards " + endNode.getLongName());
-        dirText.appendText("Head North towards " + endNode.getLongName() + "\n");
+        Text text = new Text("\tHead North towards: \n\t\t" + endNode.getLongName() + "\n");
+        text.setFont(pFont);
+        downloadText.appendText("\tHead North towards: \n\t\t" + endNode.getLongName() + "\n");
+        try {
+          ImageView Image =
+              new ImageView(
+                  new Image(new FileInputStream("src/main/resources/Images/north_bg.png")));
+          Image.setFitHeight(30);
+          Image.setFitWidth(30);
+          dirText.getChildren().addAll(Image, text);
+        } catch (FileNotFoundException e) {
+          e.printStackTrace();
+        }
+        //   dirText.setFont(pFont);
+        //        dirText.appendText("\tHead North towards: \n\t\t" + endNode.getLongName() + "\n");
         return "North";
       }
       // South
       else if ((deltaY > 0) && (deltaY > Math.abs(deltaX))) {
         //        System.out.println("Head South towards " + endNode.getLongName());
-        dirText.appendText("Head South towards " + endNode.getLongName() + "\n");
+        Text text = new Text("\tHead South towards: \n\t\t" + endNode.getLongName() + "\n");
+        text.setFont(pFont);
+        downloadText.appendText("\tHead South towards: \n\t\t" + endNode.getLongName() + "\n");
+        try {
+          ImageView Image =
+              new ImageView(
+                  new Image(new FileInputStream("src/main/resources/Images/south_bg.png")));
+          Image.setFitHeight(30);
+          Image.setFitWidth(30);
+          dirText.getChildren().addAll(Image, text);
+        } catch (FileNotFoundException e) {
+          e.printStackTrace();
+        }
         return "South";
       }
       // East
       else if ((deltaX > 0) && (deltaX > Math.abs(deltaY))) {
         //        System.out.println("Head East towards " + endNode.getLongName());
-        dirText.appendText("Head East towards " + endNode.getLongName() + "\n");
+        Text text = new Text("\tHead East towards: \n\t\t" + endNode.getLongName() + "\n");
+        text.setFont(pFont);
+        downloadText.appendText("\tHead East towards: \n\t\t" + endNode.getLongName() + "\n");
+        try {
+          ImageView Image =
+              new ImageView(
+                  new Image(new FileInputStream("src/main/resources/Images/east_bg.png")));
+          Image.setFitHeight(30);
+          Image.setFitWidth(30);
+          dirText.getChildren().addAll(Image, text);
+        } catch (FileNotFoundException e) {
+          e.printStackTrace();
+        }
         return "East";
       }
       // West
       else if ((deltaX < 0) && (Math.abs(deltaX) > Math.abs(deltaY))) {
         //        System.out.println("Head West towards " + endNode.getLongName());
-        dirText.appendText("Head West towards " + endNode.getLongName() + "\n");
+        Text text = new Text("\tHead West towards: \n\t\t" + endNode.getLongName() + "\n");
+        text.setFont(pFont);
+        downloadText.appendText("\tHead West towards: \n\t\t" + endNode.getLongName() + "\n");
+        try {
+          ImageView Image =
+              new ImageView(
+                  new Image(new FileInputStream("src/main/resources/Images/west_bg.png")));
+          Image.setFitHeight(30);
+          Image.setFitWidth(30);
+          dirText.getChildren().addAll(Image, text);
+        } catch (FileNotFoundException e) {
+          e.printStackTrace();
+        }
         return "West";
       } else {
         //        System.out.println("Error determining turn direction towards " +
@@ -743,7 +906,8 @@ public class MapDrawerController implements Initializable {
       try {
         FileWriter directions = new FileWriter(name);
 
-        directions.write(dirText.getText());
+        directions.write(downloadText.getText());
+
         directions.close();
 
         String DialogText = "";
