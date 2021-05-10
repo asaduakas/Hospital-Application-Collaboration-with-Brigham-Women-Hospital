@@ -1344,6 +1344,7 @@ public class MapController implements AllAccessible {
         N.setSizeWidth(50);
       }
     }
+    MapDrawerController.blockedCallStuff();
   }
 
   private void hoverResize(NodeUI N) {
