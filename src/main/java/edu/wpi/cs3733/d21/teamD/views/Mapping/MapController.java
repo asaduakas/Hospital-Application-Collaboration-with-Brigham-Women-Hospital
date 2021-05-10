@@ -1337,6 +1337,8 @@ public class MapController implements AllAccessible {
                 N.getN().getNodeID(),
                 N.getN().getLongName());
         N.getI().setImage(blockedNode);
+        N.setSizeHeight(50);
+        N.setSizeWidth(50);
       }
     }
   }
