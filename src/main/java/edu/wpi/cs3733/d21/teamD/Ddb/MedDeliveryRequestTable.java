@@ -29,7 +29,8 @@ public class MedDeliveryRequestTable extends AbsTables {
               + "typeOfMedicine VARCHAR(100) NOT NULL,"
               + "dropOffDate DATE NOT NULL," // YYYY-MM-DD format
               + "PRIMARY KEY(id),"
-//              + "CONSTRAINT MED_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
+              //              + "CONSTRAINT MED_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES
+              // Users(id),"
               + "CONSTRAINT MED_status_check CHECK (status IN ('Incomplete', 'Complete', 'In Progress')))";
       // + "CONSTRAINT MED_location_FK FOREIGN KEY(location) REFERENCES Nodes(nodeID))";
       stmt.executeUpdate(query);

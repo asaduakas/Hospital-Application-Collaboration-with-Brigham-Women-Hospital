@@ -86,6 +86,9 @@ public class LoginController implements AllAccessible {
       usersBtn.setVisible(false);
       usersBtn.setDisable(true);
     }
+    if (userCategory.equalsIgnoreCase("employee")) {
+      JFXAlert<Void> notification = new JFXAlert<Void>(App.getPrimaryStage());
+    }
 
     Scene scene = App.getPrimaryStage().getScene();
 
@@ -110,6 +113,7 @@ public class LoginController implements AllAccessible {
     JFXButton logoutButton = (JFXButton) nodeList.get(5);
     JFXButton exitButton = (JFXButton) nodeList.get(6);
     StackPane stackPane = (StackPane) nodeList.get(7);
+    //    JFXDrawer notificationDrawer = (JFXDrawer) nodeList.get(8);
 
     topButtons.setLayoutX(
         App.getPrimaryStage().getScene().getWidth() - (topButtons.getWidth() + 26));
@@ -158,6 +162,13 @@ public class LoginController implements AllAccessible {
     stackPane.setLayoutY(
         (App.getPrimaryStage().getScene().getHeight() - stackPane.getHeight()) / 2);
     stackPane.setPickOnBounds(false);
+    double sideWidth =
+        (App.getPrimaryStage().getScene().getWidth() - hospitalImage.getFitWidth()) / 2;
+
+    //    notificationDrawer.setLayoutX(
+    //        hospitalImage.getFitWidth() + sideWidth - notificationDrawer.getWidth() / 2);
+    //    notificationDrawer.setLayoutY(120);
+    //    notificationDrawer.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 20px");
   }
 
   @FXML

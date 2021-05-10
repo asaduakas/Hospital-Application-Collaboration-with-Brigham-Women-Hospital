@@ -28,7 +28,8 @@ public class SanitationServRequestTable extends AbsTables {
               + "descriptionOfIssue VARCHAR(100) NOT NULL,"
               + "urgencyLevel VARCHAR(25) NOT NULL,"
               + "PRIMARY KEY(id),"
-//              + "CONSTRAINT SAN_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
+              //              + "CONSTRAINT SAN_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES
+              // Users(id),"
               // + "CONSTRAINT SAN_location_FK FOREIGN KEY(location) REFERENCES Nodes(nodeID),"
               + "CONSTRAINT SAN_status_check CHECK (status IN ('Incomplete', 'Complete', 'In Progress')),"
               + "CONSTRAINT SAN_urgency_check CHECK (urgencyLevel IN ('Low Priority', 'Medium Priority', 'High Priority')))";

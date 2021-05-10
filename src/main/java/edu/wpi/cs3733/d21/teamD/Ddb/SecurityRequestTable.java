@@ -30,7 +30,8 @@ public class SecurityRequestTable extends AbsTables {
               + "urgencyLevel VARCHAR(25) NOT NULL,"
               + "description VARCHAR(400) DEFAULT '',"
               + "PRIMARY KEY(id),"
-//              + "CONSTRAINT SEC_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
+              //              + "CONSTRAINT SEC_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES
+              // Users(id),"
               // + "CONSTRAINT SEC_location_FK FOREIGN KEY(location) REFERENCES Nodes(nodeID),"
               + "CONSTRAINT SEC_status_check CHECK (status IN ('Incomplete', 'Complete', 'In Progress')),"
               + "CONSTRAINT SEC_urgency_check CHECK (urgencyLevel IN ('Low Priority', 'Medium Priority', 'High Priority')))";

@@ -102,6 +102,11 @@ public class HomeController implements AllAccessible {
     stackPane.getChildren().addAll(loading, spinner, text);
     stackPane.setMargin(text, new Insets(200, 0, 0, 20));
 
+    logoutButton.setVisible(false);
+    logoutButton.setDisable(true);
+    exitButton.setVisible(false);
+    exitButton.setDisable(true);
+
     Task<Parent> task =
         new Task<Parent>() {
           @Override
@@ -171,6 +176,11 @@ public class HomeController implements AllAccessible {
           task.cancel();
           stackPane.setVisible(false);
           stackPane.setDisable(true);
+
+          logoutButton.setVisible(true);
+          logoutButton.setDisable(false);
+          exitButton.setVisible(true);
+          exitButton.setDisable(false);
         });
   }
 

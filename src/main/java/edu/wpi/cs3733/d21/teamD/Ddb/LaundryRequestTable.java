@@ -24,7 +24,8 @@ public class LaundryRequestTable extends AbsTables {
               + "location VARCHAR(100) NOT NULL,"
               + "assignedEmployee VARCHAR(100) DEFAULT '',"
               + "PRIMARY KEY(id),"
-//              + "CONSTRAINT LAU_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
+              //              + "CONSTRAINT LAU_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES
+              // Users(id),"
               + "CONSTRAINT LAU_status_check CHECK (status IN ('Incomplete', 'Complete', 'In Progress')))";
       // + "CONSTRAINT LAU_location_FK FOREIGN KEY(location) REFERENCES Nodes(nodeID))";
       stmt.executeUpdate(query);
@@ -39,11 +40,7 @@ public class LaundryRequestTable extends AbsTables {
   public void populateTable(Connection conn, String filePath) {}
 
   public static void addEntity(
-      Connection conn,
-      String firstName,
-      String lastName,
-      String contactInfo,
-      String location) {
+      Connection conn, String firstName, String lastName, String contactInfo, String location) {
     PreparedStatement stmt = null;
     String query =
         "INSERT INTO LaundryRequest (firstName, lastName, contactInfo, location) VALUES(?,?,?,?)";
