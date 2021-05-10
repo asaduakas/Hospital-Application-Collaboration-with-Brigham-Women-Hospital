@@ -6,7 +6,6 @@ import edu.wpi.cs3733.d21.teamD.App;
 import edu.wpi.cs3733.d21.teamD.Astar.*;
 import edu.wpi.cs3733.d21.teamD.Ddb.FDatabaseTables;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
-import edu.wpi.cs3733.d21.teamD.Ddb.LocalStatus;
 import edu.wpi.cs3733.d21.teamD.views.Access.AllAccessible;
 import edu.wpi.cs3733.d21.teamD.views.Access.LoginController;
 import edu.wpi.cs3733.d21.teamD.views.ControllerManager;
@@ -15,6 +14,7 @@ import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.Mapping.Popup.Edit.AddNodeController;
 import edu.wpi.cs3733.d21.teamD.views.Mapping.Popup.Edit.EditNodeController;
 import edu.wpi.cs3733.d21.teamD.views.SceneSizeChangeListener;
+import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.AllServiceNodeInfo;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -98,7 +98,7 @@ public class MapController implements AllAccessible {
   public static final Image RETL = new Image("Images/retailpin.png");
   public static final Image SERV = new Image("Images/service.png");
   public static final Image favImage = new Image("Images/favIcon_good.png");
-  public static final Image AudioVisual = new Image("Images/audio-visual_white.png");
+  public static final Image AudioVisual = new Image("Images/audio-visual.png");
   private Image up = new Image("Images/up-arrow.png");
   private Image down = new Image("Images/redArrow.png");
   private Image endImage = new Image("Images/endingIcon_white.png");
@@ -209,7 +209,7 @@ public class MapController implements AllAccessible {
     mapDrawer.setSidePane(menuBtns);
     Pane root = (Pane) loader.getRoot();
     List<javafx.scene.Node> childrenList = root.getChildren();
-    System.out.println("this is childrenList of the drawer " + childrenList);
+    // System.out.println("this is childrenList of the drawer " + childrenList);
     root.setMinHeight(App.getPrimaryStage().getScene().getHeight());
     Scene scene = App.getPrimaryStage().getScene();
     changeChildrenMapView(childrenList);
@@ -1663,16 +1663,13 @@ public class MapController implements AllAccessible {
   // _________________________________________Service View_____________________________________
 
   @FXML
-  private void LoadServices() {
+  private void LoadServices() throws IOException {
     clearMap();
-
-    for (LocalStatus LS :
-        FDatabaseTables.getAudVisTable().getLocalStatus(GlobalDb.getConnection())) {
-
-      for (Node E: FDatabaseTables.getNodeTable().convertNodesToLL(GlobalDb.getConnection()))
-      {
-
-      }
+    FDatabaseTables.getAllServiceTable().dispAll(GlobalDb.getConnection());
+    System.out.println("TRIGGERED");
+    System.out.println(FDatabaseTables.getAllServiceTable().ListServices().size());
+    for (AllServiceNodeInfo S : FDatabaseTables.getAllServiceTable().ListServices()) {
+      System.out.println(S.getLocation());
     }
   }
 }

@@ -3,7 +3,6 @@ package edu.wpi.cs3733.d21.teamD.Ddb;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.ExtTransNodeInfo;
 import java.io.IOException;
 import java.sql.*;
-import java.util.LinkedList;
 import java.util.Scanner;
 import javafx.collections.ObservableList;
 
@@ -65,13 +64,13 @@ public class ExtTransRequestTable extends AbsTables {
     }
   }
 
-  public static void addEntity(
+  public void addEntity(
       Connection conn,
       String serTy,
       String pFN,
       String pLN,
       String contact,
-      String loca,
+      String location,
       String transType,
       String assigned) {
     PreparedStatement stmt = null;
@@ -83,11 +82,19 @@ public class ExtTransRequestTable extends AbsTables {
       stmt.setString(2, pFN);
       stmt.setString(3, pLN);
       stmt.setString(4, contact);
-      stmt.setString(5, loca);
+      stmt.setString(5, location);
       stmt.setString(6, transType);
       stmt.setString(7, assigned);
-
       int count = stmt.executeUpdate();
+
+      FDatabaseTables.getAllServiceTable()
+          .addEntity(
+              GlobalDb.getConnection(),
+              this.getID(GlobalDb.getConnection()),
+              location,
+              "Incomplete",
+              assigned,
+              "EXT");
 
     } catch (SQLException throwables) {
       throwables.printStackTrace();
@@ -170,6 +177,14 @@ public class ExtTransRequestTable extends AbsTables {
           stmt.setString(2, info.getAssignedTo());
           stmt.setString(3, info.getId());
           stmt.executeUpdate();
+
+          AllServiceTable.updateEntity(
+              GlobalDb.getConnection(),
+              info.getId(),
+              info.getStatus(),
+              info.getAssignedTo(),
+              "EXT");
+
         } catch (SQLException throwables) {
           throwables.printStackTrace();
         }
@@ -178,20 +193,20 @@ public class ExtTransRequestTable extends AbsTables {
     return ExTransData;
   }
 
-  public LinkedList<LocalStatus> getLocalStatus(Connection conn) {
-    LinkedList<LocalStatus> LocalStatus = new LinkedList<>();
+  public int getID(Connection conn) {
+    int id = 420;
     try {
-      PreparedStatement stmt =
-          conn.prepareStatement("SELECT location, status FROM AudVisServiceRequest");
-
+      PreparedStatement stmt = conn.prepareStatement("SELECT id FROM ExternalTransRequests");
       ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
-        LocalStatus localStatus = new LocalStatus(rs.getString("location"), rs.getString("status"));
-        LocalStatus.add(localStatus);
+        System.out.println("LOOK HERE:" + id);
+        id = rs.getInt(1);
+        System.out.println("LOOK HERE:" + id);
       }
     } catch (SQLException throwables) {
       throwables.printStackTrace();
     }
-    return LocalStatus;
+    System.out.println();
+    return id;
   }
 }
