@@ -728,8 +728,15 @@ public class MapController implements AllAccessible {
       Targets.clear();
     } else {
       switchFloor(currentFloor);
-      final Node start = DirectoryTargets.getFirst(); // DEBUG
-      mapScrollPane.setCenter(start.getXCoord(), start.getYCoord()); // DEBUG
+
+      // Center path on screen
+      final Node start = DirectoryTargets.get(0);
+      // final Node end = DirectoryTargets.get(1);
+      // mapScrollPane.setCenter(
+      //    (start.getXCoord() + end.getXCoord()) / 2.0, (start.getYCoord() + end.getYCoord()) /
+      // 2.0);
+      mapScrollPane.setCenter(start.getXCoord(), start.getYCoord());
+
       //      algorithm.multiSearch(initialData, DirectoryTargets).printPathEdges();
       drawerController.getDirections(thePath);
     }
