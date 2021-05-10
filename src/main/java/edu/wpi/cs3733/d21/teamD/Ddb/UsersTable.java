@@ -87,12 +87,13 @@ public class UsersTable extends AbsTables {
       while (sc.hasNextLine()) {
         try {
           String[] row = sc.nextLine().split(",");
-          PreparedStatement ps = conn.prepareStatement("INSERT INTO Users VALUES (?,?,?,?,NULL,?)");
+          PreparedStatement ps =
+              conn.prepareStatement("INSERT INTO Users VALUES (?,?,?,?,NULL, NULL)");
           ps.setString(1, row[0]);
           ps.setString(2, row[1]);
           ps.setString(3, row[2]);
           ps.setString(4, row[3]);
-          ps.setString(5, row[6]);
+          //          ps.setString(5, row[4]);
           //                    ps.setNull(5, );
           ps.executeUpdate();
         } catch (Exception e) {
@@ -110,14 +111,21 @@ public class UsersTable extends AbsTables {
   }
 
   public static void addEntity(
-      Connection conn, String id, String password, String name, String category, String email) {
+      Connection conn,
+      String id,
+      String password,
+      String name,
+      String category,
+      String clearance,
+      String email) {
     try {
-      PreparedStatement stmt = conn.prepareStatement("INSERT INTO Users VALUES(?,?,?,?,?)");
+      PreparedStatement stmt = conn.prepareStatement("INSERT INTO Users VALUES(?,?,?,?,?,?)");
       stmt.setString(1, id);
       stmt.setString(2, password);
       stmt.setString(3, name);
       stmt.setString(4, category);
-      stmt.setString(5, email);
+      stmt.setString(5, clearance);
+      stmt.setString(6, email);
       stmt.executeUpdate();
     } catch (Exception e) {
       e.printStackTrace();

@@ -120,7 +120,9 @@ public class Email {
 
       // THIS STRING IS THE BODY OF THE EMAIL
       message.setText(
-          "Dear Mx." + name + ","
+          "Dear Mx."
+              + name
+              + ","
               + "\n"
               + "\n"
               + "Thank you for creating an account at Brigham and Women's Hospital. Here are your credentials\n"
