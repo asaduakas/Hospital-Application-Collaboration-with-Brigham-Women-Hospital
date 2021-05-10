@@ -23,6 +23,7 @@ public class UsersTable extends AbsTables {
               + "name VARCHAR(50) DEFAULT '',"
               + "category VARCHAR(8) NOT NULL,"
               + "clearance VARCHAR(30) DEFAULT '',"
+              + "email VARCHAR(100) DEFAULT '',"
               + "PRIMARY KEY(id),"
               + "CONSTRAINT USE_role_check CHECK (category IN ('Employee', 'Patient', 'Admin')))";
       stmt.executeUpdate(query);
@@ -86,11 +87,12 @@ public class UsersTable extends AbsTables {
       while (sc.hasNextLine()) {
         try {
           String[] row = sc.nextLine().split(",");
-          PreparedStatement ps = conn.prepareStatement("INSERT INTO Users VALUES (?,?,?,?,NULL)");
+          PreparedStatement ps = conn.prepareStatement("INSERT INTO Users VALUES (?,?,?,?,NULL,?)");
           ps.setString(1, row[0]);
           ps.setString(2, row[1]);
           ps.setString(3, row[2]);
           ps.setString(4, row[3]);
+          ps.setString(5, row[6]);
           //                    ps.setNull(5, );
           ps.executeUpdate();
         } catch (Exception e) {
@@ -98,7 +100,6 @@ public class UsersTable extends AbsTables {
           e.printStackTrace();
         }
       }
-
       conn.commit();
       System.out.println("User Table populated");
     } catch (Exception e) {
