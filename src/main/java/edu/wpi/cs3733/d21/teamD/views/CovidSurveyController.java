@@ -119,13 +119,14 @@ public class CovidSurveyController implements Initializable, AllAccessible {
       }
     }
 
+    //Sending email
     Boolean pass = false;
     if (goodBool == 1) {
       pass = true;
     }
-
     String emailString = email.getText();
     sendPassEmail(emailString, pass);
+
 
     FDatabaseTables.getCovid19SurveyTable()
         .addEntity(
