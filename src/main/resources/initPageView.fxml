@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="mainPane" prefHeight="675.0" prefWidth="1200.0" styleClass="bodybg" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.cs3733.d21.teamD.views.InitPageController">
    <children>
@@ -82,5 +83,10 @@
          </children>
       </HBox>
       <JFXButton fx:id="exitButton" layoutX="1076.0" layoutY="613.0" onAction="#closeApp" prefHeight="39.0" prefWidth="97.0" style="-fx-background-color: #cdcdcd; -fx-background-radius: 10px; -fx-font-weight: Bold; -fx-font-size: 18;" text="EXIT" />
+      <JFXButton fx:id="pageButton" layoutX="34.0" layoutY="618.0" text="Pages" textFill="WHITE">
+         <font>
+            <Font size="10.0" />
+         </font>
+      </JFXButton>
    </children>
 </AnchorPane>

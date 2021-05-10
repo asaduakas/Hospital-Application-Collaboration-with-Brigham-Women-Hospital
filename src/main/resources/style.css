@@ -6,3 +6,7 @@
 .tree-table-cell {
     -fx-alignment: center ;
 }
+
+.text-area *.text {
+    -fx-text-alignment: center;
+}
