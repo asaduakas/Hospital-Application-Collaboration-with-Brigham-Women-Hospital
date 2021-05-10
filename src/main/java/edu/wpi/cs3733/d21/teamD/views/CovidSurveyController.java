@@ -225,7 +225,7 @@ public class CovidSurveyController implements Initializable, AllAccessible {
             });
 
     RequiredFieldValidator emailValid = new RequiredFieldValidator();
-    emailValid.setMessage("Enter email");
+    emailValid.setMessage("Please enter an email address.");
     email.getValidators().add(emailValid);
     email
         .focusedProperty()

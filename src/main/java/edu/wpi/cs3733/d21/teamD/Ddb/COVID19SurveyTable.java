@@ -19,15 +19,9 @@ public class COVID19SurveyTable extends AbsTables {
               + "firstName VARCHAR(100),"
               + "lastName VARCHAR(200),"
               + "contactInfo VARCHAR(100),"
-              + "email VARCHAR(200),"
+              + "email VARCHAR(100),"
               + "assignedTo VARCHAR(100) DEFAULT '',"
               + "status VARCHAR(100) DEFAULT 'Disapproved',"
-              //              + "positiveTestCheck VARCHAR(500),"
-              //              + "symptomCheck VARCHAR(500),"
-              //              + "closeContactCheck VARCHAR(500),"
-              //              + "selfIsolateCheck VARCHAR(500),"
-              //              + "feelGoodCheck VARCHAR(500),"
-
               + "positiveTestCheck INT DEFAULT 0 NOT NULL,"
               + "symptomCheck INT DEFAULT 0 NOT NULL,"
               + "closeContactCheck INT DEFAULT 0 NOT NULL,"
@@ -64,11 +58,6 @@ public class COVID19SurveyTable extends AbsTables {
       int closeContactCheck,
       int selfIsolateCheck,
       int feelGoodCheck) {
-    //            int positiveTestCheck,
-    //            int symptomCheck,
-    //            int closeContactCheck,
-    //            int selfIsolateCheck,
-    //            int feelGoodCheck) {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
@@ -92,7 +81,6 @@ public class COVID19SurveyTable extends AbsTables {
     // use id to get email
     // if any constraint is checked, send email of STAY TF HOME
     // if all good is checked, send email of GO ON PEASANT
-
   }
 
   public ObservableList<COVIDSurveyResultsNodeInfo> addIntoCOVIDSurveyList(
@@ -157,7 +145,7 @@ public class COVID19SurveyTable extends AbsTables {
       String query = "SELECT * FROM COVID19SurveyResults";
       ResultSet rs = stmt.executeQuery(query);
       System.out.println(
-          "id \tfirstName \tlastName \tcontactInfo \tassignedTo \tstatus "
+          "id \tfirstName \tlastName \tcontactInfo \temail \tassignedTo \tstatus "
               + "\tpositiveTestCheck \tsymptomCheck \tcloseContactCheck \tselfIsolateCheck \tfeelGoodCheck");
       while (rs.next()) {
         // id,firstName,lastName,contactInfo,assignedTo,status,posTestCheck,symptomCheck,closeContactCheck,isolateCheck,feelGoodCheck
@@ -167,6 +155,8 @@ public class COVID19SurveyTable extends AbsTables {
                 + rs.getString("firstName")
                 + " \t"
                 + rs.getString("lastName")
+                + " \t"
+                + rs.getString("contactInfo")
                 + " \t"
                 + rs.getString("contactInfo")
                 + " \t"
