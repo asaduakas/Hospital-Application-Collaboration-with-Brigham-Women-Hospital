@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.LinkedList;
 
-public class AllServiceTable {
+public class AllServiceTable extends AbsTables {
 
   public void createTable(Connection conn) {
     try {

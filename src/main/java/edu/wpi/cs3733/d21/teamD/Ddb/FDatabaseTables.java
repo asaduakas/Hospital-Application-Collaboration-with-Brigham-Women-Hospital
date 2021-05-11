@@ -151,12 +151,13 @@ public class FDatabaseTables {
     // employeeTable.createTable(GlobalDb.getConnection());
   }
 
-  public void deleteAllTables() {//TODO: REVERSE THE ORDER ELAINE
-    userTable.clearTable(GlobalDb.getConnection(), "Users");
-    nodeTable.clearTable(GlobalDb.getConnection(), "Nodes");
-    nodeTable.clearTable(GlobalDb.getConnection(), "FavoriteNodes");
+  public void deleteAllTables() { //
     edgeTable.clearTable(GlobalDb.getConnection(), "Edges");
-    searchHistoryTable.clearTable(GlobalDb.getConnection(), "AudVisServiceRequest");
+    nodeTable.clearTable(GlobalDb.getConnection(), "BlockedNodes");
+    nodeTable.clearTable(GlobalDb.getConnection(), "FavoriteNodes");
+    nodeTable.clearTable(GlobalDb.getConnection(), "Nodes");
+    userTable.clearTable(GlobalDb.getConnection(), "Users");
+    searchHistoryTable.clearTable(GlobalDb.getConnection(), "SearchHistory");
     audVisTable.clearTable(GlobalDb.getConnection(), "AudVisServiceRequest");
     compRequestTable.clearTable(GlobalDb.getConnection(), "ComputerServiceRequest");
     externalTransportTable.clearTable(GlobalDb.getConnection(), "ExternalTransRequests");
@@ -168,8 +169,9 @@ public class FDatabaseTables {
     laundryRequestTable.clearTable(GlobalDb.getConnection(), "LaundryRequest");
     medDeliveryTable.clearTable(GlobalDb.getConnection(), "MedicineDelivery");
     sanitationServiceTable.clearTable(GlobalDb.getConnection(), "SanitationRequest");
-    covid19SurveyTable.clearTable(GlobalDb.getConnection(), "COVID19SurveyResults");
     securityRequestTable.clearTable(GlobalDb.getConnection(), "SecurityRequest");
+    covid19SurveyTable.clearTable(GlobalDb.getConnection(), "COVID19SurveyResults");
+    allServiceTable.clearTable(GlobalDb.getConnection(), "AllServiceTable");
   }
 
   public void createAudVisTable() {
