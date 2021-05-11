@@ -265,6 +265,8 @@ public class MapController implements AllAccessible {
         "HomeView.fxml", fxmlLoader -> LoginController.start(fxmlLoader.getRoot()));
   }
 
+
+
   // _______________________________________SET UP________________________________________
 
   private void LoadingNodesEdges(String Floor) {
@@ -1649,10 +1651,16 @@ public class MapController implements AllAccessible {
         if (n.compareFloor(nodeNext) >= 1) {
           imageView.setImage(down);
           secondaryAnchor.getChildren().add(imageView);
-          imageView.setOnMousePressed(event -> switchFloor(nodeNext.getFloor()));
+          imageView.setOnMousePressed(
+              event -> {
+                switchFloor(nodeNext.getFloor());
+              });
         } else if (n.compareFloor(nodeNext) <= -1) {
           secondaryAnchor.getChildren().add(imageView);
-          imageView.setOnMousePressed(event -> switchFloor(nodeNext.getFloor()));
+          imageView.setOnMousePressed(
+              event -> {
+                switchFloor(nodeNext.getFloor());
+              });
         }
 
         ScaleTransition st = new ScaleTransition(Duration.seconds(1), imageView);
