@@ -96,6 +96,9 @@ public class HomeController implements AllAccessible {
     loading.setStyle("-fx-font-weight: Bold; -fx-font-size: 20");
     text.setStyle("-fx-font-size: 20");
 
+    logoutButton.setDisable(true);
+    exitButton.setDisable(true);
+
     spinner.setMaxHeight(150);
     spinner.setMaxWidth(150);
     stackPane.setStyle("-fx-background-color: #ffffff");
@@ -119,6 +122,8 @@ public class HomeController implements AllAccessible {
           if (e.getCode() == KeyCode.ESCAPE) {
             System.out.println("cancelled");
             task.cancel();
+            logoutButton.setDisable(false);
+            exitButton.setDisable(false);
           }
         });
 

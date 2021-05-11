@@ -95,6 +95,14 @@
             <cursor>
                 <Cursor fx:constant="HAND" />
             </cursor></JFXButton>
+        <ImageView fx:id="helpImage" fitHeight="30.0" fitWidth="33.0" layoutX="494.0" layoutY="319.0" onMouseClicked="#loadDialog" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@Images/help.png" />
+            </image>
+            <cursor>
+                <Cursor fx:constant="HAND" />
+            </cursor>
+        </ImageView>
             <JFXComboBox fx:id="staffAssigned" layoutX="302.0" layoutY="250.0" prefHeight="14.0" prefWidth="220.0" promptText="Staff Assigned:" style="-fx-font-size: 14;">
                 <cursor>
                     <Cursor fx:constant="HAND" />
@@ -105,13 +113,5 @@
                 <JFXDialog />
             </children>
         </StackPane>
-        <ImageView fx:id="helpImage" fitHeight="30.0" fitWidth="33.0" layoutX="494.0" layoutY="319.0" onMouseClicked="#loadDialog" pickOnBounds="true" preserveRatio="true">
-            <image>
-                <Image url="@Images/help.png" />
-            </image>
-            <cursor>
-                <Cursor fx:constant="HAND" />
-            </cursor>
-        </ImageView>
     </children>
 </AnchorPane>
