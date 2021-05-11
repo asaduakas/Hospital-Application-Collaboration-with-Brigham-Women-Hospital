@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -13,7 +14,7 @@
     <children>
         <Pane prefHeight="65.0" prefWidth="461.0" style="-fx-background-color: #043D7E;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <Label layoutX="218.0" layoutY="13.0" text="Credits Page" textFill="WHITE">
+                <Label layoutX="254.0" layoutY="13.0" text="Credits" textFill="WHITE">
                     <font>
                         <Font name="System Bold" size="28.0" />
                     </font>
@@ -44,8 +45,26 @@
                   <Hyperlink text="http://opennlp.sourceforge.net/models-1.5/" />
                   <Label fx:id="label2" text="Neural network models to train the bot." />
                </children>
+               <HBox.margin>
+                  <Insets left="10.0" />
+               </HBox.margin>
             </VBox>
-            <VBox fx:id="vbox2" prefHeight="212.0" prefWidth="303.0" />
+            <VBox fx:id="vbox2" prefHeight="139.0" prefWidth="303.0" spacing="5.0">
+               <children>
+                  <Label text="Email">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+                  <Hyperlink text="https://javaee.github.io/javamail/" />
+                  <Label fx:id="label2" />
+                  <Label />
+                  <Label />
+                  <Label />
+               </children>
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin></VBox>
          </children>
       </HBox>
     </children>

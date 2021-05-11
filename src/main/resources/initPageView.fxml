@@ -83,7 +83,7 @@
          </children>
       </HBox>
       <JFXButton fx:id="exitButton" layoutX="1076.0" layoutY="613.0" onAction="#closeApp" prefHeight="39.0" prefWidth="97.0" style="-fx-background-color: #cdcdcd; -fx-background-radius: 10px; -fx-font-weight: Bold; -fx-font-size: 18;" text="EXIT" />
-      <JFXButton fx:id="pageButton" layoutX="34.0" layoutY="618.0" text="Pages" textFill="WHITE">
+      <JFXButton fx:id="pageButton" layoutX="34.0" layoutY="618.0" textFill="WHITE">
          <font>
             <Font size="10.0" />
          </font>
