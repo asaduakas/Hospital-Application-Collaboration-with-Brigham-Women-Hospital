@@ -1,22 +1,26 @@
 package edu.wpi.cs3733.d21.teamD.views;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXTextArea;
+import com.jfoenix.controls.*;
+import edu.wpi.cs3733.d21.teamD.App;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
 import edu.wpi.cs3733.d21.teamD.Ddb.UsersTable;
 import edu.wpi.cs3733.d21.teamD.chatbot.chatbot;
 import edu.wpi.cs3733.d21.teamD.views.Access.AllAccessible;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
@@ -224,7 +228,7 @@ public class ChatbotController implements AllAccessible {
           answer = answer + "Sorry, you need to be logged in as either an admin or an employee!";
         }
       } else if (category.equals("Hospital-Map")) {
-//
+        ControllerManager.attemptLoadPage("MapView.fxml", fxmlLoader -> mapLoader(fxmlLoader));
       } else if (category.equals("Emergency")) {
         ControllerManager.attemptLoadPopupBlur("Emergency.fxml");
       } else if (category.equals("Username-Info")) {
@@ -262,5 +266,63 @@ public class ChatbotController implements AllAccessible {
       System.out.println("##### Chat Bot: " + answer);
     }
     return answer;
+  }
+
+  public void mapLoader(FXMLLoader fxmlLoader) {
+    Pane root = fxmlLoader.getRoot();
+    List<Node> childrenList = root.getChildren();
+    Scene scene = App.getPrimaryStage().getScene();
+    changeChildrenMapPage(childrenList);
+    // Overriding the method inside the object of fullScreenListener
+    SceneSizeChangeListener listener =
+        new SceneSizeChangeListener(scene, root, childrenList) {
+          @Override
+          public void changeChildren(List<Node> nodeList) {
+            changeChildrenMapPage(childrenList);
+          }
+        };
+    scene.widthProperty().addListener(listener);
+    scene.heightProperty().addListener(listener);
+  }
+
+  public void changeChildrenMapPage(List<Node> nodeList) {
+    JFXDrawer drawer = (JFXDrawer) nodeList.get(1);
+    JFXToggleButton mapEditorBtn = (JFXToggleButton) nodeList.get(4);
+    JFXButton exitBtn = (JFXButton) nodeList.get(5);
+    JFXButton helpBtn = (JFXButton) nodeList.get(6);
+    ImageView helpImage = (ImageView) nodeList.get(7);
+    StackPane stackPane = (StackPane) nodeList.get(8);
+    JFXNodesList floorBtns = (JFXNodesList) nodeList.get(10);
+    JFXNodesList csvBtns = (JFXNodesList) nodeList.get(11);
+
+    drawer.setLayoutX(-270);
+    drawer.setLayoutY(0);
+
+    exitBtn.setLayoutY(
+        App.getPrimaryStage().getScene().getWindow().getHeight() - exitBtn.getHeight() - 60);
+    exitBtn.setLayoutX(App.getPrimaryStage().getScene().getWidth() - exitBtn.getWidth() - 40);
+
+    floorBtns.setLayoutY(20);
+    floorBtns.setLayoutX(App.getPrimaryStage().getScene().getWidth() - floorBtns.getWidth() - 40);
+
+    mapEditorBtn.setLayoutX(floorBtns.getLayoutX() - 150);
+    mapEditorBtn.setLayoutY(14);
+
+    csvBtns.setLayoutY(20);
+    csvBtns.setLayoutX(mapEditorBtn.getLayoutX() - csvBtns.getWidth() - 20);
+
+    helpBtn.setLayoutY(exitBtn.getLayoutY());
+    helpBtn.setLayoutX(20);
+
+    helpImage.setLayoutX(
+        (App.getPrimaryStage().getScene().getWidth() - helpImage.getFitWidth()) / 2);
+    helpImage.setLayoutY(
+        (App.getPrimaryStage().getScene().getHeight() - helpImage.getFitHeight()) / 2);
+    helpImage.setVisible(false);
+
+    stackPane.setLayoutX((App.getPrimaryStage().getScene().getWidth() - stackPane.getWidth()) / 2);
+    stackPane.setLayoutY(
+        (App.getPrimaryStage().getScene().getHeight() - stackPane.getHeight()) / 2);
+    stackPane.setPickOnBounds(false);
   }
 }
