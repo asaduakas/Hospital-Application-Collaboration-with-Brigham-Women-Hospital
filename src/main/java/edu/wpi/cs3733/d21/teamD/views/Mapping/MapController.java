@@ -48,7 +48,6 @@ import javafx.scene.shape.Line;
 import javafx.stage.FileChooser;
 import javafx.stage.Popup;
 import javafx.util.Duration;
-import javax.xml.ws.Service;
 
 public class MapController implements AllAccessible {
 
@@ -129,6 +128,11 @@ public class MapController implements AllAccessible {
   //  private JFXButton ChooseFloorBtn = new JFXButton("Floor 1");
   @FXML private JFXButton helpButton;
   @FXML private ImageView helpImage;
+  @FXML private JFXButton fl3Btn;
+  @FXML private JFXButton fl2Btn;
+  @FXML private JFXButton fl1Btn;
+  @FXML private JFXButton l1Btn;
+  @FXML private JFXButton l2Btn;
 
   private MapDrawerController drawerController;
 
@@ -407,75 +411,73 @@ public class MapController implements AllAccessible {
   }
 
   private void initializeFloorList() {
+
     floorBtn.setPrefHeight(55);
     floorBtn.setPrefWidth(55);
-    floorBtn.setStyle("-fx-background-color: #1A80D6; -fx-background-radius: 55px");
+    floorBtn.setStyle("-fx-background-color: #0069C1; -fx-background-radius: 55px");
+    floorBtn.setOnAction(
+        e -> {
+          fl1Btn.setVisible(!fl1Btn.isVisible());
+          fl2Btn.setVisible(!fl2Btn.isVisible());
+          fl3Btn.setVisible(!fl3Btn.isVisible());
+          l1Btn.setVisible(!l1Btn.isVisible());
+          l2Btn.setVisible(!l2Btn.isVisible());
+        });
 
-    JFXButton Floor1Btn = new JFXButton("1");
-    Floor1Btn.setButtonType(JFXButton.ButtonType.FLAT);
-    Floor1Btn.setStyle("-fx-background-color: #C3E4FF; -fx-background-radius: 50px");
-    Floor1Btn.setPrefHeight(50);
-    Floor1Btn.setPrefWidth(50);
-    Floor1Btn.setOnAction(
+    //    JFXButton Floor1Btn = new JFXButton("1");
+    fl1Btn.setButtonType(JFXButton.ButtonType.FLAT);
+    fl1Btn.setStyle("-fx-background-color: #3C90D6; -fx-background-radius: 50px");
+    fl1Btn.setPrefHeight(50);
+    fl1Btn.setPrefWidth(50);
+    fl1Btn.setOnAction(
         (e) -> {
           switchFloor("1");
           floorBtn.setText("1");
         });
 
-    JFXButton Floor2Btn = new JFXButton("2");
-    Floor2Btn.setButtonType(JFXButton.ButtonType.FLAT);
-    Floor2Btn.setStyle("-fx-background-color: #C3E4FF; -fx-background-radius: 50px");
-    Floor2Btn.setPrefHeight(50);
-    Floor2Btn.setPrefWidth(50);
-    Floor2Btn.setOnAction(
+    //    JFXButton Floor2Btn = new JFXButton("2");
+    fl2Btn.setButtonType(JFXButton.ButtonType.FLAT);
+    fl2Btn.setStyle("-fx-background-color: #1E85DB; -fx-background-radius: 50px");
+    fl2Btn.setPrefHeight(50);
+    fl2Btn.setPrefWidth(50);
+    fl2Btn.setOnAction(
         (e) -> {
           switchFloor("2");
           floorBtn.setText("2");
         });
 
-    JFXButton Floor3Btn = new JFXButton("3");
-    Floor3Btn.setButtonType(JFXButton.ButtonType.FLAT);
-    Floor3Btn.setStyle("-fx-background-color: #C3E4FF; -fx-background-radius: 50px");
-    Floor3Btn.setPrefHeight(50);
-    Floor3Btn.setPrefWidth(50);
-    Floor3Btn.setOnAction(
+    //        JFXButton Floor3Btn = new JFXButton("3");
+    fl3Btn.setButtonType(JFXButton.ButtonType.FLAT);
+    fl3Btn.setStyle("-fx-background-color: #137FDA; -fx-background-radius: 50px");
+    fl3Btn.setPrefHeight(50);
+    fl3Btn.setPrefWidth(50);
+    fl3Btn.setOnAction(
         (e) -> {
           switchFloor("3");
           floorBtn.setText("3");
         });
 
-    JFXButton FloorL1Btn = new JFXButton("L1");
-    FloorL1Btn.setButtonType(JFXButton.ButtonType.FLAT);
-    FloorL1Btn.setStyle("-fx-background-color: #C3E4FF; -fx-background-radius: 50px");
-    FloorL1Btn.setPrefHeight(50);
-    FloorL1Btn.setPrefWidth(50);
-    FloorL1Btn.setOnAction(
+    //        JFXButton FloorL1Btn = new JFXButton("L1");
+    l1Btn.setButtonType(JFXButton.ButtonType.FLAT);
+    l1Btn.setStyle("-fx-background-color: #58A3E1; -fx-background-radius: 50px");
+    l1Btn.setPrefHeight(50);
+    l1Btn.setPrefWidth(50);
+    l1Btn.setOnAction(
         (e) -> {
           switchFloor("L1");
           floorBtn.setText("L1");
         });
 
-    JFXButton FloorL2Btn = new JFXButton("L2");
-    FloorL2Btn.setButtonType(JFXButton.ButtonType.FLAT);
-    FloorL2Btn.setStyle("-fx-background-color: #C3E4FF; -fx-background-radius: 50px");
-    FloorL2Btn.setPrefHeight(50);
-    FloorL2Btn.setPrefWidth(50);
-    FloorL2Btn.setOnAction(
+    //        JFXButton FloorL2Btn = new JFXButton("L2");
+    l2Btn.setButtonType(JFXButton.ButtonType.FLAT);
+    l2Btn.setStyle("-fx-background-color: #70B4EC; -fx-background-radius: 50px");
+    l2Btn.setPrefHeight(50);
+    l2Btn.setPrefWidth(50);
+    l2Btn.setOnAction(
         (e) -> {
           switchFloor("L2");
           floorBtn.setText("L2");
         });
-
-    JFXNodesList nodeList = new JFXNodesList();
-    nodeList.addAnimatedNode(floorBtn);
-    nodeList.addAnimatedNode(Floor3Btn);
-    nodeList.addAnimatedNode(Floor2Btn);
-    nodeList.addAnimatedNode(Floor1Btn);
-    nodeList.addAnimatedNode(FloorL1Btn);
-    nodeList.addAnimatedNode(FloorL2Btn);
-
-    nodeList.setSpacing(20d);
-    mainAnchor.getChildren().add(nodeList);
   }
 
   // _______________________________________Draw________________________________________
