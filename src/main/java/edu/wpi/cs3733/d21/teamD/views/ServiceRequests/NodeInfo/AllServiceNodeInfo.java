@@ -35,4 +35,20 @@ public class AllServiceNodeInfo {
   public String getType() {
     return type;
   }
+
+  public void setStatus(String status) {
+    this.status = status;
+  }
+
+  public void setLocation(String location) {
+    this.location = location;
+  }
+
+  public void setAssignedEmployee(String assignedEmployee) {
+    this.assignedEmployee = assignedEmployee;
+  }
+
+  public void setType(String type) {
+    this.type = type;
+  }
 }

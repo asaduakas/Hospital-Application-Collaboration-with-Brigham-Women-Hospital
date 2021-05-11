@@ -43,14 +43,14 @@ public class AllServiceTable extends AbsTables {
   }
 
   public static void updateEntity(
-      Connection conn, String id, String status, String employee, String Stype) {
+      Connection conn, int id, String status, String employee, String Stype) {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
               " UPDATE AllServiceTable SET status = ?, assignedTo = ? WHERE id = ? AND Stype = ?");
       stmt.setString(1, status);
       stmt.setString(2, employee);
-      stmt.setString(3, id);
+      stmt.setInt(3, id);
       stmt.setString(4, Stype);
       stmt.executeUpdate();
     } catch (Exception e) {

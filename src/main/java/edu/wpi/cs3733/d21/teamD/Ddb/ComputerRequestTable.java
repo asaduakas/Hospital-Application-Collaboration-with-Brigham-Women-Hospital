@@ -126,7 +126,7 @@ public class ComputerRequestTable extends AbsTables {
 
           AllServiceTable.updateEntity(
               GlobalDb.getConnection(),
-              computerInfo.getId(),
+              Integer.valueOf(computerInfo.getId()),
               computerInfo.getStatus(),
               computerInfo.getAssignedEmployee(),
               "COMP");

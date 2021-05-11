@@ -155,7 +155,7 @@ public class LaundryRequestTable extends AbsTables {
 
           AllServiceTable.updateEntity(
               GlobalDb.getConnection(),
-              laundryInfo.getId(),
+              Integer.valueOf(laundryInfo.getId()),
               laundryInfo.getStatus(),
               laundryInfo.getAssignedEmployee(),
               "LAUN");

@@ -137,7 +137,7 @@ public class LangInterpreterRequestTable extends AbsTables {
 
           AllServiceTable.updateEntity(
               GlobalDb.getConnection(),
-              langInterpInfo.getId(),
+              Integer.valueOf(langInterpInfo.getId()),
               langInterpInfo.getStatus(),
               langInterpInfo.getAssignedEmployee(),
               "LANG");

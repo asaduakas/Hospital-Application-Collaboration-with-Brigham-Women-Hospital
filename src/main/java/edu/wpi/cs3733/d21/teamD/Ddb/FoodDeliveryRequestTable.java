@@ -188,7 +188,7 @@ public class FoodDeliveryRequestTable extends AbsTables {
 
           AllServiceTable.updateEntity(
               GlobalDb.getConnection(),
-              foodInfo.getId(),
+              Integer.valueOf(foodInfo.getId()),
               foodInfo.getStatus(),
               foodInfo.getAssignedEmployee(),
               "FOOD");

@@ -129,7 +129,7 @@ public class InternalTransRequestTable extends AbsTables {
 
           AllServiceTable.updateEntity(
               GlobalDb.getConnection(),
-              intTransInfo.getId(),
+              Integer.valueOf(intTransInfo.getId()),
               intTransInfo.getStatus(),
               intTransInfo.getAssignedEmployee(),
               "ITRAN");

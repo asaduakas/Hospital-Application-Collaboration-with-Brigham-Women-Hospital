@@ -195,7 +195,7 @@ public class ExtTransRequestTable extends AbsTables {
 
           AllServiceTable.updateEntity(
               GlobalDb.getConnection(),
-              info.getId(),
+              Integer.valueOf(info.getId()),
               info.getStatus(),
               info.getAssignedTo(),
               "EXT");

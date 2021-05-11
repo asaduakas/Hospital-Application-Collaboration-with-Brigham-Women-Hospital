@@ -137,7 +137,7 @@ public class SecurityRequestTable extends AbsTables {
 
           AllServiceTable.updateEntity(
               GlobalDb.getConnection(),
-              securityInfo.getId(),
+              Integer.valueOf(securityInfo.getId()),
               securityInfo.getStatus(),
               securityInfo.getAssignedEmployee(),
               "SECUR");

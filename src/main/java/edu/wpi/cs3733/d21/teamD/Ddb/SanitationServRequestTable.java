@@ -136,7 +136,7 @@ public class SanitationServRequestTable extends AbsTables {
 
           AllServiceTable.updateEntity(
               GlobalDb.getConnection(),
-              sanitationInfo.getId(),
+              Integer.valueOf(sanitationInfo.getId()),
               sanitationInfo.getStatus(),
               sanitationInfo.getAssignedEmployee(),
               "SANI");

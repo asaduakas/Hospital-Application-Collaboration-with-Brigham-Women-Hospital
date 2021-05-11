@@ -134,7 +134,7 @@ public class FacilitiesRequestTable extends AbsTables {
 
           AllServiceTable.updateEntity(
               GlobalDb.getConnection(),
-              facilitiesInfo.getId(),
+              Integer.valueOf(facilitiesInfo.getId()),
               facilitiesInfo.getStatus(),
               facilitiesInfo.getAssignedEmployee(),
               "EXT");
