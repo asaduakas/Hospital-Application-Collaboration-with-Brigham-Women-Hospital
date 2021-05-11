@@ -613,6 +613,11 @@ public class MapDrawerController implements Initializable {
     return endLocation;
   }
 
+  public void clearDirections() {
+    dirText.getChildren().clear();
+    downloadText.clear();
+  }
+
   @FXML
   public void getDirections(LinkedList<Edge> edges) {
 
@@ -622,8 +627,7 @@ public class MapDrawerController implements Initializable {
     }
     // ScaleDown(edges.getFirst().getStartNode());
 
-    dirText.getChildren().clear();
-    downloadText.clear();
+    clearDirections();
 
     edu.wpi.cs3733.d21.teamD.Astar.Node start =
         initialData.getNodeByID(edges.getFirst().getStartNodeID());
@@ -657,22 +661,26 @@ public class MapDrawerController implements Initializable {
       edu.wpi.cs3733.d21.teamD.Astar.Node startN = initialData.getNodeByID(N.getStartNodeID());
       edu.wpi.cs3733.d21.teamD.Astar.Node endN = initialData.getNodeByID(N.getEndNodeID());
 
-      String newDirection =
-          evalTurn(
-              initialDirection,
-              startN.getXCoord(),
-              startN.getYCoord(),
-              endN.getXCoord(),
-              endN.getYCoord(),
-              startN,
-              endN);
-      initialDirection = newDirection;
+      if (MapController.currentFloor.equals(startN.getFloor())) {
+        String newDirection =
+            evalTurn(
+                initialDirection,
+                startN.getXCoord(),
+                startN.getYCoord(),
+                endN.getXCoord(),
+                endN.getYCoord(),
+                startN,
+                endN);
+        initialDirection = newDirection;
+      }
     }
     // dirText.setFont(hFont);
-    Text endText = new Text("\nWelcome to " + end.getLongName() + "\n");
-    endText.setFont(hFont);
-    dirText.getChildren().add(endText);
-    downloadText.appendText("\nWelcome to " + end.getLongName() + "\n");
+    if (MapController.currentFloor.equals(end.getFloor())) {
+      Text endText = new Text("\nWelcome to " + end.getLongName() + "\n");
+      endText.setFont(hFont);
+      dirText.getChildren().add(endText);
+      downloadText.appendText("\nWelcome to " + end.getLongName() + "\n");
+    }
   }
 
   public String evalTurn(
