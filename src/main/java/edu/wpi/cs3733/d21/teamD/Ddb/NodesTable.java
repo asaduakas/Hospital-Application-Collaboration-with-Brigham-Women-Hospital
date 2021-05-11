@@ -502,7 +502,7 @@ public class NodesTable extends AbsTables {
     }
   }
 
-  public ArrayList<String> fetchLongName(Connection conn) {
+  public static ArrayList<String> fetchLongName(Connection conn) {
     ArrayList<String> longNames = new ArrayList<String>();
     try {
       PreparedStatement longNameStmt = conn.prepareStatement("SELECT longName FROM Nodes");
@@ -514,6 +514,20 @@ public class NodesTable extends AbsTables {
       throwables.printStackTrace();
     }
     return longNames;
+  }
+
+  public static ArrayList<String> fetchShortName(Connection conn) {
+    ArrayList<String> shortNames = new ArrayList<String>();
+    try {
+      PreparedStatement shortNameStmt = conn.prepareStatement("SELECT shortName FROM Nodes");
+      ResultSet rs = shortNameStmt.executeQuery();
+      while (rs.next()) {
+        shortNames.add(rs.getString(1));
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    return shortNames;
   }
 
   public ArrayList<String> fetchLongNameNoHall(Connection conn) {

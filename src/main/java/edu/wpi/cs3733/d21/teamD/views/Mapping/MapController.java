@@ -6,12 +6,10 @@ import edu.wpi.cs3733.d21.teamD.App;
 import edu.wpi.cs3733.d21.teamD.Astar.*;
 import edu.wpi.cs3733.d21.teamD.Ddb.FDatabaseTables;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
+import edu.wpi.cs3733.d21.teamD.views.*;
 import edu.wpi.cs3733.d21.teamD.views.Access.AllAccessible;
 import edu.wpi.cs3733.d21.teamD.views.Access.LoginController;
 import edu.wpi.cs3733.d21.teamD.views.Access.UserCategory;
-import edu.wpi.cs3733.d21.teamD.views.ControllerManager;
-import edu.wpi.cs3733.d21.teamD.views.DialogFactory;
-import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.Mapping.Popup.Edit.AddNodeController;
 import edu.wpi.cs3733.d21.teamD.views.Mapping.Popup.Edit.EditNodeController;
 import edu.wpi.cs3733.d21.teamD.views.Mapping.Popup.Edit.ServiceRequestInfoController;
@@ -130,7 +128,7 @@ public class MapController implements AllAccessible {
   @FXML private JFXButton helpButton;
   @FXML private ImageView helpImage;
 
-  private MapDrawerController drawerController;
+  public static MapDrawerController drawerController;
 
   public MapController() {}
 
