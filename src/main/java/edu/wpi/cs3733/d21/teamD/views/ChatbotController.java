@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
@@ -216,11 +217,14 @@ public class ChatbotController implements AllAccessible {
           ControllerManager.attemptLoadPopupBlur(
               "StatusView.fxml",
               fxmlLoader -> ((Pane) fxmlLoader.getRoot()).setStyle("-fx-background-color: White"));
+
         } else if (HomeController.username == null) {
           answer = answer + "Sorry, you need to be logged in first!";
         } else if (HomeController.username.equalsIgnoreCase("Patient")) {
           answer = answer + "Sorry, you need to be logged in as either an admin or an employee!";
         }
+      } else if (category.equals("Hospital-Map")) {
+//
       } else if (category.equals("Emergency")) {
         ControllerManager.attemptLoadPopupBlur("Emergency.fxml");
       } else if (category.equals("Username-Info")) {
