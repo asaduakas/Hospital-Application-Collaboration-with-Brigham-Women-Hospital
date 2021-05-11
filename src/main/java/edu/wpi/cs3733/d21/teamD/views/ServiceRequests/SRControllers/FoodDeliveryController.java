@@ -68,6 +68,7 @@ public class FoodDeliveryController extends AbsRequest
               super.lastName.getText(),
               super.contactInfo.getText(),
               super.locationBox.getValue(),
+              null,
               specialRequirements.getText());
     }
   }

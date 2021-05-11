@@ -49,18 +49,20 @@ public class FacilitiesRequestTable extends AbsTables {
       String lastName,
       String contactInfo,
       String location,
+      String assignedEmployee,
       String urgencyLevel,
       String descriptionOfIssue) {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
-              "INSERT INTO FacilitiesServiceRequest (firstName, lastName, contactInfo, location, urgencyLevel, descriptionOfIssue) VALUES(?,?,?,?,?,?)");
+              "INSERT INTO FacilitiesServiceRequest (firstName, lastName, contactInfo, location, assignedEmployee, urgencyLevel, descriptionOfIssue) VALUES(?,?,?,?,?,?,?)");
       stmt.setString(1, firstName);
       stmt.setString(2, lastName);
       stmt.setString(3, contactInfo);
       stmt.setString(4, location);
-      stmt.setString(5, urgencyLevel);
-      stmt.setString(6, descriptionOfIssue);
+      stmt.setString(5, assignedEmployee);
+      stmt.setString(6, urgencyLevel);
+      stmt.setString(7, descriptionOfIssue);
       stmt.executeUpdate();
 
       FDatabaseTables.getAllServiceTable()

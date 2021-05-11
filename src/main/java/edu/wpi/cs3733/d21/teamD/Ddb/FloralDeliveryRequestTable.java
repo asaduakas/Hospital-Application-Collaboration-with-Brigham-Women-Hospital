@@ -48,20 +48,22 @@ public class FloralDeliveryRequestTable extends AbsTables {
       String pLastName,
       String contactInfo,
       String location,
+      String assignedEmployee,
       String typeOfFlower,
       String numOfFlower,
       String fromFlower) {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
-              "INSERT INTO FloralRequests (pFirstName, pLastName, contactInfo, location, typeOfFlower, numOfFlower, fromFlower) VALUES(?,?,?,?,?,?,?)");
+              "INSERT INTO FloralRequests (pFirstName, pLastName, contactInfo, location, assignedEmployee, typeOfFlower, numOfFlower, fromFlower) VALUES(?,?,?,?,?,?,?,?)");
       stmt.setString(1, pFirstName);
       stmt.setString(2, pLastName);
       stmt.setString(3, contactInfo);
       stmt.setString(4, location);
-      stmt.setString(5, typeOfFlower);
-      stmt.setString(6, numOfFlower);
-      stmt.setString(7, fromFlower);
+      stmt.setString(5, assignedEmployee);
+      stmt.setString(6, typeOfFlower);
+      stmt.setString(7, numOfFlower);
+      stmt.setString(8, fromFlower);
       stmt.executeUpdate();
 
       FDatabaseTables.getAllServiceTable()

@@ -83,16 +83,18 @@ public class FoodDeliveryRequestTable extends AbsTables {
       String lastName,
       String contactInfo,
       String location,
+      String assignedEmployee,
       String specialNeeds) {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
-              "INSERT INTO FoodDeliveryServiceRequest (firstName, lastName, contactInfo, location, specialNeeds) VALUES(?,?,?,?,?)");
+              "INSERT INTO FoodDeliveryServiceRequest (firstName, lastName, contactInfo, location, assignedEmployee, specialNeeds) VALUES(?,?,?,?,?,?)");
       stmt.setString(1, firstName);
       stmt.setString(2, lastName);
       stmt.setString(3, contactInfo);
       stmt.setString(4, location);
-      stmt.setString(5, specialNeeds);
+      stmt.setString(5, assignedEmployee);
+      stmt.setString(6, specialNeeds);
       stmt.executeUpdate();
 
       FDatabaseTables.getAllServiceTable()

@@ -51,19 +51,21 @@ public class SecurityRequestTable extends AbsTables {
       String lastName,
       String contactInfo,
       String location,
+      String assignedEmployee,
       String urgencyLev,
       String des) {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
               "INSERT INTO SecurityRequest (firstName, lastName, contactInfo, "
-                  + "location, urgencyLevel, description) VALUES(?,?,?,?,?,?)");
+                  + "location,assignedEmployee, urgencyLevel, description) VALUES(?,?,?,?,?,?,?)");
       stmt.setString(1, firstName);
       stmt.setString(2, lastName);
       stmt.setString(3, contactInfo);
       stmt.setString(4, location);
-      stmt.setString(5, urgencyLev);
-      stmt.setString(6, des);
+      stmt.setString(5, assignedEmployee);
+      stmt.setString(6, urgencyLev);
+      stmt.setString(7, des);
       stmt.executeUpdate();
 
       FDatabaseTables.getAllServiceTable()
@@ -72,7 +74,7 @@ public class SecurityRequestTable extends AbsTables {
               this.getID(GlobalDb.getConnection()),
               location,
               "Incomplete",
-              assignedEmp,
+              assignedEmployee,
               "SECUR");
 
     } catch (Exception e) {

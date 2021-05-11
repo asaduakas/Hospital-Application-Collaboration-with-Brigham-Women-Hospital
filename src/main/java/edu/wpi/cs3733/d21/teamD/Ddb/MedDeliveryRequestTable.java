@@ -49,19 +49,21 @@ public class MedDeliveryRequestTable extends AbsTables {
       String lastName,
       String contactInfo,
       String location,
+      String assignedEmployee,
       String medicineType,
       LocalDate dropOffDate) {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
-              "INSERT INTO MedicineDelivery (firstName, lastName, contactInfo, location,"
-                  + "typeOfMedicine, dropOffDate) VALUES(?,?,?,?,?,?)");
+              "INSERT INTO MedicineDelivery (firstName, lastName, contactInfo, location, assignedEmployee,"
+                  + "typeOfMedicine, dropOffDate) VALUES(?,?,?,?,?,?,?)");
       stmt.setString(1, firstName);
       stmt.setString(2, lastName);
       stmt.setString(3, contactInfo);
       stmt.setString(4, location);
-      stmt.setString(5, medicineType);
-      stmt.setDate(6, Date.valueOf(dropOffDate));
+      stmt.setString(5, assignedEmployee);
+      stmt.setString(6, medicineType);
+      stmt.setDate(7, Date.valueOf(dropOffDate));
       stmt.executeUpdate();
 
       FDatabaseTables.getAllServiceTable()
@@ -70,7 +72,7 @@ public class MedDeliveryRequestTable extends AbsTables {
               this.getID(GlobalDb.getConnection()),
               location,
               "Incomplete",
-              assignedEmp,
+              assignedEmployee,
               "MEDD");
 
     } catch (Exception e) {

@@ -27,8 +27,7 @@ public class AudVisRequestTable extends AbsTables {
               + "assignedEmployee VARCHAR(100) DEFAULT '',"
               + "descriptionOfProblem VARCHAR(500) NOT NULL,"
               + "PRIMARY KEY(id),"
-              //              + "CONSTRAINT AVSR_employee_FK FOREIGN KEY (assignedEmployee)
-              // REFERENCES Users (id),"
+              + "CONSTRAINT AVSR_employee_FK FOREIGN KEY (assignedEmployee) REFERENCES Users (id),"
               // + "CONSTRAINT AVSR_location_FK FOREIGN KEY (location) REFERENCES Nodes(nodeID),"
               + "CONSTRAINT AVSR_status_chk CHECK (status IN ('Incomplete', 'Complete', 'In Progress')))";
       stmt.executeUpdate(query);
@@ -46,16 +45,18 @@ public class AudVisRequestTable extends AbsTables {
       String lastName,
       String contactInfo,
       String location,
+      String assignedEmployee,
       String descriptionOfProblem) {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
-              "INSERT INTO AudVisServiceRequest (firstName, lastName, contactInfo, location, descriptionOfProblem) VALUES(?,?,?,?,?)");
+              "INSERT INTO AudVisServiceRequest (firstName, lastName, contactInfo, location, assignedEmployee, descriptionOfProblem) VALUES(?,?,?,?,?,?)");
       stmt.setString(1, firstName);
       stmt.setString(2, lastName);
       stmt.setString(3, contactInfo);
       stmt.setString(4, location);
-      stmt.setString(5, descriptionOfProblem);
+      stmt.setString(5, assignedEmployee);
+      stmt.setString(6, descriptionOfProblem);
       stmt.executeUpdate();
 
       FDatabaseTables.getAllServiceTable()

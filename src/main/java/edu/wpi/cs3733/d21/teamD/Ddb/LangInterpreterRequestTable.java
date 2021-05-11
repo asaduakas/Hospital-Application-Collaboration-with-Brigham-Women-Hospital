@@ -51,19 +51,21 @@ public class LangInterpreterRequestTable extends AbsTables {
       String lastName,
       String contactInfo,
       String location,
+      String assignedEmployee,
       String languageRequested,
       LocalDate dateRequested) {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
               "INSERT INTO LangInterpRequest (firstName, lastName, contactInfo,"
-                  + "location, languageRequested, dateRequested) VALUES(?,?,?,?,?,?)");
+                  + "location, assignedEmployee, languageRequested, dateRequested) VALUES(?,?,?,?,?,?,?)");
       stmt.setString(1, firstName);
       stmt.setString(2, lastName);
       stmt.setString(3, contactInfo);
       stmt.setString(4, location);
-      stmt.setString(5, languageRequested);
-      stmt.setDate(6, Date.valueOf(dateRequested));
+      stmt.setString(5, assignedEmployee);
+      stmt.setString(6, languageRequested);
+      stmt.setDate(7, Date.valueOf(dateRequested));
       stmt.executeUpdate();
 
       FDatabaseTables.getAllServiceTable()
@@ -72,7 +74,7 @@ public class LangInterpreterRequestTable extends AbsTables {
               this.getID(GlobalDb.getConnection()),
               location,
               "Incomplete",
-              assignedEmp,
+              assignedEmployee,
               "LANG");
 
     } catch (Exception e) {

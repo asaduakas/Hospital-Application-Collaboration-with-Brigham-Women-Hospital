@@ -49,19 +49,21 @@ public class SanitationServRequestTable extends AbsTables {
       String lastName,
       String contactInfo,
       String location,
+      String assignedEmployee,
       String sanitationType,
       String urgencyLev) {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
               "INSERT INTO SanitationRequest (firstName, lastName, contactInfo,"
-                  + "location, descriptionOfIssue, urgencyLevel) VALUES(?,?,?,?,?,?)");
+                  + "location, assignedEmployee, descriptionOfIssue, urgencyLevel) VALUES(?,?,?,?,?,?,?)");
       stmt.setString(1, firstName);
       stmt.setString(2, lastName);
       stmt.setString(3, contactInfo);
       stmt.setString(4, location);
-      stmt.setString(5, sanitationType);
-      stmt.setString(6, urgencyLev);
+      stmt.setString(5, assignedEmployee);
+      stmt.setString(6, sanitationType);
+      stmt.setString(7, urgencyLev);
       stmt.executeUpdate();
 
       FDatabaseTables.getAllServiceTable()
@@ -70,7 +72,7 @@ public class SanitationServRequestTable extends AbsTables {
               this.getID(GlobalDb.getConnection()),
               location,
               "Incomplete",
-              assignedEmp,
+              assignedEmployee,
               "SANI");
     } catch (Exception e) {
       e.printStackTrace();

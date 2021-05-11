@@ -5,12 +5,11 @@ import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.ExtTransNodeInfo;
 import java.io.IOException;
 import java.sql.*;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Scanner;
 import javafx.collections.ObservableList;
 
 public class ExtTransRequestTable extends AbsTables {
-  // id,serviceType,pFirstName,pLastName,contactInfo,location,transType,assignedTo,status
+  // id,serviceType,pFirstName,pLastName,contactInfo,location,transType,assignedEmployee,status
 
   public void createTable(Connection conn) {
     Statement stmt = null;
@@ -26,10 +25,10 @@ public class ExtTransRequestTable extends AbsTables {
               + "contactInfo VARCHAR(45) NOT NULL,"
               + "location VARCHAR(100) NOT NULL,"
               + "transType VARCHAR(25) NOT NULL,"
-              + "assignedTo VARCHAR(100) DEFAULT '',"
+              + "assignedEmployee VARCHAR(100) DEFAULT '',"
               + "status VARCHAR(20) DEFAULT 'Incomplete',"
               + "CONSTRAINT EXT_REQUESTID PRIMARY KEY(id),"
-              + "CONSTRAINT EXT_employee_FK FOREIGN KEY(assignedTo) REFERENCES Users(id),"
+              + "CONSTRAINT EXT_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
               // + "CONSTRAINT EXT_location_FK FOREIGN KEY(location) REFERENCES Nodes(nodeID),"
               + "CONSTRAINT EXT_status_check CHECK (status IN ('Incomplete', 'Complete', 'In Progress')))";
       stmt.executeUpdate(query);
@@ -75,10 +74,10 @@ public class ExtTransRequestTable extends AbsTables {
       String contact,
       String location,
       String transType,
-      String assigned) {
+      String assignedEmployee) {
     PreparedStatement stmt = null;
     String query =
-        "INSERT INTO ExternalTransRequests(serviceType, pFirstName, pLastName, contactInfo, location, transType, assignedTo) VALUES(?,?,?,?,?,?,?)";
+        "INSERT INTO ExternalTransRequests(serviceType, pFirstName, pLastName, contactInfo, location, transType, assignedEmployee) VALUES(?,?,?,?,?,?,?)";
     try {
       stmt = conn.prepareStatement(query);
       stmt.setString(1, serTy);
@@ -87,7 +86,7 @@ public class ExtTransRequestTable extends AbsTables {
       stmt.setString(4, contact);
       stmt.setString(5, location);
       stmt.setString(6, transType);
-      stmt.setString(7, assigned);
+      stmt.setString(7, assignedEmployee);
       int count = stmt.executeUpdate();
 
       FDatabaseTables.getAllServiceTable()
@@ -96,7 +95,7 @@ public class ExtTransRequestTable extends AbsTables {
               this.getID(GlobalDb.getConnection()),
               location,
               "Incomplete",
-              assigned,
+              assignedEmployee,
               "EXT");
 
     } catch (SQLException throwables) {
@@ -112,7 +111,7 @@ public class ExtTransRequestTable extends AbsTables {
       String query = "SELECT * FROM ExternalTransRequests";
       ResultSet rs = stmt.executeQuery(query);
       System.out.println(
-          "id \ttype \tpFirstName \tpLastName \tcontactInfo \tlocation \ttransType \tassignedTo \tstatus");
+          "id \ttype \tpFirstName \tpLastName \tcontactInfo \tlocation \ttransType \tassignedEmployee \tstatus");
 
       while (rs.next()) {
         // id,type,pFirstName,pLastName,contactInfo,location,transType,status
@@ -131,7 +130,7 @@ public class ExtTransRequestTable extends AbsTables {
                 + " \t"
                 + rs.getString("transType")
                 + " \t"
-                + rs.getString("assignedTo")
+                + rs.getString("assignedEmployee")
                 + " \t"
                 + rs.getString("status"));
         System.out.println(" ");
@@ -149,7 +148,7 @@ public class ExtTransRequestTable extends AbsTables {
       if (employeeAccess) {
         stmt =
             conn.prepareStatement(
-                "SELECT * FROM ExternalTransRequests WHERE assignedTo = ? OR assignedTo = ''");
+                "SELECT * FROM ExternalTransRequests WHERE assignedEmployee = ? OR assignedEmployee = ''");
         stmt.setString(1, HomeController.username);
         //        System.out.println(
         //            "this is trying to add data into the employee table " +
@@ -168,7 +167,7 @@ public class ExtTransRequestTable extends AbsTables {
                 rs.getString("contactInfo"),
                 rs.getString("location"),
                 rs.getString("transType"),
-                rs.getString("assignedTo"),
+                rs.getString("assignedEmployee"),
                 rs.getString("status")));
       }
     } catch (SQLException throwables) {
@@ -186,7 +185,7 @@ public class ExtTransRequestTable extends AbsTables {
           stmt =
               GlobalDb.getConnection()
                   .prepareStatement(
-                      "UPDATE ExternalTransRequests SET status = ?, assignedTo = ? WHERE id=?");
+                      "UPDATE ExternalTransRequests SET status = ?, assignedEmployee = ? WHERE id=?");
           stmt.setString(1, info.getStatus());
           stmt.setString(2, info.getAssignedTo());
           stmt.setString(3, info.getId());
@@ -232,7 +231,7 @@ public class ExtTransRequestTable extends AbsTables {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
-              "SELECT serviceType, location, pFirstName, pLastName, contactInfo FROM ExternalTransRequests WHERE status = 'Incomplete' AND assignedTo = ?");
+              "SELECT serviceType, location, pFirstName, pLastName, contactInfo FROM ExternalTransRequests WHERE status = 'Incomplete' AND assignedEmployee = ?");
       stmt.setString(1, id);
       ResultSet rs = stmt.executeQuery();
       while (rs.next()) {

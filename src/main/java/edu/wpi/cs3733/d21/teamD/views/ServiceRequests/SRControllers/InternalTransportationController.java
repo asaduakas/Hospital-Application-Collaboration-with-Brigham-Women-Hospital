@@ -72,6 +72,7 @@ public class InternalTransportationController extends AbsRequest
               super.lastName.getText(),
               super.contactInfo.getText(),
               super.locationBox.getValue(),
+              null,
               transportComboBox.getValue());
     }
   }
