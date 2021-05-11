@@ -14,6 +14,7 @@ import edu.wpi.cs3733.d21.teamD.views.DialogFactory;
 import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.Mapping.Popup.Edit.AddNodeController;
 import edu.wpi.cs3733.d21.teamD.views.Mapping.Popup.Edit.EditNodeController;
+import edu.wpi.cs3733.d21.teamD.views.Mapping.Popup.Edit.ServiceRequestInfoController;
 import edu.wpi.cs3733.d21.teamD.views.SceneSizeChangeListener;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.AllServiceNodeInfo;
 import java.io.File;
@@ -47,6 +48,7 @@ import javafx.scene.shape.Line;
 import javafx.stage.FileChooser;
 import javafx.stage.Popup;
 import javafx.util.Duration;
+import javax.xml.ws.Service;
 
 public class MapController implements AllAccessible {
 
@@ -1927,8 +1929,10 @@ public class MapController implements AllAccessible {
           Service.setFitWidth(Servicesize);
           Service.setFitHeight(Servicesize);
 
-          serviceResize(Service);
-          // serviceSelection(Service);
+          ServiceNode SN = new ServiceNode(N.getN(), Service, S);
+
+          serviceResize(SN);
+          serviceSelection(SN);
 
           switch (S.getType()) {
             case "EXT":
@@ -2110,21 +2114,42 @@ public class MapController implements AllAccessible {
     }
   }
 
-  public void serviceResize(ImageView IV) {
-    IV.setOnMouseEntered(
-        (MouseEvent e) -> {
-          IV.setFitWidth(Servicesize * 2);
-          IV.setFitHeight(Servicesize * 2);
-          IV.setX(IV.getX());
-          IV.setY(IV.getY());
-        });
+  public void serviceResize(ServiceNode SN) {
+    SN.getSerivce()
+        .setOnMouseEntered(
+            (MouseEvent e) -> {
+              SN.getSerivce().setFitWidth(Servicesize * 2);
+              SN.getSerivce().setFitHeight(Servicesize * 2);
+              SN.getSerivce().setX(SN.getSerivce().getX() - Servicesize / 2);
+              SN.getSerivce().setY(SN.getSerivce().getY() - Servicesize / 2);
+            });
 
-    IV.setOnMouseExited(
-        (MouseEvent e) -> {
-          IV.setFitWidth(Servicesize / 2);
-          IV.setFitHeight(Servicesize / 2);
-          IV.setX(IV.getX());
-          IV.setY(IV.getY());
-        });
+    SN.getSerivce()
+        .setOnMouseExited(
+            (MouseEvent e) -> {
+              SN.getSerivce().setFitWidth(Servicesize);
+              SN.getSerivce().setFitHeight(Servicesize);
+              SN.getSerivce().setX(SN.getSerivce().getX() + Servicesize / 2);
+              SN.getSerivce().setY(SN.getSerivce().getY() + Servicesize / 2);
+            });
+  }
+
+  public void serviceSelection(ServiceNode SN) {
+    SN.getSerivce()
+        .setOnMouseClicked(
+            (MouseEvent e) -> {
+              try {
+                SN.getSerivce().setOnMouseExited((MouseEvent e2) -> {});
+                SN.getSerivce().setOnMouseEntered((MouseEvent e2) -> {});
+
+                FXMLLoader temp = loadPopup("ServiceRequestInfoView.fxml");
+                ServiceRequestInfoController popupController = temp.getController();
+                popupController.setSn(SN);
+                popupController.Fill();
+                popupController.setMapController(this);
+              } catch (IOException ioException) {
+                ioException.printStackTrace();
+              }
+            });
   }
 }

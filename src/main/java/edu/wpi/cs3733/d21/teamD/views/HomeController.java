@@ -176,7 +176,7 @@ public class HomeController implements AllAccessible {
           App.getPrimaryStage().show();
 
           List<Node> childrenList = root.getChildren();
-          // System.out.println("this is childrenList of the map" + childrenList);
+          System.out.println("this is childrenList of the map" + childrenList);
           JFXToggleButton mapEditing = (JFXToggleButton) childrenList.get(4);
           if (!userCategory.equalsIgnoreCase("admin")) {
             mapEditing.setVisible(false);
