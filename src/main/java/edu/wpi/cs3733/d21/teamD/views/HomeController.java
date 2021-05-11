@@ -2,6 +2,7 @@ package edu.wpi.cs3733.d21.teamD.views;
 
 import com.jfoenix.controls.*;
 import edu.wpi.cs3733.d21.teamD.App;
+import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
 import edu.wpi.cs3733.d21.teamD.views.Access.AllAccessible;
 import edu.wpi.cs3733.d21.teamD.views.Access.LoginController;
 import edu.wpi.cs3733.d21.teamD.views.Access.UserCategory;
@@ -122,6 +123,7 @@ public class HomeController implements AllAccessible {
           if (e.getCode() == KeyCode.ESCAPE) {
             System.out.println("cancelled");
             task.cancel();
+            GlobalDb.establishCon();
             logoutButton.setDisable(false);
             exitButton.setDisable(false);
           }
