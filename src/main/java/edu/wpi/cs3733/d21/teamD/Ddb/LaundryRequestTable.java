@@ -4,6 +4,7 @@ import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.LaundryNodeInfo;
 import java.io.IOException;
 import java.sql.*;
+import java.util.HashMap;
 import javafx.collections.ObservableList;
 
 public class LaundryRequestTable extends AbsTables {
@@ -182,5 +183,36 @@ public class LaundryRequestTable extends AbsTables {
     }
     System.out.println();
     return id;
+  }
+
+  public HashMap<Integer, String> getIncompleteRequest() {
+    Connection conn = GlobalDb.getConnection();
+    HashMap<Integer, String> laundryRequestList = new HashMap<>();
+    String id = HomeController.username;
+    int i = 0;
+    try {
+      PreparedStatement stmt =
+          conn.prepareStatement(
+              "SELECT location, firstName, lastName, contactInfo FROM LaundryRequest WHERE status = 'Incomplete' AND assignedEmployee = ?");
+      stmt.setString(1, id);
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        laundryRequestList.put(
+            i,
+            "Laundry Service"
+                + " -- "
+                + rs.getString("location")
+                + " -- Name: "
+                + rs.getString("firstName")
+                + " "
+                + rs.getString("lastName")
+                + " -- Contact: "
+                + rs.getString("contactInfo"));
+        i++;
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    return laundryRequestList;
   }
 }
