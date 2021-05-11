@@ -123,10 +123,6 @@ public class MapDrawerController implements Initializable, AllAccessible {
     Targets.clear();
     String startText = start;
     String endText = end;
-    //    String longName1 = "Neuroscience Waiting Room";
-    //    String longName2 = "Emergency Department Entrance";
-    //    System.out.println(startText);
-    //    System.out.println(endText);
 
     Targets.add(mapController.getNodeUIByLongName(startText).getN());
     Targets.add(mapController.getNodeUIByLongName(endText).getN());
