@@ -282,7 +282,12 @@ public class MapController implements AllAccessible {
       Marker.setY(N.getYCoord() - nodeNormalHeight);
       if (FDatabaseTables.getNodeTable()
           .FavContains(GlobalDb.getConnection(), N.getNodeID(), HomeController.username)) {
-        Marker.setImage(favImage);
+        if (FDatabaseTables.getNodeTable()
+            .blockedContains(GlobalDb.getConnection(), N.getNodeID())) {
+          Marker.setImage(blockedNode);
+        } else {
+          Marker.setImage(favImage);
+        }
       } else if (FDatabaseTables.getNodeTable()
           .blockedContains(GlobalDb.getConnection(), N.getNodeID())) {
         Marker.setImage(blockedNode);
@@ -347,121 +352,23 @@ public class MapController implements AllAccessible {
               .validateClearance(GlobalDb.getConnection(), HomeController.username);
       if (clearanceLevel.equals("emergencyEntrance")) {
         NodeUI N = getNodeUIByID("FEXIT00301");
-        if (FDatabaseTables.getNodeTable()
-            .blockedContains(GlobalDb.getConnection(), N.getN().getNodeID())) {
-          FDatabaseTables.getNodeTable()
-              .deleteBlocked(GlobalDb.getConnection(), N.getN().getNodeID());
-          switch (N.getN().getNodeType()) {
-            case "PARK":
-              N.getI().setImage(PARK);
-              break;
-            case "ELEV":
-              N.getI().setImage(ELEV);
-              break;
-            case "REST":
-              N.getI().setImage(REST);
-              break;
-            case "STAI":
-              N.getI().setImage(STAI);
-              break;
-            case "DEPT":
-              N.getI().setImage(DEPT);
-              break;
-            case "LABS":
-              N.getI().setImage(LABS);
-              break;
-            case "INFO":
-              N.getI().setImage(INFO);
-              break;
-            case "CONF":
-              N.getI().setImage(CONF);
-              break;
-            case "EXIT":
-              N.getI().setImage(EXIT);
-              break;
-            case "RETL":
-              N.getI().setImage(RETL);
-              break;
-            case "SERV":
-              N.getI().setImage(SERV);
-              break;
-            default:
-              N.getI().setImage(DEFAULT);
-              break;
-          }
-          initialData.getNodeByID(N.getN().getNodeID()).setBlocked(false);
-        }
+        unblockNode(N);
 
-        NodeUI N2 = getNodeUIByID("dWALK02601");
-        if (!FDatabaseTables.getNodeTable()
-            .blockedContains(GlobalDb.getConnection(), N2.getN().getNodeID())) {
-          FDatabaseTables.getNodeTable()
-              .addToBlockedNodes(
-                  GlobalDb.getConnection(), N2.getN().getNodeID(), N2.getN().getLongName());
-          initialData.getNodeByID(N2.getN().getNodeID()).setBlocked(true);
-          N2.getI().setImage(blockedNode);
-          N2.setSizeHeight(50);
-          N2.setSizeWidth(50);
-        }
+        N = getNodeUIByID("dWALK02601");
+        addBlockNode(N);
 
       } else if (clearanceLevel.equals("normalEntrance")) {
         NodeUI N = getNodeUIByID("dWALK02601");
-        if (FDatabaseTables.getNodeTable()
-            .blockedContains(GlobalDb.getConnection(), N.getN().getNodeID())) {
-          FDatabaseTables.getNodeTable()
-              .deleteBlocked(GlobalDb.getConnection(), N.getN().getNodeID());
-          switch (N.getN().getNodeType()) {
-            case "PARK":
-              N.getI().setImage(PARK);
-              break;
-            case "ELEV":
-              N.getI().setImage(ELEV);
-              break;
-            case "REST":
-              N.getI().setImage(REST);
-              break;
-            case "STAI":
-              N.getI().setImage(STAI);
-              break;
-            case "DEPT":
-              N.getI().setImage(DEPT);
-              break;
-            case "LABS":
-              N.getI().setImage(LABS);
-              break;
-            case "INFO":
-              N.getI().setImage(INFO);
-              break;
-            case "CONF":
-              N.getI().setImage(CONF);
-              break;
-            case "EXIT":
-              N.getI().setImage(EXIT);
-              break;
-            case "RETL":
-              N.getI().setImage(RETL);
-              break;
-            case "SERV":
-              N.getI().setImage(SERV);
-              break;
-            default:
-              N.getI().setImage(DEFAULT);
-              break;
-          }
-          initialData.getNodeByID(N.getN().getNodeID()).setBlocked(false);
-        }
+        unblockNode(N);
 
-        NodeUI N2 = getNodeUIByID("FEXIT00301");
-        if (!FDatabaseTables.getNodeTable()
-            .blockedContains(GlobalDb.getConnection(), N2.getN().getNodeID())) {
-          FDatabaseTables.getNodeTable()
-              .addToBlockedNodes(
-                  GlobalDb.getConnection(), N2.getN().getNodeID(), N2.getN().getLongName());
-          initialData.getNodeByID(N2.getN().getNodeID()).setBlocked(true);
-          N2.getI().setImage(blockedNode);
-          N2.setSizeHeight(50);
-          N2.setSizeWidth(50);
-        }
+        N = getNodeUIByID("FEXIT00301");
+        addBlockNode(N);
+      } else {
+        NodeUI N = getNodeUIByID("dWALK02601");
+        unblockNode(N);
+
+        N = getNodeUIByID("FEXIT00301");
+        unblockNode(N);
       }
     }
   }
@@ -1423,6 +1330,65 @@ public class MapController implements AllAccessible {
     MapDrawerController.favCallStuff();
   }
 
+  private void unblockNode(NodeUI N) {
+    if (FDatabaseTables.getNodeTable()
+        .blockedContains(GlobalDb.getConnection(), N.getN().getNodeID())) {
+      FDatabaseTables.getNodeTable().deleteBlocked(GlobalDb.getConnection(), N.getN().getNodeID());
+      switch (N.getN().getNodeType()) {
+        case "PARK":
+          N.getI().setImage(PARK);
+          break;
+        case "ELEV":
+          N.getI().setImage(ELEV);
+          break;
+        case "REST":
+          N.getI().setImage(REST);
+          break;
+        case "STAI":
+          N.getI().setImage(STAI);
+          break;
+        case "DEPT":
+          N.getI().setImage(DEPT);
+          break;
+        case "LABS":
+          N.getI().setImage(LABS);
+          break;
+        case "INFO":
+          N.getI().setImage(INFO);
+          break;
+        case "CONF":
+          N.getI().setImage(CONF);
+          break;
+        case "EXIT":
+          N.getI().setImage(EXIT);
+          break;
+        case "RETL":
+          N.getI().setImage(RETL);
+          break;
+        case "SERV":
+          N.getI().setImage(SERV);
+          break;
+        default:
+          N.getI().setImage(DEFAULT);
+          break;
+      }
+      initialData.getNodeByID(N.getN().getNodeID()).setBlocked(false);
+    }
+  }
+
+  private void addBlockNode(NodeUI N) {
+    if (!FDatabaseTables.getNodeTable()
+        .blockedContains(GlobalDb.getConnection(), N.getN().getNodeID())) {
+      FDatabaseTables.getNodeTable()
+          .addToBlockedNodes(
+              GlobalDb.getConnection(), N.getN().getNodeID(), N.getN().getLongName());
+      initialData.getNodeByID(N.getN().getNodeID()).setBlocked(true);
+      N.getI().setImage(blockedNode);
+      N.setSizeHeight(50);
+      N.setSizeWidth(50);
+    }
+  }
+
   private void blockNode(NodeUI N) {
     if (FDatabaseTables.getNodeTable()
         .blockedContains(GlobalDb.getConnection(), N.getN().getNodeID())) {
@@ -1467,25 +1433,13 @@ public class MapController implements AllAccessible {
       }
       initialData.getNodeByID(N.getN().getNodeID()).setBlocked(false);
     } else {
-      if (HomeController.username == null) { // should never get in here
-        dialogFactory.createTwoButtonDialog(
-            "You're in guest view",
-            "Please login or Sign up to add favorite",
-            "Sign up",
-            () -> {
-              ControllerManager.attemptLoadPopupBlur("signUpView.fxml");
-            },
-            "Just view map",
-            () -> {});
-      } else {
-        FDatabaseTables.getNodeTable()
-            .addToBlockedNodes(
-                GlobalDb.getConnection(), N.getN().getNodeID(), N.getN().getLongName());
-        initialData.getNodeByID(N.getN().getNodeID()).setBlocked(true);
-        N.getI().setImage(blockedNode);
-        N.setSizeHeight(50);
-        N.setSizeWidth(50);
-      }
+      FDatabaseTables.getNodeTable()
+          .addToBlockedNodes(
+              GlobalDb.getConnection(), N.getN().getNodeID(), N.getN().getLongName());
+      initialData.getNodeByID(N.getN().getNodeID()).setBlocked(true);
+      N.getI().setImage(blockedNode);
+      N.setSizeHeight(50);
+      N.setSizeWidth(50);
     }
     MapDrawerController.blockedCallStuff();
   }
