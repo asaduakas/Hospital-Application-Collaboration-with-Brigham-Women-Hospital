@@ -15,6 +15,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -82,6 +83,7 @@ public class LoginController implements AllAccessible {
     root.getChildren().add(userType);
 
     List<Node> childrenList = root.getChildrenUnmodifiable();
+    System.out.println("this is the children list of homeView original " + childrenList);
 
     if (!userCategory.equalsIgnoreCase("admin")) {
       HBox hBox = (HBox) childrenList.get(4);
@@ -99,25 +101,74 @@ public class LoginController implements AllAccessible {
       tableLine.setDisable(true);
     }
     if (userCategory.equalsIgnoreCase("employee")) {
-
+      JFXDrawer notificationDrawer = (JFXDrawer) childrenList.get(8);
       JFXDialogLayout notification = new JFXDialogLayout();
-      notification.setHeading(new Text("You have ? pending service requests"));
+      Text heading = new Text("You have ? pending service requests");
       StackPane stackpane = new StackPane();
       Rectangle rectangle = new Rectangle(120.0d, 80.0d);
+      JFXDialog dialog = new JFXDialog(stackpane, notification, JFXDialog.DialogTransition.CENTER);
+      JFXButton dismissBtn = new JFXButton("Dismiss");
+      JFXButton showBtn = new JFXButton("Show");
+      JFXButton showAllBtn = new JFXButton("Show All");
+
+      notificationDrawer.setLayoutY(400);
+      notificationDrawer.setTranslateX(20);
+      notification.setHeading(heading);
       rectangle.setArcHeight(60.0d);
       rectangle.setArcWidth(60.0d);
       stackpane.setShape(rectangle);
       stackpane.setMaxSize(100, 50);
-      JFXDialog dialog = new JFXDialog(stackpane, notification, JFXDialog.DialogTransition.CENTER);
-      JFXButton button = new JFXButton("Dismiss");
-      button.setOnAction(
+
+      showAllBtn.setTranslateX(-20);
+      dismissBtn.setTranslateX(20);
+      showBtn.setVisible(false);
+      dismissBtn.setOnAction(
           new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-              dialog.close();
+              PathTransition animationPath = new PathTransition();
+              animationPath.setPath(new Line(110, 200, -60, 200));
+              animationPath.setNode(stackpane);
+              animationPath.setDuration(Duration.seconds(1));
+              animationPath.setCycleCount(1);
+              animationPath.play();
+              dismissBtn.setVisible(false);
+              heading.setVisible(false);
+              showBtn.setVisible(true);
             }
           });
-      notification.setActions(button);
+      showBtn.setOnAction(
+          new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+              PathTransition animationPath = new PathTransition();
+              animationPath.setPath(new Line(-60, 200, 110, 200));
+              animationPath.setNode(stackpane);
+              animationPath.setDuration(Duration.seconds(1));
+              animationPath.setCycleCount(1);
+              animationPath.play();
+              showBtn.setVisible(false);
+              dismissBtn.setTranslateX(50);
+              dismissBtn.setVisible(true);
+              heading.setVisible(true);
+            }
+          });
+      showAllBtn.setOnAction(
+          new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+              FXMLLoader loader =
+                  new FXMLLoader(getClass().getClassLoader().getResource("NotificationView.fxml"));
+              AnchorPane menuBtns = null;
+              try {
+                menuBtns = loader.load();
+              } catch (IOException exception) {
+                exception.printStackTrace();
+              }
+              notificationDrawer.setSidePane(menuBtns);
+            }
+          });
+      notification.setActions(showAllBtn, dismissBtn, showBtn);
       root.getChildren().add(stackpane);
       dialog.show();
 
@@ -127,10 +178,11 @@ public class LoginController implements AllAccessible {
       animationPath.setDuration(Duration.seconds(1));
       animationPath.setCycleCount(1);
       animationPath.play();
+      System.out.println("this is layoutY of notification " + notification.getLayoutY());
     }
 
     Scene scene = App.getPrimaryStage().getScene();
-
+    System.out.println("this is in the loginController home children list " + childrenList);
     changeChildrenHomePage(childrenList);
     SceneSizeChangeListener sizeListener =
         new SceneSizeChangeListener(scene, root, childrenList) {
@@ -151,7 +203,7 @@ public class LoginController implements AllAccessible {
     HBox topButtons = (HBox) nodeList.get(4);
     JFXButton logoutButton = (JFXButton) nodeList.get(5);
     JFXButton exitButton = (JFXButton) nodeList.get(6);
-    StackPane stackPane = (StackPane) nodeList.get(7);
+    StackPane stackPane = (StackPane) nodeList.get(8);
 
     topButtons.setLayoutX(
         App.getPrimaryStage().getScene().getWidth() - (topButtons.getWidth() + 26));
@@ -201,7 +253,7 @@ public class LoginController implements AllAccessible {
         (App.getPrimaryStage().getScene().getHeight() - stackPane.getHeight()) / 2);
     stackPane.setPickOnBounds(false);
 
-    ImageView chatbot = (ImageView) nodeList.get(8);
+    ImageView chatbot = (ImageView) nodeList.get(9);
     //    chatbot.setLayoutY(logoutButton.getLayoutY() - 20);
     //    chatbot.setLayoutX(logoutButton.getLayoutX() - logoutButton.getWidth() - 10);
     chatbot.setLayoutY(logoutButton.getLayoutY() - logoutButton.getWidth());
