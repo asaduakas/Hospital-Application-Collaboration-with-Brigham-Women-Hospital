@@ -87,9 +87,18 @@ public class LoginController implements AllAccessible {
 
     if (!userCategory.equalsIgnoreCase("admin")) {
       HBox hBox = (HBox) childrenList.get(4);
-      JFXButton usersBtn = (JFXButton) ((HBox) hBox).getChildren().get(0);
+      JFXToggleButton tb = (JFXToggleButton) ((HBox) hBox).getChildren().get(0);
+      Line toggleLine = (Line) ((HBox) hBox).getChildren().get(1);
+      JFXButton usersBtn = (JFXButton) ((HBox) hBox).getChildren().get(2);
+      Line tableLine = (Line) ((HBox) hBox).getChildren().get(3);
       usersBtn.setVisible(false);
       usersBtn.setDisable(true);
+      toggleLine.setVisible(false);
+      toggleLine.setDisable(true);
+      tb.setVisible(false);
+      tb.setDisable(true);
+      tableLine.setVisible(false);
+      tableLine.setDisable(true);
     }
     if (userCategory.equalsIgnoreCase("employee")) {
 
@@ -145,8 +154,6 @@ public class LoginController implements AllAccessible {
     JFXButton logoutButton = (JFXButton) nodeList.get(5);
     JFXButton exitButton = (JFXButton) nodeList.get(6);
     StackPane stackPane = (StackPane) nodeList.get(7);
-    JFXDrawer notificationDrawer = (JFXDrawer) nodeList.get(8);
-    JFXButton testBtn = (JFXButton) nodeList.get(9);
 
     topButtons.setLayoutX(
         App.getPrimaryStage().getScene().getWidth() - (topButtons.getWidth() + 26));
@@ -195,15 +202,6 @@ public class LoginController implements AllAccessible {
     stackPane.setLayoutY(
         (App.getPrimaryStage().getScene().getHeight() - stackPane.getHeight()) / 2);
     stackPane.setPickOnBounds(false);
-    double sideWidth =
-        (App.getPrimaryStage().getScene().getWidth() - hospitalImage.getFitWidth()) / 2;
-
-    notificationDrawer.setLayoutX(hospitalImage.getFitWidth() + sideWidth);
-    notificationDrawer.setLayoutY(160);
-    notificationDrawer.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 20px");
-
-    testBtn.setLayoutX(App.getPrimaryStage().getScene().getWidth() - testBtn.getWidth() - 100);
-    testBtn.setLayoutY(120);
   }
 
   @FXML

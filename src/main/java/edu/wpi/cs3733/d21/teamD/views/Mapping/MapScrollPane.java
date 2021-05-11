@@ -82,7 +82,6 @@ public class MapScrollPane extends ScrollPane {
     if (scaleValue > maximumScale) scaleValue = maximumScale;
     mapAnchor.setScaleX(scaleValue);
     mapAnchor.setScaleY(scaleValue);
-    System.out.println("Scale is " + scaleValue);
   }
 
   public void onScroll(double wheelDelta, Point2D mousePoint) {

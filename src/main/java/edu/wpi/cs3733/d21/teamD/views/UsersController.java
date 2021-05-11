@@ -56,8 +56,6 @@ public class UsersController extends AbsRequest
 
   private ObservableList<UsersNodeInfo> adminData;
 
-  // Pane pane = (Pane) FXMLLoader.load(getClass().getClassLoader().getResource("StatusView"));
-
   private ObservableList<Node> tables = FXCollections.observableArrayList();
 
   private void inComTableSetup() {}

@@ -99,7 +99,7 @@ public class COVID19SurveyTable extends AbsTables {
       if (employeeAccess) {
         stmt =
             conn.prepareStatement(
-                "SELECT * FROM COVID19SurveyResults WHERE assignedTo = ? OR assignedTo = ''");
+                "SELECT * FROM COVID19SurveyResults WHERE assignedTo = ? OR assignedTo  IS NULL");
         stmt.setString(1, HomeController.username);
         //        System.out.println(
         //            "this is trying to add data into the employee table " +
@@ -124,8 +124,6 @@ public class COVID19SurveyTable extends AbsTables {
                 rs.getString("closeContactCheck"),
                 rs.getString("selfIsolateCheck"),
                 rs.getString("feelGoodCheck")));
-        System.out.println(
-            "this is in the covidTable trying to add data " + rs.getString("status"));
       }
     } catch (SQLException throwables) {
       throwables.printStackTrace();
@@ -206,7 +204,6 @@ public class COVID19SurveyTable extends AbsTables {
       ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
         status = rs.getString("status");
-        System.out.println("this is in the covid table and this is status " + status);
       }
     } catch (SQLException throwables) {
       throwables.printStackTrace();

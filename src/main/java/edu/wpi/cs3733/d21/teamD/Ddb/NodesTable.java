@@ -190,7 +190,7 @@ public class NodesTable extends AbsTables {
       Statement stmt = conn.createStatement();
       String query =
           "CREATE TABLE FavoriteNodes("
-              + "userID VARCHAR(100) NOT NULL,"
+              + "userID VARCHAR(100),"
               + "nodeID VARCHAR(100) NOT NULL,"
               + "longName VARCHAR(450) NOT NULL,"
               + "CONSTRAINT userID_FK FOREIGN KEY (userID) REFERENCES Users(id),"
@@ -212,7 +212,7 @@ public class NodesTable extends AbsTables {
       stmt.setString(2, nodeID);
       stmt.setString(3, longName);
       stmt.executeUpdate();
-      System.out.println("added to favTable");
+      //      System.out.println("added to favTable");
     } catch (Exception e) {
       e.printStackTrace();
     }

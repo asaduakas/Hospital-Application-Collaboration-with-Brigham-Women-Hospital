@@ -26,7 +26,7 @@ public class InternalTransRequestTable extends AbsTables {
               + "assignedEmployee VARCHAR(100) DEFAULT '',"
               + "typeOfTransport VARCHAR(100) NOT NULL,"
               + "PRIMARY KEY(id),"
-              + "CONSTRAINT INT_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
+              //+ "CONSTRAINT INT_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
               + "CONSTRAINT INT_status_check CHECK (status IN ('Incomplete', 'Complete', 'In Progress')))";
       // + "CONSTRAINT INT_location_FK FOREIGN KEY(location) REFERENCES Nodes(nodeID))";
       stmt.executeUpdate(query);
@@ -84,7 +84,7 @@ public class InternalTransRequestTable extends AbsTables {
       if (employeeAccess) {
         stmt =
             conn.prepareStatement(
-                "SELECT * FROM InternalTransReq WHERE assignedEmployee = ? OR assignedEmployee = ''");
+                "SELECT * FROM InternalTransReq WHERE assignedEmployee = ? OR assignedEmployee  IS NULL");
         stmt.setString(1, HomeController.username);
         //        System.out.println(
         //            "this is trying to add data into the employee table " +
