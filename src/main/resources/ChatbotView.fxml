@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="428.0" prefWidth="352.0" style="-fx-background-color: #e9e9e9;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.cs3733.d21.teamD.views.ChatbotController">
+   <children>
+      <Pane layoutX="55.0" layoutY="-32.0" prefHeight="57.0" prefWidth="350.0" style="-fx-background-color: #ffffff;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label layoutX="66.0" layoutY="11.0" text="Dr. Dobby">
+               <font>
+                  <Font name="System Bold" size="25.0" />
+               </font>
+            </Label>
+            <Circle fx:id="chatbotImage" fill="DODGERBLUE" layoutX="32.0" layoutY="29.0" radius="18.0" stroke="BLACK" strokeType="INSIDE" />
+            <JFXButton fx:id="chatbotExit" layoutX="307.0" layoutY="13.0" onAction="#exit" style="-fx-font-weight: Bold;" text="X" />
+         </children>
+      </Pane>
+      <Pane layoutX="10.0" layoutY="10.0" prefHeight="72.0" prefWidth="350.0" style="-fx-background-color: #ffffff;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <JFXTextArea fx:id="userMessage" layoutX="14.0" layoutY="5.0" prefHeight="57.0" prefWidth="293.0" promptText="Type message here" style="-fx-font-size: 20;">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </JFXTextArea>
+         </children>
+      </Pane>
+      <ImageView fx:id="send" fitHeight="36.0" fitWidth="63.0" layoutX="310.0" layoutY="365.0" onMousePressed="#sendMessage" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@Images/messageSend.png" />
+         </image>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </ImageView>
+      <ImageView fitHeight="308.0" fitWidth="352.0" layoutY="54.0">
+         <image>
+            <Image url="@Images/chatbotBG.jpg" />
+         </image>
+      </ImageView>
+      <ScrollPane fx:id="chatAreaScroll" fitToWidth="true" layoutX="-2.0" layoutY="54.0" prefHeight="308.0" prefWidth="352.0" stylesheets="@mapScrollpane.css" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+         <content>
+            <AnchorPane fx:id="textAnchor" prefHeight="200.0" prefWidth="200.0" />
+         </content>
+      </ScrollPane>
+   </children>
+</AnchorPane>

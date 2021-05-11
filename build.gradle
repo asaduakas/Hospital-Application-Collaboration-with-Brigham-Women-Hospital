@@ -32,6 +32,13 @@ dependencies {
     )
     implementation 'junit:junit:4.13.1'
     implementation 'org.jetbrains:annotations:20.1.0'
+
+    //dialogflow - ChatBot AI
+    implementation 'com.google.cloud:google-cloud-dialogflow:2.1.0'
+    implementation 'io.grpc:grpc-okhttp:1.30.0'
+
+    implementation platform('com.google.cloud:libraries-bom:20.2.0')
+
     testImplementation(
             'org.junit.jupiter:junit-jupiter:5.6.0',
             'org.testfx:testfx-junit5:4.0.16-alpha',
@@ -40,6 +47,9 @@ dependencies {
     )
     compile files('derbyclient.jar')
 
+    compile 'com.google.cloud:google-cloud-bigquery'
+    compile 'com.google.cloud:google-cloud-dialogflow-cx:0.6.1'
+    compile group: "org.apache.opennlp", name: "opennlp-tools", version: "1.9.3"
 
     testCompile(
             "org.testfx:testfx-core:4.0.16-alpha",

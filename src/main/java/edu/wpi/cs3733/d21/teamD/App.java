@@ -18,7 +18,7 @@ import javafx.stage.Stage;
 
 public class App extends Application {
 
-  private static Stage primaryStage;
+  public static Stage primaryStage;
 
   /*
   private boolean isInJar(){
@@ -37,6 +37,7 @@ public class App extends Application {
   @Override
   public void start(Stage primaryStage) throws IOException {
     GlobalDb.getTables().getUserTable().dispUsers(GlobalDb.getConnection());
+
     App.primaryStage = primaryStage;
 
     ControllerManager.attemptLoadPage("initPageView.fxml", fxmlLoader -> initLoader(fxmlLoader));

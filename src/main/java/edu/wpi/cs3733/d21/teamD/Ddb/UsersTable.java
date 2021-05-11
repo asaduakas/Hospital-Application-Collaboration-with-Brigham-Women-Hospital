@@ -240,7 +240,19 @@ public class UsersTable extends AbsTables {
   }
 
   // TODO: implement this function
-  public static void updateUserPassword(Connection conn, String id, String password) {}
+  public static void updateUserPassword(Connection conn, String id, String password) {
+    try {
+
+      PreparedStatement stmt1 = conn.prepareStatement("UPDATE Users SET password = ? WHERE id = ?");
+      stmt1.setString(1, password);
+      stmt1.setString(2, id);
+
+      stmt1.executeUpdate();
+
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+  }
 
   public ObservableList<UsersNodeInfo> addIntoEmployeeDataList(
       ObservableList<UsersNodeInfo> employeeData) throws IOException {
@@ -261,6 +273,22 @@ public class UsersTable extends AbsTables {
       throwables.printStackTrace();
     }
     return employeeData;
+  }
+
+  // TODO: implement this function
+  public static void updateUsername(Connection conn, String id, String username) {
+
+    try {
+
+      PreparedStatement stmt1 = conn.prepareStatement("UPDATE Users SET id = ? WHERE id = ?");
+      stmt1.setString(1, username);
+      stmt1.setString(2, id);
+
+      stmt1.executeUpdate();
+
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
   }
 
   public ObservableList<UsersNodeInfo> addIntoPatientDataList(
