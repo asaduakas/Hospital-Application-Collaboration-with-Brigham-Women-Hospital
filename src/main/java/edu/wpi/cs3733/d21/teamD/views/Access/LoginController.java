@@ -6,6 +6,7 @@ import edu.wpi.cs3733.d21.teamD.Ddb.FDatabaseTables;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
 import edu.wpi.cs3733.d21.teamD.views.ControllerManager;
 import edu.wpi.cs3733.d21.teamD.views.DialogFactory;
+import edu.wpi.cs3733.d21.teamD.views.NotificationController;
 import edu.wpi.cs3733.d21.teamD.views.SceneSizeChangeListener;
 import java.io.IOException;
 import java.util.List;
@@ -107,7 +108,9 @@ public class LoginController implements AllAccessible {
 
       JFXDrawer notificationDrawer = (JFXDrawer) childrenList.get(8);
       JFXDialogLayout notification = new JFXDialogLayout();
-      Text heading = new Text("You have ? pending service requests");
+      Text heading =
+          new Text(
+              "You have " + NotificationController.getTotalCount() + " pending service requests");
       StackPane stackpane = new StackPane();
       Rectangle rectangle = new Rectangle(120.0d, 80.0d);
       JFXDialog dialog = new JFXDialog(stackpane, notification, JFXDialog.DialogTransition.CENTER);
@@ -121,8 +124,8 @@ public class LoginController implements AllAccessible {
       rectangle.setArcHeight(60.0d);
       rectangle.setArcWidth(60.0d);
       stackpane.setShape(rectangle);
-      stackpane.setMaxSize(100, 30);
-      stackpane.setPickOnBounds(false);
+      stackpane.setMaxSize(100, 80);
+      dialog.setOverlayClose(false);
 
       showAllBtn.setTranslateX(-20);
       dismissBtn.setTranslateX(20);
@@ -171,16 +174,19 @@ public class LoginController implements AllAccessible {
               } catch (IOException exception) {
                 exception.printStackTrace();
               }
-                            notificationDrawer.setSidePane(menuBtns);
+              notificationDrawer.setSidePane(menuBtns);
             }
           });
       showAllBtn.addEventHandler(
           MouseEvent.MOUSE_PRESSED,
           e -> {
             if (notificationDrawer.isOpened()) {
-              notificationDrawer.setVisible(false);
+              showAllBtn.setText("Show All");
               notificationDrawer.close();
+              notificationDrawer.setVisible(false);
+
             } else {
+              showAllBtn.setText("Close");
               notificationDrawer.setVisible(true);
               notificationDrawer.open();
             }

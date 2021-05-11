@@ -18,6 +18,7 @@ public class NotificationController implements Initializable {
   @FXML private JFXButton closeBtn;
   @FXML private ScrollPane scrollPane;
   @FXML private TextFlow textFlow;
+  public static int totalCount;
 
   public static boolean noExTransIncomplete =
       FDatabaseTables.getExternalTransportTable().getIncompleteRequest().isEmpty();
@@ -170,5 +171,23 @@ public class NotificationController implements Initializable {
         textFlow.getChildren().add(infoSecurity);
       }
     }
+  }
+
+  public static Integer getTotalCount() {
+    totalCount =
+        exTransList.size()
+            + audVisList.size()
+            + compServiceList.size()
+            + facilitiesServiceList.size()
+            + floralDeliveryList.size()
+            + foodDeliveryList.size()
+            + internalTransList.size()
+            + langInterpList.size()
+            + laundryList.size()
+            + medDeliveryList.size()
+            + SantiServiceList.size()
+            + SecurityServiceList.size();
+    System.out.println(exTransList.size());
+    return totalCount;
   }
 }
