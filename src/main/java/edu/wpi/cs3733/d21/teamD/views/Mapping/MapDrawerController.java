@@ -98,8 +98,31 @@ public class MapDrawerController implements Initializable, AllAccessible {
 
   @FXML
   public void tiasSpecialFunction() throws IOException {
+    Targets.clear();
     String startText = startField.getText();
     String endText = endField.getText();
+    //    String longName1 = "Neuroscience Waiting Room";
+    //    String longName2 = "Emergency Department Entrance";
+    //    System.out.println(startText);
+    //    System.out.println(endText);
+
+    Targets.add(mapController.getNodeUIByLongName(startText).getN());
+    Targets.add(mapController.getNodeUIByLongName(endText).getN());
+
+    mapController.runPathFindingDirectory(Targets);
+
+    recentStart = startText;
+    recentEnd = endText;
+
+    setSearchHistory(GlobalDb.getConnection(), recentStart, recentEnd);
+    HomeController.historyTracker = 1;
+    getSearchHistory(GlobalDb.getConnection());
+  }
+
+  public void chatBotPathFinding(String start, String end) throws IOException {
+    Targets.clear();
+    String startText = start;
+    String endText = end;
     //    String longName1 = "Neuroscience Waiting Room";
     //    String longName2 = "Emergency Department Entrance";
     //    System.out.println(startText);

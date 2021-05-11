@@ -7,14 +7,16 @@ import edu.wpi.cs3733.d21.teamD.Ddb.NodesTable;
 import edu.wpi.cs3733.d21.teamD.Ddb.UsersTable;
 import edu.wpi.cs3733.d21.teamD.chatbot.chatbot;
 import edu.wpi.cs3733.d21.teamD.views.Access.AllAccessible;
+import edu.wpi.cs3733.d21.teamD.views.Mapping.MapController;
+import java.awt.*;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -47,8 +49,9 @@ public class ChatbotController implements AllAccessible {
 
   private Boolean navigateCategoryFlag = false;
   private Boolean startEndFlag = false;
-  private String start = null;
-  private String end = null;
+
+  public String start = null;
+  public String end = null;
 
   @FXML
   private void initialize() {
@@ -238,33 +241,35 @@ public class ChatbotController implements AllAccessible {
         }
       } else if (category.equals("Hospital-Map")) {
         ControllerManager.exitPopup();
-        hospitalMapViewer();
+
+        ControllerManager.attemptLoadPage(
+            "MapView.fxml",
+            fxmlLoader -> {
+              try {
+                mapLoader(fxmlLoader);
+              } catch (AWTException e) {
+                e.printStackTrace();
+              }
+            });
       } else if (category.equals("Pathfinding")) {
         answer = getStartEndLoc(tokens, input);
         if ((start != null) && (end != null)) {
           // do the navigation here
           System.out.println(start + " : " + end);
+
+          ControllerManager.exitPopup();
+          ControllerManager.attemptLoadPage(
+              "MapView.fxml",
+              fxmlLoader -> {
+                try {
+                  mapLoader(fxmlLoader);
+                } catch (AWTException e) {
+                  e.printStackTrace();
+                }
+              });
+          MapController.drawerController.chatBotPathFinding(start, end);
           start = null;
           end = null;
-          //          ControllerManager.attemptLoadPage(
-          //              "MapDrawerView.fxml",
-          //              fxmlLoader -> {
-          //                Pane root = fxmlLoader.getRoot();
-          //                AnchorPane mainPane = (AnchorPane) root.getChildren().get(0);
-          //                GridPane startGridPane = (GridPane) mainPane.getChildren().get(5);
-          //                JFXTextField startField = (JFXTextField)
-          // startGridPane.getChildren().get(0);
-          //
-          //                GridPane endGridPane = (GridPane) mainPane.getChildren().get(4);
-          //                JFXTextField endField = (JFXTextField)
-          // startGridPane.getChildren().get(0);
-          //
-          //                JFXButton findPath = (JFXButton) mainPane.getChildren().get(0);
-          //
-          //                startField.setText(start);
-          //                endField.setText(end);
-          //                findPath.equals(MouseButton.PRIMARY);
-          //              });
         }
       } else if (category.equals("Emergency")) {
         ControllerManager.attemptLoadPopupBlur("Emergency.fxml");
@@ -329,8 +334,11 @@ public class ChatbotController implements AllAccessible {
           endList.add(token);
         }
       }
-      startList.remove(0);
-      endList.remove(0);
+      if (startList.size() != 0 && endList.size() != 0) {
+        startList.remove(0);
+        endList.remove(0);
+      }
+
       int i = 0;
       int j = 0;
       String tempStart = null;
@@ -404,24 +412,7 @@ public class ChatbotController implements AllAccessible {
     return botMessage;
   }
 
-  public void hospitalMapViewer() {
-    JFXSpinner spinner = new JFXSpinner();
-    Label loading = new Label("Loading Map");
-    Text text = new Text("Dr. Dobby is getting your map!");
-    loading.setStyle("-fx-font-weight: Bold; -fx-font-size: 20");
-    text.setStyle("-fx-font-size: 20");
-    spinner.setMaxHeight(150);
-    spinner.setMaxWidth(150);
-
-    StackPane stackpane = new StackPane();
-    stackpane.getChildren().addAll(loading, spinner, text);
-    JFXButton logoutButton =
-        (JFXButton) App.getPrimaryStage().getScene().getRoot().getChildrenUnmodifiable().get(5);
-    logoutButton.setVisible(false);
-    ControllerManager.attemptLoadPage("MapView.fxml", fxmlLoader -> mapLoader(fxmlLoader));
-  }
-
-  public void mapLoader(FXMLLoader fxmlLoader) {
+  public void mapLoader(FXMLLoader fxmlLoader) throws AWTException {
 
     Pane root = fxmlLoader.getRoot();
     List<Node> childrenList = root.getChildren();

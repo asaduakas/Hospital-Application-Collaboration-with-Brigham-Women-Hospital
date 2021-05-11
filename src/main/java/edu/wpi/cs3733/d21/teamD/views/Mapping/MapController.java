@@ -6,15 +6,12 @@ import edu.wpi.cs3733.d21.teamD.App;
 import edu.wpi.cs3733.d21.teamD.Astar.*;
 import edu.wpi.cs3733.d21.teamD.Ddb.FDatabaseTables;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
+import edu.wpi.cs3733.d21.teamD.views.*;
 import edu.wpi.cs3733.d21.teamD.views.Access.AllAccessible;
 import edu.wpi.cs3733.d21.teamD.views.Access.LoginController;
 import edu.wpi.cs3733.d21.teamD.views.Access.UserCategory;
-import edu.wpi.cs3733.d21.teamD.views.ControllerManager;
-import edu.wpi.cs3733.d21.teamD.views.DialogFactory;
-import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.Mapping.Popup.Edit.AddNodeController;
 import edu.wpi.cs3733.d21.teamD.views.Mapping.Popup.Edit.EditNodeController;
-import edu.wpi.cs3733.d21.teamD.views.SceneSizeChangeListener;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.AllServiceNodeInfo;
 import java.io.File;
 import java.io.IOException;
@@ -125,7 +122,7 @@ public class MapController implements AllAccessible {
   @FXML private JFXButton helpButton;
   @FXML private ImageView helpImage;
 
-  private MapDrawerController drawerController;
+  public static MapDrawerController drawerController;
 
   public MapController() {}
 
@@ -207,6 +204,7 @@ public class MapController implements AllAccessible {
   }
 
   public void mapDrawerView() throws IOException {
+
     FXMLLoader loader =
         new FXMLLoader(getClass().getClassLoader().getResource("MapDrawerView.fxml"));
     AnchorPane menuBtns = loader.load();
@@ -215,6 +213,20 @@ public class MapController implements AllAccessible {
     mapDrawer.setSidePane(menuBtns);
     Pane root = (Pane) loader.getRoot();
     List<javafx.scene.Node> childrenList = root.getChildren();
+
+    //    if (ChatbotController.isChatbotPathFinding) {
+    //      AnchorPane childAnchor = (AnchorPane) childrenList.get(0);
+    //      GridPane startGrid = (GridPane) childAnchor.getChildren().get(5);
+    //      GridPane endGrid = (GridPane) childAnchor.getChildren().get(4);
+    //
+    //      JFXTextField startField = (JFXTextField) startGrid.getChildren().get(0);
+    //      JFXTextField endField = (JFXTextField) endGrid.getChildren().get(0);
+    //      JFXButton findPath = (JFXButton) childAnchor.getChildren().get(0);
+    //
+    //      System.out.println(startField.getText());
+    //      startField.setText(ChatbotController.start);
+    //      System.out.println(startField.getText());
+    //    }
 
     if (!(HomeController.userTypeEnum == UserCategory.Admin)) {
       AnchorPane anchorPane = (AnchorPane) childrenList.get(0);
