@@ -162,83 +162,83 @@ public class StatusController extends AbsRequest
     try {
       ImageView avImage =
           new ImageView(
-              new Image(new FileInputStream("src/main/resources/Images/audio-visual.png")));
+              new Image("Images/audio-visual.png"));
       avImage.setFitWidth(35);
       avImage.setFitHeight(35);
       av.setGraphic(avImage);
 
       ImageView csImage =
-          new ImageView(new Image(new FileInputStream("src/main/resources/Images/Computer.png")));
+          new ImageView(new Image("Images/Computer.png"));
       csImage.setFitWidth(40);
       csImage.setFitHeight(40);
       cs.setGraphic(csImage);
 
       ImageView exTransImage =
           new ImageView(
-              new Image(new FileInputStream("src/main/resources/Images/exTransIcon.png")));
+              new Image("Images/exTransIcon.png"));
       exTransImage.setFitHeight(40);
       exTransImage.setFitWidth(40);
       exTrans.setGraphic(exTransImage);
 
       ImageView faciMaintenImage =
           new ImageView(
-              new Image(new FileInputStream("src/main/resources/Images/maintenance.png")));
+              new Image("Images/maintenance.png"));
       faciMaintenImage.setFitWidth(40);
       faciMaintenImage.setFitHeight(40);
       faciMainten.setGraphic(faciMaintenImage);
 
       ImageView floralImage =
-          new ImageView(new Image(new FileInputStream("src/main/resources/Images/floralIcon.png")));
+          new ImageView(new Image("Images/floralIcon.png"));
       floralImage.setFitWidth(40);
       floralImage.setFitHeight(40);
       floral.setGraphic(floralImage);
 
       ImageView foodImage =
-          new ImageView(new Image(new FileInputStream("src/main/resources/Images/foodIcon.png")));
+          new ImageView(new Image("Images/foodIcon.png"));
       foodImage.setFitWidth(40);
       foodImage.setFitHeight(40);
       food.setGraphic(foodImage);
 
       ImageView inTransImage =
-          new ImageView(new Image(new FileInputStream("src/main/resources/Images/wheelchair.png")));
+          new ImageView(new Image("Images/wheelchair.png"));
       inTransImage.setFitWidth(40);
       inTransImage.setFitHeight(40);
       inTrans.setGraphic(inTransImage);
 
       ImageView languageImage =
-          new ImageView(new Image(new FileInputStream("src/main/resources/Images/Translate.png")));
+          new ImageView(new Image("Images/Translate.png"));
       languageImage.setFitWidth(32);
       languageImage.setFitHeight(32);
       language.setGraphic(languageImage);
 
       ImageView laundryImage =
           new ImageView(
-              new Image(new FileInputStream("src/main/resources/Images/laundryIcon.png")));
+              new Image("Images/laundryIcon.png"));
       laundryImage.setFitWidth(40);
       laundryImage.setFitHeight(40);
       laundry.setGraphic(laundryImage);
 
       ImageView medImage =
-          new ImageView(new Image(new FileInputStream("src/main/resources/Images/medicine.png")));
+          new ImageView(new Image("Images/medicine.png"));
       medImage.setFitWidth(40);
       medImage.setFitHeight(40);
       med.setGraphic(medImage);
 
       ImageView sanitizeImage =
-          new ImageView(new Image(new FileInputStream("src/main/resources/Images/sanitatize.png")));
+          new ImageView(new Image("Images/sanitatize.png"));
       sanitizeImage.setFitWidth(40);
       sanitizeImage.setFitHeight(40);
       sanitize.setGraphic(sanitizeImage);
 
       ImageView securityImage =
-          new ImageView(new Image(new FileInputStream("src/main/resources/Images/Security.png")));
+          new ImageView(new Image("Images/Security.png"));
       securityImage.setFitWidth(40);
       securityImage.setFitHeight(40);
       security.setGraphic(securityImage);
 
       ImageView covidImage =
           new ImageView(
-              new Image(new FileInputStream("src/main/resources/Images/covid_black.png")));
+              new Image("Images/covid_black.png"));
       covidImage.setFitWidth(40);
       covidImage.setFitHeight(40);
       covid.setGraphic(covidImage);

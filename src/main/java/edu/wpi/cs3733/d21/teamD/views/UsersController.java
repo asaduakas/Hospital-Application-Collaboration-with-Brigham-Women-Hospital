@@ -76,34 +76,30 @@ public class UsersController extends AbsRequest
     Label emp = new Label("Employees");
     Label pat = new Label("Patients");
     Label ad = new Label("Administrators");
-    try {
       ImageView empImage =
           new ImageView(
-              new Image(new FileInputStream("src/main/resources/Images/employeeIcon.png")));
+              new Image("Images/employeeIcon.png"));
       empImage.setFitWidth(35);
       empImage.setFitHeight(35);
       emp.setGraphic(empImage);
 
       ImageView patImage =
           new ImageView(
-              new Image(new FileInputStream("src/main/resources/Images/patientIcon.png")));
+              new Image("Images/patientIcon.png"));
       patImage.setFitWidth(40);
       patImage.setFitHeight(40);
       pat.setGraphic(patImage);
 
       ImageView adImage =
           new ImageView(
-              new Image(new FileInputStream("src/main/resources/Images/adminIcon_black.png")));
+              new Image("Images/adminIcon_black.png"));
       adImage.setFitHeight(40);
       adImage.setFitWidth(40);
       ad.setGraphic(adImage);
 
       listView.getItems().addAll(emp, pat, ad);
       listView.setStyle("-fx-padding: 0; -fx-background-insets: 0");
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    }
-    listView.setOnMouseClicked(
+      listView.setOnMouseClicked(
         new EventHandler<MouseEvent>() {
           @Override
           public void handle(MouseEvent event) {
