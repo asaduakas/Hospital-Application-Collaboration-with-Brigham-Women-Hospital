@@ -146,6 +146,8 @@ public class MapController implements AllAccessible {
     initializeEdges();
 
     clearanceLevelNodes();
+    switchFloor("1");
+
     for (NodeUI node : NODES) {
       //      System.out.println(node.getN().getNodeID());
     }
@@ -345,45 +347,123 @@ public class MapController implements AllAccessible {
               .validateClearance(GlobalDb.getConnection(), HomeController.username);
       if (clearanceLevel.equals("emergencyEntrance")) {
         NodeUI N = getNodeUIByID("FEXIT00301");
-        mapHam.setDisable(true);
-        N.getI().setImage(warning);
-        N.setSizeHeight(100);
-        N.setSizeWidth(100);
-        addNodeUI(N);
-        N.getI()
-            .setOnMouseClicked(
-                e -> {
-                  dialogFactory.createOneButtonDialog(
-                      "Please Take Action",
-                      "Please proceed to the destinated location"
-                          + "\n"
-                          + "A nurse will check for further action",
-                      "OK",
-                      () -> {});
-                });
+        if (FDatabaseTables.getNodeTable()
+            .blockedContains(GlobalDb.getConnection(), N.getN().getNodeID())) {
+          FDatabaseTables.getNodeTable()
+              .deleteBlocked(GlobalDb.getConnection(), N.getN().getNodeID());
+          switch (N.getN().getNodeType()) {
+            case "PARK":
+              N.getI().setImage(PARK);
+              break;
+            case "ELEV":
+              N.getI().setImage(ELEV);
+              break;
+            case "REST":
+              N.getI().setImage(REST);
+              break;
+            case "STAI":
+              N.getI().setImage(STAI);
+              break;
+            case "DEPT":
+              N.getI().setImage(DEPT);
+              break;
+            case "LABS":
+              N.getI().setImage(LABS);
+              break;
+            case "INFO":
+              N.getI().setImage(INFO);
+              break;
+            case "CONF":
+              N.getI().setImage(CONF);
+              break;
+            case "EXIT":
+              N.getI().setImage(EXIT);
+              break;
+            case "RETL":
+              N.getI().setImage(RETL);
+              break;
+            case "SERV":
+              N.getI().setImage(SERV);
+              break;
+            default:
+              N.getI().setImage(DEFAULT);
+              break;
+          }
+          initialData.getNodeByID(N.getN().getNodeID()).setBlocked(false);
+        }
+
+        NodeUI N2 = getNodeUIByID("dWALK02601");
+        if (!FDatabaseTables.getNodeTable()
+            .blockedContains(GlobalDb.getConnection(), N2.getN().getNodeID())) {
+          FDatabaseTables.getNodeTable()
+              .addToBlockedNodes(
+                  GlobalDb.getConnection(), N2.getN().getNodeID(), N2.getN().getLongName());
+          initialData.getNodeByID(N2.getN().getNodeID()).setBlocked(true);
+          N2.getI().setImage(blockedNode);
+          N2.setSizeHeight(50);
+          N2.setSizeWidth(50);
+        }
+
       } else if (clearanceLevel.equals("normalEntrance")) {
-        NodeUI N = getNodeUIByID("dWALK02701");
-        mapHam.setDisable(true);
-        N.getI().setImage(warning);
-        N.setSizeHeight(100);
-        N.setSizeWidth(100);
-        addNodeUI(N);
-        N.getI()
-            .setOnMouseClicked(
-                e -> {
-                  dialogFactory.createOneButtonDialog(
-                      "Please Take Action",
-                      "Please proceed to the destinated location"
-                          + "\n"
-                          + "A nurse will check for further action",
-                      "OK",
-                      () -> {});
-                });
-      } else {
-        switchFloor("1");
+        NodeUI N = getNodeUIByID("dWALK02601");
+        if (FDatabaseTables.getNodeTable()
+            .blockedContains(GlobalDb.getConnection(), N.getN().getNodeID())) {
+          FDatabaseTables.getNodeTable()
+              .deleteBlocked(GlobalDb.getConnection(), N.getN().getNodeID());
+          switch (N.getN().getNodeType()) {
+            case "PARK":
+              N.getI().setImage(PARK);
+              break;
+            case "ELEV":
+              N.getI().setImage(ELEV);
+              break;
+            case "REST":
+              N.getI().setImage(REST);
+              break;
+            case "STAI":
+              N.getI().setImage(STAI);
+              break;
+            case "DEPT":
+              N.getI().setImage(DEPT);
+              break;
+            case "LABS":
+              N.getI().setImage(LABS);
+              break;
+            case "INFO":
+              N.getI().setImage(INFO);
+              break;
+            case "CONF":
+              N.getI().setImage(CONF);
+              break;
+            case "EXIT":
+              N.getI().setImage(EXIT);
+              break;
+            case "RETL":
+              N.getI().setImage(RETL);
+              break;
+            case "SERV":
+              N.getI().setImage(SERV);
+              break;
+            default:
+              N.getI().setImage(DEFAULT);
+              break;
+          }
+          initialData.getNodeByID(N.getN().getNodeID()).setBlocked(false);
+        }
+
+        NodeUI N2 = getNodeUIByID("FEXIT00301");
+        if (!FDatabaseTables.getNodeTable()
+            .blockedContains(GlobalDb.getConnection(), N2.getN().getNodeID())) {
+          FDatabaseTables.getNodeTable()
+              .addToBlockedNodes(
+                  GlobalDb.getConnection(), N2.getN().getNodeID(), N2.getN().getLongName());
+          initialData.getNodeByID(N2.getN().getNodeID()).setBlocked(true);
+          N2.getI().setImage(blockedNode);
+          N2.setSizeHeight(50);
+          N2.setSizeWidth(50);
+        }
       }
     }
-    // initializeFavs();
   }
 
   private void initializeEdges() {
@@ -1344,7 +1424,6 @@ public class MapController implements AllAccessible {
   }
 
   private void blockNode(NodeUI N) {
-    // TODO: REPLACE FAVE DB NODE STUFF WITH BLOCKED NODE DB
     if (FDatabaseTables.getNodeTable()
         .blockedContains(GlobalDb.getConnection(), N.getN().getNodeID())) {
       FDatabaseTables.getNodeTable().deleteBlocked(GlobalDb.getConnection(), N.getN().getNodeID());
@@ -1398,7 +1477,7 @@ public class MapController implements AllAccessible {
             },
             "Just view map",
             () -> {});
-      } else { // TODO: replace with new DB stuff and image
+      } else {
         FDatabaseTables.getNodeTable()
             .addToBlockedNodes(
                 GlobalDb.getConnection(), N.getN().getNodeID(), N.getN().getLongName());
