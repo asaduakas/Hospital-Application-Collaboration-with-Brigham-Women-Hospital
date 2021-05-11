@@ -233,13 +233,13 @@ public class ExtTransRequestTable extends AbsTables {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
-              "SELECT serviceType, location, pFirstName, pLastName, contactInfo FROM ExternalTransRequests WHERE status = 'Incomplete' AND assignedEmployee = ?");
+              "SELECT location, pFirstName, pLastName, contactInfo FROM ExternalTransRequests WHERE status = 'Incomplete' AND assignedEmployee = ?");
       stmt.setString(1, id);
       ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
         exTransList.put(
             i,
-            rs.getString("serviceType")
+            "External Transportation"
                 + " -- "
                 + rs.getString("location")
                 + " -- Name: "
