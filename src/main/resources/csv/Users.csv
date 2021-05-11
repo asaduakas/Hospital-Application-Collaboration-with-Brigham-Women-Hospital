@@ -1,17 +1,17 @@
-id,password,name,category
-admin,admin,ll,Admin
-testAdmin,admin,testing,Admin
-patient,patient,qq,Patient
-employee,employee,ee,Employee
-wwong,admin,Wilson Wong,Admin
-elaine,employee,elaine,Employee
-veronica,employee,veronica,Employee
-tia,employee,tia,Employee
-yiyi,employee,yiyi,Employee
-curtis,employee,curtis,Employee
-patrick,employee,patrick,Employee
-arman,employee,arman,Employee
-reagan,employee,reagan,Employee
-kushal,employee,kushal,Employee
-uri,employee,uri,Employee
-nathan,employee,nathan,Employee
+id,password,name,category,clearance,email
+admin,admin,ll,Admin,
+testAdmin,admin,testing,Admin,
+patient,patient,qq,Patient,
+employee,employee,ee,Employee,
+wwong,admin,Wilson Wong,Admin,
+elaine,employee,elaine,Employee,
+veronica,employee,veronica,Employee,
+tia,employee,tia,Employee,
+yiyi,employee,yiyi,Employee,
+curtis,employee,curtis,Employee,
+patrick,employee,patrick,Employee,
+arman,employee,arman,Employee,
+reagan,employee,reagan,Employee,
+kushal,employee,kushal,Employee,
+uri,employee,uri,Employee,
+nathan,employee,nathan,Employee,

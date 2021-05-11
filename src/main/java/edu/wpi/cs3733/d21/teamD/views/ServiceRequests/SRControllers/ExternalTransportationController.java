@@ -76,7 +76,7 @@ public class ExternalTransportationController extends AbsRequest
               super.contactInfo.getText(),
               super.locationBox.getValue(),
               transportComboBox.getValue(),
-              staffAssigned.getValue());
+              null);
     }
   }
 

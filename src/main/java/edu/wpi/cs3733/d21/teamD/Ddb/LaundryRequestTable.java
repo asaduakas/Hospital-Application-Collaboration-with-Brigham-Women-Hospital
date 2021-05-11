@@ -1,5 +1,6 @@
 package edu.wpi.cs3733.d21.teamD.Ddb;
 
+import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.LaundryNodeInfo;
 import java.io.IOException;
 import java.sql.*;
@@ -22,7 +23,7 @@ public class LaundryRequestTable extends AbsTables {
               + "location VARCHAR(100) NOT NULL,"
               + "assignedEmployee VARCHAR(100) DEFAULT '',"
               + "PRIMARY KEY(id),"
-              + "CONSTRAINT LAU_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
+              //+ "CONSTRAINT LAU_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
               + "CONSTRAINT LAU_status_check CHECK (status IN ('Incomplete', 'Complete', 'In Progress')))";
       // + "CONSTRAINT LAU_location_FK FOREIGN KEY(location) REFERENCES Nodes(nodeID))";
       stmt.executeUpdate(query);
@@ -101,11 +102,24 @@ public class LaundryRequestTable extends AbsTables {
     }
   }
 
-  public void addIntoLaundServiceList(ObservableList<LaundryNodeInfo> laundryData)
-      throws IOException {
+  public void addIntoLaundServiceList(
+      ObservableList<LaundryNodeInfo> laundryData, boolean employeeAccess) throws IOException {
+    PreparedStatement stmt = null;
+    Connection conn = GlobalDb.getConnection();
     try {
-      String query = "SELECT * FROM LaundryRequest";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      if (employeeAccess) {
+        stmt =
+            conn.prepareStatement(
+                "SELECT * FROM LaundryRequest WHERE assignedEmployee = ? OR assignedEmployee  IS NULL");
+        stmt.setString(1, HomeController.username);
+        //        System.out.println(
+        //            "this is trying to add data into the employee table " +
+        // HomeController.username);
+        //        System.out.println("this is getting the userType " + HomeController.userTypeEnum);
+      } else {
+        stmt = conn.prepareStatement("SELECT * FROM LaundryRequest");
+      }
+      ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
         laundryData.add(
             new LaundryNodeInfo(

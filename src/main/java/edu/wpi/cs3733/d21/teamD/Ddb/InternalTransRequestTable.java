@@ -1,5 +1,6 @@
 package edu.wpi.cs3733.d21.teamD.Ddb;
 
+import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.InternalTransNodeInfo;
 import java.io.IOException;
 import java.sql.*;
@@ -25,7 +26,7 @@ public class InternalTransRequestTable extends AbsTables {
               + "assignedEmployee VARCHAR(100) DEFAULT '',"
               + "typeOfTransport VARCHAR(100) NOT NULL,"
               + "PRIMARY KEY(id),"
-              + "CONSTRAINT INT_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
+              //+ "CONSTRAINT INT_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
               + "CONSTRAINT INT_status_check CHECK (status IN ('Incomplete', 'Complete', 'In Progress')))";
       // + "CONSTRAINT INT_location_FK FOREIGN KEY(location) REFERENCES Nodes(nodeID))";
       stmt.executeUpdate(query);
@@ -74,11 +75,25 @@ public class InternalTransRequestTable extends AbsTables {
     }
   }
 
-  public void addIntoInternalTransList(ObservableList<InternalTransNodeInfo> internalTransData)
+  public void addIntoInternalTransList(
+      ObservableList<InternalTransNodeInfo> internalTransData, boolean employeeAccess)
       throws IOException {
+    PreparedStatement stmt = null;
+    Connection conn = GlobalDb.getConnection();
     try {
-      String query = "SELECT * FROM InternalTransReq";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      if (employeeAccess) {
+        stmt =
+            conn.prepareStatement(
+                "SELECT * FROM InternalTransReq WHERE assignedEmployee = ? OR assignedEmployee  IS NULL");
+        stmt.setString(1, HomeController.username);
+        //        System.out.println(
+        //            "this is trying to add data into the employee table " +
+        // HomeController.username);
+        //        System.out.println("this is getting the userType " + HomeController.userTypeEnum);
+      } else {
+        stmt = conn.prepareStatement("SELECT * FROM InternalTransReq");
+      }
+      ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
         internalTransData.add(
             new InternalTransNodeInfo(

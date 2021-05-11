@@ -74,7 +74,7 @@ public class ComputerServiceController extends AbsRequest
               super.lastName.getText(),
               super.contactInfo.getText(),
               super.locationBox.getValue(),
-              staffAssigned.getValue(),
+              null,
               issueDescription.getText());
     }
   }

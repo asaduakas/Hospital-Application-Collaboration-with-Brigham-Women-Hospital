@@ -15,7 +15,7 @@ public class AllServiceTable extends AbsTables {
               + "id INT NOT NULL,"
               + "location VARCHAR(100) NOT NULL,"
               + "status VARCHAR(100) NOT NULL,"
-              + "assignedTo VARCHAR(450) NOT NULL,"
+              + "assignedTo VARCHAR(450) DEFAULT '',"
               + "Stype VARCHAR(5) NOT NULL)";
       stmt.executeUpdate(query);
       System.out.println("AllServiceTable table created");

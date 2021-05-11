@@ -1,5 +1,6 @@
 package edu.wpi.cs3733.d21.teamD.Ddb;
 
+import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.AudVisNodeInfo;
 import java.io.IOException;
 import java.sql.*;
@@ -72,10 +73,24 @@ public class AudVisRequestTable extends AbsTables {
     }
   }
 
-  public void addIntoAudVisDataList(ObservableList<AudVisNodeInfo> audVisData) throws IOException {
+  public void addIntoAudVisDataList(
+      ObservableList<AudVisNodeInfo> audVisData, boolean employeeAccess) throws IOException {
+    Connection conn = GlobalDb.getConnection();
+    PreparedStatement stmt = null;
     try {
-      String query = "SELECT * FROM AudVisServiceRequest";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      if (employeeAccess) {
+        stmt =
+            conn.prepareStatement(
+                "SELECT * FROM AudVisServiceRequest WHERE assignedEmployee = ? OR assignedEmployee  IS NULL");
+        stmt.setString(1, HomeController.username);
+        //        System.out.println(
+        //            "this is trying to add data into the employee table " +
+        // HomeController.username);
+        //        System.out.println("this is getting the userType " + HomeController.userTypeEnum);
+      } else {
+        stmt = conn.prepareStatement("SELECT * FROM AudVisServiceRequest");
+      }
+      ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
         audVisData.add(
             new AudVisNodeInfo(

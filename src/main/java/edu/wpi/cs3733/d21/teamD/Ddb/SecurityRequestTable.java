@@ -1,5 +1,6 @@
 package edu.wpi.cs3733.d21.teamD.Ddb;
 
+import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.SecurityRequestNodeInfo;
 import java.io.IOException;
 import java.sql.*;
@@ -28,7 +29,8 @@ public class SecurityRequestTable extends AbsTables {
               + "urgencyLevel VARCHAR(25) NOT NULL,"
               + "description VARCHAR(400) DEFAULT '',"
               + "PRIMARY KEY(id),"
-              + "CONSTRAINT SEC_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
+              //              + "CONSTRAINT SEC_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES
+              // Users(id),"
               // + "CONSTRAINT SEC_location_FK FOREIGN KEY(location) REFERENCES Nodes(nodeID),"
               + "CONSTRAINT SEC_status_check CHECK (status IN ('Incomplete', 'Complete', 'In Progress')),"
               + "CONSTRAINT SEC_urgency_check CHECK (urgencyLevel IN ('Low Priority', 'Medium Priority', 'High Priority')))";
@@ -49,19 +51,19 @@ public class SecurityRequestTable extends AbsTables {
       String lastName,
       String contactInfo,
       String location,
-      String assignedEmp,
+      String assignedEmployee,
       String urgencyLev,
       String des) {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
               "INSERT INTO SecurityRequest (firstName, lastName, contactInfo, "
-                  + "location, assignedEmployee, urgencyLevel, description) VALUES(?,?,?,?,?,?,?)");
+                  + "location,assignedEmployee, urgencyLevel, description) VALUES(?,?,?,?,?,?,?)");
       stmt.setString(1, firstName);
       stmt.setString(2, lastName);
       stmt.setString(3, contactInfo);
       stmt.setString(4, location);
-      stmt.setString(5, assignedEmp);
+      stmt.setString(5, assignedEmployee);
       stmt.setString(6, urgencyLev);
       stmt.setString(7, des);
       stmt.executeUpdate();
@@ -72,7 +74,7 @@ public class SecurityRequestTable extends AbsTables {
               this.getID(GlobalDb.getConnection()),
               location,
               "Incomplete",
-              assignedEmp,
+              assignedEmployee,
               "SECUR");
 
     } catch (Exception e) {
@@ -80,11 +82,25 @@ public class SecurityRequestTable extends AbsTables {
     }
   }
 
-  public void addIntoSanitationList(ObservableList<SecurityRequestNodeInfo> securityData)
+  public void addIntoSanitationList(
+      ObservableList<SecurityRequestNodeInfo> securityData, boolean employeeAccess)
       throws IOException {
+    PreparedStatement stmt = null;
+    Connection conn = GlobalDb.getConnection();
     try {
-      String query = "SELECT * FROM SecurityRequest";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      if (employeeAccess) {
+        stmt =
+            conn.prepareStatement(
+                "SELECT * FROM SecurityRequest WHERE assignedEmployee = ? OR assignedEmployee  IS NULL");
+        stmt.setString(1, HomeController.username);
+        //        System.out.println(
+        //            "this is trying to add data into the employee table " +
+        // HomeController.username);
+        //        System.out.println("this is getting the userType " + HomeController.userTypeEnum);
+      } else {
+        stmt = conn.prepareStatement("SELECT * FROM SecurityRequest");
+      }
+      ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
         securityData.add(
             new SecurityRequestNodeInfo(

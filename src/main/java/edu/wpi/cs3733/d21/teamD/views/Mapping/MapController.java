@@ -101,6 +101,7 @@ public class MapController implements AllAccessible {
   public static final Image RETL = new Image("Images/retailpin.png");
   public static final Image SERV = new Image("Images/service.png");
   public static final Image favImage = new Image("Images/favIcon_good.png");
+  public static final Image warning = new Image("Images/warning_red.png");
   public static final Image blockedNode = new Image("Images/blockedNode.png");
   private Image up = new Image("Images/up-arrow.png");
   private Image down = new Image("Images/redArrow.png");
@@ -145,7 +146,7 @@ public class MapController implements AllAccessible {
     initializeNodes();
     initializeEdges();
 
-    switchFloor("1");
+    clearanceLevelNodes();
     for (NodeUI node : NODES) {
       //      System.out.println(node.getN().getNodeID());
     }
@@ -341,6 +342,56 @@ public class MapController implements AllAccessible {
     }
 
     initializeFavs();
+  }
+
+  private void clearanceLevelNodes() {
+    if (HomeController.username == null) {
+      switchFloor("1");
+    } else {
+      String clearanceLevel =
+          FDatabaseTables.getUserTable()
+              .validateClearance(GlobalDb.getConnection(), HomeController.username);
+      if (clearanceLevel.equals("emergencyEntrance")) {
+        NodeUI N = getNodeUIByID("FEXIT00301");
+        mapHam.setDisable(true);
+        N.getI().setImage(warning);
+        N.setSizeHeight(100);
+        N.setSizeWidth(100);
+        addNodeUI(N);
+        N.getI()
+            .setOnMouseClicked(
+                e -> {
+                  dialogFactory.createOneButtonDialog(
+                      "Please Take Action",
+                      "Please proceed to the destinated location"
+                          + "\n"
+                          + "A nurse will check for further action",
+                      "OK",
+                      () -> {});
+                });
+      } else if (clearanceLevel.equals("normalEntrance")) {
+        NodeUI N = getNodeUIByID("dWALK02701");
+        mapHam.setDisable(true);
+        N.getI().setImage(warning);
+        N.setSizeHeight(100);
+        N.setSizeWidth(100);
+        addNodeUI(N);
+        N.getI()
+            .setOnMouseClicked(
+                e -> {
+                  dialogFactory.createOneButtonDialog(
+                      "Please Take Action",
+                      "Please proceed to the destinated location"
+                          + "\n"
+                          + "A nurse will check for further action",
+                      "OK",
+                      () -> {});
+                });
+      } else {
+        switchFloor("1");
+      }
+    }
+    // initializeFavs();
   }
 
   private void initializeEdges() {

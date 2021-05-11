@@ -70,6 +70,8 @@ public class NodeUI {
 
   public void setSizeHeight(double sizeHeight) {
     this.sizeHeight = sizeHeight;
+    INode.setFitHeight(sizeHeight);
+    INode.setY(N.getYCoord() - INode.getFitHeight());
   }
 
   public double getSizeWidth() {
@@ -78,6 +80,8 @@ public class NodeUI {
 
   public void setSizeWidth(double sizeWidth) {
     this.sizeWidth = sizeWidth;
+    INode.setFitWidth(sizeWidth);
+    INode.setX(N.getXCoord() - INode.getFitWidth() / 2);
   }
 
   public void setNodeCoord(int x, int y) {

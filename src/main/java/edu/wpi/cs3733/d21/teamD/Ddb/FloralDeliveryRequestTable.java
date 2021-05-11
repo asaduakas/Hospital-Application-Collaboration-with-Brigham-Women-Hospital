@@ -1,5 +1,6 @@
 package edu.wpi.cs3733.d21.teamD.Ddb;
 
+import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.FloralDelivNodeInfo;
 import java.io.IOException;
 import java.sql.*;
@@ -28,7 +29,8 @@ public class FloralDeliveryRequestTable extends AbsTables {
               + "fromFlower VARCHAR(100) NOT NULL,"
               + "assignedEmployee VARCHAR(100) DEFAULT '',"
               + "PRIMARY KEY(id),"
-              + "CONSTRAINT FLO_employee_FK FOREIGN KEY (assignedEmployee) REFERENCES Users (id),"
+              //              + "CONSTRAINT FLO_employee_FK FOREIGN KEY (assignedEmployee)
+              // REFERENCES Users (id),"
               // + "CONSTRAINT FLO_location_FK FOREIGN KEY (location) REFERENCES Nodes(nodeID),"
               + "CONSTRAINT FLO_status_check CHECK (status IN ('Incomplete', 'Complete', 'In Progress')))";
       stmt.executeUpdate(query);
@@ -46,22 +48,22 @@ public class FloralDeliveryRequestTable extends AbsTables {
       String pLastName,
       String contactInfo,
       String location,
+      String assignedEmployee,
       String typeOfFlower,
       String numOfFlower,
-      String fromFlower,
-      String assignedEmployee) {
+      String fromFlower) {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
-              "INSERT INTO FloralRequests (pFirstName, pLastName, contactInfo, location, typeOfFlower, numOfFlower, fromFlower, assignedEmployee) VALUES(?,?,?,?,?,?,?,?)");
+              "INSERT INTO FloralRequests (pFirstName, pLastName, contactInfo, location, assignedEmployee, typeOfFlower, numOfFlower, fromFlower) VALUES(?,?,?,?,?,?,?,?)");
       stmt.setString(1, pFirstName);
       stmt.setString(2, pLastName);
       stmt.setString(3, contactInfo);
       stmt.setString(4, location);
-      stmt.setString(5, typeOfFlower);
-      stmt.setString(6, numOfFlower);
-      stmt.setString(7, fromFlower);
-      stmt.setString(8, assignedEmployee);
+      stmt.setString(5, assignedEmployee);
+      stmt.setString(6, typeOfFlower);
+      stmt.setString(7, numOfFlower);
+      stmt.setString(8, fromFlower);
       stmt.executeUpdate();
 
       FDatabaseTables.getAllServiceTable()
@@ -78,11 +80,24 @@ public class FloralDeliveryRequestTable extends AbsTables {
     }
   }
 
-  public void addIntoFloralDeliveryList(ObservableList<FloralDelivNodeInfo> floralData)
-      throws IOException {
+  public void addIntoFloralDeliveryList(
+      ObservableList<FloralDelivNodeInfo> floralData, boolean employeeAccess) throws IOException {
+    PreparedStatement stmt = null;
+    Connection conn = GlobalDb.getConnection();
     try {
-      String query = "SELECT * FROM FloralRequests";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      if (employeeAccess) {
+        stmt =
+            conn.prepareStatement(
+                "SELECT * FROM FloralRequests WHERE assignedEmployee = ? OR assignedEmployee  IS NULL");
+        stmt.setString(1, HomeController.username);
+        //        System.out.println(
+        //            "this is trying to add data into the employee table " +
+        // HomeController.username);
+        //        System.out.println("this is getting the userType " + HomeController.userTypeEnum);
+      } else {
+        stmt = conn.prepareStatement("SELECT * FROM FloralRequests");
+      }
+      ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
         floralData.add(
             new FloralDelivNodeInfo(

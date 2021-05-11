@@ -9,9 +9,11 @@ import edu.wpi.cs3733.d21.teamD.views.DialogFactory;
 import edu.wpi.cs3733.d21.teamD.views.SceneSizeChangeListener;
 import java.io.IOException;
 import java.util.List;
+import javafx.animation.PathTransition;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -22,7 +24,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 public class LoginController implements AllAccessible {
 
@@ -81,8 +85,6 @@ public class LoginController implements AllAccessible {
 
     List<Node> childrenList = root.getChildrenUnmodifiable();
 
-    System.out.println("this is the children list for home page in login " + childrenList);
-
     if (!userCategory.equalsIgnoreCase("admin")) {
       HBox hBox = (HBox) childrenList.get(4);
       JFXToggleButton tb = (JFXToggleButton) ((HBox) hBox).getChildren().get(0);
@@ -97,6 +99,36 @@ public class LoginController implements AllAccessible {
       tb.setDisable(true);
       tableLine.setVisible(false);
       tableLine.setDisable(true);
+    }
+    if (userCategory.equalsIgnoreCase("employee")) {
+
+      JFXDialogLayout notification = new JFXDialogLayout();
+      notification.setHeading(new Text("You have ? pending service requests"));
+      StackPane stackpane = new StackPane();
+      Rectangle rectangle = new Rectangle(120.0d, 80.0d);
+      rectangle.setArcHeight(60.0d);
+      rectangle.setArcWidth(60.0d);
+      stackpane.setShape(rectangle);
+      stackpane.setMaxSize(100, 50);
+      JFXDialog dialog = new JFXDialog(stackpane, notification, JFXDialog.DialogTransition.CENTER);
+      JFXButton button = new JFXButton("Dismiss");
+      button.setOnAction(
+          new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+              dialog.close();
+            }
+          });
+      notification.setActions(button);
+      root.getChildren().add(stackpane);
+      dialog.show();
+
+      PathTransition animationPath = new PathTransition();
+      animationPath.setPath(new Line(-200, 200, 110, 200));
+      animationPath.setNode(stackpane);
+      animationPath.setDuration(Duration.seconds(1));
+      animationPath.setCycleCount(1);
+      animationPath.play();
     }
 
     Scene scene = App.getPrimaryStage().getScene();

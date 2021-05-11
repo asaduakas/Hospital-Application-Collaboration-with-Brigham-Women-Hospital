@@ -2,6 +2,7 @@ package edu.wpi.cs3733.d21.teamD.views;
 
 import com.jfoenix.controls.*;
 import edu.wpi.cs3733.d21.teamD.App;
+import edu.wpi.cs3733.d21.teamD.Ddb.FDatabaseTables;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
 import edu.wpi.cs3733.d21.teamD.views.Access.AllAccessible;
 import edu.wpi.cs3733.d21.teamD.views.Access.LoginController;
@@ -36,7 +37,6 @@ public class HomeController implements AllAccessible {
   @FXML private JFXButton exitButton; // Btn to exit program
   @FXML private JFXButton logoutButton;
   @FXML private JFXButton usersBtn;
-
   @FXML private JFXButton mapEditing;
   @FXML private JFXButton serviceRequest;
   @FXML private JFXButton covidButton;
@@ -45,6 +45,8 @@ public class HomeController implements AllAccessible {
   @FXML public StackPane stackPane;
   @FXML private AnchorPane mainPane;
   @FXML private JFXToggleButton dbToggle;
+  @FXML private JFXDrawer testDrawer;
+  @FXML private JFXButton testBtn;
   private String dbToggleText[] = {"Embedded Connection", "Remote Connection"};
   private int index = 0;
 
@@ -260,6 +262,8 @@ public class HomeController implements AllAccessible {
   }
 
   public void serviceRequestView() {
+
+    FDatabaseTables.getExternalTransportTable().getIncompleteRequest();
     if (LoginController.getUserCategory() != null) {
       this.userCategory = LoginController.getUserCategory();
     } else {
