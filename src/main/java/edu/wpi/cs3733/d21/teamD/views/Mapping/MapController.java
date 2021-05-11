@@ -595,6 +595,8 @@ public class MapController implements AllAccessible {
       }
       animateEdges();
       animateElevators();
+
+      drawerController.getDirections(thePath);
     }
   }
 
@@ -798,9 +800,6 @@ public class MapController implements AllAccessible {
     if (thePath.isEmpty()) {
       Targets.clear();
     } else {
-      switchFloor(currentFloor);
-      resizeNodeUI(getNodeUIByID(DirectoryTargets.getFirst().getNodeID()), 2);
-      resizeNodeUI(getNodeUIByID(DirectoryTargets.getLast().getNodeID()), 2);
       final Node start = DirectoryTargets.getFirst();
       switchFloor(start.getFloor());
       final Node end = getCenteringEnd(DirectoryTargets.getLast());
@@ -809,7 +808,9 @@ public class MapController implements AllAccessible {
           start.getXCoord(), start.getYCoord(), end.getXCoord(), end.getYCoord());
 
       //      algorithm.multiSearch(initialData, DirectoryTargets).printPathEdges();
-      drawerController.getDirections(thePath);
+      switchFloor(currentFloor);
+      resizeNodeUI(getNodeUIByID(DirectoryTargets.getFirst().getNodeID()), 2);
+      resizeNodeUI(getNodeUIByID(DirectoryTargets.getLast().getNodeID()), 2);
     }
     return thePath;
   }
@@ -840,7 +841,6 @@ public class MapController implements AllAccessible {
     } else {
       switchFloor(currentFloor);
       // algorithm.multiSearch(initialData, Targets).printPathEdges();
-      drawerController.getDirections(thePath);
     }
   }
 
@@ -861,7 +861,7 @@ public class MapController implements AllAccessible {
                   helpImage.setImage(mapEditorHelp);
                   isEditor = true;
                   clearMap();
-                  LoadingNodesEdges(currentFloor);
+                  switchFloor(currentFloor);
                 } else {
                   helpImage.setImage(pathfindingHelp);
                   isEditor = false;
@@ -869,7 +869,7 @@ public class MapController implements AllAccessible {
                     popup.hide();
                   }
                   clearMap();
-                  drawNodeFloor(currentFloor);
+                  switchFloor(currentFloor);
                 }
               }
             });
@@ -1018,7 +1018,9 @@ public class MapController implements AllAccessible {
             if (key == KeyCode.ESCAPE) {
               resetData();
               clearMap();
-              drawNodeFloor(currentFloor);
+              switchFloor(currentFloor);
+              drawerController.clearDirections();
+              initializeEdges(); // clear out animated edges
               System.out.println("Just cleared");
             }
             return;
@@ -1647,10 +1649,16 @@ public class MapController implements AllAccessible {
         if (n.compareFloor(nodeNext) >= 1) {
           imageView.setImage(down);
           secondaryAnchor.getChildren().add(imageView);
-          imageView.setOnMousePressed(event -> switchFloor(nodeNext.getFloor()));
+          imageView.setOnMousePressed(
+              event -> {
+                switchFloor(nodeNext.getFloor());
+              });
         } else if (n.compareFloor(nodeNext) <= -1) {
           secondaryAnchor.getChildren().add(imageView);
-          imageView.setOnMousePressed(event -> switchFloor(nodeNext.getFloor()));
+          imageView.setOnMousePressed(
+              event -> {
+                switchFloor(nodeNext.getFloor());
+              });
         }
 
         ScaleTransition st = new ScaleTransition(Duration.seconds(1), imageView);

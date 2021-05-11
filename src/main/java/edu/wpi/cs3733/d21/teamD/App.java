@@ -1,6 +1,7 @@
 package edu.wpi.cs3733.d21.teamD;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXNodesList;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
 import edu.wpi.cs3733.d21.teamD.views.ControllerManager;
 import edu.wpi.cs3733.d21.teamD.views.SceneSizeChangeListener;
@@ -46,6 +47,7 @@ public class App extends Application {
   public static void initLoader(FXMLLoader fxmlLoader) {
     Pane root = fxmlLoader.getRoot();
     List<Node> childrenList = root.getChildren();
+    System.out.println("this is the initPage children list " + childrenList);
     primaryStage.setMinHeight(135 * 4);
     primaryStage.setMinWidth(240 * 4);
     Scene scene = primaryStage.getScene();
@@ -65,6 +67,7 @@ public class App extends Application {
   public static void changeChildrenInitPage(List<Node> nodeList) {
 
     HBox topButtons = (HBox) nodeList.get(4);
+    JFXNodesList aboutBtns = (JFXNodesList) nodeList.get(6);
     topButtons.setLayoutX(primaryStage.getScene().getWidth() - (topButtons.getWidth() + 26));
 
     VBox buttons = (VBox) nodeList.get(2);
@@ -94,6 +97,10 @@ public class App extends Application {
     }
     exitButton.setLayoutY(
         App.getPrimaryStage().getScene().getHeight() - (exitButton.getHeight() + 50));
+
+    aboutBtns.setLayoutX(hospitalImage.getLayoutX() + aboutBtns.getWidth() + 30);
+    System.out.println("this is in the initPage " + hospitalImage.getLayoutX());
+    aboutBtns.setLayoutY(App.getPrimaryStage().getScene().getHeight() - 100);
   }
 
   public static Stage getPrimaryStage() {

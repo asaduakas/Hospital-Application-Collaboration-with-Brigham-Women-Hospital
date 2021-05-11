@@ -5,8 +5,6 @@ import edu.wpi.cs3733.d21.teamD.Astar.*;
 import edu.wpi.cs3733.d21.teamD.Ddb.FDatabaseTables;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
 import edu.wpi.cs3733.d21.teamD.views.HomeController;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
@@ -283,93 +281,70 @@ public class MapDrawerController implements Initializable {
     directoryTreeView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     directoryTreeView.setStyle("-fx-padding: 0; -fx-background-insets: 0");
 
-    try {
-      ImageView parkImage =
-          new ImageView(new Image(new FileInputStream("src/main/resources/Images/parkingpin.png")));
-      parkImage.setFitWidth(15);
-      parkImage.setFitHeight(15);
-      parking.setGraphic(parkImage);
+    ImageView parkImage = new ImageView(new Image("Images/parkingpin.png"));
+    parkImage.setFitWidth(15);
+    parkImage.setFitHeight(15);
+    parking.setGraphic(parkImage);
 
-      ImageView elevImage =
-          new ImageView(
-              new Image(new FileInputStream("src/main/resources/Images/elevatorpin.png")));
-      elevImage.setFitWidth(15);
-      elevImage.setFitHeight(15);
-      elevator.setGraphic(elevImage);
+    ImageView elevImage = new ImageView(new Image("Images/elevatorpin.png"));
+    elevImage.setFitWidth(15);
+    elevImage.setFitHeight(15);
+    elevator.setGraphic(elevImage);
 
-      ImageView restImage =
-          new ImageView(
-              new Image(new FileInputStream("src/main/resources/Images/restroompins.png")));
-      restImage.setFitWidth(15);
-      restImage.setFitHeight(15);
-      restroom.setGraphic(restImage);
+    ImageView restImage = new ImageView(new Image("Images/restroompins.png"));
+    restImage.setFitWidth(15);
+    restImage.setFitHeight(15);
+    restroom.setGraphic(restImage);
 
-      ImageView stairImage =
-          new ImageView(new Image(new FileInputStream("src/main/resources/Images/stairspin.png")));
-      stairImage.setFitWidth(15);
-      stairImage.setFitHeight(15);
-      stairs.setGraphic(stairImage);
+    ImageView stairImage = new ImageView(new Image("Images/stairspin.png"));
+    stairImage.setFitWidth(15);
+    stairImage.setFitHeight(15);
+    stairs.setGraphic(stairImage);
 
-      ImageView deptImage =
-          new ImageView(new Image(new FileInputStream("src/main/resources/Images/deptpins.png")));
-      deptImage.setFitWidth(15);
-      deptImage.setFitHeight(15);
-      department.setGraphic(deptImage);
+    ImageView deptImage = new ImageView(new Image("Images/deptpins.png"));
+    deptImage.setFitWidth(15);
+    deptImage.setFitHeight(15);
+    department.setGraphic(deptImage);
 
-      ImageView labImage =
-          new ImageView(new Image(new FileInputStream("src/main/resources/Images/labspin.png")));
-      labImage.setFitWidth(15);
-      labImage.setFitHeight(15);
-      laboratory.setGraphic(labImage);
+    ImageView labImage = new ImageView(new Image("Images/labspin.png"));
+    labImage.setFitWidth(15);
+    labImage.setFitHeight(15);
+    laboratory.setGraphic(labImage);
 
-      ImageView infoImage =
-          new ImageView(new Image(new FileInputStream("src/main/resources/Images/infopin.png")));
-      infoImage.setFitWidth(15);
-      infoImage.setFitHeight(15);
-      information.setGraphic(infoImage);
+    ImageView infoImage = new ImageView(new Image("Images/infopin.png"));
+    infoImage.setFitWidth(15);
+    infoImage.setFitHeight(15);
+    information.setGraphic(infoImage);
 
-      ImageView confImage =
-          new ImageView(
-              new Image(new FileInputStream("src/main/resources/Images/conferencepin.png")));
-      confImage.setFitWidth(15);
-      confImage.setFitHeight(15);
-      conference.setGraphic(confImage);
+    ImageView confImage = new ImageView(new Image("Images/conferencepin.png"));
+    confImage.setFitWidth(15);
+    confImage.setFitHeight(15);
+    conference.setGraphic(confImage);
 
-      ImageView exitImage =
-          new ImageView(new Image(new FileInputStream("src/main/resources/Images/exitpin.png")));
-      exitImage.setFitWidth(15);
-      exitImage.setFitHeight(15);
-      exit.setGraphic(exitImage);
+    ImageView exitImage = new ImageView(new Image("Images/exitpin.png"));
+    exitImage.setFitWidth(15);
+    exitImage.setFitHeight(15);
+    exit.setGraphic(exitImage);
 
-      ImageView retailImage =
-          new ImageView(new Image(new FileInputStream("src/main/resources/Images/retailpin.png")));
-      retailImage.setFitWidth(15);
-      retailImage.setFitHeight(15);
-      retail.setGraphic(retailImage);
+    ImageView retailImage = new ImageView(new Image("Images/retailpin.png"));
+    retailImage.setFitWidth(15);
+    retailImage.setFitHeight(15);
+    retail.setGraphic(retailImage);
 
-      ImageView servImage =
-          new ImageView(new Image(new FileInputStream("src/main/resources/Images/service.png")));
-      servImage.setFitWidth(15);
-      servImage.setFitHeight(15);
-      service.setGraphic(servImage);
+    ImageView servImage = new ImageView(new Image("Images/service.png"));
+    servImage.setFitWidth(15);
+    servImage.setFitHeight(15);
+    service.setGraphic(servImage);
 
-      ImageView favImage =
-          new ImageView(
-              new Image(new FileInputStream("src/main/resources/Images/favIcon_good.png")));
-      favImage.setFitWidth(15);
-      favImage.setFitHeight(15);
-      favoriteCell.setGraphic(favImage);
+    ImageView favImage = new ImageView(new Image("Images/favIcon_good.png"));
+    favImage.setFitWidth(15);
+    favImage.setFitHeight(15);
+    favoriteCell.setGraphic(favImage);
 
-      ImageView blockedImage =
-          new ImageView(
-              new Image(new FileInputStream("src/main/resources/Images/blockedNode.png")));
-      blockedImage.setFitWidth(15);
-      blockedImage.setFitHeight(15);
-      blockedCell.setGraphic(blockedImage);
-
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    }
+    ImageView blockedImage = new ImageView(new Image("Images/blockedNode.png"));
+    blockedImage.setFitWidth(15);
+    blockedImage.setFitHeight(15);
+    blockedCell.setGraphic(blockedImage);
 
     directoryRoot
         .getChildren()
@@ -638,6 +613,11 @@ public class MapDrawerController implements Initializable {
     return endLocation;
   }
 
+  public void clearDirections() {
+    dirText.getChildren().clear();
+    downloadText.clear();
+  }
+
   @FXML
   public void getDirections(LinkedList<Edge> edges) {
 
@@ -647,8 +627,7 @@ public class MapDrawerController implements Initializable {
     }
     // ScaleDown(edges.getFirst().getStartNode());
 
-    dirText.getChildren().clear();
-    downloadText.clear();
+    clearDirections();
 
     edu.wpi.cs3733.d21.teamD.Astar.Node start =
         initialData.getNodeByID(edges.getFirst().getStartNodeID());
@@ -682,24 +661,26 @@ public class MapDrawerController implements Initializable {
       edu.wpi.cs3733.d21.teamD.Astar.Node startN = initialData.getNodeByID(N.getStartNodeID());
       edu.wpi.cs3733.d21.teamD.Astar.Node endN = initialData.getNodeByID(N.getEndNodeID());
 
-      String newDirection =
-          evalTurn(
-              initialDirection,
-              startN.getXCoord(),
-              startN.getYCoord(),
-              endN.getXCoord(),
-              endN.getYCoord(),
-              startN,
-              endN);
-      initialDirection = newDirection;
+      if (MapController.currentFloor.equals(startN.getFloor())) {
+        String newDirection =
+            evalTurn(
+                initialDirection,
+                startN.getXCoord(),
+                startN.getYCoord(),
+                endN.getXCoord(),
+                endN.getYCoord(),
+                startN,
+                endN);
+        initialDirection = newDirection;
+      }
     }
     // dirText.setFont(hFont);
-    Text endText = new Text("\nWelcome to " + end.getLongName() + "\n");
-    endText.setFont(hFont);
-    dirText.getChildren().add(endText);
-    downloadText.appendText("\nWelcome to " + end.getLongName() + "\n");
-    // dirText.appendText("\nWelcome to " + end.getLongName() + "\n");
-    // dirText.setPromptText(dirText.getText());
+    if (MapController.currentFloor.equals(end.getFloor())) {
+      Text endText = new Text("\nWelcome to " + end.getLongName() + "\n");
+      endText.setFont(hFont);
+      dirText.getChildren().add(endText);
+      downloadText.appendText("\nWelcome to " + end.getLongName() + "\n");
+    }
   }
 
   public String evalTurn(
@@ -722,17 +703,11 @@ public class MapDrawerController implements Initializable {
       //      dirText.getChildren().add(elvText);
       downloadText.appendText(
           "\t" + "Take the elevator towards floor " + endNode.getFloor() + "\n");
-      try {
-        ImageView EleImage =
-            new ImageView(new Image(new FileInputStream("src/main/resources/Images/elevator.png")));
-        EleImage.setFitHeight(30);
-        EleImage.setFitWidth(30);
-        dirText.getChildren().addAll(EleImage, elvText);
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      }
-      // dirText.setFont(hFont);
-      // dirText.appendText("Take the elevator towards floor " + endNode.getFloor() + "\n");
+
+      ImageView EleImage = new ImageView(new Image("Images/elevator.png"));
+      EleImage.setFitHeight(30);
+      EleImage.setFitWidth(30);
+      dirText.getChildren().addAll(EleImage, elvText);
       return "In elevator";
 
     } else if (startNode.getNodeType().equals("ELEV") && !endNode.getNodeType().equals("ELEV")) {
@@ -743,15 +718,10 @@ public class MapDrawerController implements Initializable {
       Text text = new Text("\t" + "Take the stairs towards floor " + endNode.getFloor() + "\n");
       text.setFont(pFont);
       downloadText.appendText("\t" + "Take the stairs towards floor " + endNode.getFloor() + "\n");
-      try {
-        ImageView Image =
-            new ImageView(new Image(new FileInputStream("src/main/resources/Images/stairs.png")));
-        Image.setFitHeight(30);
-        Image.setFitWidth(30);
-        dirText.getChildren().addAll(Image, text);
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      }
+      ImageView Image = new ImageView(new Image("Images/stairs.png"));
+      Image.setFitHeight(30);
+      Image.setFitWidth(30);
+      dirText.getChildren().addAll(Image, text);
       return "In stairs";
     } else if (startNode.getNodeType().equals("STAI") && !endNode.getNodeType().equals("STAI")) {
       newDirection = firstMove(startX, startY, endX, endY, startNode, endNode);
@@ -786,16 +756,10 @@ public class MapDrawerController implements Initializable {
       Text lText = new Text("\tTurn Left towards: \n\t\t" + endNode.getLongName() + "\n");
       lText.setFont(pFont);
       downloadText.appendText("\tTurn Left towards: \n\t\t" + endNode.getLongName() + "\n");
-      try {
-        ImageView Image =
-            new ImageView(new Image(new FileInputStream("src/main/resources/Images/left.png")));
-        Image.setFitHeight(30);
-        Image.setFitWidth(30);
-        dirText.getChildren().addAll(Image, lText);
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      }
-      // dirText.appendText("\tTurn Left towards: \n\t\t" + endNode.getLongName() + "\n");
+      ImageView Image = new ImageView(new Image("Images/left.png"));
+      Image.setFitHeight(30);
+      Image.setFitWidth(30);
+      dirText.getChildren().addAll(Image, lText);
 
     }
     // Turn Right
@@ -807,15 +771,10 @@ public class MapDrawerController implements Initializable {
       Text rText = new Text("\tTurn Right towards: \n\t\t" + endNode.getLongName() + "\n");
       rText.setFont(pFont);
       downloadText.appendText("\tTurn Right towards: \n\t\t" + endNode.getLongName() + "\n");
-      try {
-        ImageView Image =
-            new ImageView(new Image(new FileInputStream("src/main/resources/Images/right.png")));
-        Image.setFitHeight(30);
-        Image.setFitWidth(30);
-        dirText.getChildren().addAll(Image, rText);
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      }
+      ImageView Image = new ImageView(new Image("Images/right.png"));
+      Image.setFitHeight(30);
+      Image.setFitWidth(30);
+      dirText.getChildren().addAll(Image, rText);
       // dirText.appendText("\tTurn Right towards: \n\t\t" + endNode.getLongName() + "\n");
     }
     // Continue Straight
@@ -826,15 +785,10 @@ public class MapDrawerController implements Initializable {
         sText.setFont(pFont);
         downloadText.appendText(
             "\tContinue Straight towards: \n\t\t" + endNode.getLongName() + "\n");
-        try {
-          ImageView Image =
-              new ImageView(new Image(new FileInputStream("src/main/resources/Images/up.png")));
-          Image.setFitHeight(30);
-          Image.setFitWidth(30);
-          dirText.getChildren().addAll(Image, sText);
-        } catch (FileNotFoundException e) {
-          e.printStackTrace();
-        }
+        ImageView Image = new ImageView(new Image("Images/up.png"));
+        Image.setFitHeight(30);
+        Image.setFitWidth(30);
+        dirText.getChildren().addAll(Image, sText);
         // dirText.appendText("\tContinue Straight towards: \n\t\t" + endNode.getLongName() + "\n");
       }
     }
@@ -857,32 +811,22 @@ public class MapDrawerController implements Initializable {
       // dirText.setFont(hFont);
       Text text = new Text("Take the elevator towards floor " + endNode.getFloor() + "\n");
       text.setFont(pFont);
-      try {
-        ImageView EleImage =
-            new ImageView(new Image(new FileInputStream("src/main/resources/Images/elevator.png")));
-        EleImage.setFitHeight(30);
-        EleImage.setFitWidth(30);
-        //        dirText.getChildren().addAll(EleImage, text);
-        dirText.getChildren().add(EleImage);
-        System.out.println("this is adding elevatorImage");
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      }
+      ImageView EleImage = new ImageView(new Image("Images/elevator.png"));
+      EleImage.setFitHeight(30);
+      EleImage.setFitWidth(30);
+      //        dirText.getChildren().addAll(EleImage, text);
+      dirText.getChildren().add(EleImage);
+      System.out.println("this is adding elevatorImage");
       return "In elevator";
     } else if (startNode.getNodeType().equals("STAI") && endNode.getNodeType().equals("STAI")) {
       // dirText.setFont(hFont);
       Text text = new Text("Take the stairs towards floor " + endNode.getFloor() + "\n");
       text.setFont(pFont);
       downloadText.appendText("Take the stairs towards floor " + endNode.getFloor() + "\n");
-      try {
-        ImageView Image =
-            new ImageView(new Image(new FileInputStream("src/main/resources/Images/stairs.png")));
-        Image.setFitHeight(30);
-        Image.setFitWidth(30);
-        dirText.getChildren().addAll(Image, text);
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      }
+      ImageView Image = new ImageView(new Image("Images/stairs.png"));
+      Image.setFitHeight(30);
+      Image.setFitWidth(30);
+      dirText.getChildren().addAll(Image, text);
       return "In stairs";
     } else {
       // North
@@ -891,16 +835,10 @@ public class MapDrawerController implements Initializable {
         Text text = new Text("\tHead North towards: \n\t\t" + endNode.getLongName() + "\n");
         text.setFont(pFont);
         downloadText.appendText("\tHead North towards: \n\t\t" + endNode.getLongName() + "\n");
-        try {
-          ImageView Image =
-              new ImageView(
-                  new Image(new FileInputStream("src/main/resources/Images/north_bg.png")));
-          Image.setFitHeight(30);
-          Image.setFitWidth(30);
-          dirText.getChildren().addAll(Image, text);
-        } catch (FileNotFoundException e) {
-          e.printStackTrace();
-        }
+        ImageView Image = new ImageView(new Image("Images/north_bg.png"));
+        Image.setFitHeight(30);
+        Image.setFitWidth(30);
+        dirText.getChildren().addAll(Image, text);
         //   dirText.setFont(pFont);
         //        dirText.appendText("\tHead North towards: \n\t\t" + endNode.getLongName() + "\n");
         return "North";
@@ -911,16 +849,10 @@ public class MapDrawerController implements Initializable {
         Text text = new Text("\tHead South towards: \n\t\t" + endNode.getLongName() + "\n");
         text.setFont(pFont);
         downloadText.appendText("\tHead South towards: \n\t\t" + endNode.getLongName() + "\n");
-        try {
-          ImageView Image =
-              new ImageView(
-                  new Image(new FileInputStream("src/main/resources/Images/south_bg.png")));
-          Image.setFitHeight(30);
-          Image.setFitWidth(30);
-          dirText.getChildren().addAll(Image, text);
-        } catch (FileNotFoundException e) {
-          e.printStackTrace();
-        }
+        ImageView Image = new ImageView(new Image("Images/south_bg.png"));
+        Image.setFitHeight(30);
+        Image.setFitWidth(30);
+        dirText.getChildren().addAll(Image, text);
         return "South";
       }
       // East
@@ -929,16 +861,10 @@ public class MapDrawerController implements Initializable {
         Text text = new Text("\tHead East towards: \n\t\t" + endNode.getLongName() + "\n");
         text.setFont(pFont);
         downloadText.appendText("\tHead East towards: \n\t\t" + endNode.getLongName() + "\n");
-        try {
-          ImageView Image =
-              new ImageView(
-                  new Image(new FileInputStream("src/main/resources/Images/east_bg.png")));
-          Image.setFitHeight(30);
-          Image.setFitWidth(30);
-          dirText.getChildren().addAll(Image, text);
-        } catch (FileNotFoundException e) {
-          e.printStackTrace();
-        }
+        ImageView Image = new ImageView(new Image("Images/east_bg.png"));
+        Image.setFitHeight(30);
+        Image.setFitWidth(30);
+        dirText.getChildren().addAll(Image, text);
         return "East";
       }
       // West
@@ -947,16 +873,10 @@ public class MapDrawerController implements Initializable {
         Text text = new Text("\tHead West towards: \n\t\t" + endNode.getLongName() + "\n");
         text.setFont(pFont);
         downloadText.appendText("\tHead West towards: \n\t\t" + endNode.getLongName() + "\n");
-        try {
-          ImageView Image =
-              new ImageView(
-                  new Image(new FileInputStream("src/main/resources/Images/west_bg.png")));
-          Image.setFitHeight(30);
-          Image.setFitWidth(30);
-          dirText.getChildren().addAll(Image, text);
-        } catch (FileNotFoundException e) {
-          e.printStackTrace();
-        }
+        ImageView Image = new ImageView(new Image("Images/west_bg.png"));
+        Image.setFitHeight(30);
+        Image.setFitWidth(30);
+        dirText.getChildren().addAll(Image, text);
         return "West";
       } else {
         //        System.out.println("Error determining turn direction towards " +

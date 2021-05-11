@@ -9,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 
@@ -82,25 +83,29 @@ public class InitPageController implements AllAccessible {
 
   @FXML
   private void initializePages() {
-    pageButton.setPrefHeight(55);
-    pageButton.setPrefWidth(55);
-    pageButton.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 55px");
-    pageButton.setText("Pages");
+    pageButton.setPrefHeight(60);
+    pageButton.setPrefWidth(60);
+    pageButton.setStyle(
+        "-fx-background-color: #FFBFAB; -fx-background-radius: 60px; -fx-text-fill:  #000000; -fx-font-size: 14; -fx-font-weight: Bold");
+    Text pages = new Text("Pages");
+    //    pages.setStyle("-fx-text-fill:  #000000; -fx-font-size: 14; -fx-font-weight: Bold");
+
+    pageButton.setText(pages.getText());
 
     JFXButton aboutButton = new JFXButton("ABOUT");
     aboutButton.setButtonType(JFXButton.ButtonType.FLAT);
     aboutButton.setStyle(
-        "-fx-background-color: #ffffff; -fx-background-radius: 50px; -fx-font-size: 10");
-    aboutButton.setPrefHeight(50);
-    aboutButton.setPrefWidth(50);
+        "-fx-background-color: #FF9F80; -fx-background-radius: 60px; -fx-font-size: 12");
+    aboutButton.setPrefHeight(60);
+    aboutButton.setPrefWidth(60);
     aboutButton.setOnAction(this::aboutPage);
 
     JFXButton creditButton = new JFXButton("CREDITS");
     creditButton.setButtonType(JFXButton.ButtonType.FLAT);
     creditButton.setStyle(
-        "-fx-background-color: #ffffff; -fx-background-radius: 50px; -fx-font-size: 8");
-    creditButton.setPrefHeight(50);
-    creditButton.setPrefWidth(50);
+        "-fx-background-color: #FF926F; -fx-background-radius: 60px; -fx-font-size: 11");
+    creditButton.setPrefHeight(60);
+    creditButton.setPrefWidth(60);
     creditButton.setOnAction(this::creditsPage);
 
     JFXNodesList nodeList = new JFXNodesList();
@@ -110,8 +115,6 @@ public class InitPageController implements AllAccessible {
     nodeList.setSpacing(20d);
     mainPane.getChildren().add(nodeList);
 
-    nodeList.setLayoutX(34);
-    nodeList.setLayoutY(613);
     nodeList.setRotate(180);
   }
 
