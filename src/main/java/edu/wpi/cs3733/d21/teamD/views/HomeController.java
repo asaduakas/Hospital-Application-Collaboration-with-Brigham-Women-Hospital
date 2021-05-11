@@ -329,12 +329,17 @@ public class HomeController implements AllAccessible {
     JFXDrawer drawer = (JFXDrawer) nodeList.get(1);
     JFXToggleButton mapEditorBtn = (JFXToggleButton) nodeList.get(4);
     JFXButton exitBtn = (JFXButton) nodeList.get(5);
-    JFXButton helpBtn = (JFXButton) nodeList.get(6);
-    ImageView helpImage = (ImageView) nodeList.get(7);
-    StackPane stackPane = (StackPane) nodeList.get(8);
-    JFXButton testBtn = (JFXButton) nodeList.get(9);
-    JFXNodesList floorBtns = (JFXNodesList) nodeList.get(10);
-    JFXNodesList csvBtns = (JFXNodesList) nodeList.get(11);
+    JFXButton floorBtn = (JFXButton) nodeList.get(6);
+    JFXButton helpBtn = (JFXButton) nodeList.get(7);
+    ImageView helpImage = (ImageView) nodeList.get(8);
+    StackPane stackPane = (StackPane) nodeList.get(9);
+    JFXButton testBtn = (JFXButton) nodeList.get(10);
+    JFXButton fl1Btn = (JFXButton) nodeList.get(11);
+    JFXButton fl2Btn = (JFXButton) nodeList.get(12);
+    JFXButton fl3Btn = (JFXButton) nodeList.get(13);
+    JFXButton fll1Btn = (JFXButton) nodeList.get(14);
+    JFXButton fll2Btn = (JFXButton) nodeList.get(15);
+    JFXNodesList csvBtns = (JFXNodesList) nodeList.get(16);
 
     drawer.setLayoutX(-270);
     drawer.setLayoutY(0);
@@ -343,10 +348,21 @@ public class HomeController implements AllAccessible {
         App.getPrimaryStage().getScene().getWindow().getHeight() - exitBtn.getHeight() - 60);
     exitBtn.setLayoutX(App.getPrimaryStage().getScene().getWidth() - exitBtn.getWidth() - 40);
 
-    floorBtns.setLayoutY(20);
-    floorBtns.setLayoutX(App.getPrimaryStage().getScene().getWidth() - floorBtns.getWidth() - 40);
+    floorBtn.setLayoutY(20);
+    floorBtn.setLayoutX(App.getPrimaryStage().getScene().getWidth() - floorBtn.getWidth() - 40);
 
-    mapEditorBtn.setLayoutX(floorBtns.getLayoutX() - 150);
+    fl1Btn.setLayoutY(95);
+    fl1Btn.setLayoutX(floorBtn.getLayoutX());
+    fl2Btn.setLayoutY(165);
+    fl2Btn.setLayoutX(floorBtn.getLayoutX() - 2.5);
+    fl3Btn.setLayoutY(235);
+    fl3Btn.setLayoutX(floorBtn.getLayoutX() - 2.5);
+    fll1Btn.setLayoutY(305);
+    fll1Btn.setLayoutX(floorBtn.getLayoutX() - 2.5);
+    fll2Btn.setLayoutY(375);
+    fll2Btn.setLayoutX(floorBtn.getLayoutX() - 2.5);
+
+    mapEditorBtn.setLayoutX(floorBtn.getLayoutX() - 150);
     mapEditorBtn.setLayoutY(14);
 
     csvBtns.setLayoutY(20);
