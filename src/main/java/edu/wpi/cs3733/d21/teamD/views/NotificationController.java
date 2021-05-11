@@ -115,84 +115,84 @@ public class NotificationController implements Initializable {
   public void putIntoText() {
     if (!noExTransIncomplete) {
       for (int i = 0; i < exTransList.size(); i++) {
-        Text infoExTrans = new Text(exTransList.get(i) + "\n");
+        Text infoExTrans = new Text("\t" + exTransList.get(i) + "\n");
         textFlow.getChildren().add(infoExTrans);
       }
     }
 
     if (!noAudVisIncomplete) {
       for (int i = 0; i < audVisList.size(); i++) {
-        Text infoAudVis = new Text(audVisList.get(i) + "\n");
+        Text infoAudVis = new Text("\t" + audVisList.get(i) + "\n");
         textFlow.getChildren().add(infoAudVis);
       }
     }
 
     if (!noComputerServiceIncomplete) {
       for (int i = 0; i < compServiceList.size(); i++) {
-        Text infoCompService = new Text(compServiceList.get(i) + "\n");
+        Text infoCompService = new Text("\t" + compServiceList.get(i) + "\n");
         textFlow.getChildren().add(infoCompService);
       }
     }
 
     if (!noFacilitiesIncomplete) {
       for (int i = 0; i < facilitiesServiceList.size(); i++) {
-        Text infoFacilities = new Text(facilitiesServiceList.get(i) + "\n");
+        Text infoFacilities = new Text("\t" + facilitiesServiceList.get(i) + "\n");
         textFlow.getChildren().add(infoFacilities);
       }
     }
 
     if (!noFloralDeliveryIncomplete) {
       for (int i = 0; i < floralDeliveryList.size(); i++) {
-        Text infoFloralDelivery = new Text(floralDeliveryList.get(i) + "\n");
+        Text infoFloralDelivery = new Text("\t" + floralDeliveryList.get(i) + "\n");
         textFlow.getChildren().add(infoFloralDelivery);
       }
     }
 
     if (!noFoodDeliveryIncomplete) {
       for (int i = 0; i < foodDeliveryList.size(); i++) {
-        Text infoFoodDelivery = new Text(foodDeliveryList.get(i) + "\n");
+        Text infoFoodDelivery = new Text("\t" + foodDeliveryList.get(i) + "\n");
         textFlow.getChildren().add(infoFoodDelivery);
       }
     }
 
     if (!noInternalTransIncomplete) {
       for (int i = 0; i < internalTransList.size(); i++) {
-        Text infoInternalTrans = new Text(internalTransList.get(i) + "\n");
+        Text infoInternalTrans = new Text("\t" + internalTransList.get(i) + "\n");
         textFlow.getChildren().add(infoInternalTrans);
       }
     }
 
     if (!noLangInterpIncomplete) {
       for (int i = 0; i < langInterpList.size(); i++) {
-        Text infoLangInterp = new Text(langInterpList.get(i) + "\n");
+        Text infoLangInterp = new Text("\t" + langInterpList.get(i) + "\n");
         textFlow.getChildren().add(infoLangInterp);
       }
     }
 
     if (!noLaundryIncomplete) {
       for (int i = 0; i < laundryList.size(); i++) {
-        Text infoLaundry = new Text(laundryList.get(i) + "\n");
+        Text infoLaundry = new Text("\t" + laundryList.get(i) + "\n");
         textFlow.getChildren().add(infoLaundry);
       }
     }
 
     if (!noMedDeliveryIncomplete) {
       for (int i = 0; i < medDeliveryList.size(); i++) {
-        Text infoMedDelivery = new Text(medDeliveryList.get(i) + "\n");
+        Text infoMedDelivery = new Text("\t" + medDeliveryList.get(i) + "\n");
         textFlow.getChildren().add(infoMedDelivery);
       }
     }
 
     if (!noSantiServiceIncomplete) {
       for (int i = 0; i < SantiServiceList.size(); i++) {
-        Text infoSantiService = new Text(SantiServiceList.get(i) + "\n");
+        Text infoSantiService = new Text("\t" + SantiServiceList.get(i) + "\n");
         textFlow.getChildren().add(infoSantiService);
       }
     }
 
     if (!noSecurityServiceIncomplete) {
       for (int i = 0; i < SecurityServiceList.size(); i++) {
-        Text infoSecurity = new Text(SecurityServiceList.get(i) + "\n");
+        Text infoSecurity = new Text("\t" + SecurityServiceList.get(i) + "\n");
         textFlow.getChildren().add(infoSecurity);
       }
     }

@@ -105,7 +105,7 @@ public class LoginController implements AllAccessible {
     }
     if (userCategory.equalsIgnoreCase("employee")) {
 
-      JFXDrawer notificationDrawer = (JFXDrawer) childrenList.get(8);
+      JFXDrawer notificationDrawer = (JFXDrawer) childrenList.get(7);
       FXMLLoader loader =
           new FXMLLoader(
               LoginController.class.getClassLoader().getResource("NotificationView.fxml"));
@@ -299,10 +299,15 @@ public class LoginController implements AllAccessible {
     exitButton.setLayoutY(
         App.getPrimaryStage().getScene().getHeight() - (exitButton.getHeight() + 50));
 
-    Text userType = (Text) nodeList.get(nodeList.size() - 1);
-    userType.setX(exitButton.getLayoutX() - 170);
-    userType.setY(App.getPrimaryStage().getScene().getHeight() - 25);
-
+    if (userCategory.equalsIgnoreCase("employee")) {
+      Text userType = (Text) nodeList.get(nodeList.size() - 2);
+      userType.setX(exitButton.getLayoutX() - 170);
+      userType.setY(App.getPrimaryStage().getScene().getHeight() - 25);
+    } else {
+      Text userType = (Text) nodeList.get(nodeList.size() - 1);
+      userType.setX(exitButton.getLayoutX() - 170);
+      userType.setY(App.getPrimaryStage().getScene().getHeight() - 25);
+    }
     stackPane.setPrefWidth(500);
     stackPane.setPrefHeight(300);
     stackPane.setLayoutX(
