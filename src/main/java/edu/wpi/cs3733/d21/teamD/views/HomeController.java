@@ -228,6 +228,7 @@ public class HomeController implements AllAccessible {
     JFXButton helpBtn = (JFXButton) nodeList.get(6);
     ImageView helpImage = (ImageView) nodeList.get(7);
     StackPane stackPane = (StackPane) nodeList.get(8);
+    JFXButton testBtn = (JFXButton) nodeList.get(9);
     JFXNodesList floorBtns = (JFXNodesList) nodeList.get(10);
     JFXNodesList csvBtns = (JFXNodesList) nodeList.get(11);
 
@@ -260,6 +261,9 @@ public class HomeController implements AllAccessible {
     stackPane.setLayoutY(
         (App.getPrimaryStage().getScene().getHeight() - stackPane.getHeight()) / 2);
     stackPane.setPickOnBounds(false);
+
+    testBtn.setLayoutY(helpBtn.getLayoutY());
+    testBtn.setLayoutX(helpBtn.getLayoutX() + helpBtn.getWidth() + 30);
   }
 
   @FXML
