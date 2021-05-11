@@ -239,6 +239,15 @@ public class ChatbotController implements AllAccessible {
         } else if (HomeController.username.equalsIgnoreCase("Patient")) {
           answer = answer + "Sorry, you need to be logged in as either an admin or an employee!";
         }
+      } else if (category.equals("User-Table")) {
+        if (HomeController.userCategory.equalsIgnoreCase("Admin")) {
+          ControllerManager.exitPopup();
+          ControllerManager.attemptLoadPopupBlur(
+              "UsersView.fxml",
+              fxmlLoader -> ((Pane) fxmlLoader.getRoot()).setStyle("-fx-background-color: White"));
+        } else {
+          answer = answer + "Sorry, you need to be logged in as admin to access users-tables";
+        }
       } else if (category.equals("Hospital-Map")) {
         ControllerManager.exitPopup();
 
