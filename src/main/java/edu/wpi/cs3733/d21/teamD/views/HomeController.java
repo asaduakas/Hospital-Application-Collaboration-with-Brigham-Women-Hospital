@@ -354,13 +354,13 @@ public class HomeController implements AllAccessible {
     fl1Btn.setLayoutY(95);
     fl1Btn.setLayoutX(floorBtn.getLayoutX());
     fl2Btn.setLayoutY(165);
-    fl2Btn.setLayoutX(floorBtn.getLayoutX() - 2.5);
+    fl2Btn.setLayoutX(floorBtn.getLayoutX() + 2.5);
     fl3Btn.setLayoutY(235);
-    fl3Btn.setLayoutX(floorBtn.getLayoutX() - 2.5);
+    fl3Btn.setLayoutX(floorBtn.getLayoutX() + 2.5);
     fll1Btn.setLayoutY(305);
-    fll1Btn.setLayoutX(floorBtn.getLayoutX() - 2.5);
+    fll1Btn.setLayoutX(floorBtn.getLayoutX() + 2.5);
     fll2Btn.setLayoutY(375);
-    fll2Btn.setLayoutX(floorBtn.getLayoutX() - 2.5);
+    fll2Btn.setLayoutX(floorBtn.getLayoutX() + 2.5);
 
     mapEditorBtn.setLayoutX(floorBtn.getLayoutX() - 150);
     mapEditorBtn.setLayoutY(14);
