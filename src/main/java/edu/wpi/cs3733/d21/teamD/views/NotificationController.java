@@ -94,7 +94,7 @@ public class NotificationController implements Initializable {
     SecurityServiceList = FDatabaseTables.getSecurityRequestTable().getIncompleteRequest();
 
     textFlow.getChildren().clear();
-    scrollPane.setPrefHeight(600);
+    scrollPane.setPrefHeight(400);
     putIntoText();
 
     totalCount =
@@ -196,10 +196,5 @@ public class NotificationController implements Initializable {
         textFlow.getChildren().add(infoSecurity);
       }
     }
-  }
-
-  public static Integer getTotalCount() {
-
-    return totalCount;
   }
 }

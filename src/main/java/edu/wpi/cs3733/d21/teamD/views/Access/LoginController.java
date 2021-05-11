@@ -142,6 +142,7 @@ public class LoginController implements AllAccessible {
       dismissBtn.setTranslateX(20);
       alter.setTranslateX(130);
       alter.setTranslateY(-60);
+      alter.setVisible(isNotEmpty());
       notification.getChildren().get(0).setTranslateY(20);
 
       dialog.setOverlayClose(false);
@@ -161,6 +162,7 @@ public class LoginController implements AllAccessible {
               notification.getChildren().get(0).setVisible(false);
               showBtn.setVisible(true);
               if (notificationDrawer.isVisible()) {
+                notificationDrawer.close();
                 notificationDrawer.setVisible(false);
                 showAllBtn.setText("Show All");
               }
@@ -198,9 +200,7 @@ public class LoginController implements AllAccessible {
               }
               notificationDrawer.setSidePane(menuBtns);
               notification.setHeading(setText());
-              System.out.println(
-                  "this is the children list of notification diaLayout "
-                      + notification.getChildren());
+              alter.setVisible(isNotEmpty());
               notification.getChildren().get(0).setVisible(true);
             }
           });
@@ -250,6 +250,10 @@ public class LoginController implements AllAccessible {
     Text heading =
         new Text("You have " + NotificationController.totalCount + " pending service requests");
     return heading;
+  }
+
+  public static boolean isNotEmpty() {
+    return NotificationController.totalCount != 0;
   }
 
   public static void changeChildrenHomePage(List<Node> nodeList) {
