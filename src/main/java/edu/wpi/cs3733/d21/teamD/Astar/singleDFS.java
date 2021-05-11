@@ -48,20 +48,22 @@ public class singleDFS extends IntermediaryAlgo
           i++) { // iterates through each edge. since sorted, it will go through smallest cost
         // first (and it's children)
         Node child = data.getNodeByID(edges.get(i).getEndNodeID());
-        if (!nodeTo.getPath().contains(child)
-            && !closed.contains(child)) { // analyze if node not already in path
-          // open list or determined it's a dead end
-          nodeTo.getPathEdges().add(edges.get(i));
-          double tempCost = nodeTo.getCost();
-          nodeTo.setCost(tempCost + edges.get(i).getCost()); // accumulate cost
+        if (!child.isBlocked()) {
+          if (!nodeTo.getPath().contains(child)
+              && !closed.contains(child)) { // analyze if node not already in path
+            // open list or determined it's a dead end
+            nodeTo.getPathEdges().add(edges.get(i));
+            double tempCost = nodeTo.getCost();
+            nodeTo.setCost(tempCost + edges.get(i).getCost()); // accumulate cost
 
-          searchS(data, child, target);
+            searchS(data, child, target);
 
-          if (!hasPath) {
-            nodeTo.setCost(
-                tempCost); // undo cost addition and edge addition if this edge/node doesn't lead
-            // to target
-            nodeTo.getPathEdges().remove(edges.get(i));
+            if (!hasPath) {
+              nodeTo.setCost(
+                  tempCost); // undo cost addition and edge addition if this edge/node doesn't lead
+              // to target
+              nodeTo.getPathEdges().remove(edges.get(i));
+            }
           }
         }
       }

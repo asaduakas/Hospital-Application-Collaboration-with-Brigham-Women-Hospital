@@ -4,7 +4,6 @@ import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.FloralDelivNodeInfo;
 import java.io.IOException;
 import java.sql.*;
-import java.util.LinkedList;
 import javafx.collections.ObservableList;
 
 public class FloralDeliveryRequestTable extends AbsTables {
@@ -64,6 +63,16 @@ public class FloralDeliveryRequestTable extends AbsTables {
       stmt.setString(6, numOfFlower);
       stmt.setString(7, fromFlower);
       stmt.executeUpdate();
+
+      FDatabaseTables.getAllServiceTable()
+          .addEntity(
+              GlobalDb.getConnection(),
+              this.getID(GlobalDb.getConnection()),
+              location,
+              "Incomplete",
+              assignedEmployee,
+              "FLOW");
+
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -121,6 +130,13 @@ public class FloralDeliveryRequestTable extends AbsTables {
           stmt.setString(3, floralInfo.getId());
           stmt.executeUpdate();
 
+          AllServiceTable.updateEntity(
+              GlobalDb.getConnection(),
+              floralInfo.getId(),
+              floralInfo.getStatus(),
+              floralInfo.getAssignedEmployee(),
+              "FLOW");
+
         } catch (SQLException throwables) {
           throwables.printStackTrace();
         }
@@ -129,19 +145,20 @@ public class FloralDeliveryRequestTable extends AbsTables {
     return floralData;
   }
 
-  public LinkedList<LocalStatus> getLocalStatus(Connection conn) {
-    LinkedList<LocalStatus> LocalStatus = new LinkedList<>();
+  public int getID(Connection conn) {
+    int id = 420;
     try {
-      PreparedStatement stmt = conn.prepareStatement("SELECT location, status FROM FloralRequests");
-
+      PreparedStatement stmt = conn.prepareStatement("SELECT id FROM FloralRequests");
       ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
-        LocalStatus localStatus = new LocalStatus(rs.getString("location"), rs.getString("status"));
-        LocalStatus.add(localStatus);
+        System.out.println("LOOK HERE:" + id);
+        id = rs.getInt(1);
+        System.out.println("LOOK HERE:" + id);
       }
     } catch (SQLException throwables) {
       throwables.printStackTrace();
     }
-    return LocalStatus;
+    System.out.println();
+    return id;
   }
 }

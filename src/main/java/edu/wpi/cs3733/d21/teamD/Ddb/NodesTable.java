@@ -276,7 +276,7 @@ public class NodesTable extends AbsTables {
       stmt.setString(1, nodeId);
       stmt.setString(2, username);
       stmt.executeUpdate();
-      System.out.println("deleted favNode");
+      // System.out.println("deleted favNode");
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -304,6 +304,105 @@ public class NodesTable extends AbsTables {
       System.out.println("Favorite node table populated");
     } catch (Exception e) {
       System.out.println("Favorite node table did not populate");
+      e.printStackTrace();
+      return;
+    }
+  }
+
+  // ----Blocked Node Table Stuff------
+
+  public void createBlockedNodeTable(Connection conn) {
+    try {
+      Statement stmt = conn.createStatement();
+      String query =
+          "CREATE TABLE BlockedNodes("
+              + "nodeID VARCHAR(100) NOT NULL,"
+              + "longName VARCHAR(450) NOT NULL,"
+              + "CONSTRAINT nodeID2_FK FOREIGN KEY (nodeID) REFERENCES Nodes(nodeID))";
+      // + "CONSTRAINT longName_FK FOREIGN KEY (longName) REFERENCES Nodes(longName));
+      stmt.executeUpdate(query);
+      System.out.println("Blocked node table created");
+    } catch (Exception e) {
+      System.out.println("Blocked node table was not created");
+      e.printStackTrace();
+      return;
+    }
+  }
+
+  public void addToBlockedNodes(Connection conn, String nodeID, String longName) {
+    try {
+      PreparedStatement stmt = conn.prepareStatement("INSERT INTO BlockedNodes VALUES(?,?)");
+      stmt.setString(1, nodeID);
+      stmt.setString(2, longName);
+      stmt.executeUpdate();
+      System.out.println("added to blockedTable");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  public ArrayList<String> fetchLongNameBlocked(Connection conn) {
+    ArrayList<String> longNames = new ArrayList<String>();
+    try {
+      PreparedStatement longNameStmt = conn.prepareStatement("SELECT longName FROM BlockedNodes");
+      ResultSet rs = longNameStmt.executeQuery();
+      while (rs.next()) {
+        longNames.add(rs.getString(1));
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    return longNames;
+  }
+
+  public Boolean blockedContains(Connection conn, String nodeID) {
+    Boolean isExists = false;
+    try {
+      PreparedStatement prepStmt = null;
+      prepStmt = conn.prepareStatement("SELECT * FROM BlockedNodes WHERE nodeID = ?");
+      prepStmt.setString(1, nodeID);
+      ResultSet rs = prepStmt.executeQuery();
+      if (rs.next()) {
+        isExists = true;
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    return isExists;
+  }
+
+  public void deleteBlocked(Connection conn, String nodeId) {
+    try {
+      PreparedStatement stmt = conn.prepareStatement("DELETE FROM BlockedNodes WHERE nodeID=?");
+      stmt.setString(1, nodeId);
+      stmt.executeUpdate();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  public void populateBlockedNodeTable(Connection conn, String filePath) {
+    if (filePath.isEmpty()) filePath = "BlockedNodes.csv";
+    try {
+      Scanner sc = new Scanner(NodesTable.class.getResourceAsStream("/csv/" + filePath));
+      Statement stmt = conn.createStatement();
+
+      sc.nextLine();
+      while (sc.hasNextLine()) {
+        try {
+          String[] row = sc.nextLine().split(",");
+          String query =
+              "INSERT INTO BlockedNodes VALUES(" + "'" + row[0] + "'," + "'" + row[1] + "')";
+          stmt.execute(query);
+        } catch (Exception e) {
+          System.out.println("Blocked node table did not populate");
+          e.printStackTrace();
+        }
+      }
+
+      System.out.println("Blocked node table populated");
+    } catch (Exception e) {
+      System.out.println("Blocked node table did not populate");
       e.printStackTrace();
       return;
     }
@@ -559,6 +658,9 @@ public class NodesTable extends AbsTables {
                 rs.getString("longName"),
                 rs.getString("shortName"));
         graphInfo.add(node);
+        if (blockedContains(GlobalDb.getConnection(), nodeID)) {
+          node.setBlocked(true);
+        }
       }
     } catch (SQLException e) {
       e.printStackTrace();

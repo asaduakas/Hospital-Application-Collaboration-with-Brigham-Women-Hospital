@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
@@ -76,9 +77,12 @@ public class MapDrawerController implements Initializable {
   public static ArrayList<String> favList =
       FDatabaseTables.getNodeTable()
           .fetchLongNameFavorites(GlobalDb.getConnection(), HomeController.username);
+  public static ArrayList<String> blockedList =
+      FDatabaseTables.getNodeTable().fetchLongNameBlocked(GlobalDb.getConnection());
   private Node textDirection;
   private RoomGraph initialData = new RoomGraph(GlobalDb.getConnection());
   public static TreeItem<String> favoriteCell = new TreeItem<>("Favorite");
+  public static TreeItem<String> blockedCell = new TreeItem<>("Blocked");
 
   @FXML
   public void tiasSpecialFunction() throws IOException {
@@ -93,6 +97,13 @@ public class MapDrawerController implements Initializable {
     Targets.add(mapController.getNodeUIByLongName(endText).getN());
 
     mapController.runPathFindingDirectory(Targets);
+
+    recentStart = startText;
+    recentEnd = endText;
+
+    setSearchHistory(GlobalDb.getConnection(), recentStart, recentEnd);
+    HomeController.historyTracker = 1;
+    getSearchHistory(GlobalDb.getConnection());
   }
 
   @Override
@@ -170,9 +181,12 @@ public class MapDrawerController implements Initializable {
               }
             });
     favCallStuff();
+    blockedCallStuff();
+    getSearchHistory(GlobalDb.getConnection());
   }
 
   public static void favCallStuff() {
+    favList.clear();
     if (favList.size()
         != FDatabaseTables.getNodeTable()
             .fetchLongNameFavorites(GlobalDb.getConnection(), HomeController.username)
@@ -184,6 +198,19 @@ public class MapDrawerController implements Initializable {
       for (String fav : favList) {
         TreeItem<String> favorite = new TreeItem<>(fav);
         favoriteCell.getChildren().add(favorite);
+      }
+    }
+  }
+
+  public static void blockedCallStuff() {
+    blockedList.clear();
+    if (blockedList.size()
+        != FDatabaseTables.getNodeTable().fetchLongNameBlocked(GlobalDb.getConnection()).size()) {
+      blockedList = FDatabaseTables.getNodeTable().fetchLongNameBlocked(GlobalDb.getConnection());
+      blockedCell.getChildren().clear();
+      for (String block : blockedList) {
+        TreeItem<String> blocked = new TreeItem<>(block);
+        blockedCell.getChildren().add(blocked);
       }
     }
   }
@@ -322,6 +349,13 @@ public class MapDrawerController implements Initializable {
       favImage.setFitHeight(15);
       favoriteCell.setGraphic(favImage);
 
+      ImageView blockedImage =
+          new ImageView(
+              new Image(new FileInputStream("src/main/resources/Images/blockedNode.png")));
+      blockedImage.setFitWidth(15);
+      blockedImage.setFitHeight(15);
+      blockedCell.setGraphic(blockedImage);
+
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
@@ -340,7 +374,8 @@ public class MapDrawerController implements Initializable {
             exit,
             retail,
             service,
-            favoriteCell);
+            favoriteCell,
+            blockedCell);
 
     for (String parkingSpace : parkingList) {
       TreeItem<String> parkingLocation = new TreeItem<String>(parkingSpace);
@@ -402,6 +437,11 @@ public class MapDrawerController implements Initializable {
       favoriteCell.getChildren().add(favorite);
     }
 
+    for (String block : blockedList) {
+      TreeItem<String> blocked = new TreeItem<>(block);
+      blockedCell.getChildren().add(blocked);
+    }
+
     directoryRoot.setExpanded(true);
     directoryTreeView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
@@ -427,7 +467,9 @@ public class MapDrawerController implements Initializable {
       for (NodeUI NUI : mapController.NODES) {
         if (NUI.getN().getLongName().equals(clickname)) {
           // System.out.println(NUI.getN().getLongName());
-          if (!Targets.contains(NUI.getN())) {
+          if (!Targets.contains(NUI.getN())
+              && !FDatabaseTables.getNodeTable()
+                  .blockedContains(GlobalDb.getConnection(), NUI.getN().getNodeID())) {
             Targets.add(NUI.getN());
           }
           mapController.addNodeUI(NUI);
@@ -512,6 +554,10 @@ public class MapDrawerController implements Initializable {
           type = "Favorite";
           nodeRedrawing(type);
           break;
+        case "Blocked":
+          type = "Blocked";
+          nodeRedrawing(type);
+          break;
         default:
           for (NodeUI NUI : mapController.NODES) {
             if (NUI.getN().getLongName().equals(name)) {
@@ -542,6 +588,15 @@ public class MapDrawerController implements Initializable {
             && FDatabaseTables.getNodeTable()
                 .FavContains(
                     GlobalDb.getConnection(), NUI.getN().getNodeID(), HomeController.username)) {
+          mapController.addNodeUI(NUI);
+        }
+      }
+
+    } else if (type.equals("Blocked")) {
+      for (NodeUI NUI : mapController.NODES) {
+        if (NUI.getN().getFloor().equals(mapController.currentFloor)
+            && FDatabaseTables.getNodeTable()
+                .blockedContains(GlobalDb.getConnection(), NUI.getN().getNodeID())) {
           mapController.addNodeUI(NUI);
         }
       }
@@ -956,4 +1011,59 @@ public class MapDrawerController implements Initializable {
   }
 
   public void tableSetup() {}
+
+  // -------------Search History-----------------
+
+  public String recentStart = "";
+  public String recentEnd = "";
+
+  public void setSearchHistory(Connection conn, String startName, String endName) {
+
+    PreparedStatement stmt = null;
+    try {
+      System.out.println("set stuff-----" + startName + endName);
+      stmt = conn.prepareStatement("INSERT INTO SearchHistory VALUES (?, ?)");
+      stmt.setString(1, startName);
+      stmt.setString(2, endName);
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public void getSearchHistory(Connection conn) {
+    Statement stmt = null;
+    ResultSet rs = null;
+
+    try {
+      stmt = conn.createStatement();
+
+      String query = "SELECT * FROM SearchHistory";
+
+      rs = stmt.executeQuery(query);
+
+      // conn.setAutoCommit(false);
+
+      while (rs.next()) {
+        recentStart = rs.getString("startName");
+        recentEnd = rs.getString("endName");
+        System.out.println("start-" + rs.getString("startName"));
+        System.out.println("end-" + rs.getString("endName"));
+      }
+      rs.close();
+
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+
+    // Initialize search menus with most recent searches
+    System.out.println(recentStart + "-------------------");
+    System.out.println(recentEnd + "----------------------");
+    if (HomeController.historyTracker == 1) {
+      startField.setText(recentStart);
+      endField.setText(recentEnd);
+    }
+    // start_choice.setPromptText(recentStart);
+    // end_choice.setPromptText(recentEnd);
+  }
 }

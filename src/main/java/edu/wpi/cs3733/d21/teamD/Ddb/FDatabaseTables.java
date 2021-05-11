@@ -19,6 +19,7 @@ public class FDatabaseTables {
   private static SanitationServRequestTable sanitationServiceTable;
   private static SecurityRequestTable securityRequestTable;
   private static COVID19SurveyTable covid19SurveyTable;
+  private static AllServiceTable allServiceTable;
 
   public FDatabaseTables() {
     this.audVisTable = new AudVisRequestTable();
@@ -38,6 +39,7 @@ public class FDatabaseTables {
     this.sanitationServiceTable = new SanitationServRequestTable();
     this.securityRequestTable = new SecurityRequestTable();
     this.covid19SurveyTable = new COVID19SurveyTable();
+    this.allServiceTable = new AllServiceTable();
   }
 
   public static AudVisRequestTable getAudVisTable() {
@@ -108,6 +110,10 @@ public class FDatabaseTables {
     return covid19SurveyTable;
   }
 
+  public static AllServiceTable getAllServiceTable() {
+    return allServiceTable;
+  }
+
   // src/main/resources/csv/MapDAllEdges.csv
   // src/main/resources/csv/MapDAllNodes.csv
   public void createAllTables() {
@@ -117,6 +123,8 @@ public class FDatabaseTables {
     nodeTable.populateTable(GlobalDb.getConnection(), "");
     nodeTable.createFavoriteNodeTable(GlobalDb.getConnection());
     nodeTable.populateFavoriteNodeTable(GlobalDb.getConnection(), "");
+    nodeTable.createBlockedNodeTable(GlobalDb.getConnection());
+    nodeTable.populateBlockedNodeTable(GlobalDb.getConnection(), "");
     edgeTable.createTable(GlobalDb.getConnection());
     edgeTable.populateTable(GlobalDb.getConnection(), "");
     searchHistoryTable.createTable(GlobalDb.getConnection());
@@ -133,6 +141,7 @@ public class FDatabaseTables {
     sanitationServiceTable.createTable(GlobalDb.getConnection());
     covid19SurveyTable.createTable(GlobalDb.getConnection());
     securityRequestTable.createTable(GlobalDb.getConnection());
+    allServiceTable.createTable(GlobalDb.getConnection());
   }
 
   public void createAudVisTable() {
@@ -199,5 +208,9 @@ public class FDatabaseTables {
 
   public void createCOVIDTable() {
     covid19SurveyTable.createTable(GlobalDb.getConnection());
+  }
+
+  public void createAllServiceTable() {
+    allServiceTable.createTable(GlobalDb.getConnection());
   }
 }

@@ -29,7 +29,7 @@ public class ExtTransRequestTable extends AbsTables {
               + "assignedTo VARCHAR(100) DEFAULT '',"
               + "status VARCHAR(20) DEFAULT 'Incomplete',"
               + "CONSTRAINT EXT_REQUESTID PRIMARY KEY(id),"
-              // + "CONSTRAINT EXT_employee_FK FOREIGN KEY(assignedTo) REFERENCES Users(name),"
+              + "CONSTRAINT EXT_employee_FK FOREIGN KEY(assignedTo) REFERENCES Users(id),"
               // + "CONSTRAINT EXT_location_FK FOREIGN KEY(location) REFERENCES Nodes(nodeID),"
               + "CONSTRAINT EXT_status_check CHECK (status IN ('Incomplete', 'Complete', 'In Progress')))";
       stmt.executeUpdate(query);
@@ -67,27 +67,37 @@ public class ExtTransRequestTable extends AbsTables {
     }
   }
 
-  public static void addEntity(
+  public void addEntity(
       Connection conn,
       String serTy,
       String pFN,
       String pLN,
       String contact,
-      String loca,
-      String transType) {
+      String location,
+      String transType,
+      String assigned) {
     PreparedStatement stmt = null;
     String query =
-        "INSERT INTO ExternalTransRequests(serviceType, pFirstName, pLastName, contactInfo, location, transType) VALUES(?,?,?,?,?,?)";
+        "INSERT INTO ExternalTransRequests(serviceType, pFirstName, pLastName, contactInfo, location, transType, assignedTo) VALUES(?,?,?,?,?,?,?)";
     try {
       stmt = conn.prepareStatement(query);
       stmt.setString(1, serTy);
       stmt.setString(2, pFN);
       stmt.setString(3, pLN);
       stmt.setString(4, contact);
-      stmt.setString(5, loca);
+      stmt.setString(5, location);
       stmt.setString(6, transType);
-
+      stmt.setString(7, assigned);
       int count = stmt.executeUpdate();
+
+      FDatabaseTables.getAllServiceTable()
+          .addEntity(
+              GlobalDb.getConnection(),
+              this.getID(GlobalDb.getConnection()),
+              location,
+              "Incomplete",
+              assigned,
+              "EXT");
 
     } catch (SQLException throwables) {
       throwables.printStackTrace();
@@ -181,6 +191,14 @@ public class ExtTransRequestTable extends AbsTables {
           stmt.setString(2, info.getAssignedTo());
           stmt.setString(3, info.getId());
           stmt.executeUpdate();
+
+          AllServiceTable.updateEntity(
+              GlobalDb.getConnection(),
+              info.getId(),
+              info.getStatus(),
+              info.getAssignedTo(),
+              "EXT");
+
         } catch (SQLException throwables) {
           throwables.printStackTrace();
         }
@@ -189,20 +207,21 @@ public class ExtTransRequestTable extends AbsTables {
     return ExTransData;
   }
 
-  public LinkedList<LocalStatus> getLocalStatus(Connection conn) {
-    LinkedList<LocalStatus> LocalStatus = new LinkedList<>();
+  public int getID(Connection conn) {
+    int id = 420;
     try {
-      PreparedStatement stmt =
-          conn.prepareStatement("SELECT location, status FROM ExternalTransRequests");
+      PreparedStatement stmt = conn.prepareStatement("SELECT id FROM ExternalTransRequests");
       ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
-        LocalStatus localStatus = new LocalStatus(rs.getString("location"), rs.getString("status"));
-        LocalStatus.add(localStatus);
+        System.out.println("LOOK HERE:" + id);
+        id = rs.getInt(1);
+        System.out.println("LOOK HERE:" + id);
       }
     } catch (SQLException throwables) {
       throwables.printStackTrace();
     }
-    return LocalStatus;
+    System.out.println();
+    return id;
   }
 
   public HashMap<Integer, String> getIncompleteRequest() {

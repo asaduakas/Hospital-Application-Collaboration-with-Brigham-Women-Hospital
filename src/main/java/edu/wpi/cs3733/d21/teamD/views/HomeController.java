@@ -103,6 +103,9 @@ public class HomeController implements AllAccessible, Initializable {
     loading.setStyle("-fx-font-weight: Bold; -fx-font-size: 20");
     text.setStyle("-fx-font-size: 20");
 
+    logoutButton.setDisable(true);
+    exitButton.setDisable(true);
+
     spinner.setMaxHeight(150);
     spinner.setMaxWidth(150);
     stackPane.setStyle("-fx-background-color: #ffffff");
@@ -131,6 +134,8 @@ public class HomeController implements AllAccessible, Initializable {
           if (e.getCode() == KeyCode.ESCAPE) {
             System.out.println("cancelled");
             task.cancel();
+            logoutButton.setDisable(false);
+            exitButton.setDisable(false);
           }
         });
 
@@ -147,13 +152,14 @@ public class HomeController implements AllAccessible, Initializable {
           Pane root = (Pane) task.getValue();
           Scene scene = new Scene(root);
 
-          App.getPrimaryStage().setMaximized(true);
-          App.getPrimaryStage().close();
+          //          App.getPrimaryStage().close();
           App.getPrimaryStage().setScene(scene);
+          App.getPrimaryStage().setMaximized(false);
+          App.getPrimaryStage().setMaximized(true);
           App.getPrimaryStage().show();
 
           List<Node> childrenList = root.getChildren();
-          System.out.println("this is childrenList of the map" + childrenList);
+          // System.out.println("this is childrenList of the map" + childrenList);
           JFXToggleButton mapEditing = (JFXToggleButton) childrenList.get(4);
           if (!userCategory.equalsIgnoreCase("admin")) {
             mapEditing.setVisible(false);
@@ -205,8 +211,8 @@ public class HomeController implements AllAccessible, Initializable {
     JFXButton helpBtn = (JFXButton) nodeList.get(6);
     ImageView helpImage = (ImageView) nodeList.get(7);
     StackPane stackPane = (StackPane) nodeList.get(8);
-    JFXNodesList floorBtns = (JFXNodesList) nodeList.get(9);
-    JFXNodesList csvBtns = (JFXNodesList) nodeList.get(10);
+    JFXNodesList floorBtns = (JFXNodesList) nodeList.get(10);
+    JFXNodesList csvBtns = (JFXNodesList) nodeList.get(11);
 
     drawer.setLayoutX(-270);
     drawer.setLayoutY(0);
