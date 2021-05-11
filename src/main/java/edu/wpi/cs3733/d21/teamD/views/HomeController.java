@@ -112,7 +112,7 @@ public class HomeController implements AllAccessible {
 
     JFXSpinner spinner = new JFXSpinner();
     Label loading = new Label("Loading Map");
-    Text text = new Text("Press ESC to cancel load map");
+    Text text = new Text("Dr. Dobby is getting your map!");
     loading.setStyle("-fx-font-weight: Bold; -fx-font-size: 20");
     text.setStyle("-fx-font-size: 20");
 
@@ -141,8 +141,8 @@ public class HomeController implements AllAccessible {
         e -> {
           if (e.getCode() == KeyCode.ESCAPE) {
             System.out.println("cancelled");
-            task.cancel();
-            GlobalDb.establishCon();
+            // task.cancel();
+            // GlobalDb.establishCon();
             logoutButton.setDisable(false);
             exitButton.setDisable(false);
           }
@@ -308,7 +308,7 @@ public class HomeController implements AllAccessible {
                 if (dbToggle.isSelected()) {
                   System.out.println("Before remote connection established");
                   // drop tables from auto embedded
-                  GlobalDb.getTables().deleteAllTables();
+                  // GlobalDb.getTables().deleteAllTables();
                   GlobalDb.establishClientCon();
                   System.out.println("Remote connection established");
                 } else {
