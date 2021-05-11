@@ -4,11 +4,10 @@ import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.InternalTransNodeInfo;
 import java.io.IOException;
 import java.sql.*;
-import java.util.LinkedList;
 import javafx.collections.ObservableList;
 
 public class InternalTransRequestTable extends AbsTables {
-  // id,status,firstName,lastName,contactInfo,destination,assignedEmployee,typeOfTransport
+  // id,status,firstName,lastName,contactInfo, location,assignedEmployee,typeOfTransport
 
   public InternalTransRequestTable() {}
 
@@ -23,13 +22,13 @@ public class InternalTransRequestTable extends AbsTables {
               + "firstName VARCHAR(100) NOT NULL,"
               + "lastName VARCHAR(100) NOT NULL,"
               + "contactInfo VARCHAR(100) NOT NULL,"
-              + "destination VARCHAR(100) NOT NULL,"
+              + "location VARCHAR(100) NOT NULL,"
               + "assignedEmployee VARCHAR(100) DEFAULT '',"
               + "typeOfTransport VARCHAR(100) NOT NULL,"
               + "PRIMARY KEY(id),"
-              //              + "FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
+              + "CONSTRAINT INT_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
               + "CONSTRAINT INT_status_check CHECK (status IN ('Incomplete', 'Complete', 'In Progress')))";
-      // + "CONSTRAINT INT_location_FK FOREIGN KEY(destination) REFERENCES Nodes(nodeID))";
+      // + "CONSTRAINT INT_location_FK FOREIGN KEY(location) REFERENCES Nodes(nodeID))";
       stmt.executeUpdate(query);
       System.out.println("Internal Transportation Request table created");
     } catch (Exception e) {
@@ -46,19 +45,31 @@ public class InternalTransRequestTable extends AbsTables {
       String firstName,
       String lastName,
       String contactInfo,
-      String destination,
+      String location,
+      String assignedEmp,
       String typeOfTransport) {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
               "INSERT INTO InternalTransReq (firstName, lastName, contactInfo,"
-                  + "destination, typeOfTransport) VALUES(?,?,?,?,?)");
+                  + "location, assignedEmployee, typeOfTransport) VALUES(?,?,?,?,?,?)");
       stmt.setString(1, firstName);
       stmt.setString(2, lastName);
       stmt.setString(3, contactInfo);
-      stmt.setString(4, destination);
-      stmt.setString(5, typeOfTransport);
+      stmt.setString(4, location);
+      stmt.setString(5, assignedEmp);
+      stmt.setString(6, typeOfTransport);
       stmt.executeUpdate();
+
+      FDatabaseTables.getAllServiceTable()
+          .addEntity(
+              GlobalDb.getConnection(),
+              this.getID(GlobalDb.getConnection()),
+              location,
+              "Incomplete",
+              assignedEmp,
+              "ITRAN");
+
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -91,7 +102,7 @@ public class InternalTransRequestTable extends AbsTables {
                 rs.getString("firstName"),
                 rs.getString("lastName"),
                 rs.getString("contactInfo"),
-                rs.getString("destination"),
+                rs.getString("location"),
                 rs.getString("assignedEmployee"),
                 rs.getString("typeOfTransport")));
       }
@@ -115,6 +126,13 @@ public class InternalTransRequestTable extends AbsTables {
           stmt.setString(3, intTransInfo.getId());
           stmt.executeUpdate();
 
+          AllServiceTable.updateEntity(
+              GlobalDb.getConnection(),
+              intTransInfo.getId(),
+              intTransInfo.getStatus(),
+              intTransInfo.getAssignedEmployee(),
+              "ITRAN");
+
         } catch (SQLException throwables) {
           throwables.printStackTrace();
         }
@@ -123,21 +141,20 @@ public class InternalTransRequestTable extends AbsTables {
     return internalTransData;
   }
 
-  public LinkedList<LocalStatus> getLocalStatus(Connection conn) {
-    LinkedList<LocalStatus> LocalStatus = new LinkedList<>();
+  public int getID(Connection conn) {
+    int id = 420;
     try {
-      PreparedStatement stmt =
-          conn.prepareStatement("SELECT destination, status FROM InternalTransReq");
-
+      PreparedStatement stmt = conn.prepareStatement("SELECT id FROM InternalTransReq");
       ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
-        LocalStatus localStatus =
-            new LocalStatus(rs.getString("destination"), rs.getString("status"));
-        LocalStatus.add(localStatus);
+        System.out.println("LOOK HERE:" + id);
+        id = rs.getInt(1);
+        System.out.println("LOOK HERE:" + id);
       }
     } catch (SQLException throwables) {
       throwables.printStackTrace();
     }
-    return LocalStatus;
+    System.out.println();
+    return id;
   }
 }

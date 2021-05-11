@@ -4,7 +4,6 @@ import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.ComputerNodeInfo;
 import java.io.IOException;
 import java.sql.*;
-import java.util.LinkedList;
 import javafx.collections.ObservableList;
 
 public class ComputerRequestTable extends AbsTables {
@@ -28,8 +27,7 @@ public class ComputerRequestTable extends AbsTables {
               + "assignedEmployee VARCHAR(100) DEFAULT '',"
               + "descriptionOfIssue VARCHAR(500) NOT NULL,"
               + "PRIMARY KEY(id),"
-              //              + "CONSTRAINT CSR_employee_FK FOREIGN KEY (assignedEmployee)
-              // REFERENCES Users (id),"
+              + "CONSTRAINT CSR_employee_FK FOREIGN KEY (assignedEmployee) REFERENCES Users (id),"
               // + "CONSTRAINT CSR_location_FK FOREIGN KEY (location) REFERENCES Nodes (nodeID),"
               + "CONSTRAINT CSR_status_chk CHECK (status IN ('Incomplete', 'Complete', 'In Progress')))";
       stmt.executeUpdate(query);
@@ -47,17 +45,29 @@ public class ComputerRequestTable extends AbsTables {
       String lastName,
       String contactInfo,
       String location,
+      String assignedEmployee,
       String descriptionOfIssue) {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
-              "INSERT INTO ComputerServiceRequest (firstName, lastName, contactInfo, location, descriptionOfIssue) VALUES(?,?,?,?,?)");
+              "INSERT INTO ComputerServiceRequest (firstName, lastName, contactInfo, location, assignedEmployee, descriptionOfIssue) VALUES(?,?,?,?,?,?)");
       stmt.setString(1, firstName);
       stmt.setString(2, lastName);
       stmt.setString(3, contactInfo);
       stmt.setString(4, location);
-      stmt.setString(5, descriptionOfIssue);
+      stmt.setString(5, assignedEmployee);
+      stmt.setString(6, descriptionOfIssue);
       stmt.executeUpdate();
+
+      FDatabaseTables.getAllServiceTable()
+          .addEntity(
+              GlobalDb.getConnection(),
+              this.getID(GlobalDb.getConnection()),
+              location,
+              "Incomplete",
+              assignedEmployee,
+              "COMP");
+
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -113,6 +123,13 @@ public class ComputerRequestTable extends AbsTables {
           stmt.setString(3, computerInfo.getId());
           stmt.executeUpdate();
 
+          AllServiceTable.updateEntity(
+              GlobalDb.getConnection(),
+              computerInfo.getId(),
+              computerInfo.getStatus(),
+              computerInfo.getAssignedEmployee(),
+              "COMP");
+
         } catch (SQLException throwables) {
           throwables.printStackTrace();
         }
@@ -121,20 +138,20 @@ public class ComputerRequestTable extends AbsTables {
     return computerData;
   }
 
-  public LinkedList<LocalStatus> getLocalStatus(Connection conn) {
-    LinkedList<LocalStatus> LocalStatus = new LinkedList<>();
+  public int getID(Connection conn) {
+    int id = 420;
     try {
-      PreparedStatement stmt =
-          conn.prepareStatement("SELECT location, status FROM ComputerServiceRequest");
-
+      PreparedStatement stmt = conn.prepareStatement("SELECT id FROM ComputerServiceRequest");
       ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
-        LocalStatus localStatus = new LocalStatus(rs.getString("location"), rs.getString("status"));
-        LocalStatus.add(localStatus);
+        System.out.println("LOOK HERE:" + id);
+        id = rs.getInt(1);
+        System.out.println("LOOK HERE:" + id);
       }
     } catch (SQLException throwables) {
       throwables.printStackTrace();
     }
-    return LocalStatus;
+    System.out.println();
+    return id;
   }
 }

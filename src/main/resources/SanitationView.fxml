@@ -79,7 +79,7 @@
                             <cursor>
                                 <Cursor fx:constant="HAND" />
                             </cursor></JFXComboBox>
-                  <JFXComboBox fx:id="urgencyLevel" prefHeight="25.0" prefWidth="268.0" promptText="Urgency Level:" style="-fx-font-size: 14;">
+                  <JFXComboBox fx:id="urgencyLevel" prefHeight="25.0" prefWidth="268.0" promptText="Priority Level:" style="-fx-font-size: 14;">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor></JFXComboBox>
@@ -99,16 +99,6 @@
             <cursor>
                 <Cursor fx:constant="HAND" />
             </cursor></JFXButton>
-        <StackPane fx:id="stackPane1" layoutX="155.0" layoutY="100.0" prefHeight="140.0" prefWidth="291.0">
-            <children>
-                <JFXDialog />
-            </children>
-        </StackPane>
-            <JFXComboBox fx:id="staffAssigned" layoutX="57.0" layoutY="270.0" prefHeight="14.0" prefWidth="210.0" promptText="Staff Assigned:" style="-fx-font-size: 14;">
-                <cursor>
-                    <Cursor fx:constant="HAND" />
-                </cursor>
-      </JFXComboBox>
         <ImageView fx:id="helpImage" fitHeight="30.0" fitWidth="33.0" layoutX="494.0" layoutY="319.0" onMouseClicked="#loadDialog" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@Images/help.png" />
@@ -117,5 +107,15 @@
                 <Cursor fx:constant="HAND" />
             </cursor>
         </ImageView>
+            <JFXComboBox fx:id="staffAssigned" layoutX="57.0" layoutY="270.0" prefHeight="14.0" prefWidth="210.0" promptText="Staff Assigned:" style="-fx-font-size: 14;">
+                <cursor>
+                    <Cursor fx:constant="HAND" />
+                </cursor>
+      </JFXComboBox>
+        <StackPane fx:id="stackPane1" layoutX="155.0" layoutY="100.0" prefHeight="140.0" prefWidth="291.0">
+            <children>
+                <JFXDialog />
+            </children>
+        </StackPane>
     </children>
 </AnchorPane>

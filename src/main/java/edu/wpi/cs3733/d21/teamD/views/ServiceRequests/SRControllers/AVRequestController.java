@@ -73,6 +73,7 @@ public class AVRequestController extends AbsRequest
               super.lastName.getText(),
               super.contactInfo.getText(),
               super.locationBox.getValue(),
+              null,
               issueDescription.getText());
     }
   }
@@ -83,9 +84,9 @@ public class AVRequestController extends AbsRequest
   public void initialize(URL url, ResourceBundle rb) {
     initDialogFactory();
     stackPane1.setPickOnBounds(false);
-    validationPaneFormatter(super.firstName);
-    validationPaneFormatter(super.lastName);
-    validationPaneFormatter(super.contactInfo);
+    //    validationPaneFormatter(super.firstName);
+    //    validationPaneFormatter(super.lastName);
+    //    validationPaneFormatter(super.contactInfo);
 
     RequiredFieldValidator firstNameValid = new RequiredFieldValidator();
     firstNameValid.setMessage("Enter patient's first name");

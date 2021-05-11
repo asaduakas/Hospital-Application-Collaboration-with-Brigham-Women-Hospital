@@ -4,7 +4,6 @@ import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.AudVisNodeInfo;
 import java.io.IOException;
 import java.sql.*;
-import java.util.LinkedList;
 import javafx.collections.ObservableList;
 
 public class AudVisRequestTable extends AbsTables {
@@ -28,8 +27,7 @@ public class AudVisRequestTable extends AbsTables {
               + "assignedEmployee VARCHAR(100) DEFAULT '',"
               + "descriptionOfProblem VARCHAR(500) NOT NULL,"
               + "PRIMARY KEY(id),"
-              //              + "CONSTRAINT AVSR_employee_FK FOREIGN KEY (assignedEmployee)
-              // REFERENCES Users (id),"
+              + "CONSTRAINT AVSR_employee_FK FOREIGN KEY (assignedEmployee) REFERENCES Users (id),"
               // + "CONSTRAINT AVSR_location_FK FOREIGN KEY (location) REFERENCES Nodes(nodeID),"
               + "CONSTRAINT AVSR_status_chk CHECK (status IN ('Incomplete', 'Complete', 'In Progress')))";
       stmt.executeUpdate(query);
@@ -47,17 +45,29 @@ public class AudVisRequestTable extends AbsTables {
       String lastName,
       String contactInfo,
       String location,
+      String assignedEmployee,
       String descriptionOfProblem) {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
-              "INSERT INTO AudVisServiceRequest (firstName, lastName, contactInfo, location, descriptionOfProblem) VALUES(?,?,?,?,?)");
+              "INSERT INTO AudVisServiceRequest (firstName, lastName, contactInfo, location, assignedEmployee, descriptionOfProblem) VALUES(?,?,?,?,?,?)");
       stmt.setString(1, firstName);
       stmt.setString(2, lastName);
       stmt.setString(3, contactInfo);
       stmt.setString(4, location);
-      stmt.setString(5, descriptionOfProblem);
+      stmt.setString(5, assignedEmployee);
+      stmt.setString(6, descriptionOfProblem);
       stmt.executeUpdate();
+
+      FDatabaseTables.getAllServiceTable()
+          .addEntity(
+              GlobalDb.getConnection(),
+              this.getID(GlobalDb.getConnection()),
+              location,
+              "Incomplete",
+              assignedEmployee,
+              "AUD");
+
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -112,6 +122,12 @@ public class AudVisRequestTable extends AbsTables {
           stmt.setString(2, audVisInfo.getAssignedEmployee());
           stmt.setString(3, audVisInfo.getId());
           stmt.executeUpdate();
+          AllServiceTable.updateEntity(
+              GlobalDb.getConnection(),
+              audVisInfo.getId(),
+              audVisInfo.getStatus(),
+              audVisInfo.getAssignedEmployee(),
+              "AUD");
 
         } catch (SQLException throwables) {
           throwables.printStackTrace();
@@ -121,20 +137,20 @@ public class AudVisRequestTable extends AbsTables {
     return audVisData;
   }
 
-  public LinkedList<LocalStatus> getLocalStatus(Connection conn) {
-    LinkedList<LocalStatus> LocalStatus = new LinkedList<>();
+  public int getID(Connection conn) {
+    int id = 420;
     try {
-      PreparedStatement stmt =
-          conn.prepareStatement("SELECT location, status FROM AudVisServiceRequest");
-
+      PreparedStatement stmt = conn.prepareStatement("SELECT id FROM AudVisServiceRequest");
       ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
-        LocalStatus localStatus = new LocalStatus(rs.getString("location"), rs.getString("status"));
-        LocalStatus.add(localStatus);
+        System.out.println("LOOK HERE:" + id);
+        id = rs.getInt(1);
+        System.out.println("LOOK HERE:" + id);
       }
     } catch (SQLException throwables) {
       throwables.printStackTrace();
     }
-    return LocalStatus;
+    System.out.println();
+    return id;
   }
 }
