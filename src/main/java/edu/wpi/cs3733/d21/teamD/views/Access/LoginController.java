@@ -124,7 +124,6 @@ public class LoginController implements AllAccessible {
       JFXButton dismissBtn = new JFXButton("Dismiss");
       JFXButton showBtn = new JFXButton("Show");
       JFXButton showAllBtn = new JFXButton("Show All");
-      JFXButton imageBtn = new JFXButton();
       ImageView alter = new ImageView(new Image("Images/alert-icon.png"));
 
       notificationDrawer.setLayoutY(260);
@@ -137,7 +136,7 @@ public class LoginController implements AllAccessible {
       alter.setFitWidth(45);
       alter.setFitHeight(45);
       showAllBtn.setTranslateX(-20);
-      dismissBtn.setTranslateX(20);
+      dismissBtn.setTranslateX(25);
       alter.setTranslateX(130);
       alter.setTranslateY(-60);
       alter.setVisible(isNotEmpty());
@@ -177,7 +176,7 @@ public class LoginController implements AllAccessible {
               animationPath.setCycleCount(1);
               animationPath.play();
               showBtn.setVisible(false);
-              dismissBtn.setTranslateX(50);
+              dismissBtn.setTranslateX(25);
               dismissBtn.setVisible(true);
               notification.getChildren().get(0).setVisible(true);
             }

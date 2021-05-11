@@ -197,7 +197,7 @@ public class MapController implements AllAccessible {
           burgerTask.play();
           if (mapDrawer.isOpened()) {
             mapDrawer.close();
-            mapDrawer.setLayoutX(-270);
+            mapDrawer.setLayoutX(-280);
           } else {
             mapDrawer.open();
             mapDrawer.setLayoutX(0);
