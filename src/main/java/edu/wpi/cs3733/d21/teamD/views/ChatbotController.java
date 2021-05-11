@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
@@ -224,7 +223,7 @@ public class ChatbotController implements AllAccessible {
           answer = answer + "Sorry, you need to be logged in as either an admin or an employee!";
         }
       } else if (category.equals("Hospital-Map")) {
-//
+        //
       } else if (category.equals("Emergency")) {
         ControllerManager.attemptLoadPopupBlur("Emergency.fxml");
       } else if (category.equals("Username-Info")) {

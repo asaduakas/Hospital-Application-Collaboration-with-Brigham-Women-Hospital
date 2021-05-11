@@ -392,10 +392,6 @@ public class MapController implements AllAccessible {
       L.endXProperty().bind(getNodeUIByID(E.getEndNodeID()).simpXcoordProperty());
       L.endYProperty().bind(getNodeUIByID(E.getEndNodeID()).simpYcoordProperty());
 
-      L.setOnMouseClicked(
-          (MouseEvent e) -> {
-            disableListener(e);
-          }); // TODO ACTION
       L.setStrokeWidth(5);
       L.setStroke(Color.BLACK);
       EdgeUI Temp = new EdgeUI(E, L);
@@ -1909,6 +1905,8 @@ public class MapController implements AllAccessible {
 
   // _________________________________________Service View_____________________________________
 
+  private int Servicesize = 30;
+
   @FXML
   private void LoadServices() throws IOException {
     clearMap();
@@ -1921,10 +1919,11 @@ public class MapController implements AllAccessible {
           ImageView Service = new ImageView();
           Service.setX(N.getN().getXCoord());
           Service.setY(N.getN().getYCoord());
-          Service.setFitWidth(30);
-          Service.setFitHeight(30);
+          Service.setFitWidth(Servicesize);
+          Service.setFitHeight(Servicesize);
 
-          System.out.println(S.getStatus());
+          serviceResize(Service);
+          // serviceSelection(Service);
 
           switch (S.getType()) {
             case "EXT":
@@ -2106,15 +2105,21 @@ public class MapController implements AllAccessible {
     }
   }
 
-    public void serviceResize(ImageView IV){
-      IV.getOnMouseEntered((MouseEvent E) -> {
+  public void serviceResize(ImageView IV) {
+    IV.setOnMouseEntered(
+        (MouseEvent e) -> {
+          IV.setFitWidth(Servicesize * 2);
+          IV.setFitHeight(Servicesize * 2);
+          IV.setX(IV.getX());
+          IV.setY(IV.getY());
+        });
 
-
-      });
-
-
-
+    IV.setOnMouseExited(
+        (MouseEvent e) -> {
+          IV.setFitWidth(Servicesize / 2);
+          IV.setFitHeight(Servicesize / 2);
+          IV.setX(IV.getX());
+          IV.setY(IV.getY());
+        });
   }
 }
-
-
