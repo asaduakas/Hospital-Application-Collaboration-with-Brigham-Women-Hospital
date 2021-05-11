@@ -251,7 +251,6 @@ public class ExtTransRequestTable extends AbsTables {
                 + " -- Contact: "
                 + rs.getString("contactInfo"));
         i++;
-        System.out.println(exTransList);
       }
     } catch (SQLException throwables) {
       throwables.printStackTrace();

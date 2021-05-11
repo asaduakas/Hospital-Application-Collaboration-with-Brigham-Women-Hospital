@@ -45,8 +45,6 @@ public class HomeController implements AllAccessible {
   @FXML public StackPane stackPane;
   @FXML private AnchorPane mainPane;
   @FXML private JFXToggleButton dbToggle;
-  @FXML private JFXDrawer testDrawer;
-  @FXML private JFXButton testBtn;
   private String dbToggleText[] = {"Embedded Connection", "Remote Connection"};
   private int index = 0;
 
