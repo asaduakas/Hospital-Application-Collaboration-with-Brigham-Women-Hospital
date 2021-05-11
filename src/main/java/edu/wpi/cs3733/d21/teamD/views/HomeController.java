@@ -2,6 +2,7 @@ package edu.wpi.cs3733.d21.teamD.views;
 
 import com.jfoenix.controls.*;
 import edu.wpi.cs3733.d21.teamD.App;
+import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
 import edu.wpi.cs3733.d21.teamD.Ddb.FDatabaseTables;
 import edu.wpi.cs3733.d21.teamD.views.Access.AllAccessible;
 import edu.wpi.cs3733.d21.teamD.views.Access.LoginController;
@@ -11,6 +12,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -45,9 +48,12 @@ public class HomeController implements AllAccessible, Initializable {
   @FXML public static VBox mainButtons;
   @FXML public StackPane stackPane;
   @FXML private AnchorPane mainPane;
-  @FXML private JFXDrawer testDrawer;
+  @FXML private JFXToggleButton dbToggle;
+    @FXML private JFXDrawer testDrawer;
+    @FXML private JFXButton testBtn;
+  private String dbToggleText[] = {"Embedded Connection", "Remote Connection"};
+  private int index = 0;
 
-  @FXML private JFXButton testBtn;
 
   public static UserCategory userTypeEnum;
   public static String username = null;
@@ -59,6 +65,20 @@ public class HomeController implements AllAccessible, Initializable {
 
   // Used to reset search history for each login
   public static int historyTracker = 0;
+
+  @FXML
+  private void initialize() {
+    // dbToggle.setText("Embedded Connection");
+    dbToggle.setOnAction(
+        (ActionEvent e) -> {
+          index++;
+          if (index >= dbToggleText.length) {
+            index = 0;
+          }
+          dbToggle.setText(dbToggleText[index]);
+        });
+    dbToggleSwitch();
+  }
 
   @FXML
   private void logout(ActionEvent event) throws IOException {
@@ -112,11 +132,6 @@ public class HomeController implements AllAccessible, Initializable {
     stackPane.getChildren().addAll(loading, spinner, text);
     stackPane.setMargin(text, new Insets(200, 0, 0, 20));
 
-    logoutButton.setVisible(false);
-    logoutButton.setDisable(true);
-    exitButton.setVisible(false);
-    exitButton.setDisable(true);
-
     Task<Parent> task =
         new Task<Parent>() {
           @Override
@@ -134,6 +149,7 @@ public class HomeController implements AllAccessible, Initializable {
           if (e.getCode() == KeyCode.ESCAPE) {
             System.out.println("cancelled");
             task.cancel();
+            GlobalDb.establishCon();
             logoutButton.setDisable(false);
             exitButton.setDisable(false);
           }
@@ -189,11 +205,6 @@ public class HomeController implements AllAccessible, Initializable {
           task.cancel();
           stackPane.setVisible(false);
           stackPane.setDisable(true);
-
-          logoutButton.setVisible(true);
-          logoutButton.setDisable(false);
-          exitButton.setVisible(true);
-          exitButton.setDisable(false);
         });
   }
 
@@ -291,6 +302,31 @@ public class HomeController implements AllAccessible, Initializable {
             checkStatusButton.setDisable(false);
           }
         });
+  }
+
+  private void dbToggleSwitch() {
+    dbToggle
+        .selectedProperty()
+        .addListener(
+            new ChangeListener<Boolean>() {
+              @Override
+              public void changed(
+                  ObservableValue<? extends Boolean> observable,
+                  Boolean oldValue,
+                  Boolean newValue) {
+                if (dbToggle.isSelected()) {
+                  System.out.println("Before remote connection established");
+                  // drop tables from auto embedded
+                  GlobalDb.getTables().deleteAllTables();
+                  GlobalDb.establishClientCon();
+                  System.out.println("Remote connection established");
+                } else {
+                  GlobalDb.getTables().createAllTables();
+                  GlobalDb.establishCon();
+                  System.out.println("Switched back to embedded");
+                }
+              }
+            });
   }
 
   public static String getUserCategory() {

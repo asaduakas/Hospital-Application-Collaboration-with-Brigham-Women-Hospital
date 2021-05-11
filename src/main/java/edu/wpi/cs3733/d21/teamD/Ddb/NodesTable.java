@@ -190,7 +190,7 @@ public class NodesTable extends AbsTables {
       Statement stmt = conn.createStatement();
       String query =
           "CREATE TABLE FavoriteNodes("
-              + "userID VARCHAR(100) NOT NULL,"
+              + "userID VARCHAR(100),"
               + "nodeID VARCHAR(100) NOT NULL,"
               + "longName VARCHAR(450) NOT NULL,"
               + "CONSTRAINT userID_FK FOREIGN KEY (userID) REFERENCES Users(id),"

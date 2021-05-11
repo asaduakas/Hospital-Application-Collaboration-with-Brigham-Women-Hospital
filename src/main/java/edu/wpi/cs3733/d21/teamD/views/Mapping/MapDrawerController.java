@@ -39,7 +39,7 @@ public class MapDrawerController implements Initializable {
   @FXML private VBox vBox;
   @FXML private GridPane startGrid;
   @FXML private GridPane endGrid;
-  @FXML private JFXComboBox<String> algoVersion;
+  @FXML public JFXComboBox<String> algoVersion;
   @FXML private JFXButton exportBut;
   @FXML private JFXButton importBut;
   @FXML private ScrollPane textScrollPane;
@@ -180,6 +180,7 @@ public class MapDrawerController implements Initializable {
                 changePathFinderAlgo(newValue);
               }
             });
+
     favCallStuff();
     blockedCallStuff();
     getSearchHistory(GlobalDb.getConnection());

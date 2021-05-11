@@ -67,7 +67,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </JFXTextField>
-                  <JFXComboBox fx:id="locationBox" prefHeight="25.0" prefWidth="465.0" promptText="Location:" style="-fx-font-size: 14;">
+                  <JFXComboBox fx:id="locationBox" editable="true" onAction="#type" prefHeight="25.0" prefWidth="465.0" promptText="Location:" style="-fx-font-size: 14;">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor></JFXComboBox>

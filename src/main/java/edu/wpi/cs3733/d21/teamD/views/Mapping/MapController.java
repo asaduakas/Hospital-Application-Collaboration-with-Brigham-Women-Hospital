@@ -8,6 +8,7 @@ import edu.wpi.cs3733.d21.teamD.Ddb.FDatabaseTables;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
 import edu.wpi.cs3733.d21.teamD.views.Access.AllAccessible;
 import edu.wpi.cs3733.d21.teamD.views.Access.LoginController;
+import edu.wpi.cs3733.d21.teamD.views.Access.UserCategory;
 import edu.wpi.cs3733.d21.teamD.views.ControllerManager;
 import edu.wpi.cs3733.d21.teamD.views.DialogFactory;
 import edu.wpi.cs3733.d21.teamD.views.HomeController;
@@ -212,7 +213,14 @@ public class MapController implements AllAccessible {
     mapDrawer.setSidePane(menuBtns);
     Pane root = (Pane) loader.getRoot();
     List<javafx.scene.Node> childrenList = root.getChildren();
-    // System.out.println("this is childrenList of the drawer " + childrenList);
+
+    if (!(HomeController.userTypeEnum == UserCategory.Admin)) {
+      AnchorPane anchorPane = (AnchorPane) childrenList.get(0);
+      JFXComboBox<String> algoVersion = (JFXComboBox<String>) anchorPane.getChildren().get(6);
+      algoVersion.setVisible(false);
+      algoVersion.setDisable(true);
+    }
+
     root.setMinHeight(App.getPrimaryStage().getScene().getHeight());
     Scene scene = App.getPrimaryStage().getScene();
     changeChildrenMapView(childrenList);
@@ -413,9 +421,9 @@ public class MapController implements AllAccessible {
   private void initializeFloorList() {
     floorBtn.setPrefHeight(55);
     floorBtn.setPrefWidth(55);
-    floorBtn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 55px");
+    floorBtn.setStyle("-fx-background-color: #17B963; -fx-background-radius: 55px");
 
-    JFXButton Floor1Btn = new JFXButton("Fl 1");
+    JFXButton Floor1Btn = new JFXButton("1");
     Floor1Btn.setButtonType(JFXButton.ButtonType.FLAT);
     Floor1Btn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50px");
     Floor1Btn.setPrefHeight(50);
@@ -423,10 +431,10 @@ public class MapController implements AllAccessible {
     Floor1Btn.setOnAction(
         (e) -> {
           switchFloor("1");
-          floorBtn.setText("Fl 1");
+          floorBtn.setText("1");
         });
 
-    JFXButton Floor2Btn = new JFXButton("Fl 2");
+    JFXButton Floor2Btn = new JFXButton("2");
     Floor2Btn.setButtonType(JFXButton.ButtonType.FLAT);
     Floor2Btn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50px");
     Floor2Btn.setPrefHeight(50);
@@ -434,10 +442,10 @@ public class MapController implements AllAccessible {
     Floor2Btn.setOnAction(
         (e) -> {
           switchFloor("2");
-          floorBtn.setText("Fl 2");
+          floorBtn.setText("2");
         });
 
-    JFXButton Floor3Btn = new JFXButton("Fl 3");
+    JFXButton Floor3Btn = new JFXButton("3");
     Floor3Btn.setButtonType(JFXButton.ButtonType.FLAT);
     Floor3Btn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50px");
     Floor3Btn.setPrefHeight(50);
@@ -445,10 +453,10 @@ public class MapController implements AllAccessible {
     Floor3Btn.setOnAction(
         (e) -> {
           switchFloor("3");
-          floorBtn.setText("Fl 3");
+          floorBtn.setText("3");
         });
 
-    JFXButton FloorL1Btn = new JFXButton("Fl L1");
+    JFXButton FloorL1Btn = new JFXButton("L1");
     FloorL1Btn.setButtonType(JFXButton.ButtonType.FLAT);
     FloorL1Btn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50px");
     FloorL1Btn.setPrefHeight(50);
@@ -456,10 +464,10 @@ public class MapController implements AllAccessible {
     FloorL1Btn.setOnAction(
         (e) -> {
           switchFloor("L1");
-          floorBtn.setText("Fl L1");
+          floorBtn.setText("L1");
         });
 
-    JFXButton FloorL2Btn = new JFXButton("Fl L2");
+    JFXButton FloorL2Btn = new JFXButton("L2");
     FloorL2Btn.setButtonType(JFXButton.ButtonType.FLAT);
     FloorL2Btn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50px");
     FloorL2Btn.setPrefHeight(50);
@@ -467,16 +475,17 @@ public class MapController implements AllAccessible {
     FloorL2Btn.setOnAction(
         (e) -> {
           switchFloor("L2");
-          floorBtn.setText("Fl L2");
+          floorBtn.setText("L2");
         });
 
     JFXNodesList nodeList = new JFXNodesList();
     nodeList.addAnimatedNode(floorBtn);
-    nodeList.addAnimatedNode(FloorL2Btn);
-    nodeList.addAnimatedNode(FloorL1Btn);
-    nodeList.addAnimatedNode(Floor1Btn);
-    nodeList.addAnimatedNode(Floor2Btn);
     nodeList.addAnimatedNode(Floor3Btn);
+    nodeList.addAnimatedNode(Floor2Btn);
+    nodeList.addAnimatedNode(Floor1Btn);
+    nodeList.addAnimatedNode(FloorL1Btn);
+    nodeList.addAnimatedNode(FloorL2Btn);
+
     nodeList.setSpacing(20d);
     mainAnchor.getChildren().add(nodeList);
   }
@@ -1262,16 +1271,20 @@ public class MapController implements AllAccessible {
     initialFavs.add(getNodeUIByLongName("Parking Garage L2"));
     initialFavs.add(getNodeUIByLongName("Cafe"));
 
-    for (NodeUI N : initialFavs) {
-      if (!FDatabaseTables.getNodeTable()
-          .FavContains(GlobalDb.getConnection(), N.getN().getNodeID(), HomeController.username)) {
-        FDatabaseTables.getNodeTable()
-            .addToFavoriteNodes(
-                GlobalDb.getConnection(),
-                HomeController.username,
-                N.getN().getNodeID(),
-                N.getN().getLongName());
-        N.getI().setImage(favImage);
+    if (HomeController.username == null) {
+      System.out.println("No initial favorites for guests");
+    } else {
+      for (NodeUI N : initialFavs) {
+        if (!FDatabaseTables.getNodeTable()
+            .FavContains(GlobalDb.getConnection(), N.getN().getNodeID(), HomeController.username)) {
+          FDatabaseTables.getNodeTable()
+              .addToFavoriteNodes(
+                  GlobalDb.getConnection(),
+                  HomeController.username,
+                  N.getN().getNodeID(),
+                  N.getN().getLongName());
+          N.getI().setImage(favImage);
+        }
       }
     }
   }
