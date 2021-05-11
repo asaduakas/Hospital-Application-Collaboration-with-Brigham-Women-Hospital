@@ -212,7 +212,7 @@ public class NodesTable extends AbsTables {
       stmt.setString(2, nodeID);
       stmt.setString(3, longName);
       stmt.executeUpdate();
-      System.out.println("added to favTable");
+      //      System.out.println("added to favTable");
     } catch (Exception e) {
       e.printStackTrace();
     }

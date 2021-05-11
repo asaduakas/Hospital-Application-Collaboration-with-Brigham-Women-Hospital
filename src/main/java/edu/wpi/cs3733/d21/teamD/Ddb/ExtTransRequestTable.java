@@ -28,7 +28,7 @@ public class ExtTransRequestTable extends AbsTables {
               + "assignedEmployee VARCHAR(100) DEFAULT '',"
               + "status VARCHAR(20) DEFAULT 'Incomplete',"
               + "CONSTRAINT EXT_REQUESTID PRIMARY KEY(id),"
-              + "CONSTRAINT EXT_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
+              // + "CONSTRAINT EXT_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
               // + "CONSTRAINT EXT_location_FK FOREIGN KEY(location) REFERENCES Nodes(nodeID),"
               + "CONSTRAINT EXT_status_check CHECK (status IN ('Incomplete', 'Complete', 'In Progress')))";
       stmt.executeUpdate(query);
@@ -87,6 +87,8 @@ public class ExtTransRequestTable extends AbsTables {
       stmt.setString(5, location);
       stmt.setString(6, transType);
       stmt.setString(7, assignedEmployee);
+      System.out.println(
+          "this is checking the value of assignedEmployee in ExTrans Table " + assignedEmployee);
       int count = stmt.executeUpdate();
 
       FDatabaseTables.getAllServiceTable()
@@ -144,11 +146,13 @@ public class ExtTransRequestTable extends AbsTables {
       ObservableList<ExtTransNodeInfo> ExTransData, boolean employeeAccess) throws IOException {
     Connection conn = GlobalDb.getConnection();
     PreparedStatement stmt = null;
+    System.out.println(
+        "this is checking the boolean in exTransTable for adding data " + employeeAccess);
     try {
       if (employeeAccess) {
         stmt =
             conn.prepareStatement(
-                "SELECT * FROM ExternalTransRequests WHERE assignedEmployee = ? OR assignedEmployee = ''");
+                "SELECT * FROM ExternalTransRequests WHERE assignedEmployee = ? OR assignedEmployee IS NULL");
         stmt.setString(1, HomeController.username);
         //        System.out.println(
         //            "this is trying to add data into the employee table " +

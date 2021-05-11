@@ -315,7 +315,6 @@ public class UsersTable extends AbsTables {
         stmt.setString(1, info.getPassword());
         stmt.setString(2, info.getClearance());
         stmt.setString(3, info.getId());
-        System.out.println("this is in the userTable changing user data " + info.getClearance());
         stmt.executeUpdate();
       } catch (SQLException throwables) {
         throwables.printStackTrace();

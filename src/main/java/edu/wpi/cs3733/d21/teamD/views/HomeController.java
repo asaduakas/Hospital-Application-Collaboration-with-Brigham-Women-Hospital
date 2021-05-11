@@ -2,23 +2,20 @@ package edu.wpi.cs3733.d21.teamD.views;
 
 import com.jfoenix.controls.*;
 import edu.wpi.cs3733.d21.teamD.App;
-import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
 import edu.wpi.cs3733.d21.teamD.Ddb.FDatabaseTables;
+import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
 import edu.wpi.cs3733.d21.teamD.views.Access.AllAccessible;
 import edu.wpi.cs3733.d21.teamD.views.Access.LoginController;
 import edu.wpi.cs3733.d21.teamD.views.Access.UserCategory;
 import edu.wpi.cs3733.d21.teamD.views.Mapping.MapScrollPane;
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
-import java.util.ResourceBundle;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -27,7 +24,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -36,7 +32,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 
-public class HomeController implements AllAccessible, Initializable {
+public class HomeController implements AllAccessible {
 
   @FXML private JFXButton exitButton; // Btn to exit program
   @FXML private JFXButton logoutButton;
@@ -49,11 +45,10 @@ public class HomeController implements AllAccessible, Initializable {
   @FXML public StackPane stackPane;
   @FXML private AnchorPane mainPane;
   @FXML private JFXToggleButton dbToggle;
-    @FXML private JFXDrawer testDrawer;
-    @FXML private JFXButton testBtn;
+  @FXML private JFXDrawer testDrawer;
+  @FXML private JFXButton testBtn;
   private String dbToggleText[] = {"Embedded Connection", "Remote Connection"};
   private int index = 0;
-
 
   public static UserCategory userTypeEnum;
   public static String username = null;
@@ -335,29 +330,6 @@ public class HomeController implements AllAccessible, Initializable {
 
   public static UserCategory getUserTypeEnum() {
     return userTypeEnum;
-  }
-
-  @Override
-  public void initialize(URL location, ResourceBundle resources) {
-    try {
-      FXMLLoader loader =
-          new FXMLLoader(getClass().getClassLoader().getResource("NotificationView.fxml"));
-      AnchorPane menuBtns = loader.load();
-      testDrawer.setSidePane(menuBtns);
-      testBtn.addEventHandler(
-          MouseEvent.MOUSE_PRESSED,
-          (e) -> {
-            if (testDrawer.isOpened()) {
-              testDrawer.close();
-              //                            testDrawer.setLayoutX(-270);
-            } else {
-              testDrawer.open();
-              //                            testDrawer.setLayoutX(0);
-            }
-          });
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
   }
 
   //  @Override

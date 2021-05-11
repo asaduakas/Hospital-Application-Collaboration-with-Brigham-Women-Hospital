@@ -88,7 +88,7 @@ public class SanitationServRequestTable extends AbsTables {
       if (employeeAccess) {
         stmt =
             conn.prepareStatement(
-                "SELECT * FROM SanitationRequest WHERE assignedEmployee = ? OR assignedEmployee = ''");
+                "SELECT * FROM SanitationRequest WHERE assignedEmployee = ? OR assignedEmployee  IS NULL");
         stmt.setString(1, HomeController.username);
         //        System.out.println(
         //            "this is trying to add data into the employee table " +
