@@ -107,10 +107,20 @@ public class LoginController implements AllAccessible {
     if (userCategory.equalsIgnoreCase("employee")) {
 
       JFXDrawer notificationDrawer = (JFXDrawer) childrenList.get(8);
+      FXMLLoader loader =
+          new FXMLLoader(
+              LoginController.class.getClassLoader().getResource("NotificationView.fxml"));
+      AnchorPane menuBtns = null;
+      try {
+        menuBtns = loader.load();
+      } catch (IOException exception) {
+        exception.printStackTrace();
+      }
+      notificationDrawer.setSidePane(menuBtns);
+      notificationDrawer.setVisible(false);
       JFXDialogLayout notification = new JFXDialogLayout();
       Text heading =
-          new Text(
-              "You have " + NotificationController.getTotalCount() + " pending service requests");
+          new Text("You have " + NotificationController.totalCount + " pending service requests");
       StackPane stackpane = new StackPane();
       Rectangle rectangle = new Rectangle(120.0d, 80.0d);
       JFXDialog dialog = new JFXDialog(stackpane, notification, JFXDialog.DialogTransition.CENTER);
@@ -167,7 +177,8 @@ public class LoginController implements AllAccessible {
             @Override
             public void handle(ActionEvent event) {
               FXMLLoader loader =
-                  new FXMLLoader(getClass().getClassLoader().getResource("NotificationView.fxml"));
+                  new FXMLLoader(
+                      LoginController.class.getClassLoader().getResource("NotificationView.fxml"));
               AnchorPane menuBtns = null;
               try {
                 menuBtns = loader.load();
@@ -175,6 +186,12 @@ public class LoginController implements AllAccessible {
                 exception.printStackTrace();
               }
               notificationDrawer.setSidePane(menuBtns);
+              Text newHeading =
+                  new Text(
+                      "You have "
+                          + NotificationController.totalCount
+                          + " pending service requests");
+              notification.setHeading(newHeading);
             }
           });
       showAllBtn.addEventHandler(

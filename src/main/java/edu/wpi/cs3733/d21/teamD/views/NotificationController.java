@@ -20,71 +20,96 @@ public class NotificationController implements Initializable {
   @FXML private TextFlow textFlow;
   public static int totalCount;
 
-  public static boolean noExTransIncomplete =
-      FDatabaseTables.getExternalTransportTable().getIncompleteRequest().isEmpty();
-  public static HashMap<Integer, String> exTransList =
-      FDatabaseTables.getExternalTransportTable().getIncompleteRequest();
+  public static boolean noExTransIncomplete;
+  public static HashMap<Integer, String> exTransList;
 
-  public static boolean noAudVisIncomplete =
-      FDatabaseTables.getAudVisTable().getIncompleteRequest().isEmpty();
-  public static HashMap<Integer, String> audVisList =
-      FDatabaseTables.getAudVisTable().getIncompleteRequest();
+  public static boolean noAudVisIncomplete;
+  public static HashMap<Integer, String> audVisList;
 
-  public static boolean noComputerServiceIncomplete =
-      FDatabaseTables.getCompRequestTable().getIncompleteRequest().isEmpty();
-  public static HashMap<Integer, String> compServiceList =
-      FDatabaseTables.getCompRequestTable().getIncompleteRequest();
+  public static boolean noComputerServiceIncomplete;
+  public static HashMap<Integer, String> compServiceList;
 
-  public static boolean noFacilitiesIncomplete =
-      FDatabaseTables.getFacilitiesTable().getIncompleteRequest().isEmpty();
-  public static HashMap<Integer, String> facilitiesServiceList =
-      FDatabaseTables.getFacilitiesTable().getIncompleteRequest();
+  public static boolean noFacilitiesIncomplete;
+  public static HashMap<Integer, String> facilitiesServiceList;
 
-  public static boolean noFloralDeliveryIncomplete =
-      FDatabaseTables.getFloralDeliveryTable().getIncompleteRequest().isEmpty();
-  public static HashMap<Integer, String> floralDeliveryList =
-      FDatabaseTables.getFloralDeliveryTable().getIncompleteRequest();
+  public static boolean noFloralDeliveryIncomplete;
+  public static HashMap<Integer, String> floralDeliveryList;
 
-  public static boolean noFoodDeliveryIncomplete =
-      FDatabaseTables.getFoodDeliveryTable().getIncompleteRequest().isEmpty();
-  public static HashMap<Integer, String> foodDeliveryList =
-      FDatabaseTables.getFoodDeliveryTable().getIncompleteRequest();
+  public static boolean noFoodDeliveryIncomplete;
+  public static HashMap<Integer, String> foodDeliveryList;
 
-  public static boolean noInternalTransIncomplete =
-      FDatabaseTables.getInternalDeliveryTable().getIncompleteRequest().isEmpty();
-  public static HashMap<Integer, String> internalTransList =
-      FDatabaseTables.getInternalDeliveryTable().getIncompleteRequest();
+  public static boolean noInternalTransIncomplete;
+  public static HashMap<Integer, String> internalTransList;
 
-  public static boolean noLangInterpIncomplete =
-      FDatabaseTables.getLangInterpreterTable().getIncompleteRequest().isEmpty();
-  public static HashMap<Integer, String> langInterpList =
-      FDatabaseTables.getLangInterpreterTable().getIncompleteRequest();
+  public static boolean noLangInterpIncomplete;
+  public static HashMap<Integer, String> langInterpList;
 
-  public static boolean noLaundryIncomplete =
-      FDatabaseTables.getLaundryRequestTable().getIncompleteRequest().isEmpty();
-  public static HashMap<Integer, String> laundryList =
-      FDatabaseTables.getLaundryRequestTable().getIncompleteRequest();
+  public static boolean noLaundryIncomplete;
+  public static HashMap<Integer, String> laundryList;
 
-  public static boolean noMedDeliveryIncomplete =
-      FDatabaseTables.getMedDeliveryTable().getIncompleteRequest().isEmpty();
-  public static HashMap<Integer, String> medDeliveryList =
-      FDatabaseTables.getMedDeliveryTable().getIncompleteRequest();
+  public static boolean noMedDeliveryIncomplete;
+  public static HashMap<Integer, String> medDeliveryList;
 
-  public static boolean noSantiServiceIncomplete =
-      FDatabaseTables.getSanitationServiceTable().getIncompleteRequest().isEmpty();
-  public static HashMap<Integer, String> SantiServiceList =
-      FDatabaseTables.getSanitationServiceTable().getIncompleteRequest();
+  public static boolean noSantiServiceIncomplete;
+  public static HashMap<Integer, String> SantiServiceList;
 
-  public static boolean noSecurityServiceIncomplete =
-      FDatabaseTables.getSecurityRequestTable().getIncompleteRequest().isEmpty();
-  public static HashMap<Integer, String> SecurityServiceList =
-      FDatabaseTables.getSecurityRequestTable().getIncompleteRequest();
+  public static boolean noSecurityServiceIncomplete;
+  public static HashMap<Integer, String> SecurityServiceList;
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
+    noExTransIncomplete =
+        FDatabaseTables.getExternalTransportTable().getIncompleteRequest().isEmpty();
+    noAudVisIncomplete = FDatabaseTables.getAudVisTable().getIncompleteRequest().isEmpty();
+    noComputerServiceIncomplete =
+        FDatabaseTables.getCompRequestTable().getIncompleteRequest().isEmpty();
+    noFacilitiesIncomplete = FDatabaseTables.getFacilitiesTable().getIncompleteRequest().isEmpty();
+    noFloralDeliveryIncomplete =
+        FDatabaseTables.getFloralDeliveryTable().getIncompleteRequest().isEmpty();
+    noFoodDeliveryIncomplete =
+        FDatabaseTables.getFoodDeliveryTable().getIncompleteRequest().isEmpty();
+    noInternalTransIncomplete =
+        FDatabaseTables.getInternalDeliveryTable().getIncompleteRequest().isEmpty();
+    noLangInterpIncomplete =
+        FDatabaseTables.getLangInterpreterTable().getIncompleteRequest().isEmpty();
+    noLaundryIncomplete = FDatabaseTables.getLaundryRequestTable().getIncompleteRequest().isEmpty();
+    noMedDeliveryIncomplete =
+        FDatabaseTables.getMedDeliveryTable().getIncompleteRequest().isEmpty();
+    noSantiServiceIncomplete =
+        FDatabaseTables.getSanitationServiceTable().getIncompleteRequest().isEmpty();
+    noSecurityServiceIncomplete =
+        FDatabaseTables.getSecurityRequestTable().getIncompleteRequest().isEmpty();
 
+    exTransList = FDatabaseTables.getExternalTransportTable().getIncompleteRequest();
+    audVisList = FDatabaseTables.getAudVisTable().getIncompleteRequest();
+    compServiceList = FDatabaseTables.getCompRequestTable().getIncompleteRequest();
+    facilitiesServiceList = FDatabaseTables.getFacilitiesTable().getIncompleteRequest();
+    floralDeliveryList = FDatabaseTables.getFloralDeliveryTable().getIncompleteRequest();
+    foodDeliveryList = FDatabaseTables.getFoodDeliveryTable().getIncompleteRequest();
+    internalTransList = FDatabaseTables.getInternalDeliveryTable().getIncompleteRequest();
+    langInterpList = FDatabaseTables.getLangInterpreterTable().getIncompleteRequest();
+    laundryList = FDatabaseTables.getLaundryRequestTable().getIncompleteRequest();
+    medDeliveryList = FDatabaseTables.getMedDeliveryTable().getIncompleteRequest();
+    SantiServiceList = FDatabaseTables.getSanitationServiceTable().getIncompleteRequest();
+    SecurityServiceList = FDatabaseTables.getSecurityRequestTable().getIncompleteRequest();
+
+    textFlow.getChildren().clear();
     scrollPane.setPrefHeight(600);
     putIntoText();
+
+    totalCount =
+        exTransList.size()
+            + audVisList.size()
+            + compServiceList.size()
+            + facilitiesServiceList.size()
+            + floralDeliveryList.size()
+            + foodDeliveryList.size()
+            + internalTransList.size()
+            + langInterpList.size()
+            + laundryList.size()
+            + medDeliveryList.size()
+            + SantiServiceList.size()
+            + SecurityServiceList.size();
   }
 
   public void putIntoText() {
@@ -174,20 +199,7 @@ public class NotificationController implements Initializable {
   }
 
   public static Integer getTotalCount() {
-    totalCount =
-        exTransList.size()
-            + audVisList.size()
-            + compServiceList.size()
-            + facilitiesServiceList.size()
-            + floralDeliveryList.size()
-            + foodDeliveryList.size()
-            + internalTransList.size()
-            + langInterpList.size()
-            + laundryList.size()
-            + medDeliveryList.size()
-            + SantiServiceList.size()
-            + SecurityServiceList.size();
-    System.out.println(exTransList.size());
+
     return totalCount;
   }
 }
