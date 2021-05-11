@@ -9,6 +9,7 @@ import javafx.geometry.HPos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 
@@ -37,11 +38,17 @@ public class AboutController implements AllAccessible {
   @FXML private Label uri;
   @FXML private Circle uriCircle;
   @FXML private JFXButton backButton;
+  @FXML private StackPane stackPane;
+
+  DialogFactory dialogFactory;
 
   // ------------------------------------------------------------------------------------
 
   @FXML
   private void initialize() {
+    dialogFactory = new DialogFactory(stackPane);
+    stackPane.setPickOnBounds(false);
+
     blurb.setEditable(false);
 
     gridPane.setHalignment(kushal, HPos.CENTER);
@@ -104,6 +111,154 @@ public class AboutController implements AllAccessible {
     Image uImage = new Image("Images/uri.png");
     ImagePattern uPattern = new ImagePattern(uImage);
     uriCircle.setFill(uPattern);
+  }
+
+  @FXML
+  private void loadDialogK() {
+    dialogFactory.createOneButtonDialogWhite(
+        "About Kushal",
+        "Kushal is an international student from India, "
+            + "\n"
+            + "part of the class of 2022, and is majoring in RBE. "
+            + "\n"
+            + "He likes to play snooker and a big time business "
+            + "\n"
+            + "ideation enthusiast!",
+        "OK",
+        () -> {});
+  }
+
+  @FXML
+  private void loadDialogV() {
+    dialogFactory.createOneButtonDialogWhite(
+        "About Veronica",
+        "Veronica is a Computer Science major "
+            + "\n"
+            + "graduating as a member of the class of "
+            + "\n"
+            + "2022. She is from Norwood, MA and loves"
+            + "\n"
+            + "drinking coffee.",
+        "OK",
+        () -> {});
+  }
+
+  @FXML
+  private void loadDialogA() {
+    dialogFactory.createOneButtonDialogWhite(
+        "About Arman",
+        "Arman is an international student from "
+            + "\n"
+            + "Kazakhstan and is part of the class of 2023. He "
+            + "\n"
+            + "is majoring in Computer Science.",
+        "OK",
+        () -> {});
+  }
+
+  @FXML
+  private void loadDialogE() {
+    dialogFactory.createOneButtonDialogWhite(
+        "About Elaine",
+        "Elaine is a part of the class of 2022, majoring"
+            + "\n"
+            + " in Computer Science and Professional Writing, "
+            + "\n"
+            + "and is from New York City! A fun fact about Elaine "
+            + "\n"
+            + "is that she is ambidextrous.",
+        "OK",
+        () -> {});
+  }
+
+  @FXML
+  private void loadDialogC() {
+    dialogFactory.createOneButtonDialogWhite(
+        "About Curtis",
+        "Curtis is part of the class of 2023"
+            + "\n"
+            + " and is majoring in Robotics Engineering. "
+            + "\n"
+            + "He is from Massachusetts and enjoys playing "
+            + "\n"
+            + "badminton in his free time.",
+        "OK",
+        () -> {});
+  }
+
+  @FXML
+  private void loadDialogY() {
+    dialogFactory.createOneButtonDialogWhite(
+        "About Yiyi",
+        "Yiyi is part of the class of 2023"
+            + "\n"
+            + " and is majoring in Robotics Engineering "
+            + "\n"
+            + "and Mathematics. She loves driving whenever "
+            + "\n"
+            + "she can.",
+        "OK",
+        () -> {});
+  }
+
+  @FXML
+  private void loadDialogT() {
+    dialogFactory.createOneButtonDialogWhite(
+        "About Tia",
+        "Tia is part of the class of 2023"
+            + "\n"
+            + " and is majoring in Computer Science "
+            + "\n"
+            + "and Game Design. She enjoys crocheting "
+            + "\n"
+            + "and knitting in her free time.",
+        "OK",
+        () -> {});
+  }
+
+  @FXML
+  private void loadDialogR() {
+    dialogFactory.createOneButtonDialogWhite(
+        "About Reagan",
+        "Reagan is part of the class of 2023, "
+            + "\n"
+            + "majoring in Computer Science, and is "
+            + "\n"
+            + "from Pelham, NH! He is part of the Christian"
+            + "\n"
+            + " Bible Fellowship and enjoys playing the drums!",
+        "OK",
+        () -> {});
+  }
+
+  @FXML
+  private void loadDialogP() {
+    dialogFactory.createOneButtonDialogWhite(
+        "About Patrick",
+        "Patrick is a part of the class of 2023, "
+            + "\n"
+            + "majoring in Computer Science and Robotics "
+            + "\n"
+            + "Engineering, and is from Londonderry, NH! He"
+            + "\n"
+            + " is a member of the football and track teams,"
+            + "\n"
+            + " and his favorite movie series is Harry Potter!",
+        "OK",
+        () -> {});
+  }
+
+  @FXML
+  private void loadDialogU() {
+    dialogFactory.createOneButtonDialogWhite(
+        "About Uri",
+        "Uri is part of the class of 2023, is"
+            + "\n"
+            + " majoring in Computer Science, and is "
+            + "\n"
+            + "from Waltham, MA.",
+        "OK",
+        () -> {});
   }
 
   @FXML

@@ -98,9 +98,9 @@ public class App extends Application {
     exitButton.setLayoutY(
         App.getPrimaryStage().getScene().getHeight() - (exitButton.getHeight() + 50));
 
-    aboutBtns.setLayoutX(hospitalImage.getLayoutX() + aboutBtns.getWidth() + 30);
+    aboutBtns.setLayoutX(hospitalImage.getLayoutX() + 20);
     System.out.println("this is in the initPage " + hospitalImage.getLayoutX());
-    aboutBtns.setLayoutY(App.getPrimaryStage().getScene().getHeight() - 100);
+    aboutBtns.setLayoutY(exitButton.getLayoutY() - 10);
   }
 
   public static Stage getPrimaryStage() {

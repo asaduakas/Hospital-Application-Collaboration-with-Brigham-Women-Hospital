@@ -94,8 +94,23 @@ public class NotificationController implements Initializable {
     SecurityServiceList = FDatabaseTables.getSecurityRequestTable().getIncompleteRequest();
 
     textFlow.getChildren().clear();
-    scrollPane.setPrefHeight(400);
+
     putIntoText();
+
+    //    scrollPane
+    //        .widthProperty()
+    //        .addListener(
+    //            new ChangeListener<Number>() {
+    //              @Override
+    //              public void changed(
+    //                  ObservableValue<? extends Number> observable, Number oldValue, Number
+    // newValue) {
+    //                Double height = (Double) newValue;
+    //                textFlow.setPrefHeight(height);
+    //              }
+    //            });
+
+    scrollPane.setPrefHeight(250);
 
     totalCount =
         exTransList.size()

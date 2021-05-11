@@ -83,6 +83,7 @@ public abstract class AbsRequest implements AllAccessible {
         fxmlLoader -> {
           Pane root = (Pane) fxmlLoader.getRoot();
           JFXButton checkStatusButton = (JFXButton) root.getChildren().get(2);
+          System.out.println("childrenlist" + root.getChildren());
           if (disableRequestStatus) {
             System.out.println("Hello 3");
             checkStatusButton.setVisible(false);

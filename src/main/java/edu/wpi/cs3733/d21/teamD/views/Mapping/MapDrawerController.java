@@ -4,6 +4,7 @@ import com.jfoenix.controls.*;
 import edu.wpi.cs3733.d21.teamD.Astar.*;
 import edu.wpi.cs3733.d21.teamD.Ddb.FDatabaseTables;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
+import edu.wpi.cs3733.d21.teamD.views.Access.AllAccessible;
 import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -30,7 +31,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.*;
 
-public class MapDrawerController implements Initializable {
+public class MapDrawerController implements Initializable, AllAccessible {
   @FXML private JFXTreeView<String> directoryTreeView;
   @FXML private JFXTextField startField;
   @FXML private JFXTextField endField;
@@ -95,6 +96,7 @@ public class MapDrawerController implements Initializable {
 
   @FXML
   public void tiasSpecialFunction() throws IOException {
+    Targets.clear();
     String startText = startField.getText();
     String endText = endField.getText();
     //    String longName1 = "Neuroscience Waiting Room";
@@ -113,6 +115,26 @@ public class MapDrawerController implements Initializable {
     setSearchHistory(GlobalDb.getConnection(), recentStart, recentEnd);
     HomeController.historyTracker = 1;
     getSearchHistory(GlobalDb.getConnection());
+    Targets.clear();
+  }
+
+  public void chatBotPathFinding(String start, String end) throws IOException {
+    Targets.clear();
+    String startText = start;
+    String endText = end;
+
+    Targets.add(mapController.getNodeUIByLongName(startText).getN());
+    Targets.add(mapController.getNodeUIByLongName(endText).getN());
+
+    mapController.runPathFindingDirectory(Targets);
+
+    recentStart = startText;
+    recentEnd = endText;
+
+    setSearchHistory(GlobalDb.getConnection(), recentStart, recentEnd);
+    HomeController.historyTracker = 1;
+    getSearchHistory(GlobalDb.getConnection());
+    Targets.clear();
   }
 
   @Override
@@ -548,6 +570,7 @@ public class MapDrawerController implements Initializable {
           nodeRedrawing(type);
           break;
         default:
+          mapController.clearMap();
           for (NodeUI NUI : mapController.NODES) {
             if (NUI.getN().getLongName().equals(name)) {
               mapController.addNodeUI(NUI);
