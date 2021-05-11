@@ -1211,16 +1211,20 @@ public class MapController implements AllAccessible {
     initialFavs.add(getNodeUIByLongName("Parking Garage L2"));
     initialFavs.add(getNodeUIByLongName("Cafe"));
 
-    for (NodeUI N : initialFavs) {
-      if (!FDatabaseTables.getNodeTable()
-          .FavContains(GlobalDb.getConnection(), N.getN().getNodeID(), HomeController.username)) {
-        FDatabaseTables.getNodeTable()
-            .addToFavoriteNodes(
-                GlobalDb.getConnection(),
-                HomeController.username,
-                N.getN().getNodeID(),
-                N.getN().getLongName());
-        N.getI().setImage(favImage);
+    if (HomeController.username == null) {
+      System.out.println("No initial favorites for guests");
+    } else {
+      for (NodeUI N : initialFavs) {
+        if (!FDatabaseTables.getNodeTable()
+            .FavContains(GlobalDb.getConnection(), N.getN().getNodeID(), HomeController.username)) {
+          FDatabaseTables.getNodeTable()
+              .addToFavoriteNodes(
+                  GlobalDb.getConnection(),
+                  HomeController.username,
+                  N.getN().getNodeID(),
+                  N.getN().getLongName());
+          N.getI().setImage(favImage);
+        }
       }
     }
   }
