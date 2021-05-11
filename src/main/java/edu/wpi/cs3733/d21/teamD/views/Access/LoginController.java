@@ -22,6 +22,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -103,6 +104,7 @@ public class LoginController implements AllAccessible {
       tableLine.setDisable(true);
     }
     if (userCategory.equalsIgnoreCase("employee")) {
+
       JFXDrawer notificationDrawer = (JFXDrawer) childrenList.get(8);
       JFXDialogLayout notification = new JFXDialogLayout();
       Text heading = new Text("You have ? pending service requests");
@@ -113,13 +115,14 @@ public class LoginController implements AllAccessible {
       JFXButton showBtn = new JFXButton("Show");
       JFXButton showAllBtn = new JFXButton("Show All");
 
-      notificationDrawer.setLayoutY(400);
-      notificationDrawer.setTranslateX(20);
+      notificationDrawer.setLayoutY(260);
+      //      notificationDrawer.setTranslateX();
       notification.setHeading(heading);
       rectangle.setArcHeight(60.0d);
       rectangle.setArcWidth(60.0d);
       stackpane.setShape(rectangle);
-      stackpane.setMaxSize(100, 50);
+      stackpane.setMaxSize(100, 30);
+      stackpane.setPickOnBounds(false);
 
       showAllBtn.setTranslateX(-20);
       dismissBtn.setTranslateX(20);
@@ -155,6 +158,7 @@ public class LoginController implements AllAccessible {
               heading.setVisible(true);
             }
           });
+
       showAllBtn.setOnAction(
           new EventHandler<ActionEvent>() {
             @Override
@@ -167,9 +171,21 @@ public class LoginController implements AllAccessible {
               } catch (IOException exception) {
                 exception.printStackTrace();
               }
-              notificationDrawer.setSidePane(menuBtns);
+                            notificationDrawer.setSidePane(menuBtns);
             }
           });
+      showAllBtn.addEventHandler(
+          MouseEvent.MOUSE_PRESSED,
+          e -> {
+            if (notificationDrawer.isOpened()) {
+              notificationDrawer.setVisible(false);
+              notificationDrawer.close();
+            } else {
+              notificationDrawer.setVisible(true);
+              notificationDrawer.open();
+            }
+          });
+
       notification.setActions(showAllBtn, dismissBtn, showBtn);
       root.getChildren().add(stackpane);
       dialog.show();
@@ -180,7 +196,6 @@ public class LoginController implements AllAccessible {
       animationPath.setDuration(Duration.seconds(1));
       animationPath.setCycleCount(1);
       animationPath.play();
-      System.out.println("this is layoutY of notification " + notification.getLayoutY());
     }
 
     Scene scene = App.getPrimaryStage().getScene();

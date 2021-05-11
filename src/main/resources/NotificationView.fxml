@@ -7,18 +7,18 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.TextFlow?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.cs3733.d21.teamD.views.NotificationController">
+<AnchorPane fx:id="anchor" maxHeight="-Infinity" minHeight="-Infinity" prefWidth="238.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.cs3733.d21.teamD.views.NotificationController">
    <children>
-      <Pane fx:id="anotherPane" stylesheets="@mapScrollpane.css" AnchorPane.bottomAnchor="0.0">
+      <Pane fx:id="anotherPane" maxHeight="-Infinity" minHeight="-Infinity" stylesheets="@mapScrollpane.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <children>
             <JFXButton fx:id="closeBtn" text="Close" translateX="130.0" translateY="10.0" underline="true">
                <font>
                   <Font size="15.0" />
                </font>
             </JFXButton>
-            <ScrollPane fx:id="scrollPane" fitToWidth="true" layoutY="50.0">
+            <ScrollPane fx:id="scrollPane" fitToWidth="true" layoutX="15.0" layoutY="50.0" minHeight="-Infinity" prefWidth="220.0">
                <content>
-                  <TextFlow fx:id="textFlow" prefWidth="200.0" />
+                  <TextFlow fx:id="textFlow" minHeight="-Infinity" />
                </content>
             </ScrollPane>
          </children>
