@@ -661,26 +661,24 @@ public class MapDrawerController implements Initializable {
       edu.wpi.cs3733.d21.teamD.Astar.Node startN = initialData.getNodeByID(N.getStartNodeID());
       edu.wpi.cs3733.d21.teamD.Astar.Node endN = initialData.getNodeByID(N.getEndNodeID());
 
-      if (MapController.currentFloor.equals(startN.getFloor())) {
-        String newDirection =
-            evalTurn(
-                initialDirection,
-                startN.getXCoord(),
-                startN.getYCoord(),
-                endN.getXCoord(),
-                endN.getYCoord(),
-                startN,
-                endN);
-        initialDirection = newDirection;
-      }
+      String newDirection =
+          evalTurn(
+              initialDirection,
+              startN.getXCoord(),
+              startN.getYCoord(),
+              endN.getXCoord(),
+              endN.getYCoord(),
+              startN,
+              endN);
+      initialDirection = newDirection;
     }
     // dirText.setFont(hFont);
     if (MapController.currentFloor.equals(end.getFloor())) {
       Text endText = new Text("\nWelcome to " + end.getLongName() + "\n");
       endText.setFont(hFont);
       dirText.getChildren().add(endText);
-      downloadText.appendText("\nWelcome to " + end.getLongName() + "\n");
     }
+    downloadText.appendText("\nWelcome to " + end.getLongName() + "\n");
   }
 
   public String evalTurn(
@@ -707,7 +705,9 @@ public class MapDrawerController implements Initializable {
       ImageView EleImage = new ImageView(new Image("Images/elevator.png"));
       EleImage.setFitHeight(30);
       EleImage.setFitWidth(30);
-      dirText.getChildren().addAll(EleImage, elvText);
+      if (MapController.currentFloor.equals(startNode.getFloor())) {
+        dirText.getChildren().addAll(EleImage, elvText);
+      }
       return "In elevator";
 
     } else if (startNode.getNodeType().equals("ELEV") && !endNode.getNodeType().equals("ELEV")) {
@@ -721,7 +721,9 @@ public class MapDrawerController implements Initializable {
       ImageView Image = new ImageView(new Image("Images/stairs.png"));
       Image.setFitHeight(30);
       Image.setFitWidth(30);
-      dirText.getChildren().addAll(Image, text);
+      if (MapController.currentFloor.equals(startNode.getFloor())) {
+        dirText.getChildren().addAll(Image, text);
+      }
       return "In stairs";
     } else if (startNode.getNodeType().equals("STAI") && !endNode.getNodeType().equals("STAI")) {
       newDirection = firstMove(startX, startY, endX, endY, startNode, endNode);
@@ -759,7 +761,9 @@ public class MapDrawerController implements Initializable {
       ImageView Image = new ImageView(new Image("Images/left.png"));
       Image.setFitHeight(30);
       Image.setFitWidth(30);
-      dirText.getChildren().addAll(Image, lText);
+      if (MapController.currentFloor.equals(startNode.getFloor())) {
+        dirText.getChildren().addAll(Image, lText);
+      }
 
     }
     // Turn Right
@@ -774,7 +778,9 @@ public class MapDrawerController implements Initializable {
       ImageView Image = new ImageView(new Image("Images/right.png"));
       Image.setFitHeight(30);
       Image.setFitWidth(30);
-      dirText.getChildren().addAll(Image, rText);
+      if (MapController.currentFloor.equals(startNode.getFloor())) {
+        dirText.getChildren().addAll(Image, rText);
+      }
       // dirText.appendText("\tTurn Right towards: \n\t\t" + endNode.getLongName() + "\n");
     }
     // Continue Straight
@@ -788,7 +794,9 @@ public class MapDrawerController implements Initializable {
         ImageView Image = new ImageView(new Image("Images/up.png"));
         Image.setFitHeight(30);
         Image.setFitWidth(30);
-        dirText.getChildren().addAll(Image, sText);
+        if (MapController.currentFloor.equals(startNode.getFloor())) {
+          dirText.getChildren().addAll(Image, sText);
+        }
         // dirText.appendText("\tContinue Straight towards: \n\t\t" + endNode.getLongName() + "\n");
       }
     }
@@ -815,7 +823,9 @@ public class MapDrawerController implements Initializable {
       EleImage.setFitHeight(30);
       EleImage.setFitWidth(30);
       //        dirText.getChildren().addAll(EleImage, text);
-      dirText.getChildren().add(EleImage);
+      if (MapController.currentFloor.equals(startNode.getFloor())) {
+        dirText.getChildren().add(EleImage);
+      }
       System.out.println("this is adding elevatorImage");
       return "In elevator";
     } else if (startNode.getNodeType().equals("STAI") && endNode.getNodeType().equals("STAI")) {
@@ -826,7 +836,9 @@ public class MapDrawerController implements Initializable {
       ImageView Image = new ImageView(new Image("Images/stairs.png"));
       Image.setFitHeight(30);
       Image.setFitWidth(30);
-      dirText.getChildren().addAll(Image, text);
+      if (MapController.currentFloor.equals(startNode.getFloor())) {
+        dirText.getChildren().addAll(Image, text);
+      }
       return "In stairs";
     } else {
       // North
@@ -838,7 +850,9 @@ public class MapDrawerController implements Initializable {
         ImageView Image = new ImageView(new Image("Images/north_bg.png"));
         Image.setFitHeight(30);
         Image.setFitWidth(30);
-        dirText.getChildren().addAll(Image, text);
+        if (MapController.currentFloor.equals(startNode.getFloor())) {
+          dirText.getChildren().addAll(Image, text);
+        }
         //   dirText.setFont(pFont);
         //        dirText.appendText("\tHead North towards: \n\t\t" + endNode.getLongName() + "\n");
         return "North";
@@ -852,7 +866,9 @@ public class MapDrawerController implements Initializable {
         ImageView Image = new ImageView(new Image("Images/south_bg.png"));
         Image.setFitHeight(30);
         Image.setFitWidth(30);
-        dirText.getChildren().addAll(Image, text);
+        if (MapController.currentFloor.equals(startNode.getFloor())) {
+          dirText.getChildren().addAll(Image, text);
+        }
         return "South";
       }
       // East
@@ -864,7 +880,9 @@ public class MapDrawerController implements Initializable {
         ImageView Image = new ImageView(new Image("Images/east_bg.png"));
         Image.setFitHeight(30);
         Image.setFitWidth(30);
-        dirText.getChildren().addAll(Image, text);
+        if (MapController.currentFloor.equals(startNode.getFloor())) {
+          dirText.getChildren().addAll(Image, text);
+        }
         return "East";
       }
       // West
@@ -876,7 +894,9 @@ public class MapDrawerController implements Initializable {
         ImageView Image = new ImageView(new Image("Images/west_bg.png"));
         Image.setFitHeight(30);
         Image.setFitWidth(30);
-        dirText.getChildren().addAll(Image, text);
+        if (MapController.currentFloor.equals(startNode.getFloor())) {
+          dirText.getChildren().addAll(Image, text);
+        }
         return "West";
       } else {
         //        System.out.println("Error determining turn direction towards " +
