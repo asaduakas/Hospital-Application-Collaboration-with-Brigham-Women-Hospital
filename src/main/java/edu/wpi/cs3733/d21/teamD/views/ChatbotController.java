@@ -18,7 +18,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
@@ -47,6 +46,7 @@ public class ChatbotController implements AllAccessible {
   private Boolean changePsswdFlag = false;
 
   private Boolean navigateCategoryFlag = false;
+  private Boolean startEndFlag = false;
   private String start = null;
   private String end = null;
 
@@ -240,28 +240,31 @@ public class ChatbotController implements AllAccessible {
         ControllerManager.exitPopup();
         hospitalMapViewer();
       } else if (category.equals("Pathfinding")) {
-        answer = navigate(tokens);
+        answer = getStartEndLoc(tokens, input);
         if ((start != null) && (end != null)) {
           // do the navigation here
+          System.out.println(start + " : " + end);
           start = null;
           end = null;
-          ControllerManager.attemptLoadPage(
-              "MapDrawerView.fxml",
-              fxmlLoader -> {
-                Pane root = fxmlLoader.getRoot();
-                AnchorPane mainPane = (AnchorPane) root.getChildren().get(0);
-                GridPane startGridPane = (GridPane) mainPane.getChildren().get(5);
-                JFXTextField startField = (JFXTextField) startGridPane.getChildren().get(0);
-
-                GridPane endGridPane = (GridPane) mainPane.getChildren().get(4);
-                JFXTextField endField = (JFXTextField) startGridPane.getChildren().get(0);
-
-                JFXButton findPath = (JFXButton) mainPane.getChildren().get(0);
-
-                startField.setText(start);
-                endField.setText(end);
-                findPath.equals(MouseButton.PRIMARY);
-              });
+          //          ControllerManager.attemptLoadPage(
+          //              "MapDrawerView.fxml",
+          //              fxmlLoader -> {
+          //                Pane root = fxmlLoader.getRoot();
+          //                AnchorPane mainPane = (AnchorPane) root.getChildren().get(0);
+          //                GridPane startGridPane = (GridPane) mainPane.getChildren().get(5);
+          //                JFXTextField startField = (JFXTextField)
+          // startGridPane.getChildren().get(0);
+          //
+          //                GridPane endGridPane = (GridPane) mainPane.getChildren().get(4);
+          //                JFXTextField endField = (JFXTextField)
+          // startGridPane.getChildren().get(0);
+          //
+          //                JFXButton findPath = (JFXButton) mainPane.getChildren().get(0);
+          //
+          //                startField.setText(start);
+          //                endField.setText(end);
+          //                findPath.equals(MouseButton.PRIMARY);
+          //              });
         }
       } else if (category.equals("Emergency")) {
         ControllerManager.attemptLoadPopupBlur("Emergency.fxml");
@@ -302,33 +305,103 @@ public class ChatbotController implements AllAccessible {
     return answer;
   }
 
-  public String navigate(String[] tokens) throws InterruptedException {
-    LinkedList<String> tokensFoundInDB = new LinkedList<String>();
-    ArrayList<String> longNamesAllinDB = NodesTable.fetchLongName(GlobalDb.getConnection());
-    for (String token : tokens) {
-      if (longNamesAllinDB.contains(token)) {
-        tokensFoundInDB.add(token);
-      }
-    }
+  public String getStartEndLoc(String[] tokens, String input) throws InterruptedException {
     String botMessage = null;
-    if (tokensFoundInDB.size() < 2) {
-      navigateCategoryFlag = true;
-      botMessage = " Please, specify the start and the end location";
-    } else if (tokensFoundInDB.size() == 2) {
-      if (tokensFoundInDB.get(0).equals(tokensFoundInDB.get(1))) {
-        botMessage = "Please, different location for the end";
-      } else {
-        start = tokensFoundInDB.get(0);
-        end = tokensFoundInDB.get(1);
+    ArrayList<String> longNames = NodesTable.fetchLongName(GlobalDb.getConnection());
+    ArrayList<String> shortNames = NodesTable.fetchShortName(GlobalDb.getConnection());
+    if (!startEndFlag) {
+      LinkedList<String> startList = new LinkedList<String>();
+      LinkedList<String> endList = new LinkedList<String>();
+      Boolean fromFlag = false;
+      Boolean toFlag = false;
+      for (String token : tokens) {
+        if (token.equalsIgnoreCase("from")) {
+          fromFlag = true;
+        }
+        if (token.equalsIgnoreCase("to")) {
+          fromFlag = false;
+          toFlag = true;
+        }
+        if (fromFlag) {
+          startList.add(token);
+        }
+        if (toFlag) {
+          endList.add(token);
+        }
       }
-    } else if (tokensFoundInDB.size() > 2) {
-      navigateCategoryFlag = true;
-      botMessage = "Please specify only the start and end location";
+      startList.remove(0);
+      endList.remove(0);
+      int i = 0;
+      int j = 0;
+      String tempStart = null;
+      String tempEnd = null;
+      for (String s : startList) {
+        if (i == 0) {
+          tempStart = s;
+        } else {
+          tempStart = tempStart + " " + s;
+        }
+        i++;
+      }
+      for (String e : endList) {
+        if (j == 0) {
+          tempEnd = e;
+        } else {
+          tempEnd = tempEnd + " " + e;
+        }
+        j++;
+      }
+
+      if (!longNames.contains(tempStart) && longNames.contains(tempEnd)) {
+        botMessage = "Please mention your start location! Either it was empty or incorrect!";
+        navigateCategoryFlag = true;
+        startEndFlag = true;
+        end = tempEnd;
+      } else if (!longNames.contains(tempEnd) && longNames.contains(tempStart)) {
+        botMessage = "Please mention your end location! Either it was empty or incorrect!";
+        navigateCategoryFlag = true;
+        startEndFlag = true;
+        start = tempStart;
+      } else if (!longNames.contains(tempStart) && !longNames.contains(tempEnd)) {
+        navigateCategoryFlag = true;
+        startEndFlag = false;
+        botMessage =
+            "Please mention your start and end location correctly! Use from: <start loc> to <end loc>";
+        // to do: handle both
+      } else if (longNames.contains(tempStart) && longNames.contains(tempEnd)) {
+        start = tempStart;
+        end = tempEnd;
+      }
+
+    } else if (startEndFlag) {
+      if (start == null) {
+        if (longNames.contains(input)) {
+          if (input.equals(end)) {
+            botMessage = "Please enter a different loc than end location";
+          } else {
+            start = input;
+            navigateCategoryFlag = false;
+            startEndFlag = false;
+          }
+
+        } else {
+          botMessage = "Hmm, I did not found this location in my database! want to try again?";
+        }
+      } else if (end == null) {
+        if (longNames.contains(input)) {
+          if (input.equals(start)) {
+            botMessage = "Please enter a different loc than start location";
+          } else {
+            end = input;
+            navigateCategoryFlag = false;
+            startEndFlag = false;
+          }
+        } else {
+          botMessage = "Hmm, I did not found this location in my database! want to try again?";
+        }
+      }
     }
-    System.out.println(start + " : " + end);
     return botMessage;
-  String botMessage = null;
-  return botMessage;
   }
 
   public void hospitalMapViewer() {
