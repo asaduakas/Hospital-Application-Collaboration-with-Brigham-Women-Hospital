@@ -146,8 +146,6 @@ public class ExtTransRequestTable extends AbsTables {
       ObservableList<ExtTransNodeInfo> ExTransData, boolean employeeAccess) throws IOException {
     Connection conn = GlobalDb.getConnection();
     PreparedStatement stmt = null;
-    System.out.println(
-        "this is checking the boolean in exTransTable for adding data " + employeeAccess);
     try {
       if (employeeAccess) {
         stmt =

@@ -107,17 +107,17 @@ public class StatusController extends AbsRequest
   private ObservableList<Node> tables = FXCollections.observableArrayList();
 
   private final boolean isEmployee = HomeController.userCategory.equalsIgnoreCase("employee");
-  private ObservableList<String> emloyeeList =
-      FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
+  private ObservableList<String> employeeList =
+      FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());;
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
 
     if (isEmployee) {
-      emloyeeList.clear();
-      emloyeeList.addAll(HomeController.username, "");
+      employeeList.clear();
+      employeeList.addAll(HomeController.username, null);
     } else {
-      emloyeeList.add(0, "");
+      employeeList.add(0, "");
     }
 
     typeBox
@@ -810,7 +810,7 @@ public class StatusController extends AbsRequest
             return assignedCol.getComputedValue(p);
           }
         });
-    assignedCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn(emloyeeList));
+    assignedCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn(employeeList));
 
     ObservableList<String> statusList = FXCollections.observableArrayList();
     statusList.addAll("In Progress", "Complete", "Incomplete");
@@ -926,7 +926,7 @@ public class StatusController extends AbsRequest
             return assignedCol.getComputedValue(p);
           }
         });
-    assignedCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn(emloyeeList));
+    assignedCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn(employeeList));
 
     ObservableList<String> statusList = FXCollections.observableArrayList();
     statusList.addAll("In Progress", "Complete", "Incomplete");
@@ -1080,7 +1080,7 @@ public class StatusController extends AbsRequest
             return assignedCol.getComputedValue(p);
           }
         });
-    assignedCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn(emloyeeList));
+    assignedCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn(employeeList));
 
     ObservableList<String> statusList = FXCollections.observableArrayList();
     statusList.addAll("In Progress", "Complete", "Incomplete");
@@ -1195,7 +1195,7 @@ public class StatusController extends AbsRequest
             return assignedCol.getComputedValue(p);
           }
         });
-    assignedCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn(emloyeeList));
+    assignedCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn(employeeList));
 
     ObservableList<String> statusList = FXCollections.observableArrayList();
     statusList.addAll("In Progress", "Complete", "Incomplete");
@@ -1307,7 +1307,7 @@ public class StatusController extends AbsRequest
             return assignedCol.getComputedValue(p);
           }
         });
-    assignedCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn(emloyeeList));
+    assignedCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn(employeeList));
 
     ObservableList<String> statusList = FXCollections.observableArrayList();
     statusList.addAll("In Progress", "Complete", "Incomplete");
@@ -1401,7 +1401,7 @@ public class StatusController extends AbsRequest
             return assignedCol.getComputedValue(p);
           }
         });
-    assignedCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn(emloyeeList));
+    assignedCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn(employeeList));
 
     ObservableList<String> statusList = FXCollections.observableArrayList();
     statusList.addAll("In Progress", "Complete", "Incomplete");
@@ -1506,7 +1506,7 @@ public class StatusController extends AbsRequest
             return assignedCol.getComputedValue(p);
           }
         });
-    assignedCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn(emloyeeList));
+    assignedCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn(employeeList));
 
     ObservableList<String> statusList = FXCollections.observableArrayList();
     statusList.addAll("In Progress", "Complete", "Incomplete");
@@ -1613,7 +1613,7 @@ public class StatusController extends AbsRequest
             return assignedCol.getComputedValue(p);
           }
         });
-    assignedCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn(emloyeeList));
+    assignedCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn(employeeList));
 
     ObservableList<String> statusList = FXCollections.observableArrayList();
     statusList.addAll("In Progress", "Complete", "Incomplete");
@@ -1727,7 +1727,7 @@ public class StatusController extends AbsRequest
             return assignedCol.getComputedValue(p);
           }
         });
-    assignedCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn(emloyeeList));
+    assignedCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn(employeeList));
 
     ObservableList<String> statusList = FXCollections.observableArrayList();
     statusList.addAll("In Progress", "Complete", "Incomplete");
@@ -1824,8 +1824,7 @@ public class StatusController extends AbsRequest
             return descripCol.getComputedValue(p);
           }
         });
-    ObservableList<String> employeeList =
-        FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
+
     //    JFXComboBox<String> emList = new JFXComboBox<String>();
     assignedEmployCol.setCellValueFactory(
         (JFXTreeTableColumn.CellDataFeatures<AudVisNodeInfo, String> p) -> {
@@ -1931,8 +1930,6 @@ public class StatusController extends AbsRequest
             return descripCol.getComputedValue(p);
           }
         });
-    ObservableList<String> employeeList =
-        FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
     //    JFXComboBox<String> emList = new JFXComboBox<String>();
     assignedEmployCol.setCellValueFactory(
         (JFXTreeTableColumn.CellDataFeatures<ComputerNodeInfo, String> p) -> {
@@ -2049,8 +2046,6 @@ public class StatusController extends AbsRequest
             return descripCol.getComputedValue(p);
           }
         });
-    ObservableList<String> employeeList =
-        FDatabaseTables.getUserTable().fetchEmployee(GlobalDb.getConnection());
     //    JFXComboBox<String> emList = new JFXComboBox<String>();
     assignedEmployCol.setCellValueFactory(
         (JFXTreeTableColumn.CellDataFeatures<FacilitiesNodeInfo, String> p) -> {
@@ -2178,7 +2173,7 @@ public class StatusController extends AbsRequest
             return assignedCol.getComputedValue(p);
           }
         });
-    assignedCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn(emloyeeList));
+    assignedCol.setCellFactory(ComboBoxTreeTableCell.forTreeTableColumn(employeeList));
 
     positiveTestCheckCol.setCellValueFactory(
         (TreeTableColumn.CellDataFeatures<COVIDSurveyResultsNodeInfo, String> p) -> {
