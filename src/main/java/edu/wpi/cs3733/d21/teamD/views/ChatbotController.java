@@ -48,10 +48,13 @@ public class ChatbotController implements AllAccessible {
   private Boolean changePsswdFlag = false;
 
   private Boolean navigateCategoryFlag = false;
+  private Boolean jokeCategoryFlag = false;
   private Boolean startEndFlag = false;
 
   public String start = null;
   public String end = null;
+
+  private LinkedList<String> jokeList = new LinkedList<String>();
 
   @FXML
   private void initialize() {
@@ -197,7 +200,10 @@ public class ChatbotController implements AllAccessible {
         category = bot.detectCategory(categoryModel, lemmas);
       } else if (navigateCategoryFlag) {
         category = "Pathfinding";
+      } else if (jokeCategoryFlag) {
+        category = "Tell-Joke";
       }
+
       // Get predefined answer from given category & add to answer.
       if (category.equals("Arbitrary")) {
         category = prevCategory;
@@ -305,6 +311,33 @@ public class ChatbotController implements AllAccessible {
         } else {
           answer = answer + "Sorry, you need to be logged in first!";
         }
+      } else if (category.equals("Identity")) {
+        answer =
+            answer
+                + "My name is Dr. Dobby, an AI powered bot at your service. I was created by a wonderful team of experts at WPI on 7th of May";
+      } else if (category.equals("Tell-Joke")) {
+        // add jokes and select random
+        Random rand = new Random();
+
+        jokeList.add(
+            "What do you call it when computer science majors make fun of each other?\n"
+                + "Cyber boolean");
+        jokeList.add("My dog ate my computer science project. It took him a couple bytes.");
+        jokeList.add(
+            "Why isn't there any beautiful girl in computer science?\n"
+                + "Because they're all 0's and 1's");
+        jokeList.add("Did you take soft-eng?");
+        jokeList.add(
+            "How did the computer hackers get away from the scene of the crime?\n"
+                + "I think they just ransomware.");
+        jokeList.add("What OS do Jedi run their computers on?\n" + "The DagobahSystem.");
+        jokeList.add(
+            "Why didn't the client tip the server?\n" + "Because they didn't have enough cache!");
+        int randomNum = rand.nextInt(((jokeList.size() - 1) - 0) + 1) + 0;
+        answer = answer + jokeList.get(randomNum);
+
+      } else if (category.equals("Joke-End")) {
+        answer = answer + "Hell I am! After all I was created by the best team in the world!";
       } else {
         answer = answer + " " + questionAnswer.get(category);
       }

@@ -1,4 +1,5 @@
 greeting hhhello how are you  hey hows it going good morning good evening good afternoon howdy henlo hello howdy what's up sup gimme the good where you at bro bonjour hola
+Identity        Who are you? Who made you? What is you name? What is your birthdate? Are you real? Are you human? Are you robot? Where do you live? What is your mothers name? Are you expensive? Do you get smarter?
 conversation-continue ok wow great oh is it  oh ohh Thats great Good Really hmm lemme think hm hmmm hmmmmm
 conversation-complete Thanks done that's all thats it thats it am done Thank you for information Thank thanks thank you thanks nothing else thats it
 Username-Info what is my username I forgot my username Cna you tell me my username you help me change my username Why do you think it is that my username is this   you confirm if this is my username If this is my username   you help me with this username usernme usermane usermine usernemn usernnnamemmmmemmeee
@@ -22,5 +23,6 @@ User-Table      access users users table change covid clearnace clearance edit p
 Hospital-Map    open the map view the map hospital open  map show open  map hospital map open  map editor open  sho open  view map mpa mappp open open mappmapp mapampap mapp hospaital hopsital hospial load map map the load map loader mapper loader hopitalate mapate
 Pathfinding     take me at to from to at to from pathfinding navigation from start location to end location navidation from pathfinding take to a from at location start end end the start start the end start pathfinding find the path path the find finding path startign the end ending the start fidn navigate to location location the navigate gps gps pilot explore steer fly navigate travel travel location end start start the end
 Emergency       call emergency will die call emergency will be ruined emergency sitatuatiuon call help call 911 911 dead help help help emergency emergency call the police
-Location-Name  get me me me me dobby dobby location give the location give location me building bathroom restroom me toilet lab hospital parking walkway elevator stairs department dpaertment laboratory laborty retail information conference halls location loaction the lobby node edge location edge node location valet parking street halls road location name long name short name name is name other than name road street on road raod staircase elevator on top of stair stair lab location give me
+Tell-Joke feeling bit low low depressed no good mood tell joke funny make my day
+Joke-End        hahahah haehehe hhehhe hhahah you are hilarious thanks for the joke funny damn funny lol lmao lol rofl lmao lol rofl way funny funny as hell
 Arbitrary  change it it you get it get me it  a new new stuff change existing thing
