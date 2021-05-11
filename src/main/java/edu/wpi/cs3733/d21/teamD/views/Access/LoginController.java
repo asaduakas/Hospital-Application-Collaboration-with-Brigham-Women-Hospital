@@ -6,6 +6,7 @@ import edu.wpi.cs3733.d21.teamD.Ddb.FDatabaseTables;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
 import edu.wpi.cs3733.d21.teamD.views.ControllerManager;
 import edu.wpi.cs3733.d21.teamD.views.DialogFactory;
+import edu.wpi.cs3733.d21.teamD.views.NotificationController;
 import edu.wpi.cs3733.d21.teamD.views.SceneSizeChangeListener;
 import java.io.IOException;
 import java.util.List;
@@ -19,9 +20,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -101,27 +104,48 @@ public class LoginController implements AllAccessible {
       tableLine.setDisable(true);
     }
     if (userCategory.equalsIgnoreCase("employee")) {
-      JFXDrawer notificationDrawer = (JFXDrawer) childrenList.get(8);
+
+      JFXDrawer notificationDrawer = (JFXDrawer) childrenList.get(7);
+      FXMLLoader loader =
+          new FXMLLoader(
+              LoginController.class.getClassLoader().getResource("NotificationView.fxml"));
+      AnchorPane menuBtns = null;
+      try {
+        menuBtns = loader.load();
+      } catch (IOException exception) {
+        exception.printStackTrace();
+      }
+      notificationDrawer.setSidePane(menuBtns);
+      notificationDrawer.setVisible(false);
       JFXDialogLayout notification = new JFXDialogLayout();
-      Text heading = new Text("You have ? pending service requests");
       StackPane stackpane = new StackPane();
       Rectangle rectangle = new Rectangle(120.0d, 80.0d);
       JFXDialog dialog = new JFXDialog(stackpane, notification, JFXDialog.DialogTransition.CENTER);
       JFXButton dismissBtn = new JFXButton("Dismiss");
       JFXButton showBtn = new JFXButton("Show");
       JFXButton showAllBtn = new JFXButton("Show All");
+      JFXButton imageBtn = new JFXButton();
+      ImageView alter = new ImageView(new Image("Images/alert-icon.png"));
 
-      notificationDrawer.setLayoutY(400);
-      notificationDrawer.setTranslateX(20);
-      notification.setHeading(heading);
+      notificationDrawer.setLayoutY(260);
+      notification.setHeading(setText());
+      dialog.getChildren().add(alter);
       rectangle.setArcHeight(60.0d);
       rectangle.setArcWidth(60.0d);
       stackpane.setShape(rectangle);
-      stackpane.setMaxSize(100, 50);
-
+      stackpane.setMaxSize(100, 80);
+      alter.setFitWidth(45);
+      alter.setFitHeight(45);
       showAllBtn.setTranslateX(-20);
       dismissBtn.setTranslateX(20);
+      alter.setTranslateX(130);
+      alter.setTranslateY(-60);
+      alter.setVisible(isNotEmpty());
+      notification.getChildren().get(0).setTranslateY(20);
+
+      dialog.setOverlayClose(false);
       showBtn.setVisible(false);
+
       dismissBtn.setOnAction(
           new EventHandler<ActionEvent>() {
             @Override
@@ -129,12 +153,17 @@ public class LoginController implements AllAccessible {
               PathTransition animationPath = new PathTransition();
               animationPath.setPath(new Line(110, 200, -60, 200));
               animationPath.setNode(stackpane);
-              animationPath.setDuration(Duration.seconds(1));
+              animationPath.setDuration(Duration.seconds(0.5));
               animationPath.setCycleCount(1);
               animationPath.play();
               dismissBtn.setVisible(false);
-              heading.setVisible(false);
+              notification.getChildren().get(0).setVisible(false);
               showBtn.setVisible(true);
+              if (notificationDrawer.isVisible()) {
+                notificationDrawer.close();
+                notificationDrawer.setVisible(false);
+                showAllBtn.setText("Show All");
+              }
             }
           });
       showBtn.setOnAction(
@@ -144,21 +173,23 @@ public class LoginController implements AllAccessible {
               PathTransition animationPath = new PathTransition();
               animationPath.setPath(new Line(-60, 200, 110, 200));
               animationPath.setNode(stackpane);
-              animationPath.setDuration(Duration.seconds(1));
+              animationPath.setDuration(Duration.seconds(0.5));
               animationPath.setCycleCount(1);
               animationPath.play();
               showBtn.setVisible(false);
               dismissBtn.setTranslateX(50);
               dismissBtn.setVisible(true);
-              heading.setVisible(true);
+              notification.getChildren().get(0).setVisible(true);
             }
           });
+
       showAllBtn.setOnAction(
           new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
               FXMLLoader loader =
-                  new FXMLLoader(getClass().getClassLoader().getResource("NotificationView.fxml"));
+                  new FXMLLoader(
+                      LoginController.class.getClassLoader().getResource("NotificationView.fxml"));
               AnchorPane menuBtns = null;
               try {
                 menuBtns = loader.load();
@@ -166,8 +197,26 @@ public class LoginController implements AllAccessible {
                 exception.printStackTrace();
               }
               notificationDrawer.setSidePane(menuBtns);
+              notification.setHeading(setText());
+              alter.setVisible(isNotEmpty());
+              notification.getChildren().get(0).setVisible(true);
             }
           });
+      showAllBtn.addEventHandler(
+          MouseEvent.MOUSE_PRESSED,
+          e -> {
+            if (notificationDrawer.isOpened()) {
+              showAllBtn.setText("Show All");
+              notificationDrawer.close();
+              notificationDrawer.setVisible(false);
+
+            } else {
+              showAllBtn.setText("Close");
+              notificationDrawer.setVisible(true);
+              notificationDrawer.open();
+            }
+          });
+
       notification.setActions(showAllBtn, dismissBtn, showBtn);
       root.getChildren().add(stackpane);
       dialog.show();
@@ -178,7 +227,6 @@ public class LoginController implements AllAccessible {
       animationPath.setDuration(Duration.seconds(1));
       animationPath.setCycleCount(1);
       animationPath.play();
-      System.out.println("this is layoutY of notification " + notification.getLayoutY());
     }
 
     Scene scene = App.getPrimaryStage().getScene();
@@ -194,6 +242,16 @@ public class LoginController implements AllAccessible {
 
     scene.widthProperty().addListener(sizeListener);
     scene.heightProperty().addListener(sizeListener);
+  }
+
+  public static Text setText() {
+    Text heading =
+        new Text("You have " + NotificationController.totalCount + " pending service requests");
+    return heading;
+  }
+
+  public static boolean isNotEmpty() {
+    return NotificationController.totalCount != 0;
   }
 
   public static void changeChildrenHomePage(List<Node> nodeList) {
@@ -241,10 +299,15 @@ public class LoginController implements AllAccessible {
     exitButton.setLayoutY(
         App.getPrimaryStage().getScene().getHeight() - (exitButton.getHeight() + 50));
 
-    Text userType = (Text) nodeList.get(nodeList.size() - 1);
-    userType.setX(exitButton.getLayoutX() - 170);
-    userType.setY(App.getPrimaryStage().getScene().getHeight() - 25);
-
+    if (userCategory.equalsIgnoreCase("employee")) {
+      Text userType = (Text) nodeList.get(nodeList.size() - 2);
+      userType.setX(exitButton.getLayoutX() - 170);
+      userType.setY(App.getPrimaryStage().getScene().getHeight() - 25);
+    } else {
+      Text userType = (Text) nodeList.get(nodeList.size() - 1);
+      userType.setX(exitButton.getLayoutX() - 170);
+      userType.setY(App.getPrimaryStage().getScene().getHeight() - 25);
+    }
     stackPane.setPrefWidth(500);
     stackPane.setPrefHeight(300);
     stackPane.setLayoutX(

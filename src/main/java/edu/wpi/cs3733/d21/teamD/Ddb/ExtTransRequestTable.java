@@ -146,8 +146,6 @@ public class ExtTransRequestTable extends AbsTables {
       ObservableList<ExtTransNodeInfo> ExTransData, boolean employeeAccess) throws IOException {
     Connection conn = GlobalDb.getConnection();
     PreparedStatement stmt = null;
-    System.out.println(
-        "this is checking the boolean in exTransTable for adding data " + employeeAccess);
     try {
       if (employeeAccess) {
         stmt =
@@ -235,13 +233,13 @@ public class ExtTransRequestTable extends AbsTables {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
-              "SELECT serviceType, location, pFirstName, pLastName, contactInfo FROM ExternalTransRequests WHERE status = 'Incomplete' AND assignedEmployee = ?");
+              "SELECT location, pFirstName, pLastName, contactInfo FROM ExternalTransRequests WHERE status = 'Incomplete' AND assignedEmployee = ?");
       stmt.setString(1, id);
       ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
         exTransList.put(
             i,
-            rs.getString("serviceType")
+            "External Transportation"
                 + " -- "
                 + rs.getString("location")
                 + " -- Name: "

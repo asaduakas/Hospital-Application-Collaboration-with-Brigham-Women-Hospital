@@ -107,6 +107,9 @@ public class MapController implements AllAccessible {
   private Image down = new Image("Images/redArrow.png");
   private Image endImage = new Image("Images/endingIcon_white.png");
   private Image startImage = new Image("Images/walkingStartIcon_black.png");
+  private Image mapEditorHelp = new Image("Images/mapEditorHelpPage.jpg");
+  private Image pathfindingHelp = new Image("Images/pathfindingHelpPage.jpeg");
+
   public static SceneSizeChangeListener sizeListener;
   protected DialogFactory dialogFactory;
 
@@ -853,10 +856,12 @@ public class MapController implements AllAccessible {
                   Boolean newValue) {
 
                 if (toggleEditor.isSelected()) {
+                  helpImage.setImage(mapEditorHelp);
                   isEditor = true;
                   clearMap();
                   LoadingNodesEdges(currentFloor);
                 } else {
+                  helpImage.setImage(pathfindingHelp);
                   isEditor = false;
                   if (popup != null && popup.isShowing()) {
                     popup.hide();
