@@ -20,6 +20,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -119,27 +120,33 @@ public class LoginController implements AllAccessible {
       notificationDrawer.setSidePane(menuBtns);
       notificationDrawer.setVisible(false);
       JFXDialogLayout notification = new JFXDialogLayout();
-      Text heading =
-          new Text("You have " + NotificationController.totalCount + " pending service requests");
       StackPane stackpane = new StackPane();
       Rectangle rectangle = new Rectangle(120.0d, 80.0d);
       JFXDialog dialog = new JFXDialog(stackpane, notification, JFXDialog.DialogTransition.CENTER);
       JFXButton dismissBtn = new JFXButton("Dismiss");
       JFXButton showBtn = new JFXButton("Show");
       JFXButton showAllBtn = new JFXButton("Show All");
+      JFXButton imageBtn = new JFXButton();
+      ImageView alter = new ImageView(new Image("Images/alert-icon.png"));
 
       notificationDrawer.setLayoutY(260);
-      //      notificationDrawer.setTranslateX();
-      notification.setHeading(heading);
+      notification.setHeading(setText());
+      dialog.getChildren().add(alter);
       rectangle.setArcHeight(60.0d);
       rectangle.setArcWidth(60.0d);
       stackpane.setShape(rectangle);
       stackpane.setMaxSize(100, 80);
-      dialog.setOverlayClose(false);
-
+      alter.setFitWidth(45);
+      alter.setFitHeight(45);
       showAllBtn.setTranslateX(-20);
       dismissBtn.setTranslateX(20);
+      alter.setTranslateX(130);
+      alter.setTranslateY(-60);
+      notification.getChildren().get(0).setTranslateY(20);
+
+      dialog.setOverlayClose(false);
       showBtn.setVisible(false);
+
       dismissBtn.setOnAction(
           new EventHandler<ActionEvent>() {
             @Override
@@ -147,12 +154,16 @@ public class LoginController implements AllAccessible {
               PathTransition animationPath = new PathTransition();
               animationPath.setPath(new Line(110, 200, -60, 200));
               animationPath.setNode(stackpane);
-              animationPath.setDuration(Duration.seconds(1));
+              animationPath.setDuration(Duration.seconds(0.5));
               animationPath.setCycleCount(1);
               animationPath.play();
               dismissBtn.setVisible(false);
-              heading.setVisible(false);
+              notification.getChildren().get(0).setVisible(false);
               showBtn.setVisible(true);
+              if (notificationDrawer.isVisible()) {
+                notificationDrawer.setVisible(false);
+                showAllBtn.setText("Show All");
+              }
             }
           });
       showBtn.setOnAction(
@@ -162,13 +173,13 @@ public class LoginController implements AllAccessible {
               PathTransition animationPath = new PathTransition();
               animationPath.setPath(new Line(-60, 200, 110, 200));
               animationPath.setNode(stackpane);
-              animationPath.setDuration(Duration.seconds(1));
+              animationPath.setDuration(Duration.seconds(0.5));
               animationPath.setCycleCount(1);
               animationPath.play();
               showBtn.setVisible(false);
               dismissBtn.setTranslateX(50);
               dismissBtn.setVisible(true);
-              heading.setVisible(true);
+              notification.getChildren().get(0).setVisible(true);
             }
           });
 
@@ -186,12 +197,11 @@ public class LoginController implements AllAccessible {
                 exception.printStackTrace();
               }
               notificationDrawer.setSidePane(menuBtns);
-              Text newHeading =
-                  new Text(
-                      "You have "
-                          + NotificationController.totalCount
-                          + " pending service requests");
-              notification.setHeading(newHeading);
+              notification.setHeading(setText());
+              System.out.println(
+                  "this is the children list of notification diaLayout "
+                      + notification.getChildren());
+              notification.getChildren().get(0).setVisible(true);
             }
           });
       showAllBtn.addEventHandler(
@@ -234,6 +244,12 @@ public class LoginController implements AllAccessible {
 
     scene.widthProperty().addListener(sizeListener);
     scene.heightProperty().addListener(sizeListener);
+  }
+
+  public static Text setText() {
+    Text heading =
+        new Text("You have " + NotificationController.totalCount + " pending service requests");
+    return heading;
   }
 
   public static void changeChildrenHomePage(List<Node> nodeList) {
