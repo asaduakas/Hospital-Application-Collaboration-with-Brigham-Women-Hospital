@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.cs3733.d21.teamD.views.CreditsController">
+    <children>
+        <Pane prefHeight="65.0" prefWidth="461.0" style="-fx-background-color: #043D7E;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <Label layoutX="254.0" layoutY="13.0" text="Credits" textFill="WHITE">
+                    <font>
+                        <Font name="System Bold" size="28.0" />
+                    </font>
+                </Label>
+                <JFXButton fx:id="backButton" layoutX="546.0" layoutY="11.0" onAction="#closePopup" style="-fx-font-weight: bold; -fx-font-size: 20;" text="X" textFill="WHITE">
+                    <font>
+                        <Font size="20.0" />
+                    </font>
+                </JFXButton>
+            </children>
+        </Pane>
+        <Label fx:id="teamName" layoutX="248.0" layoutY="73.0" style="-fx-font-weight: Bold; -fx-font-size: 20;" text="API's Used:">
+            <font>
+                <Font size="17.0" />
+            </font>
+        </Label>
+      <HBox layoutX="200.0" layoutY="123.0" prefHeight="212.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <VBox fx:id="vbox1" prefHeight="212.0" prefWidth="297.0" spacing="5.0">
+               <children>
+                  <Label text="Chatbot" textAlignment="CENTER">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+                  <Hyperlink text="https://opennlp.apache.org/" />
+                  <Label fx:id="label1" alignment="CENTER" contentDisplay="CENTER" prefHeight="47.0" prefWidth="298.0" textAlignment="CENTER" />
+                  <Hyperlink text="http://opennlp.sourceforge.net/models-1.5/" />
+                  <Label fx:id="label2" text="Neural network models to train the bot." />
+               </children>
+               <HBox.margin>
+                  <Insets left="10.0" />
+               </HBox.margin>
+            </VBox>
+            <VBox fx:id="vbox2" prefHeight="139.0" prefWidth="303.0" spacing="5.0">
+               <children>
+                  <Label text="Email">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+                  <Hyperlink text="https://javaee.github.io/javamail/" />
+                  <Label fx:id="label2" />
+                  <Label />
+                  <Label />
+                  <Label />
+               </children>
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin></VBox>
+         </children>
+      </HBox>
+    </children>
+</AnchorPane>

@@ -13,3 +13,7 @@
     -fx-border-width:5;
 }
 
+
+.text-area *.text {
+    -fx-text-alignment: center;
+}
