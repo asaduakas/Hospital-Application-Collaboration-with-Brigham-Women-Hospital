@@ -1,9 +1,12 @@
 package edu.wpi.cs3733.d21.teamD.views;
 
+import static edu.wpi.cs3733.d21.teamD.views.Email.sendPassEmail;
+
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.base.IFXLabelFloatControl;
 import com.jfoenix.skins.JFXTextFieldSkin;
 import com.jfoenix.skins.ValidationPane;
+import com.jfoenix.validation.RegexValidator;
 import com.jfoenix.validation.RequiredFieldValidator;
 import edu.wpi.cs3733.d21.teamD.Ddb.FDatabaseTables;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
@@ -31,20 +34,23 @@ public class CovidSurveyController implements Initializable, AllAccessible {
   @FXML private JFXTextField firstName;
   @FXML private JFXTextField lastName;
   @FXML private JFXTextField phoneNumber;
+  @FXML private JFXTextField email;
   @FXML private JFXCheckBox positiveCheck;
   @FXML private JFXCheckBox symptomCheck;
   @FXML private JFXCheckBox closeContactCheck;
   @FXML private JFXCheckBox isolateCheck;
   @FXML private JFXCheckBox goodCheck;
-  @FXML private JFXTextField emailAddress;
 
   private DialogFactory dialogFactory;
 
-  int posBool = 0;
-  int sympBool = 0;
-  int conBool = 0;
-  int isoBool = 0;
-  int goodBool = 0;
+  String posBool = "No";
+  String sympBool = "No";
+  String conBool = "No";
+  String isoBool = "No";
+  String goodBool = "No";
+
+  private String clearance1 = "normalEntrance";
+  private String clearance2 = "emergencyEntrance";
 
   @FXML
   public void loadDialog(MouseEvent Event) {
@@ -76,6 +82,7 @@ public class CovidSurveyController implements Initializable, AllAccessible {
 
   @FXML
   private void submitPage(ActionEvent event) throws IOException {
+
     submitButton
         .disableProperty()
         .bind(
@@ -84,7 +91,13 @@ public class CovidSurveyController implements Initializable, AllAccessible {
                 .isEmpty()
                 .or(lastName.textProperty().isEmpty())
                 .or(phoneNumber.textProperty().isEmpty())
-                .or(emailAddress.textProperty().isEmpty()));
+                .or(email.textProperty().isEmpty())
+                .or(
+                    (goodCheck.selectedProperty().not())
+                        .and(positiveCheck.selectedProperty().not())
+                        .and(symptomCheck.selectedProperty().not())
+                        .and(closeContactCheck.selectedProperty().not())
+                        .and(isolateCheck.selectedProperty().not())));
 
     if (submitButton.isDisabled()) {
       popupWarning(event);
@@ -94,35 +107,50 @@ public class CovidSurveyController implements Initializable, AllAccessible {
           || symptomCheck.isSelected()
           || closeContactCheck.isSelected()
           || isolateCheck.isSelected()) {
-        if (positiveCheck.isSelected()) {
-          posBool = 1;
-        }
-        if (symptomCheck.isSelected()) {
-          sympBool = 1;
-        }
-        if (closeContactCheck.isSelected()) {
-          conBool = 1;
-        }
-        if (isolateCheck.isSelected()) {
-          isoBool = 1;
-        }
-        popupWarningCovid(event);
-      } else {
-        goodBool = 1;
+        posBool = positiveCheck.isSelected() ? "Yes" : "No";
+        sympBool = symptomCheck.isSelected() ? "Yes" : "No";
+        conBool = closeContactCheck.isSelected() ? "Yes" : "No";
+        isoBool = isolateCheck.isSelected() ? "Yes" : "No";
+        FDatabaseTables.getUserTable()
+            .changeClearance(GlobalDb.getConnection(), clearance2, HomeController.username);
+        FDatabaseTables.getUserTable().dispUsers(GlobalDb.getConnection());
+        dialogFactory.createOneButtonDialog(
+            "Attention!",
+            "You could only proceed to emergency entrance."
+                + "\n"
+                + "You will be checked by a nurse.",
+            "OK",
+            ControllerManager::exitPopup);
+      } else if (goodCheck.isSelected()) {
+        goodBool = goodCheck.isSelected() ? "Yes" : "No";
+        FDatabaseTables.getUserTable()
+            .changeClearance(GlobalDb.getConnection(), clearance1, HomeController.username);
         dialogFactory.createOneButtonDialog(
             "Submitted!",
-            "Your COVID-19 survey is submitted." + "\n" + "Press OK to return to home screen.",
+            "You may proceed to 75 Lobby entrance." + "\n" + "You will then be checked by a nurse.",
             "OK",
             ControllerManager::exitPopup);
       }
     }
 
+    // Sending email
+    String name = lastName.getText();
+    Boolean pass = false;
+    if (goodBool.equalsIgnoreCase("yes")) {
+      pass = true;
+    }
+    String emailString = email.getText();
+    sendPassEmail(emailString, name, pass);
+
     FDatabaseTables.getCovid19SurveyTable()
         .addEntity(
             GlobalDb.getConnection(),
+            "COVID-19 Survey",
+            HomeController.username,
             firstName.getText(),
             lastName.getText(),
             phoneNumber.getText(),
+            email.getText(),
             posBool,
             sympBool,
             conBool,
@@ -130,45 +158,22 @@ public class CovidSurveyController implements Initializable, AllAccessible {
             goodBool);
   }
 
-  @FXML
-  private void handleOptions(ActionEvent event) throws IOException {
-    if (positiveCheck.isSelected()
-        || symptomCheck.isSelected()
-        || closeContactCheck.isSelected()
-        || isolateCheck.isSelected()) {
-      if (positiveCheck.isSelected()) {
-        posBool = 1;
-      }
-      if (symptomCheck.isSelected()) {
-        sympBool = 1;
-      }
-      if (closeContactCheck.isSelected()) {
-        conBool = 1;
-      }
-      if (isolateCheck.isSelected()) {
-        isoBool = 1;
-      }
-      popupWarningCovid(event);
-    } else {
-      goodBool = 1;
-      dialogFactory.createOneButtonDialog(
-          "Submitted!",
-          "Your COVID-19 survey is submitted." + "\n" + "Press OK to return to home screen.",
-          "OK",
-          ControllerManager::exitPopup);
-    }
-    submitPage(event);
-  }
-
   @Override
   public void initialize(URL url, ResourceBundle rb) {
+
+    try {
+      handleOptions();
+    } catch (IOException exception) {
+      exception.printStackTrace();
+    }
+
     dialogFactory = new DialogFactory(stackPane1);
 
     stackPane1.setPickOnBounds(false);
     validationPaneFormatter(firstName);
     validationPaneFormatter(lastName);
     validationPaneFormatter(phoneNumber);
-    validationPaneFormatter(emailAddress);
+    validationPaneFormatter(email);
 
     RequiredFieldValidator firstNameValid = new RequiredFieldValidator();
     firstNameValid.setMessage("Enter patient's first name");
@@ -214,13 +219,34 @@ public class CovidSurveyController implements Initializable, AllAccessible {
             });
 
     RequiredFieldValidator emailValid = new RequiredFieldValidator();
-    emailValid.setMessage("Enter phone number");
-    emailAddress.getValidators().add(emailValid);
-    emailAddress
+    emailValid.setMessage("Enter an email address");
+    email.getValidators().add(emailValid);
+    email
         .focusedProperty()
         .addListener(
             (o, oldVal, newVal) -> {
-              if (!newVal) emailAddress.validate();
+              if (!newVal) email.validate();
+            });
+
+    RegexValidator emailValidator = new RegexValidator();
+    emailValidator.setRegexPattern(
+        "^[_A-Za-z0-9-+]+(\\.[_A-Za-z0-9-]+)*@"
+            + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+    email.setValidators(emailValidator);
+    email.getValidators().get(1).setMessage("Email is not valid");
+    email
+        .focusedProperty()
+        .addListener(
+            new ChangeListener<Boolean>() {
+              @Override
+              public void changed(
+                  ObservableValue<? extends Boolean> observable,
+                  Boolean oldValue,
+                  Boolean newValue) {
+                if (!newValue) {
+                  boolean val = email.validate();
+                }
+              }
             });
   }
 
@@ -257,5 +283,51 @@ public class CovidSurveyController implements Initializable, AllAccessible {
         ControllerManager::exitPopup,
         "No",
         () -> {});
+  }
+
+  @FXML
+  private void handleOptions() throws IOException {
+    goodCheck
+        .selectedProperty()
+        .addListener(
+            new ChangeListener<Boolean>() {
+              @Override
+              public void changed(
+                  ObservableValue<? extends Boolean> observable,
+                  Boolean oldValue,
+                  Boolean newValue) {
+                if (newValue) {
+                  positiveCheck.setDisable(true);
+                  symptomCheck.setDisable(true);
+                  closeContactCheck.setDisable(true);
+                  isolateCheck.setDisable(true);
+                } else {
+                  positiveCheck.setDisable(false);
+                  symptomCheck.setDisable(false);
+                  closeContactCheck.setDisable(false);
+                  isolateCheck.setDisable(false);
+                }
+              }
+            });
+
+    positiveCheck
+        .selectedProperty()
+        .or(symptomCheck.selectedProperty())
+        .or(closeContactCheck.selectedProperty())
+        .or(isolateCheck.selectedProperty())
+        .addListener(
+            new ChangeListener<Boolean>() {
+              @Override
+              public void changed(
+                  ObservableValue<? extends Boolean> observable,
+                  Boolean oldValue,
+                  Boolean newValue) {
+                if (newValue) {
+                  goodCheck.setDisable(true);
+                } else {
+                  goodCheck.setDisable(false);
+                }
+              }
+            });
   }
 }

@@ -2,12 +2,16 @@ package edu.wpi.cs3733.d21.teamD.views;
 
 import com.jfoenix.controls.*;
 import edu.wpi.cs3733.d21.teamD.App;
+import edu.wpi.cs3733.d21.teamD.Ddb.FDatabaseTables;
+import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
 import edu.wpi.cs3733.d21.teamD.views.Access.AllAccessible;
 import edu.wpi.cs3733.d21.teamD.views.Access.LoginController;
 import edu.wpi.cs3733.d21.teamD.views.Access.UserCategory;
 import edu.wpi.cs3733.d21.teamD.views.Mapping.MapScrollPane;
 import java.io.IOException;
 import java.util.List;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -41,17 +45,40 @@ public class HomeController implements AllAccessible {
   @FXML public static VBox mainButtons;
   @FXML public StackPane stackPane;
   @FXML private AnchorPane mainPane;
+  @FXML private JFXToggleButton dbToggle;
+  private String dbToggleText[] = {"Embedded Connection", "Remote Connection"};
+  private int index = 0;
+  @FXML private Pane thePane;
+
+  @FXML public ImageView chatbotImage;
+  private Boolean mouseOnPopup = false;
 
   public static UserCategory userTypeEnum;
   public static String username = null;
   public static String password = null;
-  private static String userCategory;
+  public static String userCategory;
   public static Boolean disableRequestStatus = false;
 
   public static SceneSizeChangeListener sizeListener;
 
   // Used to reset search history for each login
   public static int historyTracker = 0;
+
+  @FXML
+  private void initialize() {
+    chatbotImage.setOnMousePressed((e) -> chatbotPopUp());
+    dbToggle.setOnAction(
+        (ActionEvent e) -> {
+          index++;
+          if (index >= dbToggleText.length) {
+            index = 0;
+          }
+          dbToggle.setText(dbToggleText[index]);
+        });
+    dbToggleSwitch();
+    //    ControllerManager.attemptLoadPopupBlur("StatusView.fxml");
+    //    ControllerManager.exitPopup();
+  }
 
   @FXML
   private void logout(ActionEvent event) throws IOException {
@@ -92,9 +119,12 @@ public class HomeController implements AllAccessible {
 
     JFXSpinner spinner = new JFXSpinner();
     Label loading = new Label("Loading Map");
-    Text text = new Text("Press ESC to cancel load map");
+    Text text = new Text("Dr. Dobby is getting your map!");
     loading.setStyle("-fx-font-weight: Bold; -fx-font-size: 20");
     text.setStyle("-fx-font-size: 20");
+
+    logoutButton.setDisable(true);
+    exitButton.setDisable(true);
 
     spinner.setMaxHeight(150);
     spinner.setMaxWidth(150);
@@ -118,7 +148,10 @@ public class HomeController implements AllAccessible {
         e -> {
           if (e.getCode() == KeyCode.ESCAPE) {
             System.out.println("cancelled");
-            task.cancel();
+            // task.cancel();
+            // GlobalDb.establishCon();
+            logoutButton.setDisable(false);
+            exitButton.setDisable(false);
           }
         });
 
@@ -135,13 +168,15 @@ public class HomeController implements AllAccessible {
           Pane root = (Pane) task.getValue();
           Scene scene = new Scene(root);
 
-          App.getPrimaryStage().setMaximized(true);
-          App.getPrimaryStage().close();
+          //          App.getPrimaryStage().setMaximized(true);
+          //          App.getPrimaryStage().close();
           App.getPrimaryStage().setScene(scene);
+          App.getPrimaryStage().setMaximized(false);
+          App.getPrimaryStage().setMaximized(true);
           App.getPrimaryStage().show();
 
           List<Node> childrenList = root.getChildren();
-          System.out.println("this is childrenList of the map" + childrenList);
+          // System.out.println("this is childrenList of the map" + childrenList);
           JFXToggleButton mapEditing = (JFXToggleButton) childrenList.get(4);
           if (!userCategory.equalsIgnoreCase("admin")) {
             mapEditing.setVisible(false);
@@ -188,8 +223,8 @@ public class HomeController implements AllAccessible {
     JFXButton helpBtn = (JFXButton) nodeList.get(6);
     ImageView helpImage = (ImageView) nodeList.get(7);
     StackPane stackPane = (StackPane) nodeList.get(8);
-    JFXNodesList floorBtns = (JFXNodesList) nodeList.get(9);
-    JFXNodesList csvBtns = (JFXNodesList) nodeList.get(10);
+    JFXNodesList floorBtns = (JFXNodesList) nodeList.get(10);
+    JFXNodesList csvBtns = (JFXNodesList) nodeList.get(11);
 
     drawer.setLayoutX(-270);
     drawer.setLayoutY(0);
@@ -233,6 +268,8 @@ public class HomeController implements AllAccessible {
   }
 
   public void serviceRequestView() {
+
+    FDatabaseTables.getExternalTransportTable().getIncompleteRequest();
     if (LoginController.getUserCategory() != null) {
       this.userCategory = LoginController.getUserCategory();
     } else {
@@ -266,6 +303,52 @@ public class HomeController implements AllAccessible {
             checkStatusButton.setDisable(false);
           }
         });
+  }
+
+  @FXML
+  public void chatbotPopUp() {
+    if (ChatbotController.textBox.getChildren().size() > 0) {
+      ChatbotController.textBox.getChildren().clear();
+    }
+    ControllerManager.attemptLoadPopup(
+        "ChatbotView.fxml",
+        (fxmlLoader) -> {
+          ControllerManager.popup.setX(
+              chatbotImage.getLayoutX()
+                  - ControllerManager.popup.getWidth()
+                  - chatbotImage.getFitWidth() / 2);
+          ControllerManager.popup.setY(
+              chatbotImage.getLayoutY()
+                  - ControllerManager.popup.getHeight()
+                  + (chatbotImage.getFitHeight()));
+        });
+
+    //    ControllerManager.popup.setAutoHide(true);
+  }
+
+  private void dbToggleSwitch() {
+    dbToggle
+        .selectedProperty()
+        .addListener(
+            new ChangeListener<Boolean>() {
+              @Override
+              public void changed(
+                  ObservableValue<? extends Boolean> observable,
+                  Boolean oldValue,
+                  Boolean newValue) {
+                if (dbToggle.isSelected()) {
+                  System.out.println("Before remote connection established");
+                  // drop tables from auto embedded
+                  // GlobalDb.getTables().deleteAllTables();
+                  GlobalDb.establishClientCon();
+                  System.out.println("Remote connection established");
+                } else {
+                  GlobalDb.getTables().createAllTables();
+                  GlobalDb.establishCon();
+                  System.out.println("Switched back to embedded");
+                }
+              }
+            });
   }
 
   public static String getUserCategory() {

@@ -1,9 +1,10 @@
 package edu.wpi.cs3733.d21.teamD.Ddb;
 
+import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.LaundryNodeInfo;
 import java.io.IOException;
 import java.sql.*;
-import java.util.LinkedList;
+import java.util.HashMap;
 import javafx.collections.ObservableList;
 
 public class LaundryRequestTable extends AbsTables {
@@ -17,13 +18,13 @@ public class LaundryRequestTable extends AbsTables {
           "CREATE TABLE LaundryRequest("
               + "id INT GENERATED ALWAYS AS IDENTITY NOT NULL,"
               + "status VARCHAR(100) DEFAULT 'Incomplete',"
-              + "firstName VARCHAR(10) NOT NULL,"
-              + "lastName VARCHAR(4) NOT NULL,"
+              + "firstName VARCHAR(20) NOT NULL,"
+              + "lastName VARCHAR(20) NOT NULL,"
               + "contactInfo VARCHAR(45) NOT NULL,"
               + "location VARCHAR(100) NOT NULL,"
               + "assignedEmployee VARCHAR(100) DEFAULT '',"
               + "PRIMARY KEY(id),"
-              + "CONSTRAINT LAU_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
+              // + "CONSTRAINT LAU_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
               + "CONSTRAINT LAU_status_check CHECK (status IN ('Incomplete', 'Complete', 'In Progress')))";
       // + "CONSTRAINT LAU_location_FK FOREIGN KEY(location) REFERENCES Nodes(nodeID))";
       stmt.executeUpdate(query);
@@ -37,7 +38,7 @@ public class LaundryRequestTable extends AbsTables {
 
   public void populateTable(Connection conn, String filePath) {}
 
-  public static void addEntity(
+  public void addEntity(
       Connection conn,
       String firstName,
       String lastName,
@@ -54,8 +55,17 @@ public class LaundryRequestTable extends AbsTables {
       stmt.setString(3, contactInfo);
       stmt.setString(4, location);
       stmt.setString(5, assignedEmployee);
+      stmt.executeUpdate();
+      System.out.println("this is in laundry table chceking assigned employee " + assignedEmployee);
 
-      int count = stmt.executeUpdate();
+      FDatabaseTables.getAllServiceTable()
+          .addEntity(
+              GlobalDb.getConnection(),
+              this.getID(GlobalDb.getConnection()),
+              location,
+              "Incomplete",
+              assignedEmployee,
+              "LAUN");
 
     } catch (SQLException throwables) {
       throwables.printStackTrace();
@@ -94,11 +104,24 @@ public class LaundryRequestTable extends AbsTables {
     }
   }
 
-  public void addIntoLaundServiceList(ObservableList<LaundryNodeInfo> laundryData)
-      throws IOException {
+  public void addIntoLaundServiceList(
+      ObservableList<LaundryNodeInfo> laundryData, boolean employeeAccess) throws IOException {
+    PreparedStatement stmt = null;
+    Connection conn = GlobalDb.getConnection();
     try {
-      String query = "SELECT * FROM LaundryRequest";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      if (employeeAccess) {
+        stmt =
+            conn.prepareStatement(
+                "SELECT * FROM LaundryRequest WHERE assignedEmployee = ? OR assignedEmployee  IS NULL");
+        stmt.setString(1, HomeController.username);
+        //        System.out.println(
+        //            "this is trying to add data into the employee table " +
+        // HomeController.username);
+        //        System.out.println("this is getting the userType " + HomeController.userTypeEnum);
+      } else {
+        stmt = conn.prepareStatement("SELECT * FROM LaundryRequest");
+      }
+      ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
         laundryData.add(
             new LaundryNodeInfo(
@@ -130,6 +153,13 @@ public class LaundryRequestTable extends AbsTables {
           stmt.setString(3, laundryInfo.getId());
           stmt.executeUpdate();
 
+          AllServiceTable.updateEntity(
+              GlobalDb.getConnection(),
+              laundryInfo.getId(),
+              laundryInfo.getStatus(),
+              laundryInfo.getAssignedEmployee(),
+              "LAUN");
+
         } catch (SQLException throwables) {
           throwables.printStackTrace();
         }
@@ -138,19 +168,53 @@ public class LaundryRequestTable extends AbsTables {
     return laundryData;
   }
 
-  public LinkedList<LocalStatus> getLocalStatus(Connection conn) {
-    LinkedList<LocalStatus> LocalStatus = new LinkedList<>();
+  public int getID(Connection conn) {
+    int id = 420;
     try {
-      PreparedStatement stmt = conn.prepareStatement("SELECT location, status FROM LaundryRequest");
-
+      PreparedStatement stmt = conn.prepareStatement("SELECT id FROM LaundryRequest");
       ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
-        LocalStatus localStatus = new LocalStatus(rs.getString("location"), rs.getString("status"));
-        LocalStatus.add(localStatus);
+        System.out.println("LOOK HERE:" + id);
+        id = rs.getInt(1);
+        System.out.println("LOOK HERE:" + id);
       }
     } catch (SQLException throwables) {
       throwables.printStackTrace();
     }
-    return LocalStatus;
+    System.out.println();
+    return id;
+  }
+
+  public HashMap<Integer, String> getIncompleteRequest() {
+    Connection conn = GlobalDb.getConnection();
+    HashMap<Integer, String> laundryRequestList = new HashMap<>();
+    String id = HomeController.username;
+    int i = 0;
+    try {
+      PreparedStatement stmt = conn.prepareStatement("SELECT location, status FROM LaundryRequest");
+
+      PreparedStatement stmt =
+          conn.prepareStatement(
+              "SELECT location, firstName, lastName, contactInfo FROM LaundryRequest WHERE status = 'Incomplete' AND assignedEmployee = ?");
+      stmt.setString(1, id);
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        laundryRequestList.put(
+            i,
+            "Laundry Service"
+                + " -- "
+                + rs.getString("location")
+                + " -- Name: "
+                + rs.getString("firstName")
+                + " "
+                + rs.getString("lastName")
+                + " -- Contact: "
+                + rs.getString("contactInfo"));
+        i++;
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    return laundryRequestList;
   }
 }

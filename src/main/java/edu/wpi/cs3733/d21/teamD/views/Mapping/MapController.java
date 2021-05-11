@@ -6,15 +6,16 @@ import edu.wpi.cs3733.d21.teamD.App;
 import edu.wpi.cs3733.d21.teamD.Astar.*;
 import edu.wpi.cs3733.d21.teamD.Ddb.FDatabaseTables;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
-import edu.wpi.cs3733.d21.teamD.Ddb.LocalStatus;
 import edu.wpi.cs3733.d21.teamD.views.Access.AllAccessible;
 import edu.wpi.cs3733.d21.teamD.views.Access.LoginController;
+import edu.wpi.cs3733.d21.teamD.views.Access.UserCategory;
 import edu.wpi.cs3733.d21.teamD.views.ControllerManager;
 import edu.wpi.cs3733.d21.teamD.views.DialogFactory;
 import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.Mapping.Popup.Edit.AddNodeController;
 import edu.wpi.cs3733.d21.teamD.views.Mapping.Popup.Edit.EditNodeController;
 import edu.wpi.cs3733.d21.teamD.views.SceneSizeChangeListener;
+import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.AllServiceNodeInfo;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -33,6 +34,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -74,6 +76,7 @@ public class MapController implements AllAccessible {
   private SimpleBooleanProperty minusPressed = new SimpleBooleanProperty();
   private SimpleBooleanProperty aPressed = new SimpleBooleanProperty();
   private SimpleBooleanProperty pPressed = new SimpleBooleanProperty();
+  private SimpleBooleanProperty bPressed = new SimpleBooleanProperty();
   private SimpleBooleanProperty shiftPressed = new SimpleBooleanProperty();
   private SimpleBooleanProperty fPressed = new SimpleBooleanProperty();
   private final double buttonZoomAmount = 10;
@@ -98,6 +101,8 @@ public class MapController implements AllAccessible {
   public static final Image RETL = new Image("Images/retailpin.png");
   public static final Image SERV = new Image("Images/service.png");
   public static final Image favImage = new Image("Images/favIcon_good.png");
+  public static final Image warning = new Image("Images/warning_red.png");
+  public static final Image blockedNode = new Image("Images/blockedNode.png");
   private Image up = new Image("Images/up-arrow.png");
   private Image down = new Image("Images/redArrow.png");
   private Image endImage = new Image("Images/endingIcon_white.png");
@@ -141,7 +146,9 @@ public class MapController implements AllAccessible {
     initializeNodes();
     initializeEdges();
 
+    clearanceLevelNodes();
     switchFloor("1");
+
     for (NodeUI node : NODES) {
       //      System.out.println(node.getN().getNodeID());
     }
@@ -208,7 +215,14 @@ public class MapController implements AllAccessible {
     mapDrawer.setSidePane(menuBtns);
     Pane root = (Pane) loader.getRoot();
     List<javafx.scene.Node> childrenList = root.getChildren();
-    System.out.println("this is childrenList of the drawer " + childrenList);
+
+    if (!(HomeController.userTypeEnum == UserCategory.Admin)) {
+      AnchorPane anchorPane = (AnchorPane) childrenList.get(0);
+      JFXComboBox<String> algoVersion = (JFXComboBox<String>) anchorPane.getChildren().get(6);
+      algoVersion.setVisible(false);
+      algoVersion.setDisable(true);
+    }
+
     root.setMinHeight(App.getPrimaryStage().getScene().getHeight());
     Scene scene = App.getPrimaryStage().getScene();
     changeChildrenMapView(childrenList);
@@ -226,15 +240,20 @@ public class MapController implements AllAccessible {
   }
 
   public void changeChildrenMapView(List<javafx.scene.Node> nodeList) {
-    JFXTreeView treeView = (JFXTreeView) nodeList.get(1);
-    Label label = (Label) nodeList.get(2);
-    JFXTextArea textDirection = (JFXTextArea) nodeList.get(3);
-    JFXButton dirBtn = (JFXButton) nodeList.get(7);
+    AnchorPane secondAnchor = (AnchorPane) nodeList.get(0);
+    JFXButton findPathBtn = (JFXButton) secondAnchor.getChildren().get(0);
+    JFXTreeView treeView = (JFXTreeView) secondAnchor.getChildren().get(1);
+    Label label = (Label) secondAnchor.getChildren().get(2);
+    ScrollPane textDirection = (ScrollPane) secondAnchor.getChildren().get(3);
+    JFXButton dirBtn = (JFXButton) secondAnchor.getChildren().get(7);
 
-    treeView.setPrefHeight(App.getPrimaryStage().getScene().getHeight() / 2.5);
+    secondAnchor.setPrefHeight(App.getPrimaryStage().getScene().getHeight());
+    treeView.setPrefHeight(secondAnchor.getPrefHeight() / 2.75);
+    treeView.setLayoutY(findPathBtn.getLayoutY() + findPathBtn.getHeight() + 30);
     label.setLayoutY(treeView.getLayoutY() + treeView.getPrefHeight() + 10);
     label.setLayoutX(10);
-    textDirection.setLayoutY(label.getLayoutY() + label.getHeight() + 30);
+    textDirection.setLayoutY(label.getLayoutY() + label.getHeight() + 40);
+    textDirection.setPrefHeight(secondAnchor.getPrefHeight() / 3.3);
     dirBtn.setLayoutY(textDirection.getLayoutY() + textDirection.getPrefHeight() + 20);
   }
 
@@ -271,7 +290,15 @@ public class MapController implements AllAccessible {
       Marker.setY(N.getYCoord() - nodeNormalHeight);
       if (FDatabaseTables.getNodeTable()
           .FavContains(GlobalDb.getConnection(), N.getNodeID(), HomeController.username)) {
-        Marker.setImage(favImage);
+        if (FDatabaseTables.getNodeTable()
+            .blockedContains(GlobalDb.getConnection(), N.getNodeID())) {
+          Marker.setImage(blockedNode);
+        } else {
+          Marker.setImage(favImage);
+        }
+      } else if (FDatabaseTables.getNodeTable()
+          .blockedContains(GlobalDb.getConnection(), N.getNodeID())) {
+        Marker.setImage(blockedNode);
       } else {
         switch (N.getNodeType()) {
           case "PARK":
@@ -320,7 +347,38 @@ public class MapController implements AllAccessible {
       setupDraggableNodeUI(Temp);
       NODES.add(Temp);
     }
+
     initializeFavs();
+  }
+
+  private void clearanceLevelNodes() {
+    if (HomeController.username == null) {
+      switchFloor("1");
+    } else {
+      String clearanceLevel =
+          FDatabaseTables.getUserTable()
+              .validateClearance(GlobalDb.getConnection(), HomeController.username);
+      if (clearanceLevel.equals("emergencyEntrance")) {
+        NodeUI N = getNodeUIByID("FEXIT00301");
+        unblockNode(N);
+
+        N = getNodeUIByID("dWALK02601");
+        addBlockNode(N);
+
+      } else if (clearanceLevel.equals("normalEntrance")) {
+        NodeUI N = getNodeUIByID("dWALK02601");
+        unblockNode(N);
+
+        N = getNodeUIByID("FEXIT00301");
+        addBlockNode(N);
+      } else {
+        NodeUI N = getNodeUIByID("dWALK02601");
+        unblockNode(N);
+
+        N = getNodeUIByID("FEXIT00301");
+        unblockNode(N);
+      }
+    }
   }
 
   private void initializeEdges() {
@@ -350,70 +408,71 @@ public class MapController implements AllAccessible {
   private void initializeFloorList() {
     floorBtn.setPrefHeight(55);
     floorBtn.setPrefWidth(55);
-    floorBtn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 55px");
+    floorBtn.setStyle("-fx-background-color: #1A80D6; -fx-background-radius: 55px");
 
-    JFXButton Floor1Btn = new JFXButton("Fl 1");
+    JFXButton Floor1Btn = new JFXButton("1");
     Floor1Btn.setButtonType(JFXButton.ButtonType.FLAT);
-    Floor1Btn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50px");
+    Floor1Btn.setStyle("-fx-background-color: #C3E4FF; -fx-background-radius: 50px");
     Floor1Btn.setPrefHeight(50);
     Floor1Btn.setPrefWidth(50);
     Floor1Btn.setOnAction(
         (e) -> {
           switchFloor("1");
-          floorBtn.setText("Fl 1");
+          floorBtn.setText("1");
         });
 
-    JFXButton Floor2Btn = new JFXButton("Fl 2");
+    JFXButton Floor2Btn = new JFXButton("2");
     Floor2Btn.setButtonType(JFXButton.ButtonType.FLAT);
-    Floor2Btn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50px");
+    Floor2Btn.setStyle("-fx-background-color: #C3E4FF; -fx-background-radius: 50px");
     Floor2Btn.setPrefHeight(50);
     Floor2Btn.setPrefWidth(50);
     Floor2Btn.setOnAction(
         (e) -> {
           switchFloor("2");
-          floorBtn.setText("Fl 2");
+          floorBtn.setText("2");
         });
 
-    JFXButton Floor3Btn = new JFXButton("Fl 3");
+    JFXButton Floor3Btn = new JFXButton("3");
     Floor3Btn.setButtonType(JFXButton.ButtonType.FLAT);
-    Floor3Btn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50px");
+    Floor3Btn.setStyle("-fx-background-color: #C3E4FF; -fx-background-radius: 50px");
     Floor3Btn.setPrefHeight(50);
     Floor3Btn.setPrefWidth(50);
     Floor3Btn.setOnAction(
         (e) -> {
           switchFloor("3");
-          floorBtn.setText("Fl 3");
+          floorBtn.setText("3");
         });
 
-    JFXButton FloorL1Btn = new JFXButton("Fl L1");
+    JFXButton FloorL1Btn = new JFXButton("L1");
     FloorL1Btn.setButtonType(JFXButton.ButtonType.FLAT);
-    FloorL1Btn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50px");
+    FloorL1Btn.setStyle("-fx-background-color: #C3E4FF; -fx-background-radius: 50px");
     FloorL1Btn.setPrefHeight(50);
     FloorL1Btn.setPrefWidth(50);
     FloorL1Btn.setOnAction(
         (e) -> {
           switchFloor("L1");
-          floorBtn.setText("Fl L1");
+          floorBtn.setText("L1");
         });
 
-    JFXButton FloorL2Btn = new JFXButton("Fl L2");
+    JFXButton FloorL2Btn = new JFXButton("L2");
     FloorL2Btn.setButtonType(JFXButton.ButtonType.FLAT);
-    FloorL2Btn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50px");
+    FloorL2Btn.setStyle("-fx-background-color: #C3E4FF; -fx-background-radius: 50px");
     FloorL2Btn.setPrefHeight(50);
     FloorL2Btn.setPrefWidth(50);
     FloorL2Btn.setOnAction(
         (e) -> {
           switchFloor("L2");
-          floorBtn.setText("Fl L2");
+          floorBtn.setText("L2");
         });
 
     JFXNodesList nodeList = new JFXNodesList();
     nodeList.addAnimatedNode(floorBtn);
-    nodeList.addAnimatedNode(FloorL2Btn);
-    nodeList.addAnimatedNode(FloorL1Btn);
-    nodeList.addAnimatedNode(Floor1Btn);
-    nodeList.addAnimatedNode(Floor2Btn);
     nodeList.addAnimatedNode(Floor3Btn);
+    nodeList.addAnimatedNode(Floor2Btn);
+    nodeList.addAnimatedNode(Floor1Btn);
+    nodeList.addAnimatedNode(FloorL1Btn);
+    nodeList.addAnimatedNode(FloorL2Btn);
+
     nodeList.setSpacing(20d);
     mainAnchor.getChildren().add(nodeList);
   }
@@ -434,8 +493,10 @@ public class MapController implements AllAccessible {
     for (NodeUI NUI : NODES) {
       if (NUI.getN().getFloor().equals(Floor)) {
         if (!isEditor) {
-          if ((!NUI.getN().getNodeType().equals("WALK"))
-              && (!NUI.getN().getNodeType().equals("HALL"))) {
+          if (((!NUI.getN().getNodeType().equals("WALK"))
+                  && (!NUI.getN().getNodeType().equals("HALL")))
+              || FDatabaseTables.getNodeTable()
+                  .blockedContains(GlobalDb.getConnection(), NUI.getN().getNodeID())) {
             addNodeUI(NUI);
           }
         } else {
@@ -482,18 +543,19 @@ public class MapController implements AllAccessible {
         mapScrollPane.setMapImage(F1);
         break;
     }
-    floorBtn.setText("Fl " + currentFloor);
+    floorBtn.setText("Floor");
     if (isEditor) {
       drawEdgeFloor(floor);
+      drawNodeFloor(floor);
     } else {
       showPath();
     }
-    drawNodeFloor(floor);
   }
 
   public void showPath() {
     if (thePath.isEmpty()) {
       System.out.println("No path to show!");
+      drawNodeFloor(currentFloor);
     } else {
       System.out.println("Path Exists!");
       clearEdges(); // for previous paths
@@ -519,6 +581,8 @@ public class MapController implements AllAccessible {
       endPin.setFitHeight(30);
       endPin.setX(endNode.getSimpXcoord() - 15);
       endPin.setY(endNode.getSimpYcoord() - 30);
+
+      drawNodeFloor(currentFloor);
 
       if (startNode.getN().getFloor().equals(currentFloor)) {
         secondaryAnchor.getChildren().add(startPin);
@@ -725,15 +789,45 @@ public class MapController implements AllAccessible {
   // For Directory
   public LinkedList<Edge> runPathFindingDirectory(LinkedList<Node> DirectoryTargets)
       throws IOException {
+    Targets.clear();
+    Targets.add(DirectoryTargets.getFirst());
+    Targets.add(DirectoryTargets.getLast());
+    resetNodeSizes();
     thePath = algorithm.multiSearch(initialData, DirectoryTargets).getPathEdges();
     if (thePath.isEmpty()) {
       Targets.clear();
     } else {
       switchFloor(currentFloor);
+      resizeNodeUI(getNodeUIByID(DirectoryTargets.getFirst().getNodeID()), 2);
+      resizeNodeUI(getNodeUIByID(DirectoryTargets.getLast().getNodeID()), 2);
+      final Node start = DirectoryTargets.getFirst();
+      switchFloor(start.getFloor());
+      final Node end = getCenteringEnd(DirectoryTargets.getLast());
+      System.out.println("End node (for centering) is " + end.getLongName());
+      mapScrollPane.centerOnPath(
+          start.getXCoord(), start.getYCoord(), end.getXCoord(), end.getYCoord());
+
       //      algorithm.multiSearch(initialData, DirectoryTargets).printPathEdges();
       drawerController.getDirections(thePath);
     }
     return thePath;
+  }
+
+  private Node getCenteringEnd(Node trueEnd) {
+    return getNodeUIByID(
+            thePath.stream()
+                .filter(
+                    edge -> {
+                      final Node start = getNodeUIByID(edge.getStartNodeID()).getN();
+                      final Node end = getNodeUIByID(edge.getEndNodeID()).getN();
+                      if (trueEnd.getNodeID().equals(start.getNodeID())
+                          || trueEnd.getNodeID().equals(end.getNodeID())) return true;
+                      return start.compareFloor(end) != 0;
+                    })
+                .findFirst()
+                .get()
+                .getStartNodeID())
+        .getN();
   }
 
   public void runPathFindingClick() {
@@ -768,6 +862,9 @@ public class MapController implements AllAccessible {
                   LoadingNodesEdges(currentFloor);
                 } else {
                   isEditor = false;
+                  if (popup != null && popup.isShowing()) {
+                    popup.hide();
+                  }
                   clearMap();
                   drawNodeFloor(currentFloor);
                 }
@@ -806,6 +903,7 @@ public class MapController implements AllAccessible {
             endPressed.setValue(false);
             shiftPressed.set(false);
             fPressed.set(false);
+            bPressed.set(false);
             saveMode = !saveMode;
             alignMode = false;
           }
@@ -818,6 +916,18 @@ public class MapController implements AllAccessible {
             endPressed.setValue(false);
             shiftPressed.set(false);
             fPressed.set(true);
+            bPressed.set(false);
+          }
+          if (key == KeyCode.B) {
+            pPressed.set(false);
+            plusPressed.set(false);
+            minusPressed.set(false);
+            aPressed.set(false);
+            startPressed.setValue(false);
+            endPressed.setValue(false);
+            shiftPressed.set(false);
+            fPressed.set(false);
+            bPressed.set(true);
           }
           if (key == KeyCode.SHIFT) {
             pPressed.set(false);
@@ -830,6 +940,7 @@ public class MapController implements AllAccessible {
             fPressed.set(false);
             alignMode = !alignMode;
             saveMode = false;
+            bPressed.set(false);
           }
           if (key == KeyCode.EQUALS) {
             pPressed.set(false);
@@ -840,6 +951,7 @@ public class MapController implements AllAccessible {
             endPressed.setValue(false);
             shiftPressed.set(false);
             fPressed.set(false);
+            bPressed.set(false);
           }
           if (key == KeyCode.OPEN_BRACKET) {
             mapScrollPane.onScroll(
@@ -864,6 +976,7 @@ public class MapController implements AllAccessible {
             endPressed.setValue(false);
             shiftPressed.set(false);
             fPressed.set(false);
+            bPressed.set(false);
           }
           if (key == KeyCode.A) {
             pPressed.set(false);
@@ -874,6 +987,7 @@ public class MapController implements AllAccessible {
             endPressed.setValue(false);
             shiftPressed.set(false);
             fPressed.set(false);
+            bPressed.set(false);
           }
           if (key == KeyCode.S) {
             startPressed.setValue(true);
@@ -884,6 +998,7 @@ public class MapController implements AllAccessible {
             aPressed.set(false);
             shiftPressed.set(false);
             fPressed.set(false);
+            bPressed.set(false);
           }
           if (key == KeyCode.E) {
             endPressed.setValue(true);
@@ -894,6 +1009,7 @@ public class MapController implements AllAccessible {
             aPressed.set(false);
             shiftPressed.set(false);
             fPressed.set(false);
+            bPressed.set(false);
           }
           if (!isEditor) {
             if (key == KeyCode.ESCAPE) {
@@ -916,6 +1032,7 @@ public class MapController implements AllAccessible {
           aPressed.set(false);
           shiftPressed.set(false);
           fPressed.set(false);
+          bPressed.set(false);
         });
   }
 
@@ -1044,6 +1161,10 @@ public class MapController implements AllAccessible {
                     alignNodes();
                   }
                 }
+
+                if (bPressed.get()) {
+                  blockNode(N);
+                }
               } // end of isEditor
 
               if (saveMode) {
@@ -1137,8 +1258,21 @@ public class MapController implements AllAccessible {
     initialFavs.add(getNodeUIByLongName("Parking Garage L2"));
     initialFavs.add(getNodeUIByLongName("Cafe"));
 
-    for (NodeUI N : initialFavs) {
-      favorite(N);
+    if (HomeController.username == null) {
+      System.out.println("No initial favorites for guests");
+    } else {
+      for (NodeUI N : initialFavs) {
+        if (!FDatabaseTables.getNodeTable()
+            .FavContains(GlobalDb.getConnection(), N.getN().getNodeID(), HomeController.username)) {
+          FDatabaseTables.getNodeTable()
+              .addToFavoriteNodes(
+                  GlobalDb.getConnection(),
+                  HomeController.username,
+                  N.getN().getNodeID(),
+                  N.getN().getLongName());
+          N.getI().setImage(favImage);
+        }
+      }
     }
   }
 
@@ -1207,6 +1341,120 @@ public class MapController implements AllAccessible {
       }
     }
     MapDrawerController.favCallStuff();
+  }
+
+  private void unblockNode(NodeUI N) {
+    if (FDatabaseTables.getNodeTable()
+        .blockedContains(GlobalDb.getConnection(), N.getN().getNodeID())) {
+      FDatabaseTables.getNodeTable().deleteBlocked(GlobalDb.getConnection(), N.getN().getNodeID());
+      switch (N.getN().getNodeType()) {
+        case "PARK":
+          N.getI().setImage(PARK);
+          break;
+        case "ELEV":
+          N.getI().setImage(ELEV);
+          break;
+        case "REST":
+          N.getI().setImage(REST);
+          break;
+        case "STAI":
+          N.getI().setImage(STAI);
+          break;
+        case "DEPT":
+          N.getI().setImage(DEPT);
+          break;
+        case "LABS":
+          N.getI().setImage(LABS);
+          break;
+        case "INFO":
+          N.getI().setImage(INFO);
+          break;
+        case "CONF":
+          N.getI().setImage(CONF);
+          break;
+        case "EXIT":
+          N.getI().setImage(EXIT);
+          break;
+        case "RETL":
+          N.getI().setImage(RETL);
+          break;
+        case "SERV":
+          N.getI().setImage(SERV);
+          break;
+        default:
+          N.getI().setImage(DEFAULT);
+          break;
+      }
+      initialData.getNodeByID(N.getN().getNodeID()).setBlocked(false);
+    }
+  }
+
+  private void addBlockNode(NodeUI N) {
+    if (!FDatabaseTables.getNodeTable()
+        .blockedContains(GlobalDb.getConnection(), N.getN().getNodeID())) {
+      FDatabaseTables.getNodeTable()
+          .addToBlockedNodes(
+              GlobalDb.getConnection(), N.getN().getNodeID(), N.getN().getLongName());
+      initialData.getNodeByID(N.getN().getNodeID()).setBlocked(true);
+      N.getI().setImage(blockedNode);
+      N.setSizeHeight(50);
+      N.setSizeWidth(50);
+    }
+  }
+
+  private void blockNode(NodeUI N) {
+    if (FDatabaseTables.getNodeTable()
+        .blockedContains(GlobalDb.getConnection(), N.getN().getNodeID())) {
+      FDatabaseTables.getNodeTable().deleteBlocked(GlobalDb.getConnection(), N.getN().getNodeID());
+      switch (N.getN().getNodeType()) {
+        case "PARK":
+          N.getI().setImage(PARK);
+          break;
+        case "ELEV":
+          N.getI().setImage(ELEV);
+          break;
+        case "REST":
+          N.getI().setImage(REST);
+          break;
+        case "STAI":
+          N.getI().setImage(STAI);
+          break;
+        case "DEPT":
+          N.getI().setImage(DEPT);
+          break;
+        case "LABS":
+          N.getI().setImage(LABS);
+          break;
+        case "INFO":
+          N.getI().setImage(INFO);
+          break;
+        case "CONF":
+          N.getI().setImage(CONF);
+          break;
+        case "EXIT":
+          N.getI().setImage(EXIT);
+          break;
+        case "RETL":
+          N.getI().setImage(RETL);
+          break;
+        case "SERV":
+          N.getI().setImage(SERV);
+          break;
+        default:
+          N.getI().setImage(DEFAULT);
+          break;
+      }
+      initialData.getNodeByID(N.getN().getNodeID()).setBlocked(false);
+    } else {
+      FDatabaseTables.getNodeTable()
+          .addToBlockedNodes(
+              GlobalDb.getConnection(), N.getN().getNodeID(), N.getN().getLongName());
+      initialData.getNodeByID(N.getN().getNodeID()).setBlocked(true);
+      N.getI().setImage(blockedNode);
+      N.setSizeHeight(50);
+      N.setSizeWidth(50);
+    }
+    MapDrawerController.blockedCallStuff();
   }
 
   private void hoverResize(NodeUI N) {
@@ -1662,9 +1910,199 @@ public class MapController implements AllAccessible {
   // _________________________________________Service View_____________________________________
 
   @FXML
-  private void LoadServices() {
+  private void LoadServices() throws IOException {
+    clearMap();
+    Image I = new Image("Images/Service Icons/exTrans_green.png");
 
-    for (LocalStatus LS :
-        FDatabaseTables.getAudVisTable().getLocalStatus(GlobalDb.getConnection())) {}
+    for (AllServiceNodeInfo S : FDatabaseTables.getAllServiceTable().ListServices()) {
+
+      for (NodeUI N : NODES) {
+        if (N.getN().getLongName().equals(S.getLocation())) {
+          ImageView Service = new ImageView();
+          Service.setX(N.getN().getXCoord());
+          Service.setY(N.getN().getYCoord());
+          Service.setFitWidth(30);
+          Service.setFitHeight(30);
+
+          System.out.println(S.getStatus());
+
+          switch (S.getType()) {
+            case "EXT":
+              switch (S.getStatus()) {
+                case "Complete":
+                  I = new Image("Images/Service Icons/exTrans_green.png");
+                  break;
+                case "In Progress":
+                  I = new Image("Images/Service Icons/exTrans_yellow.png");
+                  break;
+                case "Incomplete":
+                  I = new Image("Images/Service Icons/exTrans_red.png");
+                  break;
+              }
+              Service.setImage(I);
+              break;
+            case "FLOW":
+              switch (S.getStatus()) {
+                case "Complete":
+                  I = new Image("Images/Service Icons/floral_green.png");
+                  break;
+                case "In Progress":
+                  I = new Image("Images/Service Icons/floral_yellow.png");
+                  break;
+                case "Incomplete":
+                  I = new Image("Images/Service Icons/floral_red.png");
+                  break;
+              }
+              Service.setImage(I);
+              break;
+            case "FOOD":
+              switch (S.getStatus()) {
+                case "Complete":
+                  I = new Image("Images/Service Icons/food_green.png");
+                  break;
+                case "In Progress":
+                  I = new Image("Images/Service Icons/food_yellow.png");
+                  break;
+                case "Incomplete":
+                  I = new Image("Images/Service Icons/food_red.png");
+                  break;
+              }
+              Service.setImage(I);
+              break;
+            case "LAUN":
+              switch (S.getStatus()) {
+                case "Complete":
+                  I = new Image("Images/Service Icons/laundry_green.png");
+                  break;
+                case "In Progress":
+                  I = new Image("Images/Service Icons/laundry_yellow.png");
+                  break;
+                case "Incomplete":
+                  I = new Image("Images/Service Icons/laundry_red.png");
+                  break;
+              }
+              Service.setImage(I);
+              break;
+            case "LANG":
+              switch (S.getStatus()) {
+                case "Complete":
+                  I = new Image("Images/Service Icons/translate_green.png");
+                  break;
+                case "In Progress":
+                  I = new Image("Images/Service Icons/translate_yellow.png");
+                  break;
+                case "Incomplete":
+                  I = new Image("Images/Service Icons/translate_red.png");
+                  break;
+              }
+              Service.setImage(I);
+              break;
+            case "ITRAN":
+              switch (S.getStatus()) {
+                case "Complete":
+                  I = new Image("Images/Service Icons/wheelchair_green.png");
+                  break;
+                case "In Progress":
+                  I = new Image("Images/Service Icons/wheelchair_yellow.png");
+                  break;
+                case "Incomplete":
+                  I = new Image("Images/Service Icons/wheelchair_red.png");
+                  break;
+              }
+              Service.setImage(I);
+              break;
+            case "SECUR":
+              switch (S.getStatus()) {
+                case "Complete":
+                  I = new Image("Images/Service Icons/security_green.png");
+                  break;
+                case "In Progress":
+                  I = new Image("Images/Service Icons/security_yellow.png");
+                  break;
+                case "Incomplete":
+                  I = new Image("Images/Service Icons/security_red.png");
+                  break;
+              }
+              Service.setImage(I);
+              break;
+            case "FACIL":
+              switch (S.getStatus()) {
+                case "Complete":
+                  I = new Image("Images/Service Icons/maintenance_green.png");
+                  break;
+                case "In Progress":
+                  I = new Image("Images/Service Icons/maintenance_yellow.png");
+                  break;
+                case "Incomplete":
+                  I = new Image("Images/Service Icons/maintenance_red.png");
+                  break;
+              }
+              Service.setImage(I);
+              break;
+            case "COMP":
+              switch (S.getStatus()) {
+                case "Complete":
+                  I = new Image("Images/Service Icons/Computer_green.png");
+                  break;
+                case "In Progress":
+                  I = new Image("Images/Service Icons/Computer_yellow.png");
+                  break;
+                case "Incomplete":
+                  I = new Image("Images/Service Icons/Computer_red.png");
+                  break;
+              }
+              Service.setImage(I);
+              break;
+            case "AUD":
+              switch (S.getStatus()) {
+                case "Complete":
+                  I = new Image("Images/Service Icons/exTrans_green.png");
+                  break;
+                case "In Progress":
+                  I = new Image("Images/Service Icons/exTrans_yellow.png");
+                  break;
+                case "Incomplete":
+                  I = new Image("Images/Service Icons/exTrans_red.png");
+                  break;
+              }
+              I = new Image("Images/Service Icons/exTrans_green.png");
+              Service.setImage(I);
+              break;
+            case "SANI":
+              switch (S.getStatus()) {
+                case "Complete":
+                  I = new Image("Images/Service Icons/sanitization_green.png");
+                  break;
+                case "In Progress":
+                  I = new Image("Images/Service Icons/sanitization_yellow.png");
+                  break;
+                case "Incomplete":
+                  I = new Image("Images/Service Icons/sanitization_red.png");
+                  break;
+              }
+              Service.setImage(I);
+              break;
+            case "MEDD":
+              switch (S.getStatus()) {
+                case "Complete":
+                  I = new Image("Images/Service Icons/medicine_green.png");
+                  break;
+                case "In Progress":
+                  I = new Image("Images/Service Icons/medicine_yellow.png");
+                  break;
+                case "Incomplete":
+                  I = new Image("Images/Service Icons/medicine_red.png");
+                  break;
+              }
+              Service.setImage(I);
+              break;
+          }
+
+          if (N.getN().getFloor().equals(currentFloor)) {
+            secondaryAnchor.getChildren().add(Service);
+          }
+        }
+      }
+    }
   }
 }

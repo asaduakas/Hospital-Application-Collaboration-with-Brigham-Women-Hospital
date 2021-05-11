@@ -1,9 +1,10 @@
 package edu.wpi.cs3733.d21.teamD.Ddb;
 
+import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.FloralDelivNodeInfo;
 import java.io.IOException;
 import java.sql.*;
-import java.util.LinkedList;
+import java.util.HashMap;
 import javafx.collections.ObservableList;
 
 public class FloralDeliveryRequestTable extends AbsTables {
@@ -29,7 +30,8 @@ public class FloralDeliveryRequestTable extends AbsTables {
               + "fromFlower VARCHAR(100) NOT NULL,"
               + "assignedEmployee VARCHAR(100) DEFAULT '',"
               + "PRIMARY KEY(id),"
-              + "CONSTRAINT FLO_employee_FK FOREIGN KEY (assignedEmployee) REFERENCES Users (id),"
+              //              + "CONSTRAINT FLO_employee_FK FOREIGN KEY (assignedEmployee)
+              // REFERENCES Users (id),"
               // + "CONSTRAINT FLO_location_FK FOREIGN KEY (location) REFERENCES Nodes(nodeID),"
               + "CONSTRAINT FLO_status_check CHECK (status IN ('Incomplete', 'Complete', 'In Progress')))";
       stmt.executeUpdate(query);
@@ -47,33 +49,56 @@ public class FloralDeliveryRequestTable extends AbsTables {
       String pLastName,
       String contactInfo,
       String location,
+      String assignedEmployee,
       String typeOfFlower,
       String numOfFlower,
-      String fromFlower,
-      String assignedEmployee) {
+      String fromFlower) {
     try {
       PreparedStatement stmt =
           conn.prepareStatement(
-              "INSERT INTO FloralRequests (pFirstName, pLastName, contactInfo, location, typeOfFlower, numOfFlower, fromFlower, assignedEmployee) VALUES(?,?,?,?,?,?,?,?)");
+              "INSERT INTO FloralRequests (pFirstName, pLastName, contactInfo, location, assignedEmployee, typeOfFlower, numOfFlower, fromFlower) VALUES(?,?,?,?,?,?,?,?)");
       stmt.setString(1, pFirstName);
       stmt.setString(2, pLastName);
       stmt.setString(3, contactInfo);
       stmt.setString(4, location);
-      stmt.setString(5, typeOfFlower);
-      stmt.setString(6, numOfFlower);
-      stmt.setString(7, fromFlower);
-      stmt.setString(8, assignedEmployee);
+      stmt.setString(5, assignedEmployee);
+      stmt.setString(6, typeOfFlower);
+      stmt.setString(7, numOfFlower);
+      stmt.setString(8, fromFlower);
       stmt.executeUpdate();
+
+      FDatabaseTables.getAllServiceTable()
+          .addEntity(
+              GlobalDb.getConnection(),
+              this.getID(GlobalDb.getConnection()),
+              location,
+              "Incomplete",
+              assignedEmployee,
+              "FLOW");
+
     } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
-  public void addIntoFloralDeliveryList(ObservableList<FloralDelivNodeInfo> floralData)
-      throws IOException {
+  public void addIntoFloralDeliveryList(
+      ObservableList<FloralDelivNodeInfo> floralData, boolean employeeAccess) throws IOException {
+    PreparedStatement stmt = null;
+    Connection conn = GlobalDb.getConnection();
     try {
-      String query = "SELECT * FROM FloralRequests";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      if (employeeAccess) {
+        stmt =
+            conn.prepareStatement(
+                "SELECT * FROM FloralRequests WHERE assignedEmployee = ? OR assignedEmployee  IS NULL");
+        stmt.setString(1, HomeController.username);
+        //        System.out.println(
+        //            "this is trying to add data into the employee table " +
+        // HomeController.username);
+        //        System.out.println("this is getting the userType " + HomeController.userTypeEnum);
+      } else {
+        stmt = conn.prepareStatement("SELECT * FROM FloralRequests");
+      }
+      ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
         floralData.add(
             new FloralDelivNodeInfo(
@@ -108,6 +133,13 @@ public class FloralDeliveryRequestTable extends AbsTables {
           stmt.setString(3, floralInfo.getId());
           stmt.executeUpdate();
 
+          AllServiceTable.updateEntity(
+              GlobalDb.getConnection(),
+              floralInfo.getId(),
+              floralInfo.getStatus(),
+              floralInfo.getAssignedEmployee(),
+              "FLOW");
+
         } catch (SQLException throwables) {
           throwables.printStackTrace();
         }
@@ -116,19 +148,53 @@ public class FloralDeliveryRequestTable extends AbsTables {
     return floralData;
   }
 
-  public LinkedList<LocalStatus> getLocalStatus(Connection conn) {
-    LinkedList<LocalStatus> LocalStatus = new LinkedList<>();
+  public int getID(Connection conn) {
+    int id = 420;
     try {
-      PreparedStatement stmt = conn.prepareStatement("SELECT location, status FROM FloralRequests");
-
+      PreparedStatement stmt = conn.prepareStatement("SELECT id FROM FloralRequests");
       ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
-        LocalStatus localStatus = new LocalStatus(rs.getString("location"), rs.getString("status"));
-        LocalStatus.add(localStatus);
+        System.out.println("LOOK HERE:" + id);
+        id = rs.getInt(1);
+        System.out.println("LOOK HERE:" + id);
       }
     } catch (SQLException throwables) {
       throwables.printStackTrace();
     }
-    return LocalStatus;
+    System.out.println();
+    return id;
+  }
+
+  public HashMap<Integer, String> getIncompleteRequest() {
+    Connection conn = GlobalDb.getConnection();
+    HashMap<Integer, String> floralDeliveryList = new HashMap<>();
+    String id = HomeController.username;
+    int i = 0;
+    try {
+      PreparedStatement stmt = conn.prepareStatement("SELECT location, status FROM FloralRequests");
+
+      PreparedStatement stmt =
+          conn.prepareStatement(
+              "SELECT location, pFirstName, pLastName, contactInfo FROM FloralRequests WHERE status = 'Incomplete' AND assignedEmployee = ?");
+      stmt.setString(1, id);
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        floralDeliveryList.put(
+            i,
+            "Floral Delivery"
+                + " -- "
+                + rs.getString("location")
+                + " -- Name: "
+                + rs.getString("pFirstName")
+                + " "
+                + rs.getString("pLastName")
+                + " -- Contact: "
+                + rs.getString("contactInfo"));
+        i++;
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    return floralDeliveryList;
   }
 }

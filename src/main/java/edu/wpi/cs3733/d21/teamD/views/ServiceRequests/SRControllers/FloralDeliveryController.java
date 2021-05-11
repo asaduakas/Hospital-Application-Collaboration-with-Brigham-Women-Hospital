@@ -79,10 +79,10 @@ public class FloralDeliveryController extends AbsRequest
               super.lastName.getText(),
               super.contactInfo.getText(),
               super.locationBox.getValue(),
+              staffAssigned.getValue(),
               typeFlower.getText(),
               numberFlower.getText().toString(),
-              fromName.getText(),
-              staffAssigned.getValue());
+              fromName.getText());
     }
   }
 

@@ -7,9 +7,12 @@ import javafx.beans.property.StringProperty;
 public class COVIDSurveyResultsNodeInfo extends RecursiveTreeObject<COVIDSurveyResultsNodeInfo> {
 
   public SimpleStringProperty id = new SimpleStringProperty();
+  public StringProperty type = new SimpleStringProperty();
+  public StringProperty username = new SimpleStringProperty();
   public StringProperty firstName = new SimpleStringProperty();
   public StringProperty lastName = new SimpleStringProperty();
   public StringProperty contactInfo = new SimpleStringProperty();
+  public StringProperty email = new SimpleStringProperty();
   public StringProperty assignedEmployee = new SimpleStringProperty();
   public StringProperty status = new SimpleStringProperty();
 
@@ -26,10 +29,12 @@ public class COVIDSurveyResultsNodeInfo extends RecursiveTreeObject<COVIDSurveyR
   //    public IntegerProperty feelGoodCheck = new SimpleIntegerProperty();
 
   public COVIDSurveyResultsNodeInfo(
-      String id,
+      String type,
+      String username,
       String firstName,
       String lastName,
       String contactInfo,
+      String email,
       String assignedEmployee,
       String status,
       String positiveTestCheck,
@@ -37,10 +42,12 @@ public class COVIDSurveyResultsNodeInfo extends RecursiveTreeObject<COVIDSurveyR
       String closeContactCheck,
       String selfIsolateCheck,
       String feelGoodCheck) {
-    this.id = new SimpleStringProperty(id);
+    this.type = new SimpleStringProperty(type);
+    this.username = new SimpleStringProperty(username);
     this.firstName = new SimpleStringProperty(firstName);
     this.lastName = new SimpleStringProperty(lastName);
     this.contactInfo = new SimpleStringProperty(contactInfo);
+    this.email = new SimpleStringProperty(email);
     this.assignedEmployee = new SimpleStringProperty(assignedEmployee);
     this.status = new SimpleStringProperty(status);
     this.positiveTestCheck = new SimpleStringProperty(positiveTestCheck);
@@ -54,6 +61,22 @@ public class COVIDSurveyResultsNodeInfo extends RecursiveTreeObject<COVIDSurveyR
     //        this.closeContactCheck = new SimpleIntegerProperty(closeContactCheck);
     //        this.selfIsolateCheck = new SimpleIntegerProperty(selfIsolateCheck);
     //        this.feelGoodCheck = new SimpleIntegerProperty(feelGoodCheck);
+  }
+
+  public String getUsername() {
+    return username.get();
+  }
+
+  public StringProperty usernameProperty() {
+    return username;
+  }
+
+  public String getType() {
+    return type.get();
+  }
+
+  public StringProperty typeProperty() {
+    return type;
   }
 
   public String getId() {
@@ -70,6 +93,18 @@ public class COVIDSurveyResultsNodeInfo extends RecursiveTreeObject<COVIDSurveyR
 
   public String getFirstName() {
     return firstName.get();
+  }
+
+  public String getEmail() {
+    return email.get();
+  }
+
+  public StringProperty emailProperty() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email.set(email);
   }
 
   public StringProperty firstNameProperty() {

@@ -10,9 +10,11 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -21,20 +23,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TreeCell;
-import javafx.scene.control.TreeItem;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
+import javafx.scene.text.*;
 
 public class MapDrawerController implements Initializable {
   @FXML private JFXTreeView<String> directoryTreeView;
@@ -44,12 +40,15 @@ public class MapDrawerController implements Initializable {
   @FXML private VBox vBox;
   @FXML private GridPane startGrid;
   @FXML private GridPane endGrid;
-  @FXML private JFXComboBox<String> algoVersion;
+  @FXML public JFXComboBox<String> algoVersion;
   @FXML private JFXButton exportBut;
   @FXML private JFXButton importBut;
+  @FXML private ScrollPane textScrollPane;
   @FXML JFXButton dirBtn;
-  @FXML JFXTextArea dirText;
+  @FXML TextFlow dirText;
+  TextArea downloadText = new TextArea();
   private LinkedList<edu.wpi.cs3733.d21.teamD.Astar.Node> Targets = new LinkedList<>();
+  private SimpleBooleanProperty isPressed = new SimpleBooleanProperty();
 
   private MapController mapController;
 
@@ -80,9 +79,21 @@ public class MapDrawerController implements Initializable {
   public static ArrayList<String> favList =
       FDatabaseTables.getNodeTable()
           .fetchLongNameFavorites(GlobalDb.getConnection(), HomeController.username);
+  public static ArrayList<String> blockedList =
+      FDatabaseTables.getNodeTable().fetchLongNameBlocked(GlobalDb.getConnection());
   private Node textDirection;
   private RoomGraph initialData = new RoomGraph(GlobalDb.getConnection());
   public static TreeItem<String> favoriteCell = new TreeItem<>("Favorite");
+  public static TreeItem<String> blockedCell = new TreeItem<>("Blocked");
+
+  private EventHandler<MouseEvent> mouseEventHandle =
+      (MouseEvent event) -> {
+        try {
+          handleMouseReleased(event);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      };
 
   @FXML
   public void tiasSpecialFunction() throws IOException {
@@ -97,10 +108,24 @@ public class MapDrawerController implements Initializable {
     Targets.add(mapController.getNodeUIByLongName(endText).getN());
 
     mapController.runPathFindingDirectory(Targets);
+
+    recentStart = startText;
+    recentEnd = endText;
+
+    setSearchHistory(GlobalDb.getConnection(), recentStart, recentEnd);
+    HomeController.historyTracker = 1;
+    getSearchHistory(GlobalDb.getConnection());
   }
 
   @Override
   public void initialize(URL url, ResourceBundle rb) {
+
+    downloadText.setVisible(false);
+    textScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+    textScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+    textScrollPane.setStyle(
+        "-fx-background-color: transparent; -fx-padding: 0; -fx-background-insets: 0");
+    //    textScrollPane.
 
     directoryTreeView
         .getSelectionModel()
@@ -108,16 +133,15 @@ public class MapDrawerController implements Initializable {
 
     treeViewSetup();
 
-    EventHandler<MouseEvent> mouseEventHandle =
-        (MouseEvent event) -> {
-          try {
-            handleMouseClicked(event);
-          } catch (IOException e) {
-            e.printStackTrace();
+    directoryTreeView.addEventHandler(
+        MouseEvent.MOUSE_PRESSED,
+        (e) -> {
+          if (e.isControlDown()) {
+            isPressed.set(true);
           }
-        };
+        });
 
-    directoryTreeView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEventHandle);
+    directoryTreeView.addEventHandler(MouseEvent.MOUSE_RELEASED, mouseEventHandle);
 
     ArrayList<String> longNames =
         FDatabaseTables.getNodeTable().fetchLongNameNoHall(GlobalDb.getConnection());
@@ -166,10 +190,14 @@ public class MapDrawerController implements Initializable {
                 changePathFinderAlgo(newValue);
               }
             });
+
     favCallStuff();
+    blockedCallStuff();
+    getSearchHistory(GlobalDb.getConnection());
   }
 
   public static void favCallStuff() {
+    favList.clear();
     if (favList.size()
         != FDatabaseTables.getNodeTable()
             .fetchLongNameFavorites(GlobalDb.getConnection(), HomeController.username)
@@ -181,6 +209,19 @@ public class MapDrawerController implements Initializable {
       for (String fav : favList) {
         TreeItem<String> favorite = new TreeItem<>(fav);
         favoriteCell.getChildren().add(favorite);
+      }
+    }
+  }
+
+  public static void blockedCallStuff() {
+    blockedList.clear();
+    if (blockedList.size()
+        != FDatabaseTables.getNodeTable().fetchLongNameBlocked(GlobalDb.getConnection()).size()) {
+      blockedList = FDatabaseTables.getNodeTable().fetchLongNameBlocked(GlobalDb.getConnection());
+      blockedCell.getChildren().clear();
+      for (String block : blockedList) {
+        TreeItem<String> blocked = new TreeItem<>(block);
+        blockedCell.getChildren().add(blocked);
       }
     }
   }
@@ -319,6 +360,13 @@ public class MapDrawerController implements Initializable {
       favImage.setFitHeight(15);
       favoriteCell.setGraphic(favImage);
 
+      ImageView blockedImage =
+          new ImageView(
+              new Image(new FileInputStream("src/main/resources/Images/blockedNode.png")));
+      blockedImage.setFitWidth(15);
+      blockedImage.setFitHeight(15);
+      blockedCell.setGraphic(blockedImage);
+
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
@@ -337,7 +385,8 @@ public class MapDrawerController implements Initializable {
             exit,
             retail,
             service,
-            favoriteCell);
+            favoriteCell,
+            blockedCell);
 
     for (String parkingSpace : parkingList) {
       TreeItem<String> parkingLocation = new TreeItem<String>(parkingSpace);
@@ -399,32 +448,42 @@ public class MapDrawerController implements Initializable {
       favoriteCell.getChildren().add(favorite);
     }
 
+    for (String block : blockedList) {
+      TreeItem<String> blocked = new TreeItem<>(block);
+      blockedCell.getChildren().add(blocked);
+    }
+
     directoryRoot.setExpanded(true);
     directoryTreeView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
-    EventHandler<MouseEvent> mouseEventHandle =
-        (MouseEvent event) -> {
-          try {
-            handleMouseClicked(event);
-          } catch (IOException e) {
-            e.printStackTrace();
+    directoryTreeView.addEventHandler(
+        MouseEvent.MOUSE_PRESSED,
+        (e) -> {
+          if (e.isControlDown()) {
+            isPressed.set(true);
           }
-        };
+        });
 
-    directoryTreeView.addEventHandler(MouseEvent.MOUSE_PRESSED, mouseEventHandle);
+    directoryTreeView.addEventHandler(MouseEvent.MOUSE_RELEASED, mouseEventHandle);
   }
 
-  private void handleMouseClicked(MouseEvent event) throws IOException {
+  private void handleMouseReleased(MouseEvent event) throws IOException {
     Node node = event.getPickResult().getIntersectedNode();
     // Accept clicks only on node cells, and not on empty spaces of the TreeView
     String prev = "";
-    if (event.isControlDown()) {
+    if (isPressed.get()) {
       String clickname =
           (String) ((TreeItem) directoryTreeView.getSelectionModel().getSelectedItem()).getValue();
       for (NodeUI NUI : mapController.NODES) {
         if (NUI.getN().getLongName().equals(clickname)) {
           // System.out.println(NUI.getN().getLongName());
-          if (!Targets.contains(NUI.getN())) {
+          if (!Targets.contains(NUI.getN())
+              && !FDatabaseTables.getNodeTable()
+                  .blockedContains(GlobalDb.getConnection(), NUI.getN().getNodeID())) {
+            if (Targets.size() == 0) {
+              startField.clear();
+              endField.clear();
+            }
             Targets.add(NUI.getN());
           }
           mapController.addNodeUI(NUI);
@@ -509,6 +568,10 @@ public class MapDrawerController implements Initializable {
           type = "Favorite";
           nodeRedrawing(type);
           break;
+        case "Blocked":
+          type = "Blocked";
+          nodeRedrawing(type);
+          break;
         default:
           for (NodeUI NUI : mapController.NODES) {
             if (NUI.getN().getLongName().equals(name)) {
@@ -539,6 +602,15 @@ public class MapDrawerController implements Initializable {
             && FDatabaseTables.getNodeTable()
                 .FavContains(
                     GlobalDb.getConnection(), NUI.getN().getNodeID(), HomeController.username)) {
+          mapController.addNodeUI(NUI);
+        }
+      }
+
+    } else if (type.equals("Blocked")) {
+      for (NodeUI NUI : mapController.NODES) {
+        if (NUI.getN().getFloor().equals(mapController.currentFloor)
+            && FDatabaseTables.getNodeTable()
+                .blockedContains(GlobalDb.getConnection(), NUI.getN().getNodeID())) {
           mapController.addNodeUI(NUI);
         }
       }
@@ -575,18 +647,21 @@ public class MapDrawerController implements Initializable {
     }
     // ScaleDown(edges.getFirst().getStartNode());
 
-    dirText.clear();
+    dirText.getChildren().clear();
+    downloadText.clear();
 
     edu.wpi.cs3733.d21.teamD.Astar.Node start =
         initialData.getNodeByID(edges.getFirst().getStartNodeID());
     edu.wpi.cs3733.d21.teamD.Astar.Node end =
         initialData.getNodeByID(edges.getLast().getEndNodeID());
-    dirText.setFont(pFont);
+    //    dirText.getChildren().setFont(pFont);
 
     Text aText =
         new Text("Directions from " + start.getLongName() + " to " + end.getLongName() + ":\n");
     aText.setFont(hFont);
-    dirText.appendText(aText.getText());
+    dirText.getChildren().add(aText);
+    downloadText.appendText(
+        "Directions from " + start.getLongName() + " to " + end.getLongName() + ":\n");
     // dirText.appendText("Directions from " + start.getLongName() + " to " + end.getLongName() +
     // ":\n");
     setEnd(end.getShortName());
@@ -621,9 +696,10 @@ public class MapDrawerController implements Initializable {
     // dirText.setFont(hFont);
     Text endText = new Text("\nWelcome to " + end.getLongName() + "\n");
     endText.setFont(hFont);
-    dirText.appendText(endText.getText());
+    dirText.getChildren().add(endText);
+    downloadText.appendText("\nWelcome to " + end.getLongName() + "\n");
     // dirText.appendText("\nWelcome to " + end.getLongName() + "\n");
-    dirText.setPromptText(dirText.getText());
+    // dirText.setPromptText(dirText.getText());
   }
 
   public String evalTurn(
@@ -640,9 +716,21 @@ public class MapDrawerController implements Initializable {
 
     // add handling for changing floors
     if (startNode.getNodeType().equals("ELEV") && endNode.getNodeType().equals("ELEV")) {
-      Text elvText = new Text("Take the elevator towards floor " + endNode.getFloor() + "\n");
-      elvText.setFont(hFont);
-      dirText.appendText(elvText.getText());
+      Text elvText =
+          new Text("\t" + "Take the elevator towards floor " + endNode.getFloor() + "\n");
+      elvText.setFont(pFont);
+      //      dirText.getChildren().add(elvText);
+      downloadText.appendText(
+          "\t" + "Take the elevator towards floor " + endNode.getFloor() + "\n");
+      try {
+        ImageView EleImage =
+            new ImageView(new Image(new FileInputStream("src/main/resources/Images/elevator.png")));
+        EleImage.setFitHeight(30);
+        EleImage.setFitWidth(30);
+        dirText.getChildren().addAll(EleImage, elvText);
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
       // dirText.setFont(hFont);
       // dirText.appendText("Take the elevator towards floor " + endNode.getFloor() + "\n");
       return "In elevator";
@@ -652,7 +740,18 @@ public class MapDrawerController implements Initializable {
       return newDirection;
     } else if (startNode.getNodeType().equals("STAI") && endNode.getNodeType().equals("STAI")) {
       //  dirText.setFont(hFont);
-      dirText.appendText("Take the stairs towards floor " + endNode.getFloor() + "\n");
+      Text text = new Text("\t" + "Take the stairs towards floor " + endNode.getFloor() + "\n");
+      text.setFont(pFont);
+      downloadText.appendText("\t" + "Take the stairs towards floor " + endNode.getFloor() + "\n");
+      try {
+        ImageView Image =
+            new ImageView(new Image(new FileInputStream("src/main/resources/Images/stairs.png")));
+        Image.setFitHeight(30);
+        Image.setFitWidth(30);
+        dirText.getChildren().addAll(Image, text);
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
       return "In stairs";
     } else if (startNode.getNodeType().equals("STAI") && !endNode.getNodeType().equals("STAI")) {
       newDirection = firstMove(startX, startY, endX, endY, startNode, endNode);
@@ -686,7 +785,16 @@ public class MapDrawerController implements Initializable {
       // dirText.setFont(pFont);
       Text lText = new Text("\tTurn Left towards: \n\t\t" + endNode.getLongName() + "\n");
       lText.setFont(pFont);
-      dirText.appendText(lText.getText());
+      downloadText.appendText("\tTurn Left towards: \n\t\t" + endNode.getLongName() + "\n");
+      try {
+        ImageView Image =
+            new ImageView(new Image(new FileInputStream("src/main/resources/Images/left.png")));
+        Image.setFitHeight(30);
+        Image.setFitWidth(30);
+        dirText.getChildren().addAll(Image, lText);
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
       // dirText.appendText("\tTurn Left towards: \n\t\t" + endNode.getLongName() + "\n");
 
     }
@@ -698,7 +806,16 @@ public class MapDrawerController implements Initializable {
       // dirText.setFont(pFont);
       Text rText = new Text("\tTurn Right towards: \n\t\t" + endNode.getLongName() + "\n");
       rText.setFont(pFont);
-      dirText.appendText(rText.getText());
+      downloadText.appendText("\tTurn Right towards: \n\t\t" + endNode.getLongName() + "\n");
+      try {
+        ImageView Image =
+            new ImageView(new Image(new FileInputStream("src/main/resources/Images/right.png")));
+        Image.setFitHeight(30);
+        Image.setFitWidth(30);
+        dirText.getChildren().addAll(Image, rText);
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
       // dirText.appendText("\tTurn Right towards: \n\t\t" + endNode.getLongName() + "\n");
     }
     // Continue Straight
@@ -707,7 +824,17 @@ public class MapDrawerController implements Initializable {
         // dirText.setFont(pFont);
         Text sText = new Text("\tContinue Straight towards: \n\t\t" + endNode.getLongName() + "\n");
         sText.setFont(pFont);
-        dirText.appendText(sText.getText());
+        downloadText.appendText(
+            "\tContinue Straight towards: \n\t\t" + endNode.getLongName() + "\n");
+        try {
+          ImageView Image =
+              new ImageView(new Image(new FileInputStream("src/main/resources/Images/up.png")));
+          Image.setFitHeight(30);
+          Image.setFitWidth(30);
+          dirText.getChildren().addAll(Image, sText);
+        } catch (FileNotFoundException e) {
+          e.printStackTrace();
+        }
         // dirText.appendText("\tContinue Straight towards: \n\t\t" + endNode.getLongName() + "\n");
       }
     }
@@ -728,39 +855,108 @@ public class MapDrawerController implements Initializable {
     // add handling for changing floors
     if (startNode.getNodeType().equals("ELEV") && endNode.getNodeType().equals("ELEV")) {
       // dirText.setFont(hFont);
-      dirText.appendText("Take the elevator towards floor " + endNode.getFloor() + "\n");
+      Text text = new Text("Take the elevator towards floor " + endNode.getFloor() + "\n");
+      text.setFont(pFont);
+      try {
+        ImageView EleImage =
+            new ImageView(new Image(new FileInputStream("src/main/resources/Images/elevator.png")));
+        EleImage.setFitHeight(30);
+        EleImage.setFitWidth(30);
+        //        dirText.getChildren().addAll(EleImage, text);
+        dirText.getChildren().add(EleImage);
+        System.out.println("this is adding elevatorImage");
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
       return "In elevator";
     } else if (startNode.getNodeType().equals("STAI") && endNode.getNodeType().equals("STAI")) {
       // dirText.setFont(hFont);
-      dirText.appendText("Take the stairs towards floor " + endNode.getFloor() + "\n");
+      Text text = new Text("Take the stairs towards floor " + endNode.getFloor() + "\n");
+      text.setFont(pFont);
+      downloadText.appendText("Take the stairs towards floor " + endNode.getFloor() + "\n");
+      try {
+        ImageView Image =
+            new ImageView(new Image(new FileInputStream("src/main/resources/Images/stairs.png")));
+        Image.setFitHeight(30);
+        Image.setFitWidth(30);
+        dirText.getChildren().addAll(Image, text);
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
       return "In stairs";
     } else {
       // North
       if ((deltaY < 0) && (Math.abs(deltaY) > Math.abs(deltaX))) {
         //        System.out.println("Head North towards " + endNode.getLongName());
+        Text text = new Text("\tHead North towards: \n\t\t" + endNode.getLongName() + "\n");
+        text.setFont(pFont);
+        downloadText.appendText("\tHead North towards: \n\t\t" + endNode.getLongName() + "\n");
+        try {
+          ImageView Image =
+              new ImageView(
+                  new Image(new FileInputStream("src/main/resources/Images/north_bg.png")));
+          Image.setFitHeight(30);
+          Image.setFitWidth(30);
+          dirText.getChildren().addAll(Image, text);
+        } catch (FileNotFoundException e) {
+          e.printStackTrace();
+        }
         //   dirText.setFont(pFont);
-        dirText.appendText("\tHead North towards: \n\t\t" + endNode.getLongName() + "\n");
+        //        dirText.appendText("\tHead North towards: \n\t\t" + endNode.getLongName() + "\n");
         return "North";
       }
       // South
       else if ((deltaY > 0) && (deltaY > Math.abs(deltaX))) {
         //        System.out.println("Head South towards " + endNode.getLongName());
-        // dirText.setFont(pFont);
-        dirText.appendText("\tHead South towards: \n\t\t" + endNode.getLongName() + "\n");
+        Text text = new Text("\tHead South towards: \n\t\t" + endNode.getLongName() + "\n");
+        text.setFont(pFont);
+        downloadText.appendText("\tHead South towards: \n\t\t" + endNode.getLongName() + "\n");
+        try {
+          ImageView Image =
+              new ImageView(
+                  new Image(new FileInputStream("src/main/resources/Images/south_bg.png")));
+          Image.setFitHeight(30);
+          Image.setFitWidth(30);
+          dirText.getChildren().addAll(Image, text);
+        } catch (FileNotFoundException e) {
+          e.printStackTrace();
+        }
         return "South";
       }
       // East
       else if ((deltaX > 0) && (deltaX > Math.abs(deltaY))) {
         //        System.out.println("Head East towards " + endNode.getLongName());
-        //   dirText.setFont(pFont);
-        dirText.appendText("\tHead East towards: \n\t\t" + endNode.getLongName() + "\n");
+        Text text = new Text("\tHead East towards: \n\t\t" + endNode.getLongName() + "\n");
+        text.setFont(pFont);
+        downloadText.appendText("\tHead East towards: \n\t\t" + endNode.getLongName() + "\n");
+        try {
+          ImageView Image =
+              new ImageView(
+                  new Image(new FileInputStream("src/main/resources/Images/east_bg.png")));
+          Image.setFitHeight(30);
+          Image.setFitWidth(30);
+          dirText.getChildren().addAll(Image, text);
+        } catch (FileNotFoundException e) {
+          e.printStackTrace();
+        }
         return "East";
       }
       // West
       else if ((deltaX < 0) && (Math.abs(deltaX) > Math.abs(deltaY))) {
         //        System.out.println("Head West towards " + endNode.getLongName());
-        //  dirText.setFont(pFont);
-        dirText.appendText("\tHead West towards: \n\t\t" + endNode.getLongName() + "\n");
+        Text text = new Text("\tHead West towards: \n\t\t" + endNode.getLongName() + "\n");
+        text.setFont(pFont);
+        downloadText.appendText("\tHead West towards: \n\t\t" + endNode.getLongName() + "\n");
+        try {
+          ImageView Image =
+              new ImageView(
+                  new Image(new FileInputStream("src/main/resources/Images/west_bg.png")));
+          Image.setFitHeight(30);
+          Image.setFitWidth(30);
+          dirText.getChildren().addAll(Image, text);
+        } catch (FileNotFoundException e) {
+          e.printStackTrace();
+        }
         return "West";
       } else {
         //        System.out.println("Error determining turn direction towards " +
@@ -779,7 +975,8 @@ public class MapDrawerController implements Initializable {
       try {
         FileWriter directions = new FileWriter(name);
 
-        directions.write(dirText.getText());
+        directions.write(downloadText.getText());
+
         directions.close();
 
         String DialogText = "";
@@ -828,4 +1025,59 @@ public class MapDrawerController implements Initializable {
   }
 
   public void tableSetup() {}
+
+  // -------------Search History-----------------
+
+  public String recentStart = "";
+  public String recentEnd = "";
+
+  public void setSearchHistory(Connection conn, String startName, String endName) {
+
+    PreparedStatement stmt = null;
+    try {
+      System.out.println("set stuff-----" + startName + endName);
+      stmt = conn.prepareStatement("INSERT INTO SearchHistory VALUES (?, ?)");
+      stmt.setString(1, startName);
+      stmt.setString(2, endName);
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public void getSearchHistory(Connection conn) {
+    Statement stmt = null;
+    ResultSet rs = null;
+
+    try {
+      stmt = conn.createStatement();
+
+      String query = "SELECT * FROM SearchHistory";
+
+      rs = stmt.executeQuery(query);
+
+      // conn.setAutoCommit(false);
+
+      while (rs.next()) {
+        recentStart = rs.getString("startName");
+        recentEnd = rs.getString("endName");
+        System.out.println("start-" + rs.getString("startName"));
+        System.out.println("end-" + rs.getString("endName"));
+      }
+      rs.close();
+
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+
+    // Initialize search menus with most recent searches
+    System.out.println(recentStart + "-------------------");
+    System.out.println(recentEnd + "----------------------");
+    if (HomeController.historyTracker == 1) {
+      startField.setText(recentStart);
+      endField.setText(recentEnd);
+    }
+    // start_choice.setPromptText(recentStart);
+    // end_choice.setPromptText(recentEnd);
+  }
 }

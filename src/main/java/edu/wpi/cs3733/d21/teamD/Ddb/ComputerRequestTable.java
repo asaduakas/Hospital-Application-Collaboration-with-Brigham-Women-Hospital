@@ -1,9 +1,10 @@
 package edu.wpi.cs3733.d21.teamD.Ddb;
 
+import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.ComputerNodeInfo;
 import java.io.IOException;
 import java.sql.*;
-import java.util.LinkedList;
+import java.util.HashMap;
 import javafx.collections.ObservableList;
 
 public class ComputerRequestTable extends AbsTables {
@@ -58,16 +59,39 @@ public class ComputerRequestTable extends AbsTables {
       stmt.setString(5, assignedEmployee);
       stmt.setString(6, descriptionOfIssue);
       stmt.executeUpdate();
+
+      FDatabaseTables.getAllServiceTable()
+          .addEntity(
+              GlobalDb.getConnection(),
+              this.getID(GlobalDb.getConnection()),
+              location,
+              "Incomplete",
+              assignedEmployee,
+              "COMP");
+
     } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
-  public void addIntoComputerDataList(ObservableList<ComputerNodeInfo> computerData)
-      throws IOException {
+  public void addIntoComputerDataList(
+      ObservableList<ComputerNodeInfo> computerData, boolean employeeAccess) throws IOException {
+    PreparedStatement stmt = null;
+    Connection conn = GlobalDb.getConnection();
     try {
-      String query = "SELECT * FROM ComputerServiceRequest";
-      ResultSet rs = GlobalDb.getConnection().createStatement().executeQuery(query);
+      if (employeeAccess) {
+        stmt =
+            conn.prepareStatement(
+                "SELECT * FROM ComputerServiceRequest WHERE assignedEmployee = ? OR assignedEmployee  IS NULL");
+        stmt.setString(1, HomeController.username);
+        //        System.out.println(
+        //            "this is trying to add data into the employee table " +
+        // HomeController.username);
+        //        System.out.println("this is getting the userType " + HomeController.userTypeEnum);
+      } else {
+        stmt = conn.prepareStatement("SELECT * FROM ComputerServiceRequest");
+      }
+      ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
         computerData.add(
             new ComputerNodeInfo(
@@ -100,6 +124,13 @@ public class ComputerRequestTable extends AbsTables {
           stmt.setString(3, computerInfo.getId());
           stmt.executeUpdate();
 
+          AllServiceTable.updateEntity(
+              GlobalDb.getConnection(),
+              computerInfo.getId(),
+              computerInfo.getStatus(),
+              computerInfo.getAssignedEmployee(),
+              "COMP");
+
         } catch (SQLException throwables) {
           throwables.printStackTrace();
         }
@@ -108,20 +139,51 @@ public class ComputerRequestTable extends AbsTables {
     return computerData;
   }
 
-  public LinkedList<LocalStatus> getLocalStatus(Connection conn) {
-    LinkedList<LocalStatus> LocalStatus = new LinkedList<>();
+  public int getID(Connection conn) {
+    int id = 420;
     try {
-      PreparedStatement stmt =
-          conn.prepareStatement("SELECT location, status FROM ComputerServiceRequest");
-
+      PreparedStatement stmt = conn.prepareStatement("SELECT id FROM ComputerServiceRequest");
       ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
-        LocalStatus localStatus = new LocalStatus(rs.getString("location"), rs.getString("status"));
-        LocalStatus.add(localStatus);
+        System.out.println("LOOK HERE:" + id);
+        id = rs.getInt(1);
+        System.out.println("LOOK HERE:" + id);
       }
     } catch (SQLException throwables) {
       throwables.printStackTrace();
     }
-    return LocalStatus;
+    System.out.println();
+    return id;
+  }
+
+  public HashMap<Integer, String> getIncompleteRequest() {
+    Connection conn = GlobalDb.getConnection();
+    HashMap<Integer, String> compRequestList = new HashMap<>();
+    String id = HomeController.username;
+    int i = 0;
+    try {
+      PreparedStatement stmt =
+          conn.prepareStatement(
+              "SELECT location, firstName, lastName, contactInfo FROM ComputerServiceRequest WHERE status = 'Incomplete' AND assignedEmployee = ?");
+      stmt.setString(1, id);
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        compRequestList.put(
+            i,
+            "Computer Service"
+                + " -- "
+                + rs.getString("location")
+                + " -- Name: "
+                + rs.getString("firstName")
+                + " "
+                + rs.getString("lastName")
+                + " -- Contact: "
+                + rs.getString("contactInfo"));
+        i++;
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    return compRequestList;
   }
 }

@@ -12,7 +12,7 @@ import javafx.stage.Popup;
 
 public class ControllerManager {
 
-  private static Popup popup = null;
+  public static Popup popup = null;
 
   private static boolean isPermissible(Class<?> controllerClass) {
     if (AllAccessible.class.isAssignableFrom(controllerClass)) {
@@ -58,11 +58,12 @@ public class ControllerManager {
   }
 
   public static void attemptLoadPage(String fxmlName, Consumer<FXMLLoader> tasks) {
-    App.getPrimaryStage().close();
+    //    App.getPrimaryStage().close();
     FXMLLoader fxmlLoader = getLoader(fxmlName);
     if (!isPermissible(fxmlLoader.getController().getClass())) return;
     exitPopup();
     App.getPrimaryStage().setScene(new Scene(fxmlLoader.getRoot()));
+    App.getPrimaryStage().setMaximized(false);
     App.getPrimaryStage().setMaximized(true); // UI rescale can't handle starting without this
     App.getPrimaryStage().show();
     tasks.accept(fxmlLoader); // Run additional tasks that were passed in
@@ -74,8 +75,14 @@ public class ControllerManager {
 
   public static void attemptLoadPopup(String fxmlName, Consumer<FXMLLoader> tasks) {
     FXMLLoader fxmlLoader = getLoader(fxmlName);
-    if (!isPermissible(fxmlLoader.getController().getClass())) return;
-    if (popup != null) popup.hide();
+
+    if (!isPermissible(fxmlLoader.getController().getClass())) {
+      return;
+    }
+    if (popup != null) {
+      popup.hide();
+    }
+
     popup = new Popup();
     popup.getContent().addAll((Pane) fxmlLoader.getRoot());
     popup.show(App.getPrimaryStage());
