@@ -5,6 +5,7 @@ import com.jfoenix.validation.RequiredFieldValidator;
 import edu.wpi.cs3733.d21.teamD.Ddb.FDatabaseTables;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
 import edu.wpi.cs3733.d21.teamD.views.Access.EmployeeAccessible;
+import edu.wpi.cs3733.d21.teamD.views.ControllerManager;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -26,8 +27,9 @@ public class SecurityServicesController extends AbsRequest
   @FXML
   public void popUpAction() throws IOException {
     popup = new Popup();
-    // ServicePageController.popup.hide();
-    super.popUpAction("Emergency.fxml");
+    //    // ServicePageController.popup.hide();
+    //    super.popUpAction("Emergency.fxml");
+    ControllerManager.attemptLoadPopupBlur("Emergency.fxml");
   }
 
   @FXML

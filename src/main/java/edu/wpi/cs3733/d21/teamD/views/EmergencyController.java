@@ -13,9 +13,9 @@ import javafx.geometry.Pos;
 import javafx.scene.layout.StackPane;
 
 public class EmergencyController implements AllAccessible {
-  @FXML JFXButton yesBtn;
-  @FXML JFXButton noBtn;
-  @FXML StackPane stackPane;
+  @FXML private JFXButton yesBtn;
+  @FXML private JFXButton noBtn;
+  @FXML private StackPane stackPane;
 
   private DialogFactory dialogFactory;
 
@@ -27,7 +27,7 @@ public class EmergencyController implements AllAccessible {
 
   @FXML
   public void popupYes() throws IOException {
-    dialogFactory.createOneButtonDialog("", "HELP IS ON YOUR WAY!", "OK", this::closePopup);
+    dialogFactory.createOneButtonDialog("", "HELP IS ON THE WAY!", "OK", this::closePopup);
   }
 
   @FXML

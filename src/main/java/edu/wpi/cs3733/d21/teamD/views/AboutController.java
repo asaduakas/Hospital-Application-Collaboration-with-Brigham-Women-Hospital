@@ -9,6 +9,7 @@ import javafx.geometry.HPos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 
@@ -37,6 +38,13 @@ public class AboutController implements AllAccessible {
   @FXML private Label uri;
   @FXML private Circle uriCircle;
   @FXML private JFXButton backButton;
+  @FXML private StackPane stackPane;
+
+  DialogFactory dialogFactory;
+
+  public void initDialogFactory() {
+    dialogFactory = new DialogFactory(stackPane);
+  }
 
   // ------------------------------------------------------------------------------------
 

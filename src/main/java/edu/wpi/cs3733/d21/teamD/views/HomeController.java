@@ -46,8 +46,6 @@ public class HomeController implements AllAccessible {
   @FXML public StackPane stackPane;
   @FXML private AnchorPane mainPane;
   @FXML private JFXToggleButton dbToggle;
-  private String dbToggleText[] = {"Embedded Connection", "Remote Connection"};
-  private int index = 0;
   @FXML private Pane thePane;
 
   @FXML public ImageView chatbotImage;
@@ -63,6 +61,9 @@ public class HomeController implements AllAccessible {
 
   // Used to reset search history for each login
   public static int historyTracker = 0;
+
+  private int index = 0;
+  private String dbToggleText[] = {"Embedded Connection", "Remote Connection"};
 
   @FXML
   private void initialize() {
