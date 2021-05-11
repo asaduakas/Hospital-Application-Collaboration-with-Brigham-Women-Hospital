@@ -52,6 +52,31 @@
             <Font size="18.0" />
          </font>
       </JFXButton>
+      <JFXButton fx:id="fl3Btn" layoutX="929.0" layoutY="32.0" prefHeight="50.0" style="-fx-background-color: #ffffff; -fx-background-radius: 50px;" text="3" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
+      <JFXButton fx:id="fl2Btn" layoutX="929.0" layoutY="32.0" prefHeight="50.0" style="-fx-background-color: #ffffff; -fx-background-radius: 50px;" text="2" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
+      <JFXButton fx:id="fl1Btn" layoutX="939.0" layoutY="42.0" prefHeight="50.0" style="-fx-background-color: #ffffff; -fx-background-radius: 50px;" text="1" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
+      <JFXButton fx:id="l1Btn" layoutX="939.0" layoutY="42.0" prefHeight="50.0" style="-fx-background-color: #ffffff; -fx-background-radius: 50px;" text="l1" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
+      <JFXButton fx:id="l2Btn" layoutX="939.0" layoutY="42.0" prefHeight="50.0" style="-fx-background-color: #ffffff; -fx-background-radius: 50px;" text="l2" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
 
    </children>
 </AnchorPane>
