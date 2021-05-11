@@ -14,6 +14,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -47,6 +48,7 @@ public class MapDrawerController implements Initializable {
   @FXML TextFlow dirText;
   TextArea downloadText = new TextArea();
   private LinkedList<edu.wpi.cs3733.d21.teamD.Astar.Node> Targets = new LinkedList<>();
+  private SimpleBooleanProperty isPressed = new SimpleBooleanProperty();
 
   private MapController mapController;
 
@@ -83,6 +85,15 @@ public class MapDrawerController implements Initializable {
   private RoomGraph initialData = new RoomGraph(GlobalDb.getConnection());
   public static TreeItem<String> favoriteCell = new TreeItem<>("Favorite");
   public static TreeItem<String> blockedCell = new TreeItem<>("Blocked");
+
+  private EventHandler<MouseEvent> mouseEventHandle =
+      (MouseEvent event) -> {
+        try {
+          handleMouseReleased(event);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      };
 
   @FXML
   public void tiasSpecialFunction() throws IOException {
@@ -122,16 +133,15 @@ public class MapDrawerController implements Initializable {
 
     treeViewSetup();
 
-    EventHandler<MouseEvent> mouseEventHandle =
-        (MouseEvent event) -> {
-          try {
-            handleMouseClicked(event);
-          } catch (IOException e) {
-            e.printStackTrace();
+    directoryTreeView.addEventHandler(
+        MouseEvent.MOUSE_PRESSED,
+        (e) -> {
+          if (e.isControlDown()) {
+            isPressed.set(true);
           }
-        };
+        });
 
-    directoryTreeView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEventHandle);
+    directoryTreeView.addEventHandler(MouseEvent.MOUSE_RELEASED, mouseEventHandle);
 
     ArrayList<String> longNames =
         FDatabaseTables.getNodeTable().fetchLongNameNoHall(GlobalDb.getConnection());
@@ -446,23 +456,22 @@ public class MapDrawerController implements Initializable {
     directoryRoot.setExpanded(true);
     directoryTreeView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
-    EventHandler<MouseEvent> mouseEventHandle =
-        (MouseEvent event) -> {
-          try {
-            handleMouseClicked(event);
-          } catch (IOException e) {
-            e.printStackTrace();
+    directoryTreeView.addEventHandler(
+        MouseEvent.MOUSE_PRESSED,
+        (e) -> {
+          if (e.isControlDown()) {
+            isPressed.set(true);
           }
-        };
+        });
 
-    directoryTreeView.addEventHandler(MouseEvent.MOUSE_PRESSED, mouseEventHandle);
+    directoryTreeView.addEventHandler(MouseEvent.MOUSE_RELEASED, mouseEventHandle);
   }
 
-  private void handleMouseClicked(MouseEvent event) throws IOException {
+  private void handleMouseReleased(MouseEvent event) throws IOException {
     Node node = event.getPickResult().getIntersectedNode();
     // Accept clicks only on node cells, and not on empty spaces of the TreeView
     String prev = "";
-    if (event.isControlDown()) {
+    if (isPressed.get()) {
       String clickname =
           (String) ((TreeItem) directoryTreeView.getSelectionModel().getSelectedItem()).getValue();
       for (NodeUI NUI : mapController.NODES) {
@@ -471,6 +480,10 @@ public class MapDrawerController implements Initializable {
           if (!Targets.contains(NUI.getN())
               && !FDatabaseTables.getNodeTable()
                   .blockedContains(GlobalDb.getConnection(), NUI.getN().getNodeID())) {
+            if (Targets.size() == 0) {
+              startField.clear();
+              endField.clear();
+            }
             Targets.add(NUI.getN());
           }
           mapController.addNodeUI(NUI);
