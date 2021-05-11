@@ -2105,4 +2105,16 @@ public class MapController implements AllAccessible {
       }
     }
   }
+
+    public void serviceResize(ImageView IV){
+      IV.getOnMouseEntered((MouseEvent E) -> {
+
+
+      });
+
+
+
+  }
 }
+
+
