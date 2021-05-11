@@ -86,7 +86,7 @@ public class InitPageController implements AllAccessible {
     pageButton.setPrefHeight(60);
     pageButton.setPrefWidth(60);
     pageButton.setStyle(
-        "-fx-background-color: #FFBFAB; -fx-background-radius: 60px; -fx-text-fill:  #000000; -fx-font-size: 14; -fx-font-weight: Bold");
+        "-fx-background-color: #E5E5E5; -fx-background-radius: 60px; -fx-text-fill:  #000000; -fx-font-size: 14; -fx-font-weight: Bold");
     Text pages = new Text("Pages");
     //    pages.setStyle("-fx-text-fill:  #000000; -fx-font-size: 14; -fx-font-weight: Bold");
 
@@ -95,7 +95,7 @@ public class InitPageController implements AllAccessible {
     JFXButton aboutButton = new JFXButton("ABOUT");
     aboutButton.setButtonType(JFXButton.ButtonType.FLAT);
     aboutButton.setStyle(
-        "-fx-background-color: #FF9F80; -fx-background-radius: 60px; -fx-font-size: 12");
+        "-fx-background-color: #C8BEFF; -fx-background-radius: 60px; -fx-font-size: 12");
     aboutButton.setPrefHeight(60);
     aboutButton.setPrefWidth(60);
     aboutButton.setOnAction(this::aboutPage);
@@ -103,7 +103,7 @@ public class InitPageController implements AllAccessible {
     JFXButton creditButton = new JFXButton("CREDITS");
     creditButton.setButtonType(JFXButton.ButtonType.FLAT);
     creditButton.setStyle(
-        "-fx-background-color: #FF926F; -fx-background-radius: 60px; -fx-font-size: 11");
+        "-fx-background-color: #AB9CFF; -fx-background-radius: 60px; -fx-font-size: 11");
     creditButton.setPrefHeight(60);
     creditButton.setPrefWidth(60);
     creditButton.setOnAction(this::creditsPage);
