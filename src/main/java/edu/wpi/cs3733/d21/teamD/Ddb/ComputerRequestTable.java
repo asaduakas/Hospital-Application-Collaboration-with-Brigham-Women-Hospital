@@ -5,7 +5,6 @@ import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.ComputerNodeInfo;
 import java.io.IOException;
 import java.sql.*;
 import java.util.HashMap;
-
 import javafx.collections.ObservableList;
 
 public class ComputerRequestTable extends AbsTables {
@@ -164,22 +163,22 @@ public class ComputerRequestTable extends AbsTables {
     int i = 0;
     try {
       PreparedStatement stmt =
-              conn.prepareStatement(
-                      "SELECT location, firstName, lastName, contactInfo FROM ComputerServiceRequest WHERE status = 'Incomplete' AND assignedEmployee = ?");
+          conn.prepareStatement(
+              "SELECT location, firstName, lastName, contactInfo FROM ComputerServiceRequest WHERE status = 'Incomplete' AND assignedEmployee = ?");
       stmt.setString(1, id);
       ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
         compRequestList.put(
-                i,
-                "Computer Service"
-                        + " -- "
-                        + rs.getString("location")
-                        + " -- Name: "
-                        + rs.getString("firstName")
-                        + " "
-                        + rs.getString("lastName")
-                        + " -- Contact: "
-                        + rs.getString("contactInfo"));
+            i,
+            "Computer Service"
+                + " -- "
+                + rs.getString("location")
+                + " -- Name: "
+                + rs.getString("firstName")
+                + " "
+                + rs.getString("lastName")
+                + " -- Contact: "
+                + rs.getString("contactInfo"));
         i++;
       }
     } catch (SQLException throwables) {
@@ -187,6 +186,4 @@ public class ComputerRequestTable extends AbsTables {
     }
     return compRequestList;
   }
-
-
 }
