@@ -15,6 +15,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
@@ -135,12 +136,11 @@ public class ChatbotController implements AllAccessible {
         dispMessage = " Dr. Dobby: " + message + "\n";
       }
 
+      TextFlow test = new TextFlow();
       Text dispText = new Text(dispMessage);
       dispText.maxHeight(20);
       dispText.setStyle(
           " -fx-font-style: Italic; -fx-font-weight: Bold; -fx-font-size: 20; -fx-background-color: #093fc6");
-
-      TextFlow test = new TextFlow();
       test.setPrefWidth(chatAreaScroll.getPrefWidth());
       test.getChildren().addAll(icon, dispText);
       test.setTextAlignment(alignment);
@@ -208,6 +208,18 @@ public class ChatbotController implements AllAccessible {
         ControllerManager.attemptLoadPopupBlur("SanitationView.fxml");
       } else if (category.equals("Security-Request")) {
         ControllerManager.attemptLoadPopupBlur("SecurityServicesView.fxml");
+      } else if (category.equals("Request-Table")) {
+        if (!HomeController.username.equalsIgnoreCase("Patient")
+            && !HomeController.username.equalsIgnoreCase("Guest")) {
+          answer = answer + "Sure thing!";
+          ControllerManager.attemptLoadPopupBlur(
+              "StatusView.fxml",
+              fxmlLoader -> ((Pane) fxmlLoader.getRoot()).setStyle("-fx-background-color: White"));
+        } else if (HomeController.username.equalsIgnoreCase("Guest")) {
+          answer = answer + "Sorry, you need to be logged in first!";
+        } else if (HomeController.username.equalsIgnoreCase("Patient")) {
+          answer = answer + "Sorry, you need to be logged in as either an admin or an employee!";
+        }
       } else if (category.equals("Username-Info")) {
         prevCategory = "Username-Change";
         answer = "Your username is: " + HomeController.username;
