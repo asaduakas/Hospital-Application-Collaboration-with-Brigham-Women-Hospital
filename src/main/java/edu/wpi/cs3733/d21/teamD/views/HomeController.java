@@ -7,6 +7,7 @@ import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
 import edu.wpi.cs3733.d21.teamD.views.Access.AllAccessible;
 import edu.wpi.cs3733.d21.teamD.views.Access.LoginController;
 import edu.wpi.cs3733.d21.teamD.views.Access.UserCategory;
+import edu.wpi.cs3733.d21.teamD.views.Mapping.MapController;
 import edu.wpi.cs3733.d21.teamD.views.Mapping.MapScrollPane;
 import java.io.IOException;
 import java.util.List;
@@ -66,7 +67,7 @@ public class HomeController implements AllAccessible {
   private String dbToggleText[] = {"Embedded Connection", "Remote Connection"};
 
   @FXML
-  private void initialize() {
+  public void initialize() {
     chatbotImage.setOnMousePressed((e) -> chatbotPopUp());
     dbToggle.setOnAction(
         (ActionEvent e) -> {
@@ -121,7 +122,7 @@ public class HomeController implements AllAccessible {
   }
 
   @FXML
-  public void hospitalMapView(ActionEvent event) throws Exception {
+  public void hospitalMapView() {
 
     JFXSpinner spinner = new JFXSpinner();
     Label loading = new Label("Loading Map");
@@ -201,6 +202,108 @@ public class HomeController implements AllAccessible {
           scene.widthProperty().addListener(sizeListener);
           scene.heightProperty().addListener(sizeListener);
           updateMapScrollPane(childrenList);
+        });
+
+    Thread thread = new Thread(task);
+    thread.start();
+
+    task.setOnFailed(e -> task.getException().printStackTrace());
+    task.setOnCancelled(
+        ee -> {
+          task.cancel();
+          stackPane.setVisible(false);
+          stackPane.setDisable(true);
+        });
+  }
+
+  public void mapViewFromBot(String start, String end) {
+
+    JFXSpinner spinner = new JFXSpinner();
+    Label loading = new Label("Loading Map");
+    Text text = new Text("Dr. Dobby is getting your map!");
+    loading.setStyle("-fx-font-weight: Bold; -fx-font-size: 20");
+    text.setStyle("-fx-font-size: 20");
+
+    logoutButton.setDisable(true);
+    exitButton.setDisable(true);
+
+    spinner.setMaxHeight(150);
+    spinner.setMaxWidth(150);
+    stackPane.setStyle("-fx-background-color: #ffffff");
+    stackPane.getChildren().addAll(loading, spinner, text);
+    stackPane.setMargin(text, new Insets(200, 0, 0, 20));
+
+    Task<Parent> task =
+        new Task<Parent>() {
+          @Override
+          protected Parent call() throws Exception {
+            FXMLLoader fxmlLoader =
+                new FXMLLoader(getClass().getClassLoader().getResource("MapView.fxml"));
+            Pane root = fxmlLoader.load();
+            return root;
+          }
+        };
+
+    mainPane.addEventHandler(
+        KeyEvent.KEY_PRESSED,
+        e -> {
+          if (e.getCode() == KeyCode.ESCAPE) {
+            System.out.println("cancelled");
+            // task.cancel();
+            // GlobalDb.establishCon();
+            logoutButton.setDisable(false);
+            exitButton.setDisable(false);
+          }
+        });
+
+    task.setOnSucceeded(
+        e -> {
+          stackPane.setVisible(false);
+
+          if (LoginController.getUserCategory() != null) {
+            this.userCategory = LoginController.getUserCategory();
+          } else {
+            this.userCategory = InitPageController.getUserCategory();
+          }
+
+          Pane root = (Pane) task.getValue();
+          Scene scene = new Scene(root);
+
+          //          App.getPrimaryStage().setMaximized(true);
+          //          App.getPrimaryStage().close();
+          App.getPrimaryStage().setScene(scene);
+          App.getPrimaryStage().setMaximized(false);
+          App.getPrimaryStage().setMaximized(true);
+          App.getPrimaryStage().show();
+
+          List<Node> childrenList = root.getChildren();
+          System.out.println("this is childrenList of the map" + childrenList);
+          JFXToggleButton mapEditing = (JFXToggleButton) childrenList.get(4);
+          if (!userCategory.equalsIgnoreCase("admin")) {
+            mapEditing.setVisible(false);
+            mapEditing.setDisable(true);
+          }
+
+          changeChildrenMapView(childrenList);
+          this.sizeListener =
+              new SceneSizeChangeListener(scene, root, childrenList) {
+                @Override
+                public void changeChildren(List<Node> nodeList) {
+                  updateMapScrollPane(nodeList);
+                  changeChildrenMapView(childrenList);
+                }
+              };
+          scene.widthProperty().addListener(sizeListener);
+          scene.heightProperty().addListener(sizeListener);
+          updateMapScrollPane(childrenList);
+
+          if (start != null && end != null) {
+            try {
+              MapController.drawerController.chatBotPathFinding(start, end);
+            } catch (IOException ioException) {
+              ioException.printStackTrace();
+            }
+          }
         });
 
     Thread thread = new Thread(task);

@@ -7,7 +7,7 @@ import edu.wpi.cs3733.d21.teamD.Ddb.NodesTable;
 import edu.wpi.cs3733.d21.teamD.Ddb.UsersTable;
 import edu.wpi.cs3733.d21.teamD.chatbot.chatbot;
 import edu.wpi.cs3733.d21.teamD.views.Access.AllAccessible;
-import edu.wpi.cs3733.d21.teamD.views.Mapping.MapController;
+import edu.wpi.cs3733.d21.teamD.views.Access.LoginController;
 import java.awt.*;
 import java.io.IOException;
 import java.util.*;
@@ -242,15 +242,14 @@ public class ChatbotController implements AllAccessible {
       } else if (category.equals("Hospital-Map")) {
         ControllerManager.exitPopup();
 
-        ControllerManager.attemptLoadPage(
-            "MapView.fxml",
-            fxmlLoader -> {
-              try {
-                mapLoader(fxmlLoader);
-              } catch (AWTException e) {
-                e.printStackTrace();
-              }
-            });
+                ControllerManager.attemptLoadPage(
+                    "HomeView.fxml",
+                    fxmlLoader -> {
+                      LoginController.start(fxmlLoader.getRoot());
+                      HomeController controller = fxmlLoader.getController();
+                      controller.hospitalMapView();
+                    });
+
       } else if (category.equals("Pathfinding")) {
         answer = getStartEndLoc(tokens, input);
         if ((start != null) && (end != null)) {
@@ -259,15 +258,12 @@ public class ChatbotController implements AllAccessible {
 
           ControllerManager.exitPopup();
           ControllerManager.attemptLoadPage(
-              "MapView.fxml",
+              "HomeView.fxml",
               fxmlLoader -> {
-                try {
-                  mapLoader(fxmlLoader);
-                } catch (AWTException e) {
-                  e.printStackTrace();
-                }
+                LoginController.start(fxmlLoader.getRoot());
+                HomeController controller = fxmlLoader.getController();
+                controller.mapViewFromBot(start, end);
               });
-          MapController.drawerController.chatBotPathFinding(start, end);
           start = null;
           end = null;
         }
