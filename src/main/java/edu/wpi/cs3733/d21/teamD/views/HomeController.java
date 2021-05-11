@@ -51,7 +51,7 @@ public class HomeController implements AllAccessible {
   public static UserCategory userTypeEnum;
   public static String username = null;
   public static String password = null;
-  private static String userCategory;
+  public static String userCategory;
   public static Boolean disableRequestStatus = false;
 
   public static SceneSizeChangeListener sizeListener;

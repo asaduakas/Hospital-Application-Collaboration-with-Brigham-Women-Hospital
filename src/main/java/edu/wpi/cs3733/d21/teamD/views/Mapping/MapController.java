@@ -211,7 +211,17 @@ public class MapController implements AllAccessible {
     mapDrawer.setSidePane(menuBtns);
     Pane root = (Pane) loader.getRoot();
     List<javafx.scene.Node> childrenList = root.getChildren();
-    // System.out.println("this is childrenList of the drawer " + childrenList);
+
+//    System.out.println("pls work " + HomeController.userCategory);
+//
+//    if ((!HomeController.userCategory.equalsIgnoreCase("Admin")) || HomeController.userCategory == null) {
+//      AnchorPane anchorPane = (AnchorPane) childrenList.get(0);
+//      System.out.println("this is childrenList of the drawer " + anchorPane.getChildren());
+//      JFXComboBox<String> algoVersion = (JFXComboBox<String>) anchorPane.getChildren().get(6);
+//      algoVersion.setVisible(false);
+//      algoVersion.setDisable(true);
+//    }
+
     root.setMinHeight(App.getPrimaryStage().getScene().getHeight());
     Scene scene = App.getPrimaryStage().getScene();
     changeChildrenMapView(childrenList);
