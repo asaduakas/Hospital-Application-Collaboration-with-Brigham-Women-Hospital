@@ -202,7 +202,6 @@ public class UsersController extends AbsRequest
         FDatabaseTables.getUserTable().changeUserData(employeeData);
         break;
       case "Patients":
-        System.out.println("this is in the change data of UserTable save btn fired");
         FDatabaseTables.getUserTable().changeUserData(patientData);
         break;
       case "Administrators":
@@ -313,9 +312,6 @@ public class UsersController extends AbsRequest
     clearanceCol.setCellValueFactory(
         (TreeTableColumn.CellDataFeatures<UsersNodeInfo, String> p) -> {
           if (clearanceCol.validateValue(p)) {
-            System.out.println(
-                "this is in the clearanceCol of UserController "
-                    + p.getValue().getValue().clearance);
             return p.getValue().getValue().clearance;
           } else {
             return clearanceCol.getComputedValue(p);
