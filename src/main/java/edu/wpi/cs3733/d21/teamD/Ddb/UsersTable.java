@@ -310,9 +310,11 @@ public class UsersTable extends AbsTables {
       PreparedStatement stmt = null;
       try {
         stmt =
-            GlobalDb.getConnection().prepareStatement("UPDATE Users SET password = ? WHERE id=?");
+            GlobalDb.getConnection()
+                .prepareStatement("UPDATE Users SET password = ?, clearance = ? WHERE id=?");
         stmt.setString(1, info.getPassword());
-        stmt.setString(2, info.getId());
+        stmt.setString(2, info.getClearance());
+        stmt.setString(3, info.getId());
         stmt.executeUpdate();
       } catch (SQLException throwables) {
         throwables.printStackTrace();

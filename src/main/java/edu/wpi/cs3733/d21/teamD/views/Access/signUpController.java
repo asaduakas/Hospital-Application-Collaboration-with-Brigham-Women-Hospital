@@ -60,7 +60,7 @@ public class signUpController implements AllAccessible {
             passwordField.getText().toString(),
             nameField.getText(),
             categoryName,
-            "NULL",
+            "",
             emailField.getText());
         /*InitPageController.popup.hide();
         App.getPrimaryStage().close();

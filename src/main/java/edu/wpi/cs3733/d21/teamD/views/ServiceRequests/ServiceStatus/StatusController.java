@@ -684,11 +684,10 @@ public class StatusController extends AbsRequest
 
   private ObservableList<COVIDSurveyResultsNodeInfo> getCOVIDSurveyData() throws IOException {
     COVIDSurveyData = FXCollections.observableArrayList();
-    //    System.out.println(
-    //        "this is inside the status controller for usertype " + HomeController.userCategory);
     FDatabaseTables.getCovid19SurveyTable()
         .addIntoCOVIDSurveyList(
             COVIDSurveyData, HomeController.userCategory.equalsIgnoreCase("employee"));
+    //        System.out.println("this is inside the status controller for usertype ");
     return COVIDSurveyData;
     //        return
     // FDatabaseTables.getCovid19SurveyTable().addIntoCOVIDSurveyList(COVIDSurveyData);

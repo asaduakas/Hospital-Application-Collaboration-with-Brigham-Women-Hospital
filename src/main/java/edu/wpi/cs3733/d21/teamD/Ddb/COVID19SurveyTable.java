@@ -124,6 +124,8 @@ public class COVID19SurveyTable extends AbsTables {
                 rs.getString("closeContactCheck"),
                 rs.getString("selfIsolateCheck"),
                 rs.getString("feelGoodCheck")));
+        System.out.println(
+            "this is in the covidTable trying to add data " + rs.getString("status"));
       }
     } catch (SQLException throwables) {
       throwables.printStackTrace();
@@ -134,7 +136,7 @@ public class COVID19SurveyTable extends AbsTables {
   public ObservableList<COVIDSurveyResultsNodeInfo> changeCOVIDSurveyData(
       ObservableList<COVIDSurveyResultsNodeInfo> COVIDSurveyData) {
     for (COVIDSurveyResultsNodeInfo info : COVIDSurveyData) {
-      if (!(info.getAssignedEmployee().isEmpty())) {
+      if (!(info.getStatus().isEmpty())) {
         PreparedStatement stmt = null;
         try {
           stmt =
