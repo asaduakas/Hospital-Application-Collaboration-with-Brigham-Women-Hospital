@@ -49,7 +49,6 @@ public class LoginController implements AllAccessible {
     final BooleanProperty focused = new SimpleBooleanProperty();
     dialogFactory = new DialogFactory(loginStackPane);
     loginStackPane.setPickOnBounds(false);
-
     anchor.addEventHandler(
         KeyEvent.KEY_PRESSED,
         e -> {
@@ -62,7 +61,6 @@ public class LoginController implements AllAccessible {
 
   @FXML
   private void login(ActionEvent event) throws IOException {
-
     if (usernameField.getText().isEmpty() || passwordField.getText().isEmpty()) {
       popupWarning(event, "Please fill out the required fields.");
     } else if (!FDatabaseTables.getUserTable()
@@ -263,7 +261,7 @@ public class LoginController implements AllAccessible {
     HBox topButtons = (HBox) nodeList.get(4);
     JFXButton logoutButton = (JFXButton) nodeList.get(5);
     JFXButton exitButton = (JFXButton) nodeList.get(6);
-    StackPane stackPane = (StackPane) nodeList.get(7);
+    StackPane stackPane = (StackPane) nodeList.get(8);
 
     topButtons.setLayoutX(
         App.getPrimaryStage().getScene().getWidth() - (topButtons.getWidth() + 26));
@@ -301,7 +299,7 @@ public class LoginController implements AllAccessible {
     exitButton.setLayoutY(
         App.getPrimaryStage().getScene().getHeight() - (exitButton.getHeight() + 50));
 
-    Text userType = (Text) nodeList.get(9);
+    Text userType = (Text) nodeList.get(nodeList.size() - 1);
     userType.setX(exitButton.getLayoutX() - 170);
     userType.setY(App.getPrimaryStage().getScene().getHeight() - 25);
 
@@ -312,6 +310,12 @@ public class LoginController implements AllAccessible {
     stackPane.setLayoutY(
         (App.getPrimaryStage().getScene().getHeight() - stackPane.getHeight()) / 2);
     stackPane.setPickOnBounds(false);
+
+    ImageView chatbot = (ImageView) nodeList.get(9);
+    //    chatbot.setLayoutY(logoutButton.getLayoutY() - 20);
+    //    chatbot.setLayoutX(logoutButton.getLayoutX() - logoutButton.getWidth() - 10);
+    chatbot.setLayoutY(logoutButton.getLayoutY() - logoutButton.getWidth());
+    chatbot.setLayoutX(exitButton.getLayoutX() + 10);
   }
 
   @FXML

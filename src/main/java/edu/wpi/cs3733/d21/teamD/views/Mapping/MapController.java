@@ -408,11 +408,11 @@ public class MapController implements AllAccessible {
   private void initializeFloorList() {
     floorBtn.setPrefHeight(55);
     floorBtn.setPrefWidth(55);
-    floorBtn.setStyle("-fx-background-color: #17B963; -fx-background-radius: 55px");
+    floorBtn.setStyle("-fx-background-color: #1A80D6; -fx-background-radius: 55px");
 
     JFXButton Floor1Btn = new JFXButton("1");
     Floor1Btn.setButtonType(JFXButton.ButtonType.FLAT);
-    Floor1Btn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50px");
+    Floor1Btn.setStyle("-fx-background-color: #C3E4FF; -fx-background-radius: 50px");
     Floor1Btn.setPrefHeight(50);
     Floor1Btn.setPrefWidth(50);
     Floor1Btn.setOnAction(
@@ -423,7 +423,7 @@ public class MapController implements AllAccessible {
 
     JFXButton Floor2Btn = new JFXButton("2");
     Floor2Btn.setButtonType(JFXButton.ButtonType.FLAT);
-    Floor2Btn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50px");
+    Floor2Btn.setStyle("-fx-background-color: #C3E4FF; -fx-background-radius: 50px");
     Floor2Btn.setPrefHeight(50);
     Floor2Btn.setPrefWidth(50);
     Floor2Btn.setOnAction(
@@ -434,7 +434,7 @@ public class MapController implements AllAccessible {
 
     JFXButton Floor3Btn = new JFXButton("3");
     Floor3Btn.setButtonType(JFXButton.ButtonType.FLAT);
-    Floor3Btn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50px");
+    Floor3Btn.setStyle("-fx-background-color: #C3E4FF; -fx-background-radius: 50px");
     Floor3Btn.setPrefHeight(50);
     Floor3Btn.setPrefWidth(50);
     Floor3Btn.setOnAction(
@@ -445,7 +445,7 @@ public class MapController implements AllAccessible {
 
     JFXButton FloorL1Btn = new JFXButton("L1");
     FloorL1Btn.setButtonType(JFXButton.ButtonType.FLAT);
-    FloorL1Btn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50px");
+    FloorL1Btn.setStyle("-fx-background-color: #C3E4FF; -fx-background-radius: 50px");
     FloorL1Btn.setPrefHeight(50);
     FloorL1Btn.setPrefWidth(50);
     FloorL1Btn.setOnAction(
@@ -456,7 +456,7 @@ public class MapController implements AllAccessible {
 
     JFXButton FloorL2Btn = new JFXButton("L2");
     FloorL2Btn.setButtonType(JFXButton.ButtonType.FLAT);
-    FloorL2Btn.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 50px");
+    FloorL2Btn.setStyle("-fx-background-color: #C3E4FF; -fx-background-radius: 50px");
     FloorL2Btn.setPrefHeight(50);
     FloorL2Btn.setPrefWidth(50);
     FloorL2Btn.setOnAction(
@@ -543,7 +543,7 @@ public class MapController implements AllAccessible {
         mapScrollPane.setMapImage(F1);
         break;
     }
-    floorBtn.setText("Fl " + currentFloor);
+    floorBtn.setText("Floor");
     if (isEditor) {
       drawEdgeFloor(floor);
       drawNodeFloor(floor);

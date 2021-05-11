@@ -37,6 +37,7 @@ public class HomeController implements AllAccessible {
   @FXML private JFXButton exitButton; // Btn to exit program
   @FXML private JFXButton logoutButton;
   @FXML private JFXButton usersBtn;
+
   @FXML private JFXButton mapEditing;
   @FXML private JFXButton serviceRequest;
   @FXML private JFXButton covidButton;
@@ -47,6 +48,10 @@ public class HomeController implements AllAccessible {
   @FXML private JFXToggleButton dbToggle;
   private String dbToggleText[] = {"Embedded Connection", "Remote Connection"};
   private int index = 0;
+  @FXML private Pane thePane;
+
+  @FXML public ImageView chatbotImage;
+  private Boolean mouseOnPopup = false;
 
   public static UserCategory userTypeEnum;
   public static String username = null;
@@ -61,7 +66,7 @@ public class HomeController implements AllAccessible {
 
   @FXML
   private void initialize() {
-    // dbToggle.setText("Embedded Connection");
+    chatbotImage.setOnMousePressed((e) -> chatbotPopUp());
     dbToggle.setOnAction(
         (ActionEvent e) -> {
           index++;
@@ -71,6 +76,8 @@ public class HomeController implements AllAccessible {
           dbToggle.setText(dbToggleText[index]);
         });
     dbToggleSwitch();
+    //    ControllerManager.attemptLoadPopupBlur("StatusView.fxml");
+    //    ControllerManager.exitPopup();
   }
 
   @FXML
@@ -161,6 +168,7 @@ public class HomeController implements AllAccessible {
           Pane root = (Pane) task.getValue();
           Scene scene = new Scene(root);
 
+          //          App.getPrimaryStage().setMaximized(true);
           //          App.getPrimaryStage().close();
           App.getPrimaryStage().setScene(scene);
           App.getPrimaryStage().setMaximized(false);
@@ -295,6 +303,27 @@ public class HomeController implements AllAccessible {
             checkStatusButton.setDisable(false);
           }
         });
+  }
+
+  @FXML
+  public void chatbotPopUp() {
+    if (ChatbotController.textBox.getChildren().size() > 0) {
+      ChatbotController.textBox.getChildren().clear();
+    }
+    ControllerManager.attemptLoadPopup(
+        "ChatbotView.fxml",
+        (fxmlLoader) -> {
+          ControllerManager.popup.setX(
+              chatbotImage.getLayoutX()
+                  - ControllerManager.popup.getWidth()
+                  - chatbotImage.getFitWidth() / 2);
+          ControllerManager.popup.setY(
+              chatbotImage.getLayoutY()
+                  - ControllerManager.popup.getHeight()
+                  + (chatbotImage.getFitHeight()));
+        });
+
+    //    ControllerManager.popup.setAutoHide(true);
   }
 
   private void dbToggleSwitch() {

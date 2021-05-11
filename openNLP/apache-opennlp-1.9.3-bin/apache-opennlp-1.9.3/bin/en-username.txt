@@ -1,0 +1,11 @@
+Hello chatbot my username is <START:username> testAdmin <END> and I was thinking is there a possible way to change my username from here?
+Hey Didi, I am an admin for this app and my username is <START:username> admin1 <END>, and I would like to confirm if this is my username or not
+Hey, my usernamne is <START:username> patient <END> and I am suffering from a heart disease. What are different ways you can help me out with?
+I am currently working in this hospital and my username <START:username> employee <END> is registered as the type employee. Can you help me see the service requests?
+Ofcourse, you know me, I am Wilson Wong. The amazing students from Team D registered my username as <START:username> wwong <END> and the type as admin. I can control everything, not because I am admin, but because I am GOD!!!
+One of the fabulous databse engineers of the team diamond dragons, people call me Elaine Chen and my username <START:username> elaine <END>
+Another coolest member of our team, Veronica Andrews, signed up her account under the username <START:username> veronica <END> as the type employee. 
+Oh, what can I tell about Tia, she is one of the funniest members of the team, decided to go with <START:username> tia <END> as her username for the diamond dragon application of pathfinding and hospital management.
+Yiyi, the god, the UI expert and a fabulous mockup artist, couldn't come up with better username but is <START:username> yiyi <END>, which is just her name
+When it comes to algorithms, theres no one better than Curtis, who thinks with a lighting speed and debugs like a flash, is unaware that his username is <START:username> curtis <END>.
+Patrick, our map editor messiah and Tia's best friend used his name for his username, which is <START:username> patrick <END> for the Brigham & Women's hospiatl internal pathfinding and management application
