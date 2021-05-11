@@ -73,7 +73,7 @@ public class LanguageInterpreterController extends AbsRequest
               super.lastName.getText(),
               super.contactInfo.getText(),
               super.locationBox.getValue(),
-              null,
+              staffAssigned.getValue(),
               languageSpoken.getValue(),
               datePicker.getValue());
     }

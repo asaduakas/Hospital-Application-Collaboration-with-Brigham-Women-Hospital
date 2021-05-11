@@ -23,7 +23,7 @@ public class LaundryRequestTable extends AbsTables {
               + "location VARCHAR(100) NOT NULL,"
               + "assignedEmployee VARCHAR(100) DEFAULT '',"
               + "PRIMARY KEY(id),"
-              //+ "CONSTRAINT LAU_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
+              // + "CONSTRAINT LAU_employee_FK FOREIGN KEY(assignedEmployee) REFERENCES Users(id),"
               + "CONSTRAINT LAU_status_check CHECK (status IN ('Incomplete', 'Complete', 'In Progress')))";
       // + "CONSTRAINT LAU_location_FK FOREIGN KEY(location) REFERENCES Nodes(nodeID))";
       stmt.executeUpdate(query);
@@ -55,6 +55,7 @@ public class LaundryRequestTable extends AbsTables {
       stmt.setString(4, location);
       stmt.setString(5, assignedEmployee);
       stmt.executeUpdate();
+      System.out.println("this is in laundry table chceking assigned employee " + assignedEmployee);
 
       FDatabaseTables.getAllServiceTable()
           .addEntity(
