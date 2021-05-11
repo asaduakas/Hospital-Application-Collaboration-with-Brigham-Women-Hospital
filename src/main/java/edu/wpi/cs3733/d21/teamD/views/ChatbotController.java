@@ -220,6 +220,8 @@ public class ChatbotController implements AllAccessible {
         } else if (HomeController.username.equalsIgnoreCase("Patient")) {
           answer = answer + "Sorry, you need to be logged in as either an admin or an employee!";
         }
+      } else if (category.equals("Emergency")) {
+        ControllerManager.attemptLoadPopupBlur("Emergency.fxml");
       } else if (category.equals("Username-Info")) {
         prevCategory = "Username-Change";
         answer = "Your username is: " + HomeController.username;
