@@ -242,13 +242,13 @@ public class ChatbotController implements AllAccessible {
       } else if (category.equals("Hospital-Map")) {
         ControllerManager.exitPopup();
 
-                ControllerManager.attemptLoadPage(
-                    "HomeView.fxml",
-                    fxmlLoader -> {
-                      LoginController.start(fxmlLoader.getRoot());
-                      HomeController controller = fxmlLoader.getController();
-                      controller.hospitalMapView();
-                    });
+        ControllerManager.attemptLoadPage(
+            "HomeView.fxml",
+            fxmlLoader -> {
+              LoginController.start(fxmlLoader.getRoot());
+              HomeController controller = fxmlLoader.getController();
+              controller.hospitalMapView();
+            });
 
       } else if (category.equals("Pathfinding")) {
         answer = getStartEndLoc(tokens, input);

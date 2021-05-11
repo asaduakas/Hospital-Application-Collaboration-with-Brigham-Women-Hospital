@@ -570,6 +570,7 @@ public class MapDrawerController implements Initializable, AllAccessible {
           nodeRedrawing(type);
           break;
         default:
+          mapController.clearMap();
           for (NodeUI NUI : mapController.NODES) {
             if (NUI.getN().getLongName().equals(name)) {
               mapController.addNodeUI(NUI);
