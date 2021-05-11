@@ -171,8 +171,6 @@ public class FloralDeliveryRequestTable extends AbsTables {
     String id = HomeController.username;
     int i = 0;
     try {
-      PreparedStatement stmt = conn.prepareStatement("SELECT location, status FROM FloralRequests");
-
       PreparedStatement stmt =
           conn.prepareStatement(
               "SELECT location, pFirstName, pLastName, contactInfo FROM FloralRequests WHERE status = 'Incomplete' AND assignedEmployee = ?");

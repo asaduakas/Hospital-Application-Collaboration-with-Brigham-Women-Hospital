@@ -191,8 +191,6 @@ public class LaundryRequestTable extends AbsTables {
     String id = HomeController.username;
     int i = 0;
     try {
-      PreparedStatement stmt = conn.prepareStatement("SELECT location, status FROM LaundryRequest");
-
       PreparedStatement stmt =
           conn.prepareStatement(
               "SELECT location, firstName, lastName, contactInfo FROM LaundryRequest WHERE status = 'Incomplete' AND assignedEmployee = ?");
