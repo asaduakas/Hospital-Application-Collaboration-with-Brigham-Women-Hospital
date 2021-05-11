@@ -134,7 +134,7 @@ public class MedDeliveryRequestTable extends AbsTables {
 
           AllServiceTable.updateEntity(
               GlobalDb.getConnection(),
-              medDelInfo.getId(),
+              Integer.valueOf(medDelInfo.getId()),
               medDelInfo.getStatus(),
               medDelInfo.getAssignedEmployee(),
               "MEDD");

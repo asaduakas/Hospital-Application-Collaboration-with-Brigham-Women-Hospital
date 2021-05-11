@@ -125,7 +125,7 @@ public class AudVisRequestTable extends AbsTables {
           stmt.executeUpdate();
           AllServiceTable.updateEntity(
               GlobalDb.getConnection(),
-              audVisInfo.getId(),
+              Integer.valueOf(audVisInfo.getId()),
               audVisInfo.getStatus(),
               audVisInfo.getAssignedEmployee(),
               "AUD");

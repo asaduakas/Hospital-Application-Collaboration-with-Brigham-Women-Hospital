@@ -135,7 +135,7 @@ public class FloralDeliveryRequestTable extends AbsTables {
 
           AllServiceTable.updateEntity(
               GlobalDb.getConnection(),
-              floralInfo.getId(),
+              Integer.valueOf(floralInfo.getId()),
               floralInfo.getStatus(),
               floralInfo.getAssignedEmployee(),
               "FLOW");
