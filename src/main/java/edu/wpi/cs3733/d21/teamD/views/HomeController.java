@@ -76,6 +76,11 @@ public class HomeController implements AllAccessible {
           dbToggle.setText(dbToggleText[index]);
         });
     dbToggleSwitch();
+    if (LoginController.getUserCategory() != null) {
+      this.userCategory = LoginController.getUserCategory();
+    } else {
+      this.userCategory = InitPageController.getUserCategory();
+    }
     //    ControllerManager.attemptLoadPopupBlur("StatusView.fxml");
     //    ControllerManager.exitPopup();
   }
