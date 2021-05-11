@@ -9,6 +9,8 @@ import edu.wpi.cs3733.d21.teamD.views.Access.UserCategory;
 import edu.wpi.cs3733.d21.teamD.views.Mapping.MapScrollPane;
 import java.io.IOException;
 import java.util.List;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -42,6 +44,9 @@ public class HomeController implements AllAccessible {
   @FXML public static VBox mainButtons;
   @FXML public StackPane stackPane;
   @FXML private AnchorPane mainPane;
+  @FXML private JFXToggleButton dbToggle;
+  private String dbToggleText[] = {"Embedded Connection", "Remote Connection"};
+  private int index = 0;
 
   public static UserCategory userTypeEnum;
   public static String username = null;
@@ -53,6 +58,20 @@ public class HomeController implements AllAccessible {
 
   // Used to reset search history for each login
   public static int historyTracker = 0;
+
+  @FXML
+  private void initialize() {
+    // dbToggle.setText("Embedded Connection");
+    dbToggle.setOnAction(
+        (ActionEvent e) -> {
+          index++;
+          if (index >= dbToggleText.length) {
+            index = 0;
+          }
+          dbToggle.setText(dbToggleText[index]);
+        });
+    dbToggleSwitch();
+  }
 
   @FXML
   private void logout(ActionEvent event) throws IOException {
@@ -274,6 +293,31 @@ public class HomeController implements AllAccessible {
             checkStatusButton.setDisable(false);
           }
         });
+  }
+
+  private void dbToggleSwitch() {
+    dbToggle
+        .selectedProperty()
+        .addListener(
+            new ChangeListener<Boolean>() {
+              @Override
+              public void changed(
+                  ObservableValue<? extends Boolean> observable,
+                  Boolean oldValue,
+                  Boolean newValue) {
+                if (dbToggle.isSelected()) {
+                  System.out.println("Before remote connection established");
+                  // drop tables from auto embedded
+                  GlobalDb.getTables().deleteAllTables();
+                  GlobalDb.establishClientCon();
+                  System.out.println("Remote connection established");
+                } else {
+                  GlobalDb.getTables().createAllTables();
+                  GlobalDb.establishCon();
+                  System.out.println("Switched back to embedded");
+                }
+              }
+            });
   }
 
   public static String getUserCategory() {
