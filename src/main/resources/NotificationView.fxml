@@ -4,22 +4,22 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.TextFlow?>
 
 
 <AnchorPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.cs3733.d21.teamD.views.NotificationController">
    <children>
-      <Pane>
+      <Pane fx:id="anotherPane">
          <children>
-            <Pane prefHeight="200.0" prefWidth="200.0">
-               <children>
-                  <JFXButton fx:id="viewBtn" layoutX="30.0" layoutY="60.0" text="View All" underline="true" />
-                  <JFXButton fx:id="dismissBtn" layoutX="119.0" layoutY="60.0" text="Dismiss" underline="true" />
-               </children>
-            </Pane>
-            <ScrollPane fx:id="scrollPane" fitToWidth="true" layoutY="100.0">
+            <JFXButton fx:id="closeBtn" text="Close" translateX="130.0" translateY="10.0" underline="true">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </JFXButton>
+            <ScrollPane fx:id="scrollPane" fitToWidth="true" layoutY="50.0">
                <content>
-                  <TextFlow fx:id="textFlow" prefHeight="100.0" prefWidth="200.0" />
+                  <TextFlow fx:id="textFlow" prefWidth="200.0" />
                </content>
             </ScrollPane>
          </children>

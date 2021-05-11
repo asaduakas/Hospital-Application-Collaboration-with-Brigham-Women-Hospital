@@ -4,6 +4,7 @@ import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.ExtTransNodeInfo;
 import java.io.IOException;
 import java.sql.*;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Scanner;
 import javafx.collections.ObservableList;
@@ -28,7 +29,7 @@ public class ExtTransRequestTable extends AbsTables {
               + "assignedTo VARCHAR(100) DEFAULT '',"
               + "status VARCHAR(20) DEFAULT 'Incomplete',"
               + "CONSTRAINT EXT_REQUESTID PRIMARY KEY(id),"
-              // + "CONSTRAINT EXT_employee_FK FOREIGN KEY(assignedTo) REFERENCES Users(id),"
+              // + "CONSTRAINT EXT_employee_FK FOREIGN KEY(assignedTo) REFERENCES Users(name),"
               // + "CONSTRAINT EXT_location_FK FOREIGN KEY(location) REFERENCES Nodes(nodeID),"
               + "CONSTRAINT EXT_status_check CHECK (status IN ('Incomplete', 'Complete', 'In Progress')))";
       stmt.executeUpdate(query);
@@ -202,5 +203,37 @@ public class ExtTransRequestTable extends AbsTables {
       throwables.printStackTrace();
     }
     return LocalStatus;
+  }
+
+  public HashMap<Integer, String> getIncompleteRequest() {
+    Connection conn = GlobalDb.getConnection();
+    HashMap<Integer, String> exTransList = new HashMap<>();
+    String id = HomeController.username;
+    int i = 0;
+    try {
+      PreparedStatement stmt =
+          conn.prepareStatement(
+              "SELECT serviceType, location, pFirstName, pLastName, contactInfo FROM ExternalTransRequests WHERE status = 'Incomplete' AND assignedTo = ?");
+      stmt.setString(1, id);
+      ResultSet rs = stmt.executeQuery();
+      while (rs.next()) {
+        exTransList.put(
+            i,
+            rs.getString("serviceType")
+                + " -- "
+                + rs.getString("location")
+                + " -- Name: "
+                + rs.getString("pFirstName")
+                + " "
+                + rs.getString("pLastName")
+                + " -- Contact: "
+                + rs.getString("contactInfo"));
+        i++;
+        System.out.println(exTransList);
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    return exTransList;
   }
 }

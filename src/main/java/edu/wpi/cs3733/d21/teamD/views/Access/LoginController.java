@@ -145,7 +145,8 @@ public class LoginController implements AllAccessible {
     JFXButton logoutButton = (JFXButton) nodeList.get(5);
     JFXButton exitButton = (JFXButton) nodeList.get(6);
     StackPane stackPane = (StackPane) nodeList.get(7);
-    //    JFXDrawer notificationDrawer = (JFXDrawer) nodeList.get(8);
+    JFXDrawer notificationDrawer = (JFXDrawer) nodeList.get(8);
+    JFXButton testBtn = (JFXButton) nodeList.get(9);
 
     topButtons.setLayoutX(
         App.getPrimaryStage().getScene().getWidth() - (topButtons.getWidth() + 26));
@@ -197,10 +198,12 @@ public class LoginController implements AllAccessible {
     double sideWidth =
         (App.getPrimaryStage().getScene().getWidth() - hospitalImage.getFitWidth()) / 2;
 
-    //    notificationDrawer.setLayoutX(
-    //        hospitalImage.getFitWidth() + sideWidth - notificationDrawer.getWidth() / 2);
-    //    notificationDrawer.setLayoutY(120);
-    //    notificationDrawer.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 20px");
+    notificationDrawer.setLayoutX(hospitalImage.getFitWidth() + sideWidth);
+    notificationDrawer.setLayoutY(160);
+    notificationDrawer.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 20px");
+
+    testBtn.setLayoutX(App.getPrimaryStage().getScene().getWidth() - testBtn.getWidth() - 100);
+    testBtn.setLayoutY(120);
   }
 
   @FXML
