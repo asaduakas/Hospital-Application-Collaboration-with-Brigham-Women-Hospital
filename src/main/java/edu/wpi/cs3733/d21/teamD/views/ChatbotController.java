@@ -3,25 +3,23 @@ package edu.wpi.cs3733.d21.teamD.views;
 import com.jfoenix.controls.*;
 import edu.wpi.cs3733.d21.teamD.App;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
+import edu.wpi.cs3733.d21.teamD.Ddb.NodesTable;
 import edu.wpi.cs3733.d21.teamD.Ddb.UsersTable;
 import edu.wpi.cs3733.d21.teamD.chatbot.chatbot;
 import edu.wpi.cs3733.d21.teamD.views.Access.AllAccessible;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.input.MouseButton;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
@@ -47,6 +45,10 @@ public class ChatbotController implements AllAccessible {
   private chatbot bot = new chatbot();
   private Boolean changeUsernameFlag = false;
   private Boolean changePsswdFlag = false;
+
+  private Boolean navigateCategoryFlag = false;
+  private String start = null;
+  private String end = null;
 
   @FXML
   private void initialize() {
@@ -79,9 +81,6 @@ public class ChatbotController implements AllAccessible {
     chatAreaScroll
         .vvalueProperty()
         .bind(textBox.heightProperty()); // auto scrolling if height of the content increases
-
-    //    ControllerManager.attemptLoadPopupBlur("StatusView.fxml");
-    //    ControllerManager.exitPopup();
   }
 
   @FXML
@@ -131,7 +130,12 @@ public class ChatbotController implements AllAccessible {
         icon.setImage(userIconImg);
         icon.setFitWidth(30);
         icon.setFitHeight(30);
-        dispMessage = HomeController.username + ": " + message + "\n";
+        if (HomeController.username != null) {
+          dispMessage = HomeController.username + ": " + message + "\n";
+        } else {
+          dispMessage = "Guest: " + message + "\n";
+        }
+
       } else if (turn.equals("bot")) {
         textPadding = new Insets(0, 100, 0, 20);
         alignment = TextAlignment.LEFT;
@@ -160,7 +164,7 @@ public class ChatbotController implements AllAccessible {
     ControllerManager.popup.hide();
   }
 
-  public String interpretInput(String input) throws IOException {
+  public String interpretInput(String input) throws IOException, InterruptedException {
 
     DoccatModel categoryModel = bot.trainCategorizerModel();
 
@@ -185,7 +189,12 @@ public class ChatbotController implements AllAccessible {
 
       // Determine BEST category using lemmatized tokens used a mode that we trained
       // at start.
-      String category = bot.detectCategory(categoryModel, lemmas);
+      String category = null;
+      if (!navigateCategoryFlag) {
+        category = bot.detectCategory(categoryModel, lemmas);
+      } else if (navigateCategoryFlag) {
+        category = "Pathfinding";
+      }
       // Get predefined answer from given category & add to answer.
       if (category.equals("Arbitrary")) {
         category = prevCategory;
@@ -228,7 +237,32 @@ public class ChatbotController implements AllAccessible {
           answer = answer + "Sorry, you need to be logged in as either an admin or an employee!";
         }
       } else if (category.equals("Hospital-Map")) {
-        ControllerManager.attemptLoadPage("MapView.fxml", fxmlLoader -> mapLoader(fxmlLoader));
+        ControllerManager.exitPopup();
+        hospitalMapViewer();
+      } else if (category.equals("Pathfinding")) {
+        answer = navigate(tokens);
+        if ((start != null) && (end != null)) {
+          // do the navigation here
+          start = null;
+          end = null;
+          ControllerManager.attemptLoadPage(
+              "MapDrawerView.fxml",
+              fxmlLoader -> {
+                Pane root = fxmlLoader.getRoot();
+                AnchorPane mainPane = (AnchorPane) root.getChildren().get(0);
+                GridPane startGridPane = (GridPane) mainPane.getChildren().get(5);
+                JFXTextField startField = (JFXTextField) startGridPane.getChildren().get(0);
+
+                GridPane endGridPane = (GridPane) mainPane.getChildren().get(4);
+                JFXTextField endField = (JFXTextField) startGridPane.getChildren().get(0);
+
+                JFXButton findPath = (JFXButton) mainPane.getChildren().get(0);
+
+                startField.setText(start);
+                endField.setText(end);
+                findPath.equals(MouseButton.PRIMARY);
+              });
+        }
       } else if (category.equals("Emergency")) {
         ControllerManager.attemptLoadPopupBlur("Emergency.fxml");
       } else if (category.equals("Username-Info")) {
@@ -268,7 +302,54 @@ public class ChatbotController implements AllAccessible {
     return answer;
   }
 
+  public String navigate(String[] tokens) throws InterruptedException {
+    LinkedList<String> tokensFoundInDB = new LinkedList<String>();
+    ArrayList<String> longNamesAllinDB = NodesTable.fetchLongName(GlobalDb.getConnection());
+    for (String token : tokens) {
+      if (longNamesAllinDB.contains(token)) {
+        tokensFoundInDB.add(token);
+      }
+    }
+    String botMessage = null;
+    if (tokensFoundInDB.size() < 2) {
+      navigateCategoryFlag = true;
+      botMessage = " Please, specify the start and the end location";
+    } else if (tokensFoundInDB.size() == 2) {
+      if (tokensFoundInDB.get(0).equals(tokensFoundInDB.get(1))) {
+        botMessage = "Please, different location for the end";
+      } else {
+        start = tokensFoundInDB.get(0);
+        end = tokensFoundInDB.get(1);
+      }
+    } else if (tokensFoundInDB.size() > 2) {
+      navigateCategoryFlag = true;
+      botMessage = "Please specify only the start and end location";
+    }
+    System.out.println(start + " : " + end);
+    return botMessage;
+  String botMessage = null;
+  return botMessage;
+  }
+
+  public void hospitalMapViewer() {
+    JFXSpinner spinner = new JFXSpinner();
+    Label loading = new Label("Loading Map");
+    Text text = new Text("Dr. Dobby is getting your map!");
+    loading.setStyle("-fx-font-weight: Bold; -fx-font-size: 20");
+    text.setStyle("-fx-font-size: 20");
+    spinner.setMaxHeight(150);
+    spinner.setMaxWidth(150);
+
+    StackPane stackpane = new StackPane();
+    stackpane.getChildren().addAll(loading, spinner, text);
+    JFXButton logoutButton =
+        (JFXButton) App.getPrimaryStage().getScene().getRoot().getChildrenUnmodifiable().get(5);
+    logoutButton.setVisible(false);
+    ControllerManager.attemptLoadPage("MapView.fxml", fxmlLoader -> mapLoader(fxmlLoader));
+  }
+
   public void mapLoader(FXMLLoader fxmlLoader) {
+
     Pane root = fxmlLoader.getRoot();
     List<Node> childrenList = root.getChildren();
     Scene scene = App.getPrimaryStage().getScene();

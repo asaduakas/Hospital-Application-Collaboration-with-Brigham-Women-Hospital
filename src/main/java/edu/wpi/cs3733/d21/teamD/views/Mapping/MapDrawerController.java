@@ -4,6 +4,7 @@ import com.jfoenix.controls.*;
 import edu.wpi.cs3733.d21.teamD.Astar.*;
 import edu.wpi.cs3733.d21.teamD.Ddb.FDatabaseTables;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
+import edu.wpi.cs3733.d21.teamD.views.Access.AllAccessible;
 import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -32,7 +33,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.*;
 
-public class MapDrawerController implements Initializable {
+public class MapDrawerController implements Initializable, AllAccessible {
   @FXML private JFXTreeView<String> directoryTreeView;
   @FXML private JFXTextField startField;
   @FXML private JFXTextField endField;
