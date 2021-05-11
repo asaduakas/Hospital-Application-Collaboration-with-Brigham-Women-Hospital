@@ -17,8 +17,8 @@ public class LaundryRequestTable extends AbsTables {
           "CREATE TABLE LaundryRequest("
               + "id INT GENERATED ALWAYS AS IDENTITY NOT NULL,"
               + "status VARCHAR(100) DEFAULT 'Incomplete',"
-              + "firstName VARCHAR(10) NOT NULL,"
-              + "lastName VARCHAR(4) NOT NULL,"
+              + "firstName VARCHAR(20) NOT NULL,"
+              + "lastName VARCHAR(20) NOT NULL,"
               + "contactInfo VARCHAR(45) NOT NULL,"
               + "location VARCHAR(100) NOT NULL,"
               + "assignedEmployee VARCHAR(100) DEFAULT '',"
@@ -55,6 +55,7 @@ public class LaundryRequestTable extends AbsTables {
       stmt.setString(4, location);
       stmt.setString(5, assignedEmployee);
       stmt.executeUpdate();
+      System.out.println("this is in laundry table chceking assigned employee " + assignedEmployee);
 
       FDatabaseTables.getAllServiceTable()
           .addEntity(

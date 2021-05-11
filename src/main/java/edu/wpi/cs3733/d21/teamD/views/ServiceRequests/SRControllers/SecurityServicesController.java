@@ -71,7 +71,7 @@ public class SecurityServicesController extends AbsRequest
               super.lastName.getText(),
               super.contactInfo.getText(),
               super.locationBox.getValue(),
-              null,
+              staffAssigned.getValue(),
               urgencyLevel.getValue(),
               issueDescription.getText());
     }

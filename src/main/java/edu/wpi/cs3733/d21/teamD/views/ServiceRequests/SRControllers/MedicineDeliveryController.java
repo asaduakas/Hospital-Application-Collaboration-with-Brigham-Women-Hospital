@@ -72,7 +72,7 @@ public class MedicineDeliveryController extends AbsRequest
               super.lastName.getText(),
               super.contactInfo.getText(),
               super.locationBox.getValue(),
-              null,
+              staffAssigned.getValue(),
               medication.getText(),
               deliveryDay.getValue());
     }

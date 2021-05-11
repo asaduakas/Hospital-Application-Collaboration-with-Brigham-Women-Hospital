@@ -12,7 +12,7 @@ import javafx.stage.Popup;
 
 public class ControllerManager {
 
-  private static Popup popup = null;
+  public static Popup popup = null;
 
   private static boolean isPermissible(Class<?> controllerClass) {
     if (AllAccessible.class.isAssignableFrom(controllerClass)) {
@@ -75,8 +75,14 @@ public class ControllerManager {
 
   public static void attemptLoadPopup(String fxmlName, Consumer<FXMLLoader> tasks) {
     FXMLLoader fxmlLoader = getLoader(fxmlName);
-    if (!isPermissible(fxmlLoader.getController().getClass())) return;
-    if (popup != null) popup.hide();
+
+    if (!isPermissible(fxmlLoader.getController().getClass())) {
+      return;
+    }
+    if (popup != null) {
+      popup.hide();
+    }
+
     popup = new Popup();
     popup.getContent().addAll((Pane) fxmlLoader.getRoot());
     popup.show(App.getPrimaryStage());

@@ -25,7 +25,9 @@ public class NotificationController implements Initializable {
       FDatabaseTables.getExternalTransportTable().getIncompleteRequest();
 
   @Override
-  public void initialize(URL location, ResourceBundle resources) {}
+  public void initialize(URL location, ResourceBundle resources) {
+    putIntoText();
+  }
 
   public void putIntoText() {
     if (!noExTransIncomplete) {
