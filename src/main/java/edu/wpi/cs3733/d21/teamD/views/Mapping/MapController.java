@@ -265,8 +265,6 @@ public class MapController implements AllAccessible {
         "HomeView.fxml", fxmlLoader -> LoginController.start(fxmlLoader.getRoot()));
   }
 
-
-
   // _______________________________________SET UP________________________________________
 
   private void LoadingNodesEdges(String Floor) {

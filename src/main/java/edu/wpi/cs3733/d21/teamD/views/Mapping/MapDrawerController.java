@@ -5,8 +5,6 @@ import edu.wpi.cs3733.d21.teamD.Astar.*;
 import edu.wpi.cs3733.d21.teamD.Ddb.FDatabaseTables;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
 import edu.wpi.cs3733.d21.teamD.views.HomeController;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
@@ -283,85 +281,67 @@ public class MapDrawerController implements Initializable {
     directoryTreeView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     directoryTreeView.setStyle("-fx-padding: 0; -fx-background-insets: 0");
 
-    ImageView parkImage =
-        new ImageView(new Image("Images/parkingpin.png"));
+    ImageView parkImage = new ImageView(new Image("Images/parkingpin.png"));
     parkImage.setFitWidth(15);
     parkImage.setFitHeight(15);
     parking.setGraphic(parkImage);
 
-    ImageView elevImage =
-        new ImageView(
-            new Image("Images/elevatorpin.png"));
+    ImageView elevImage = new ImageView(new Image("Images/elevatorpin.png"));
     elevImage.setFitWidth(15);
     elevImage.setFitHeight(15);
     elevator.setGraphic(elevImage);
 
-    ImageView restImage =
-        new ImageView(
-            new Image("Images/restroompins.png"));
+    ImageView restImage = new ImageView(new Image("Images/restroompins.png"));
     restImage.setFitWidth(15);
     restImage.setFitHeight(15);
     restroom.setGraphic(restImage);
 
-    ImageView stairImage =
-        new ImageView(new Image("Images/stairspin.png"));
+    ImageView stairImage = new ImageView(new Image("Images/stairspin.png"));
     stairImage.setFitWidth(15);
     stairImage.setFitHeight(15);
     stairs.setGraphic(stairImage);
 
-    ImageView deptImage =
-        new ImageView(new Image("Images/deptpins.png"));
+    ImageView deptImage = new ImageView(new Image("Images/deptpins.png"));
     deptImage.setFitWidth(15);
     deptImage.setFitHeight(15);
     department.setGraphic(deptImage);
 
-    ImageView labImage =
-        new ImageView(new Image("Images/labspin.png"));
+    ImageView labImage = new ImageView(new Image("Images/labspin.png"));
     labImage.setFitWidth(15);
     labImage.setFitHeight(15);
     laboratory.setGraphic(labImage);
 
-    ImageView infoImage =
-        new ImageView(new Image("Images/infopin.png"));
+    ImageView infoImage = new ImageView(new Image("Images/infopin.png"));
     infoImage.setFitWidth(15);
     infoImage.setFitHeight(15);
     information.setGraphic(infoImage);
 
-    ImageView confImage =
-        new ImageView(
-            new Image("Images/conferencepin.png"));
+    ImageView confImage = new ImageView(new Image("Images/conferencepin.png"));
     confImage.setFitWidth(15);
     confImage.setFitHeight(15);
     conference.setGraphic(confImage);
 
-    ImageView exitImage =
-        new ImageView(new Image("Images/exitpin.png"));
+    ImageView exitImage = new ImageView(new Image("Images/exitpin.png"));
     exitImage.setFitWidth(15);
     exitImage.setFitHeight(15);
     exit.setGraphic(exitImage);
 
-    ImageView retailImage =
-        new ImageView(new Image("Images/retailpin.png"));
+    ImageView retailImage = new ImageView(new Image("Images/retailpin.png"));
     retailImage.setFitWidth(15);
     retailImage.setFitHeight(15);
     retail.setGraphic(retailImage);
 
-    ImageView servImage =
-        new ImageView(new Image("Images/service.png"));
+    ImageView servImage = new ImageView(new Image("Images/service.png"));
     servImage.setFitWidth(15);
     servImage.setFitHeight(15);
     service.setGraphic(servImage);
 
-    ImageView favImage =
-        new ImageView(
-            new Image("Images/favIcon_good.png"));
+    ImageView favImage = new ImageView(new Image("Images/favIcon_good.png"));
     favImage.setFitWidth(15);
     favImage.setFitHeight(15);
     favoriteCell.setGraphic(favImage);
 
-    ImageView blockedImage =
-        new ImageView(
-            new Image("Images/blockedNode.png"));
+    ImageView blockedImage = new ImageView(new Image("Images/blockedNode.png"));
     blockedImage.setFitWidth(15);
     blockedImage.setFitHeight(15);
     blockedCell.setGraphic(blockedImage);
@@ -720,10 +700,6 @@ public class MapDrawerController implements Initializable {
       EleImage.setFitHeight(30);
       EleImage.setFitWidth(30);
       dirText.getChildren().addAll(EleImage, elvText);
-      if (MapController.switchedFloor) {
-        System.out.println("this is true, user has pressed on stuff to change floor");
-        dirText.getChildren().clear();
-      }
       return "In elevator";
 
     } else if (startNode.getNodeType().equals("ELEV") && !endNode.getNodeType().equals("ELEV")) {
@@ -734,8 +710,7 @@ public class MapDrawerController implements Initializable {
       Text text = new Text("\t" + "Take the stairs towards floor " + endNode.getFloor() + "\n");
       text.setFont(pFont);
       downloadText.appendText("\t" + "Take the stairs towards floor " + endNode.getFloor() + "\n");
-      ImageView Image =
-          new ImageView(new Image("Images/stairs.png"));
+      ImageView Image = new ImageView(new Image("Images/stairs.png"));
       Image.setFitHeight(30);
       Image.setFitWidth(30);
       dirText.getChildren().addAll(Image, text);
@@ -773,8 +748,7 @@ public class MapDrawerController implements Initializable {
       Text lText = new Text("\tTurn Left towards: \n\t\t" + endNode.getLongName() + "\n");
       lText.setFont(pFont);
       downloadText.appendText("\tTurn Left towards: \n\t\t" + endNode.getLongName() + "\n");
-      ImageView Image =
-          new ImageView(new Image("Images/left.png"));
+      ImageView Image = new ImageView(new Image("Images/left.png"));
       Image.setFitHeight(30);
       Image.setFitWidth(30);
       dirText.getChildren().addAll(Image, lText);
@@ -789,8 +763,7 @@ public class MapDrawerController implements Initializable {
       Text rText = new Text("\tTurn Right towards: \n\t\t" + endNode.getLongName() + "\n");
       rText.setFont(pFont);
       downloadText.appendText("\tTurn Right towards: \n\t\t" + endNode.getLongName() + "\n");
-      ImageView Image =
-          new ImageView(new Image("Images/right.png"));
+      ImageView Image = new ImageView(new Image("Images/right.png"));
       Image.setFitHeight(30);
       Image.setFitWidth(30);
       dirText.getChildren().addAll(Image, rText);
@@ -804,8 +777,7 @@ public class MapDrawerController implements Initializable {
         sText.setFont(pFont);
         downloadText.appendText(
             "\tContinue Straight towards: \n\t\t" + endNode.getLongName() + "\n");
-        ImageView Image =
-            new ImageView(new Image("Images/up.png"));
+        ImageView Image = new ImageView(new Image("Images/up.png"));
         Image.setFitHeight(30);
         Image.setFitWidth(30);
         dirText.getChildren().addAll(Image, sText);
@@ -831,8 +803,7 @@ public class MapDrawerController implements Initializable {
       // dirText.setFont(hFont);
       Text text = new Text("Take the elevator towards floor " + endNode.getFloor() + "\n");
       text.setFont(pFont);
-      ImageView EleImage =
-          new ImageView(new Image("Images/elevator.png"));
+      ImageView EleImage = new ImageView(new Image("Images/elevator.png"));
       EleImage.setFitHeight(30);
       EleImage.setFitWidth(30);
       //        dirText.getChildren().addAll(EleImage, text);
@@ -844,8 +815,7 @@ public class MapDrawerController implements Initializable {
       Text text = new Text("Take the stairs towards floor " + endNode.getFloor() + "\n");
       text.setFont(pFont);
       downloadText.appendText("Take the stairs towards floor " + endNode.getFloor() + "\n");
-      ImageView Image =
-          new ImageView(new Image("Images/stairs.png"));
+      ImageView Image = new ImageView(new Image("Images/stairs.png"));
       Image.setFitHeight(30);
       Image.setFitWidth(30);
       dirText.getChildren().addAll(Image, text);
@@ -857,9 +827,7 @@ public class MapDrawerController implements Initializable {
         Text text = new Text("\tHead North towards: \n\t\t" + endNode.getLongName() + "\n");
         text.setFont(pFont);
         downloadText.appendText("\tHead North towards: \n\t\t" + endNode.getLongName() + "\n");
-        ImageView Image =
-            new ImageView(
-                new Image("Images/north_bg.png"));
+        ImageView Image = new ImageView(new Image("Images/north_bg.png"));
         Image.setFitHeight(30);
         Image.setFitWidth(30);
         dirText.getChildren().addAll(Image, text);
@@ -873,9 +841,7 @@ public class MapDrawerController implements Initializable {
         Text text = new Text("\tHead South towards: \n\t\t" + endNode.getLongName() + "\n");
         text.setFont(pFont);
         downloadText.appendText("\tHead South towards: \n\t\t" + endNode.getLongName() + "\n");
-        ImageView Image =
-            new ImageView(
-                new Image("Images/south_bg.png"));
+        ImageView Image = new ImageView(new Image("Images/south_bg.png"));
         Image.setFitHeight(30);
         Image.setFitWidth(30);
         dirText.getChildren().addAll(Image, text);
@@ -887,9 +853,7 @@ public class MapDrawerController implements Initializable {
         Text text = new Text("\tHead East towards: \n\t\t" + endNode.getLongName() + "\n");
         text.setFont(pFont);
         downloadText.appendText("\tHead East towards: \n\t\t" + endNode.getLongName() + "\n");
-        ImageView Image =
-            new ImageView(
-                new Image("Images/east_bg.png"));
+        ImageView Image = new ImageView(new Image("Images/east_bg.png"));
         Image.setFitHeight(30);
         Image.setFitWidth(30);
         dirText.getChildren().addAll(Image, text);
@@ -901,9 +865,7 @@ public class MapDrawerController implements Initializable {
         Text text = new Text("\tHead West towards: \n\t\t" + endNode.getLongName() + "\n");
         text.setFont(pFont);
         downloadText.appendText("\tHead West towards: \n\t\t" + endNode.getLongName() + "\n");
-        ImageView Image =
-            new ImageView(
-                new Image("Images/west_bg.png"));
+        ImageView Image = new ImageView(new Image("Images/west_bg.png"));
         Image.setFitHeight(30);
         Image.setFitWidth(30);
         dirText.getChildren().addAll(Image, text);
