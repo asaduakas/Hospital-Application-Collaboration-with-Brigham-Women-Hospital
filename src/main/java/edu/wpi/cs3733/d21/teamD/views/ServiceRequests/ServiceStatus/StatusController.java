@@ -142,6 +142,8 @@ public class StatusController extends AbsRequest
             ioException.printStackTrace();
           }
         });
+    typeBox.setVisible(false);
+    search.setVisible(false);
 
     Label av = new Label("Audio/Visual");
     Label cs = new Label("Computer Service");

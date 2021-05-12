@@ -70,6 +70,8 @@ public class UsersController extends AbsRequest
             ioException.printStackTrace();
           }
         });
+    typeBox.setVisible(false);
+    search.setVisible(false);
 
     Label emp = new Label("Employees");
     Label pat = new Label("Patients");
