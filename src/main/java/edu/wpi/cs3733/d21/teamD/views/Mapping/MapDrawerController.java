@@ -485,7 +485,7 @@ public class MapDrawerController implements Initializable, AllAccessible {
     }
 
     for (AllServiceNodeInfo block : serviceRequestList) {
-      TreeItem<String> aService = new TreeItem<>(block.type + "\t" + block.getLocation());
+      TreeItem<String> aService = new TreeItem<>(block.getLocation());
 
       if (!block.getStatus().equals("Complete")) {
         allServices.getChildren().add(aService);
