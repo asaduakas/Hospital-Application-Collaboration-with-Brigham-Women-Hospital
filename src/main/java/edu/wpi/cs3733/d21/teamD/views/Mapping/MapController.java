@@ -53,6 +53,7 @@ public class MapController implements AllAccessible {
   private String toggleText[] = {"Pathfinding", "Map Editor"};
   private RoomGraph initialData = new RoomGraph(GlobalDb.getConnection());
   public static LinkedList<NodeUI> NODES = new LinkedList<>();
+  public static LinkedList<ServiceNode> SERVICES = new LinkedList<ServiceNode>();
   private static LinkedList<EdgeUI> EDGES = new LinkedList<>();
   public PathAlgoPicker algorithm = new PathAlgoPicker(new aStar());
   public LinkedList<Edge> thePath = new LinkedList<Edge>();
@@ -142,6 +143,8 @@ public class MapController implements AllAccessible {
   private void initialize() {
 
     initialData = new RoomGraph(GlobalDb.getConnection());
+
+    ServiceView = false;
 
     mapScrollPane = new MapScrollPane(F1);
     mainAnchor.getChildren().add(mapScrollPane);
@@ -1924,15 +1927,18 @@ public class MapController implements AllAccessible {
 
   @FXML
   public void LoadServices() throws IOException {
-    System.out.println(HomeController.userCategory);
+    System.out.println(ServiceView);
 
     if (HomeController.userCategory.equals("Admin") && !ServiceView) {
+      System.out.println("YEPPPPP");
       AdminLoadServices();
       ServiceView = true;
     } else if (HomeController.userCategory.equals("Employee") && !ServiceView) {
+      System.out.println("YEPPPPP");
       EmployeeLoadServices();
       ServiceView = true;
     } else {
+      System.out.println("NOPPPPPPE");
       clearMap();
       drawNodeFloor(currentFloor);
       ServiceView = false;
@@ -1942,6 +1948,7 @@ public class MapController implements AllAccessible {
   private void EmployeeLoadServices() throws IOException {
     clearMap();
     Image I = new Image("Images/Service Icons/exTrans_green.png");
+    SERVICES = new LinkedList<>();
 
     for (AllServiceNodeInfo S : FDatabaseTables.getAllServiceTable().ListServices()) {
 
@@ -1955,6 +1962,7 @@ public class MapController implements AllAccessible {
           Service.setFitHeight(Servicesize);
 
           ServiceNode SN = new ServiceNode(N.getN(), Service, S);
+          SERVICES.add(SN);
 
           serviceResize(SN);
           serviceSelection(SN);
@@ -1962,9 +1970,6 @@ public class MapController implements AllAccessible {
           switch (S.getType()) {
             case "EXT":
               switch (S.getStatus()) {
-                case "Complete":
-                  I = new Image("Images/Service Icons/exTrans_green.png");
-                  break;
                 case "In Progress":
                   I = new Image("Images/Service Icons/exTrans_yellow.png");
                   break;
@@ -1976,9 +1981,6 @@ public class MapController implements AllAccessible {
               break;
             case "FLOW":
               switch (S.getStatus()) {
-                case "Complete":
-                  I = new Image("Images/Service Icons/floral_green.png");
-                  break;
                 case "In Progress":
                   I = new Image("Images/Service Icons/floral_yellow.png");
                   break;
@@ -1990,9 +1992,6 @@ public class MapController implements AllAccessible {
               break;
             case "FOOD":
               switch (S.getStatus()) {
-                case "Complete":
-                  I = new Image("Images/Service Icons/food_green.png");
-                  break;
                 case "In Progress":
                   I = new Image("Images/Service Icons/food_yellow.png");
                   break;
@@ -2004,9 +2003,6 @@ public class MapController implements AllAccessible {
               break;
             case "LAUN":
               switch (S.getStatus()) {
-                case "Complete":
-                  I = new Image("Images/Service Icons/laundry_green.png");
-                  break;
                 case "In Progress":
                   I = new Image("Images/Service Icons/laundry_yellow.png");
                   break;
@@ -2018,9 +2014,6 @@ public class MapController implements AllAccessible {
               break;
             case "LANG":
               switch (S.getStatus()) {
-                case "Complete":
-                  I = new Image("Images/Service Icons/translate_green.png");
-                  break;
                 case "In Progress":
                   I = new Image("Images/Service Icons/translate_yellow.png");
                   break;
@@ -2032,9 +2025,6 @@ public class MapController implements AllAccessible {
               break;
             case "ITRAN":
               switch (S.getStatus()) {
-                case "Complete":
-                  I = new Image("Images/Service Icons/wheelchair_green.png");
-                  break;
                 case "In Progress":
                   I = new Image("Images/Service Icons/wheelchair_yellow.png");
                   break;
@@ -2046,9 +2036,6 @@ public class MapController implements AllAccessible {
               break;
             case "SECUR":
               switch (S.getStatus()) {
-                case "Complete":
-                  I = new Image("Images/Service Icons/security_green.png");
-                  break;
                 case "In Progress":
                   I = new Image("Images/Service Icons/security_yellow.png");
                   break;
@@ -2060,9 +2047,6 @@ public class MapController implements AllAccessible {
               break;
             case "FACIL":
               switch (S.getStatus()) {
-                case "Complete":
-                  I = new Image("Images/Service Icons/maintenance_green.png");
-                  break;
                 case "In Progress":
                   I = new Image("Images/Service Icons/maintenance_yellow.png");
                   break;
@@ -2074,9 +2058,6 @@ public class MapController implements AllAccessible {
               break;
             case "COMP":
               switch (S.getStatus()) {
-                case "Complete":
-                  I = new Image("Images/Service Icons/Computer_green.png");
-                  break;
                 case "In Progress":
                   I = new Image("Images/Service Icons/Computer_yellow.png");
                   break;
@@ -2088,9 +2069,6 @@ public class MapController implements AllAccessible {
               break;
             case "AUD":
               switch (S.getStatus()) {
-                case "Complete":
-                  I = new Image("Images/Service Icons/audVis_green.png");
-                  break;
                 case "In Progress":
                   I = new Image("Images/Service Icons/audVis_yellow.png");
                   break;
@@ -2102,9 +2080,6 @@ public class MapController implements AllAccessible {
               break;
             case "SANI":
               switch (S.getStatus()) {
-                case "Complete":
-                  I = new Image("Images/Service Icons/sanitization_green.png");
-                  break;
                 case "In Progress":
                   I = new Image("Images/Service Icons/sanitization_yellow.png");
                   break;
@@ -2116,9 +2091,6 @@ public class MapController implements AllAccessible {
               break;
             case "MEDD":
               switch (S.getStatus()) {
-                case "Complete":
-                  I = new Image("Images/Service Icons/medicine_green.png");
-                  break;
                 case "In Progress":
                   I = new Image("Images/Service Icons/medicine_yellow.png");
                   break;
@@ -2130,7 +2102,7 @@ public class MapController implements AllAccessible {
               break;
           }
 
-          if (N.getN().getFloor().equals(currentFloor)) {
+          if (N.getN().getFloor().equals(currentFloor) && !S.getStatus().equals("Complete")) {
             secondaryAnchor.getChildren().add(Service);
           }
         }
@@ -2142,10 +2114,12 @@ public class MapController implements AllAccessible {
   private void AdminLoadServices() throws IOException {
     clearMap();
     Image I = new Image("Images/Service Icons/exTrans_green.png");
+    SERVICES = new LinkedList<>();
 
     for (AllServiceNodeInfo S : FDatabaseTables.getAllServiceTable().ListServices()) {
 
       for (NodeUI N : NODES) {
+        System.out.println(N.getN().getLongName().equals(S.getLocation()));
         if (N.getN().getLongName().equals(S.getLocation())) {
           ImageView Service = new ImageView();
           Service.setX(N.getN().getXCoord());
@@ -2154,6 +2128,7 @@ public class MapController implements AllAccessible {
           Service.setFitHeight(Servicesize);
 
           ServiceNode SN = new ServiceNode(N.getN(), Service, S);
+          SERVICES.add(SN);
 
           serviceResize(SN);
           serviceSelection(SN);
@@ -2161,9 +2136,6 @@ public class MapController implements AllAccessible {
           switch (S.getType()) {
             case "EXT":
               switch (S.getStatus()) {
-                case "Complete":
-                  I = new Image("Images/Service Icons/exTrans_green.png");
-                  break;
                 case "In Progress":
                   I = new Image("Images/Service Icons/exTrans_yellow.png");
                   break;
@@ -2175,9 +2147,6 @@ public class MapController implements AllAccessible {
               break;
             case "FLOW":
               switch (S.getStatus()) {
-                case "Complete":
-                  I = new Image("Images/Service Icons/floral_green.png");
-                  break;
                 case "In Progress":
                   I = new Image("Images/Service Icons/floral_yellow.png");
                   break;
@@ -2189,9 +2158,6 @@ public class MapController implements AllAccessible {
               break;
             case "FOOD":
               switch (S.getStatus()) {
-                case "Complete":
-                  I = new Image("Images/Service Icons/food_green.png");
-                  break;
                 case "In Progress":
                   I = new Image("Images/Service Icons/food_yellow.png");
                   break;
@@ -2203,9 +2169,6 @@ public class MapController implements AllAccessible {
               break;
             case "LAUN":
               switch (S.getStatus()) {
-                case "Complete":
-                  I = new Image("Images/Service Icons/laundry_green.png");
-                  break;
                 case "In Progress":
                   I = new Image("Images/Service Icons/laundry_yellow.png");
                   break;
@@ -2217,9 +2180,6 @@ public class MapController implements AllAccessible {
               break;
             case "LANG":
               switch (S.getStatus()) {
-                case "Complete":
-                  I = new Image("Images/Service Icons/translate_green.png");
-                  break;
                 case "In Progress":
                   I = new Image("Images/Service Icons/translate_yellow.png");
                   break;
@@ -2231,9 +2191,6 @@ public class MapController implements AllAccessible {
               break;
             case "ITRAN":
               switch (S.getStatus()) {
-                case "Complete":
-                  I = new Image("Images/Service Icons/wheelchair_green.png");
-                  break;
                 case "In Progress":
                   I = new Image("Images/Service Icons/wheelchair_yellow.png");
                   break;
@@ -2245,9 +2202,6 @@ public class MapController implements AllAccessible {
               break;
             case "SECUR":
               switch (S.getStatus()) {
-                case "Complete":
-                  I = new Image("Images/Service Icons/security_green.png");
-                  break;
                 case "In Progress":
                   I = new Image("Images/Service Icons/security_yellow.png");
                   break;
@@ -2259,9 +2213,6 @@ public class MapController implements AllAccessible {
               break;
             case "FACIL":
               switch (S.getStatus()) {
-                case "Complete":
-                  I = new Image("Images/Service Icons/maintenance_green.png");
-                  break;
                 case "In Progress":
                   I = new Image("Images/Service Icons/maintenance_yellow.png");
                   break;
@@ -2273,9 +2224,6 @@ public class MapController implements AllAccessible {
               break;
             case "COMP":
               switch (S.getStatus()) {
-                case "Complete":
-                  I = new Image("Images/Service Icons/Computer_green.png");
-                  break;
                 case "In Progress":
                   I = new Image("Images/Service Icons/Computer_yellow.png");
                   break;
@@ -2287,9 +2235,6 @@ public class MapController implements AllAccessible {
               break;
             case "AUD":
               switch (S.getStatus()) {
-                case "Complete":
-                  I = new Image("Images/Service Icons/audVis_green.png");
-                  break;
                 case "In Progress":
                   I = new Image("Images/Service Icons/audVis_yellow.png");
                   break;
@@ -2301,9 +2246,6 @@ public class MapController implements AllAccessible {
               break;
             case "SANI":
               switch (S.getStatus()) {
-                case "Complete":
-                  I = new Image("Images/Service Icons/sanitization_green.png");
-                  break;
                 case "In Progress":
                   I = new Image("Images/Service Icons/sanitization_yellow.png");
                   break;
@@ -2315,9 +2257,6 @@ public class MapController implements AllAccessible {
               break;
             case "MEDD":
               switch (S.getStatus()) {
-                case "Complete":
-                  I = new Image("Images/Service Icons/medicine_green.png");
-                  break;
                 case "In Progress":
                   I = new Image("Images/Service Icons/medicine_yellow.png");
                   break;
@@ -2329,7 +2268,7 @@ public class MapController implements AllAccessible {
               break;
           }
 
-          if (N.getN().getFloor().equals(currentFloor)) {
+          if (N.getN().getFloor().equals(currentFloor) && !S.getStatus().equals("Complete")) {
             secondaryAnchor.getChildren().add(Service);
           }
         }

@@ -6,6 +6,7 @@ import edu.wpi.cs3733.d21.teamD.Ddb.FDatabaseTables;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
 import edu.wpi.cs3733.d21.teamD.views.Access.AllAccessible;
 import edu.wpi.cs3733.d21.teamD.views.HomeController;
+import edu.wpi.cs3733.d21.teamD.views.ServiceRequests.NodeInfo.AllServiceNodeInfo;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
@@ -75,6 +76,9 @@ public class MapDrawerController implements Initializable, AllAccessible {
       FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "RETL");
   private ArrayList<String> serviceList =
       FDatabaseTables.getNodeTable().getCategoryTry(GlobalDb.getConnection(), "SERV");
+  private LinkedList<AllServiceNodeInfo> serviceRequestList =
+      FDatabaseTables.getAllServiceTable().ListServices();
+
   public static ArrayList<String> favList =
       FDatabaseTables.getNodeTable()
           .fetchLongNameFavorites(GlobalDb.getConnection(), HomeController.username);
@@ -93,6 +97,8 @@ public class MapDrawerController implements Initializable, AllAccessible {
           e.printStackTrace();
         }
       };
+
+  public MapDrawerController() throws IOException {}
 
   @FXML
   public void tiasSpecialFunction() throws IOException {
@@ -297,6 +303,7 @@ public class MapDrawerController implements Initializable, AllAccessible {
     TreeItem<String> exit = new TreeItem<>("Entrance/Exit");
     TreeItem<String> retail = new TreeItem<>("Retail");
     TreeItem<String> service = new TreeItem<>("Service");
+    TreeItem<String> allServices = new TreeItem<String>("Service Requests");
 
     directoryTreeView.setRoot(directoryRoot);
 
@@ -368,22 +375,49 @@ public class MapDrawerController implements Initializable, AllAccessible {
     blockedImage.setFitHeight(15);
     blockedCell.setGraphic(blockedImage);
 
-    directoryRoot
-        .getChildren()
-        .addAll(
-            parking,
-            elevator,
-            restroom,
-            stairs,
-            department,
-            laboratory,
-            information,
-            conference,
-            exit,
-            retail,
-            service,
-            favoriteCell,
-            blockedCell);
+    ImageView allservicesimage =
+        new ImageView(new Image("Images/Service Icons/maintenance_green.png"));
+    allservicesimage.setFitWidth(15);
+    allservicesimage.setFitHeight(15);
+    allServices.setGraphic(allservicesimage);
+
+    if (HomeController.userCategory.equals("Admin")
+        || HomeController.userCategory.equals("Employee")) {
+      directoryRoot
+          .getChildren()
+          .addAll(
+              parking,
+              elevator,
+              restroom,
+              stairs,
+              department,
+              laboratory,
+              information,
+              conference,
+              exit,
+              retail,
+              service,
+              allServices,
+              favoriteCell,
+              blockedCell);
+    } else {
+      directoryRoot
+          .getChildren()
+          .addAll(
+              parking,
+              elevator,
+              restroom,
+              stairs,
+              department,
+              laboratory,
+              information,
+              conference,
+              exit,
+              retail,
+              service,
+              favoriteCell,
+              blockedCell);
+    }
 
     for (String parkingSpace : parkingList) {
       TreeItem<String> parkingLocation = new TreeItem<String>(parkingSpace);
@@ -448,6 +482,14 @@ public class MapDrawerController implements Initializable, AllAccessible {
     for (String block : blockedList) {
       TreeItem<String> blocked = new TreeItem<>(block);
       blockedCell.getChildren().add(blocked);
+    }
+
+    for (AllServiceNodeInfo block : serviceRequestList) {
+      TreeItem<String> aService = new TreeItem<>(block.type + "\t" + block.getLocation());
+
+      if (!block.getStatus().equals("Complete")) {
+        allServices.getChildren().add(aService);
+      }
     }
 
     directoryRoot.setExpanded(true);
@@ -568,6 +610,9 @@ public class MapDrawerController implements Initializable, AllAccessible {
         case "Blocked":
           type = "Blocked";
           nodeRedrawing(type);
+          break;
+        case "Service Requests":
+          mapController.LoadServices();
           break;
         default:
           mapController.clearMap();
