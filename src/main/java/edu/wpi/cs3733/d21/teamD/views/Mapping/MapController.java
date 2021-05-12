@@ -51,7 +51,7 @@ public class MapController implements AllAccessible {
 
   private int index = 0;
   private String toggleText[] = {"Pathfinding", "Map Editor"};
-  private RoomGraph initialData = new RoomGraph(GlobalDb.getConnection());
+  public static RoomGraph initialData = new RoomGraph(GlobalDb.getConnection());
   public static LinkedList<NodeUI> NODES = new LinkedList<>();
   private static LinkedList<EdgeUI> EDGES = new LinkedList<>();
   public PathAlgoPicker algorithm = new PathAlgoPicker(new aStar());
@@ -719,6 +719,11 @@ public class MapController implements AllAccessible {
             E.getE().getEndNodeID());
     addEdgeUI(E);
     EDGES.add(E);
+    initialData.getNodeByID(E.getE().getStartNodeID()).addEdge(E.getE());
+    Node start = initialData.getNodeByID(E.getE().getEndNodeID());
+    Node end = initialData.getNodeByID(E.getE().getStartNodeID());
+    Edge e2 = new Edge(start, end, start.getMeasuredDistance(end));
+    initialData.getNodeByID(E.getE().getEndNodeID()).addEdge(e2);
   }
 
   private void editEdgeStart(Edge E, Node N) {

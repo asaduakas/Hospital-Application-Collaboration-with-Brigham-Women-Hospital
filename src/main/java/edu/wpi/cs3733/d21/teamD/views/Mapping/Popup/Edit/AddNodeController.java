@@ -60,6 +60,12 @@ public class AddNodeController {
     NodeUI NUI =
         new NodeUI(
             node, buildMarker(node), MapController.nodeNormalWidth, MapController.nodeNormalHeight);
+    if (!mapController.initialData.getGraphInfo().contains(node)) {
+      mapController.initialData.getGraphInfo().add(node);
+    }
+    if (!mapController.NODES.contains(NUI)) {
+      mapController.NODES.add(NUI);
+    }
     mapController.addNode(NUI);
     exitpopup();
   }
