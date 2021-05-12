@@ -549,6 +549,7 @@ public class MapDrawerController implements Initializable, AllAccessible {
         }
       }
     }
+    isPressed.set(false);
     if ((node instanceof Text || (node instanceof TreeCell && ((TreeCell) node).getText() != null))
         && mapController.thePath.isEmpty()) {
       String name =
