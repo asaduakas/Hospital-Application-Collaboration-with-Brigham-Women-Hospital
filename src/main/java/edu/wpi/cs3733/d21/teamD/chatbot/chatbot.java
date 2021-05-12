@@ -30,11 +30,26 @@ public class chatbot {
    * @throws FileNotFoundException
    * @throws IOException
    */
+  private class UrisFactory implements InputStreamFactory {
+
+    private String resourceName;
+
+    private UrisFactory(String resourceName) {
+      this.resourceName = resourceName;
+    }
+
+    @Override
+    public InputStream createInputStream() throws IOException {
+      return getClass().getResourceAsStream(resourceName);
+    }
+  }
+
   public DoccatModel trainCategorizerModel() throws FileNotFoundException, IOException {
     // faq-categorizer.txt is a custom training data with categories as per our chat
     // requirements.
-    InputStreamFactory inputStreamFactory =
-        new MarkableFileInputStreamFactory(new File("openNLP/faq-categorizer.txt"));
+    // InputStreamFactory inputStreamFactory =
+    //    new MarkableFileInputStreamFactory(new File("openNLP/faq-categorizer.txt"));
+    InputStreamFactory inputStreamFactory = new UrisFactory("/openNLP/faq-categorizer.txt");
     ObjectStream<String> lineStream =
         new PlainTextByLineStream(inputStreamFactory, StandardCharsets.UTF_8);
     ObjectStream<DocumentSample> sampleStream = new DocumentSampleStream(lineStream);
