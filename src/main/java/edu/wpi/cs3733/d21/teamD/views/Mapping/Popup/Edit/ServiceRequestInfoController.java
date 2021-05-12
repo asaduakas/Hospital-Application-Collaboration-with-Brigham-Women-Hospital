@@ -39,7 +39,7 @@ public class ServiceRequestInfoController {
       Status.setEditable(true);
     } else {
       Stype.setEditable(false);
-      Emp.setEditable(false);
+      Emp.setDisable(true);
       Loc.setEditable(false);
       Status.setEditable(true);
     }
