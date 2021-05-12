@@ -74,6 +74,20 @@ public class ComputerRequestTable extends AbsTables {
     }
   }
 
+  public void updateEntity(Connection conn, int id, String status, String employee) {
+    try {
+      PreparedStatement stmt =
+          conn.prepareStatement(
+              " UPDATE ComputerServiceRequest SET status = ?, assignedEmployee = ? WHERE id = ?");
+      stmt.setString(1, status);
+      stmt.setString(2, employee);
+      stmt.setInt(3, id);
+      stmt.executeUpdate();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
   public void addIntoComputerDataList(
       ObservableList<ComputerNodeInfo> computerData, boolean employeeAccess) throws IOException {
     PreparedStatement stmt = null;

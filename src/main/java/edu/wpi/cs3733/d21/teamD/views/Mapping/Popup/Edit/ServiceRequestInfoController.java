@@ -102,6 +102,105 @@ public class ServiceRequestInfoController {
               Sn.getInfo().getType());
     }
 
+    switch (Sn.getInfo().getType()) {
+      case "EXT":
+        FDatabaseTables.getExternalTransportTable()
+            .updateEntity(
+                GlobalDb.getConnection(),
+                Sn.getInfo().getId(),
+                Sn.getInfo().getStatus(),
+                Sn.getInfo().assignedEmployee);
+        break;
+      case "FLOW":
+        FDatabaseTables.getFloralDeliveryTable()
+            .updateEntity(
+                GlobalDb.getConnection(),
+                Sn.getInfo().getId(),
+                Sn.getInfo().getStatus(),
+                Sn.getInfo().assignedEmployee);
+        break;
+      case "FOOD":
+        FDatabaseTables.getFoodDeliveryTable()
+            .updateEntity(
+                GlobalDb.getConnection(),
+                Sn.getInfo().getId(),
+                Sn.getInfo().getStatus(),
+                Sn.getInfo().assignedEmployee);
+        break;
+      case "LAUN":
+        FDatabaseTables.getLaundryRequestTable()
+            .updateEntity(
+                GlobalDb.getConnection(),
+                Sn.getInfo().getId(),
+                Sn.getInfo().getStatus(),
+                Sn.getInfo().assignedEmployee);
+        break;
+      case "LANG":
+        FDatabaseTables.getLangInterpreterTable()
+            .updateEntity(
+                GlobalDb.getConnection(),
+                Sn.getInfo().getId(),
+                Sn.getInfo().getStatus(),
+                Sn.getInfo().assignedEmployee);
+        break;
+      case "ITRAN":
+        FDatabaseTables.getInternalDeliveryTable()
+            .updateEntity(
+                GlobalDb.getConnection(),
+                Sn.getInfo().getId(),
+                Sn.getInfo().getStatus(),
+                Sn.getInfo().assignedEmployee);
+        break;
+      case "SECUR":
+        FDatabaseTables.getSecurityRequestTable()
+            .updateEntity(
+                GlobalDb.getConnection(),
+                Sn.getInfo().getId(),
+                Sn.getInfo().getStatus(),
+                Sn.getInfo().assignedEmployee);
+        break;
+      case "FACIL":
+        FDatabaseTables.getFacilitiesTable()
+            .updateEntity(
+                GlobalDb.getConnection(),
+                Sn.getInfo().getId(),
+                Sn.getInfo().getStatus(),
+                Sn.getInfo().assignedEmployee);
+        break;
+      case "COMP":
+        FDatabaseTables.getCompRequestTable()
+            .updateEntity(
+                GlobalDb.getConnection(),
+                Sn.getInfo().getId(),
+                Sn.getInfo().getStatus(),
+                Sn.getInfo().assignedEmployee);
+        break;
+      case "AUD":
+        FDatabaseTables.getAudVisTable()
+            .updateEntity(
+                GlobalDb.getConnection(),
+                Sn.getInfo().getId(),
+                Sn.getInfo().getStatus(),
+                Sn.getInfo().assignedEmployee);
+        break;
+      case "SANI":
+        FDatabaseTables.getSanitationServiceTable()
+            .updateEntity(
+                GlobalDb.getConnection(),
+                Sn.getInfo().getId(),
+                Sn.getInfo().getStatus(),
+                Sn.getInfo().assignedEmployee);
+        break;
+      case "MEDD":
+        FDatabaseTables.getMedDeliveryTable()
+            .updateEntity(
+                GlobalDb.getConnection(),
+                Sn.getInfo().getId(),
+                Sn.getInfo().getStatus(),
+                Sn.getInfo().assignedEmployee);
+        break;
+    }
+
     exitpopup();
   }
 }

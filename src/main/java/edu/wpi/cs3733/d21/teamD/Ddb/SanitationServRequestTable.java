@@ -166,6 +166,20 @@ public class SanitationServRequestTable extends AbsTables {
     return id;
   }
 
+  public void updateEntity(Connection conn, int id, String status, String employee) {
+    try {
+      PreparedStatement stmt =
+          conn.prepareStatement(
+              " UPDATE SanitationRequest SET status = ?, assignedEmployee = ? WHERE id = ?");
+      stmt.setString(1, status);
+      stmt.setString(2, employee);
+      stmt.setInt(3, id);
+      stmt.executeUpdate();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
   public HashMap<Integer, String> getIncompleteRequest() {
     Connection conn = GlobalDb.getConnection();
     HashMap<Integer, String> santiRequestList = new HashMap<>();
