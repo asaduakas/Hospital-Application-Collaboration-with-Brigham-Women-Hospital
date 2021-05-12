@@ -88,9 +88,19 @@ public class LoginController implements AllAccessible {
     List<Node> childrenList = root.getChildrenUnmodifiable();
     System.out.println("this is the children list of homeView original " + childrenList);
 
+    HBox hBox = (HBox) childrenList.get(4);
+    JFXToggleButton tb = (JFXToggleButton) ((HBox) hBox).getChildren().get(0);
+    if (GlobalDb.getRemoteConn()) {
+      tb.setSelected(true);
+      tb.setText("Remote Connection");
+    } else {
+      tb.setSelected(false);
+      tb.setText("Embedded Connection");
+    }
+
     if (!userCategory.equalsIgnoreCase("admin")) {
-      HBox hBox = (HBox) childrenList.get(4);
-      JFXToggleButton tb = (JFXToggleButton) ((HBox) hBox).getChildren().get(0);
+      hBox = (HBox) childrenList.get(4);
+      tb = (JFXToggleButton) ((HBox) hBox).getChildren().get(0);
       Line toggleLine = (Line) ((HBox) hBox).getChildren().get(1);
       JFXButton usersBtn = (JFXButton) ((HBox) hBox).getChildren().get(2);
       Line tableLine = (Line) ((HBox) hBox).getChildren().get(3);

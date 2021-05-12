@@ -193,8 +193,9 @@ public class NodesTable extends AbsTables {
               + "userID VARCHAR(100),"
               + "nodeID VARCHAR(100) NOT NULL,"
               + "longName VARCHAR(450) NOT NULL,"
-              + "CONSTRAINT userID_FK FOREIGN KEY (userID) REFERENCES Users(id),"
-              + "CONSTRAINT nodeID_FK FOREIGN KEY (nodeID) REFERENCES Nodes(nodeID))";
+              + "CONSTRAINT userID_FK FOREIGN KEY (userID) REFERENCES Users(id)"
+              // + "CONSTRAINT nodeID_FK FOREIGN KEY (nodeID) REFERENCES Nodes(nodeID)" +
+              + ")";
       // + "CONSTRAINT longName_FK FOREIGN KEY (longName) REFERENCES Nodes(longName));
       stmt.executeUpdate(query);
       System.out.println("Favorite node table created");
@@ -317,8 +318,9 @@ public class NodesTable extends AbsTables {
       String query =
           "CREATE TABLE BlockedNodes("
               + "nodeID VARCHAR(100) NOT NULL,"
-              + "longName VARCHAR(450) NOT NULL,"
-              + "CONSTRAINT nodeID2_FK FOREIGN KEY (nodeID) REFERENCES Nodes(nodeID))";
+              + "longName VARCHAR(450) NOT NULL"
+              // + "CONSTRAINT nodeID2_FK FOREIGN KEY (nodeID) REFERENCES Nodes(nodeID)"
+              + ")";
       // + "CONSTRAINT longName_FK FOREIGN KEY (longName) REFERENCES Nodes(longName));
       stmt.executeUpdate(query);
       System.out.println("Blocked node table created");

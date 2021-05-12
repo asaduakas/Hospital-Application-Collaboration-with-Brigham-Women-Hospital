@@ -51,7 +51,7 @@ public class MapController implements AllAccessible {
 
   private int index = 0;
   private String toggleText[] = {"Pathfinding", "Map Editor"};
-  private RoomGraph initialData = new RoomGraph(GlobalDb.getConnection());
+  public static RoomGraph initialData = new RoomGraph(GlobalDb.getConnection());
   public static LinkedList<NodeUI> NODES = new LinkedList<>();
   public static LinkedList<ServiceNode> SERVICES = new LinkedList<ServiceNode>();
   private static LinkedList<EdgeUI> EDGES = new LinkedList<>();
@@ -722,6 +722,11 @@ public class MapController implements AllAccessible {
             E.getE().getEndNodeID());
     addEdgeUI(E);
     EDGES.add(E);
+    initialData.getNodeByID(E.getE().getStartNodeID()).addEdge(E.getE());
+    Node start = initialData.getNodeByID(E.getE().getEndNodeID());
+    Node end = initialData.getNodeByID(E.getE().getStartNodeID());
+    Edge e2 = new Edge(start, end, start.getMeasuredDistance(end));
+    initialData.getNodeByID(E.getE().getEndNodeID()).addEdge(e2);
   }
 
   private void editEdgeStart(Edge E, Node N) {
@@ -1803,8 +1808,10 @@ public class MapController implements AllAccessible {
 
   private void updateMapFromDB() {
     initialData = new RoomGraph(GlobalDb.getConnection());
-    NODES.clear();
+
     EDGES.clear();
+    NODES.clear();
+
     initializeNodes();
     initializeEdges();
     switchFloor(currentFloor); // Redraw current floor
@@ -1816,10 +1823,14 @@ public class MapController implements AllAccessible {
         "Are you sure to reset the CSV?",
         "Yes",
         () -> {
-          FDatabaseTables.getNodeTable().clearTable(GlobalDb.getConnection(), "Nodes");
           FDatabaseTables.getEdgeTable().clearTable(GlobalDb.getConnection(), "Edges");
-          FDatabaseTables.getNodeTable().populateTable(GlobalDb.getConnection(), "");
-          FDatabaseTables.getEdgeTable().populateTable(GlobalDb.getConnection(), "");
+          FDatabaseTables.getNodeTable().clearTable(GlobalDb.getConnection(), "Nodes");
+
+          FDatabaseTables.getNodeTable()
+              .populateTable(GlobalDb.getConnection(), "MapDAllNodes.csv");
+          FDatabaseTables.getEdgeTable()
+              .populateTable(GlobalDb.getConnection(), "MapDAllEdges.csv");
+
           updateMapFromDB();
         },
         "No",

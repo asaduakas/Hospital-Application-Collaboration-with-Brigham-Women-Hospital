@@ -72,14 +72,6 @@ public class HomeController implements AllAccessible {
   public void initialize() {
     initializePages();
     chatbotImage.setOnMousePressed((e) -> chatbotPopUp());
-    dbToggle.setOnAction(
-        (ActionEvent e) -> {
-          index++;
-          if (index >= dbToggleText.length) {
-            index = 0;
-          }
-          dbToggle.setText(dbToggleText[index]);
-        });
     dbToggleSwitch();
     if (LoginController.getUserCategory() != null) {
       this.userCategory = LoginController.getUserCategory();
@@ -469,12 +461,14 @@ public class HomeController implements AllAccessible {
                   Boolean oldValue,
                   Boolean newValue) {
                 if (dbToggle.isSelected()) {
+                  dbToggle.setText("Remote Connection");
                   System.out.println("Before remote connection established");
                   // drop tables from auto embedded
                   // GlobalDb.getTables().deleteAllTables();
                   GlobalDb.establishClientCon();
                   System.out.println("Remote connection established");
-                } else {
+                } else if (!dbToggle.isSelected()) {
+                  dbToggle.setText("Embedded Connection");
                   // GlobalDb.getTables().createAllTables();
                   GlobalDb.establishCon();
                   System.out.println("Switched back to embedded");
