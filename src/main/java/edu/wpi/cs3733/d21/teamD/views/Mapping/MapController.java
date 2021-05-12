@@ -544,7 +544,7 @@ public class MapController implements AllAccessible {
         mapScrollPane.setMapImage(F1);
         break;
     }
-    floorBtn.setText("Floor");
+    floorBtn.setText(currentFloor);
     if (isEditor) {
       drawEdgeFloor(floor);
       drawNodeFloor(floor);
