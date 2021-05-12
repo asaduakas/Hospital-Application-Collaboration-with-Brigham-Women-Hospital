@@ -40,6 +40,20 @@ public class AudVisRequestTable extends AbsTables {
     }
   }
 
+  public void updateEntity(Connection conn, int id, String status, String employee) {
+    try {
+      PreparedStatement stmt =
+          conn.prepareStatement(
+              " UPDATE AudVisServiceRequest SET status = ?, assignedEmployee = ? WHERE id = ?");
+      stmt.setString(1, status);
+      stmt.setString(2, employee);
+      stmt.setInt(3, id);
+      stmt.executeUpdate();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
   public void addEntity(
       Connection conn,
       String firstName,
