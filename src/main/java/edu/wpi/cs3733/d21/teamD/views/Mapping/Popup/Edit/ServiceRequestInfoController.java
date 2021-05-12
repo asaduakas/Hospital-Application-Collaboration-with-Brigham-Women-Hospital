@@ -51,7 +51,7 @@ public class ServiceRequestInfoController {
     Sn.getSerivce().setFitHeight(30);
     Sn.getSerivce().setX(Sn.getSerivce().getX() + 15);
     Sn.getSerivce().setY(Sn.getSerivce().getY() + 15);
-    mapController.serviceResize(Sn);
+    MapController.servicePoop = false;
   }
 
   public void setSn(ServiceNode sn) {

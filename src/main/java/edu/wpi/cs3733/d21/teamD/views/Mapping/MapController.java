@@ -69,6 +69,8 @@ public class MapController implements AllAccessible {
   private boolean isEditEnd = false;
   private boolean saveMode = false;
   private boolean alignMode = false;
+  private boolean ServiceView = false;
+  public static boolean servicePoop = false;
   private SimpleBooleanProperty startPressed = new SimpleBooleanProperty();
   private SimpleBooleanProperty endPressed = new SimpleBooleanProperty();
   private SimpleBooleanProperty plusPressed = new SimpleBooleanProperty();
@@ -1926,10 +1928,16 @@ public class MapController implements AllAccessible {
   private void LoadServices() throws IOException {
     System.out.println(HomeController.userCategory);
 
-    if (HomeController.userCategory.equals("Admin")) {
+    if (HomeController.userCategory.equals("Admin") && !ServiceView) {
       AdminLoadServices();
-    } else if (HomeController.userCategory.equals("Employee")) {
+      ServiceView = true;
+    } else if (HomeController.userCategory.equals("Employee") && !ServiceView) {
       EmployeeLoadServices();
+      ServiceView = true;
+    } else {
+      clearMap();
+      drawNodeFloor(currentFloor);
+      ServiceView = false;
     }
   }
 
@@ -2335,19 +2343,23 @@ public class MapController implements AllAccessible {
     SN.getSerivce()
         .setOnMouseEntered(
             (MouseEvent e) -> {
-              SN.getSerivce().setFitWidth(Servicesize * 2);
-              SN.getSerivce().setFitHeight(Servicesize * 2);
-              SN.getSerivce().setX(SN.getSerivce().getX() - Servicesize / 2);
-              SN.getSerivce().setY(SN.getSerivce().getY() - Servicesize / 2);
+              if (!servicePoop) {
+                SN.getSerivce().setFitWidth(Servicesize * 2);
+                SN.getSerivce().setFitHeight(Servicesize * 2);
+                SN.getSerivce().setX(SN.getSerivce().getX() - Servicesize / 2);
+                SN.getSerivce().setY(SN.getSerivce().getY() - Servicesize / 2);
+              }
             });
 
     SN.getSerivce()
         .setOnMouseExited(
             (MouseEvent e) -> {
-              SN.getSerivce().setFitWidth(Servicesize);
-              SN.getSerivce().setFitHeight(Servicesize);
-              SN.getSerivce().setX(SN.getSerivce().getX() + Servicesize / 2);
-              SN.getSerivce().setY(SN.getSerivce().getY() + Servicesize / 2);
+              if (!servicePoop) {
+                SN.getSerivce().setFitWidth(Servicesize);
+                SN.getSerivce().setFitHeight(Servicesize);
+                SN.getSerivce().setX(SN.getSerivce().getX() + Servicesize / 2);
+                SN.getSerivce().setY(SN.getSerivce().getY() + Servicesize / 2);
+              }
             });
   }
 
@@ -2356,14 +2368,14 @@ public class MapController implements AllAccessible {
         .setOnMouseClicked(
             (MouseEvent e) -> {
               try {
-                SN.getSerivce().setOnMouseExited((MouseEvent e2) -> {});
-                SN.getSerivce().setOnMouseEntered((MouseEvent e2) -> {});
-
-                FXMLLoader temp = loadPopup("ServiceRequestInfoView.fxml");
-                ServiceRequestInfoController popupController = temp.getController();
-                popupController.setSn(SN);
-                popupController.Fill();
-                popupController.setMapController(this);
+                if (!servicePoop) {
+                  FXMLLoader temp = loadPopup("ServiceRequestInfoView.fxml");
+                  ServiceRequestInfoController popupController = temp.getController();
+                  popupController.setSn(SN);
+                  popupController.Fill();
+                  popupController.setMapController(this);
+                  servicePoop = true;
+                }
               } catch (IOException ioException) {
                 ioException.printStackTrace();
               }
