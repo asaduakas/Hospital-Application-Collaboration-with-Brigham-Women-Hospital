@@ -65,6 +65,7 @@ public class ControllerManager {
     App.getPrimaryStage().setScene(new Scene(fxmlLoader.getRoot()));
     App.getPrimaryStage().setMaximized(false);
     App.getPrimaryStage().setMaximized(true); // UI rescale can't handle starting without this
+    //    App.getPrimaryStage().setFullScreen(true);
     App.getPrimaryStage().show();
     tasks.accept(fxmlLoader); // Run additional tasks that were passed in
   }
