@@ -8,7 +8,7 @@ plugins {
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
-mainClassName = 'edu.wpi.teamname.Main'
+mainClassName = 'edu.wpi.cs3733.d21.teamD.Main'
 
 repositories {
     mavenCentral()
@@ -33,10 +33,6 @@ dependencies {
     implementation 'junit:junit:4.13.1'
     implementation 'org.jetbrains:annotations:20.1.0'
 
-    //dialogflow - ChatBot AI
-    implementation 'com.google.cloud:google-cloud-dialogflow:2.1.0'
-    implementation 'io.grpc:grpc-okhttp:1.30.0'
-
     implementation platform('com.google.cloud:libraries-bom:20.2.0')
 
     testImplementation(
@@ -48,8 +44,7 @@ dependencies {
     compile files('derbyclient.jar')
 
     compile 'com.google.cloud:google-cloud-bigquery'
-    compile 'com.google.cloud:google-cloud-dialogflow-cx:0.6.1'
-    compile group: "org.apache.opennlp", name: "opennlp-tools", version: "1.9.3"
+    compile 'org.apache.opennlp:opennlp-tools:1.9.3'
 
     testCompile(
             "org.testfx:testfx-core:4.0.16-alpha",
@@ -73,14 +68,14 @@ jar {
 }
 
 def codeCoverageExcludes = [
-        'edu.wpi.teamname.App',
-        'edu.wpi.teamname.services.database.DatabaseServiceProvider',
-        'edu.wpi.teamname.services.*',
-        'edu.wpi.teamname.views.FXMLLoaderProvider',
-        'edu.wpi.teamname.views.HomeController',
-        'edu.wpi.teamname.Main',
-        'edu.wpi.teamname.state.HomeStateProvider',
-        'edu.wpi.teamname.App.1',
+        'edu.wpi.cs3733.d21.teamD.App',
+        'edu.wpi.cs3733.d21.teamD.services.database.DatabaseServiceProvider',
+        'edu.wpi.cs3733.d21.teamD.services.*',
+        'edu.wpi.cs3733.d21.teamD.views.FXMLLoaderProvider',
+        'edu.wpi.cs3733.d21.teamD.views.HomeController',
+        'edu.wpi.cs3733.d21.teamD.Main',
+        'edu.wpi.cs3733.d21.teamD.state.HomeStateProvider',
+        'edu.wpi.cs3733.d21.teamD.App.1',
 ]
 
 jacoco {
