@@ -7,6 +7,7 @@ import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
 import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.Mapping.MapController;
 import edu.wpi.cs3733.d21.teamD.views.Mapping.ServiceNode;
+import java.io.IOException;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 
@@ -72,7 +73,7 @@ public class ServiceRequestInfoController {
     Status.setPromptText(Sn.getInfo().getStatus());
   }
 
-  public void Update() {
+  public void Update() throws IOException {
 
     System.out.println("EMP:" + Emp.getSelectionModel().getSelectedIndex());
     System.out.println("STATUS:" + Status.getSelectionModel().getSelectedIndex());
@@ -200,6 +201,10 @@ public class ServiceRequestInfoController {
                 Sn.getInfo().assignedEmployee);
         break;
     }
+
+    mapController.clearMap();
+    MapController.ServiceView = false;
+    mapController.LoadServices();
 
     exitpopup();
   }

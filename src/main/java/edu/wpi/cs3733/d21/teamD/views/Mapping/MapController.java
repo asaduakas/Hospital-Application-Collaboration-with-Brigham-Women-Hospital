@@ -69,7 +69,7 @@ public class MapController implements AllAccessible {
   private boolean isEditEnd = false;
   private boolean saveMode = false;
   private boolean alignMode = false;
-  private boolean ServiceView = false;
+  public static boolean ServiceView = false;
   public static boolean servicePoop = false;
   private SimpleBooleanProperty startPressed = new SimpleBooleanProperty();
   private SimpleBooleanProperty endPressed = new SimpleBooleanProperty();
@@ -1923,7 +1923,7 @@ public class MapController implements AllAccessible {
   private int Servicesize = 30;
 
   @FXML
-  private void LoadServices() throws IOException {
+  public void LoadServices() throws IOException {
     System.out.println(HomeController.userCategory);
 
     if (HomeController.userCategory.equals("Admin") && !ServiceView) {
