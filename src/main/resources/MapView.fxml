@@ -43,7 +43,7 @@
       </JFXButton>
       <ImageView fx:id="helpImage" fitHeight="700.0" fitWidth="700.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@Images/pathfindingHelpPage.jpeg" />
+            <Image url="@Images/pathfindingHelpPage.jpg" />
          </image>
       </ImageView>
       <StackPane fx:id="stackPane" layoutX="400.0" layoutY="245.0" prefHeight="150.0" prefWidth="300.0" />

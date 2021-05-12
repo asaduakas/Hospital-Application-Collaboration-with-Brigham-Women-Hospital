@@ -110,7 +110,7 @@ public class MapController implements AllAccessible {
   private Image endImage = new Image("Images/endingIcon_white.png");
   private Image startImage = new Image("Images/walkingStartIcon_black.png");
   private Image mapEditorHelp = new Image("Images/mapEditorHelpPage.jpg");
-  private Image pathfindingHelp = new Image("Images/pathfindingHelpPage.jpeg");
+  private Image pathfindingHelp = new Image("Images/pathfindingHelpPage.jpg");
 
   public static SceneSizeChangeListener sizeListener;
   protected DialogFactory dialogFactory;
