@@ -13,13 +13,6 @@
 
 <AnchorPane fx:id="mainAnchor" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.cs3733.d21.teamD.views.Mapping.MapController">
    <children>
-      <JFXDrawer fx:id="mapDrawer" layoutX="0.0" layoutY="0" prefHeight="640.0" prefWidth="400.0" />
-      <JFXHamburger fx:id="mapHam" layoutX="1.0" layoutY="1.0" prefHeight="49.0" prefWidth="59.0" />
-      <Label layoutX="52.0" layoutY="13.0" text="MENU">
-         <font>
-            <Font name="System Bold" size="15.0" />
-         </font>
-      </Label>
       <JFXToggleButton fx:id="toggleEditor" layoutX="159.0" layoutY="21.0" text="Pathfinding" />
       <JFXButton fx:id="exitBtn" layoutX="926.0" layoutY="587.0" onAction="#goHome" style="-fx-background-radius: 10px; -fx-background-color: #0C5796;" text="EXIT" textFill="WHITE">
          <font>
@@ -77,6 +70,13 @@
             <Font size="14.0" />
          </font>
       </JFXButton>
+      <JFXDrawer fx:id="mapDrawer" layoutX="0.0" layoutY="0" prefHeight="640.0" prefWidth="400.0" />
+      <JFXHamburger fx:id="mapHam" layoutX="1.0" layoutY="1.0" prefHeight="49.0" prefWidth="59.0" />
+      <Label layoutX="52.0" layoutY="13.0" text="MENU">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
 
    </children>
 </AnchorPane>

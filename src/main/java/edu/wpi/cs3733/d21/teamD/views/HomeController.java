@@ -179,7 +179,7 @@ public class HomeController implements AllAccessible {
 
           List<Node> childrenList = root.getChildren();
           System.out.println("this is childrenList of the map" + childrenList);
-          JFXToggleButton mapEditing = (JFXToggleButton) childrenList.get(4);
+          JFXToggleButton mapEditing = (JFXToggleButton) childrenList.get(1);
           if (!userCategory.equalsIgnoreCase("admin")) {
             mapEditing.setVisible(false);
             mapEditing.setDisable(true);
@@ -273,7 +273,7 @@ public class HomeController implements AllAccessible {
 
           List<Node> childrenList = root.getChildren();
           System.out.println("this is childrenList of the map" + childrenList);
-          JFXToggleButton mapEditing = (JFXToggleButton) childrenList.get(4);
+          JFXToggleButton mapEditing = (JFXToggleButton) childrenList.get(1);
           if (!userCategory.equalsIgnoreCase("admin")) {
             mapEditing.setVisible(false);
             mapEditing.setDisable(true);
@@ -321,19 +321,19 @@ public class HomeController implements AllAccessible {
 
   public void changeChildrenMapView(List<Node> nodeList) {
 
-    JFXDrawer drawer = (JFXDrawer) nodeList.get(1);
-    JFXToggleButton mapEditorBtn = (JFXToggleButton) nodeList.get(4);
-    JFXButton exitBtn = (JFXButton) nodeList.get(5);
-    JFXButton floorBtn = (JFXButton) nodeList.get(6);
-    JFXButton helpBtn = (JFXButton) nodeList.get(7);
-    ImageView helpImage = (ImageView) nodeList.get(8);
-    StackPane stackPane = (StackPane) nodeList.get(9);
-    JFXButton testBtn = (JFXButton) nodeList.get(10);
-    JFXButton fl1Btn = (JFXButton) nodeList.get(11);
-    JFXButton fl2Btn = (JFXButton) nodeList.get(12);
-    JFXButton fl3Btn = (JFXButton) nodeList.get(13);
-    JFXButton fll1Btn = (JFXButton) nodeList.get(14);
-    JFXButton fll2Btn = (JFXButton) nodeList.get(15);
+    JFXDrawer drawer = (JFXDrawer) nodeList.get(13);
+    JFXToggleButton mapEditorBtn = (JFXToggleButton) nodeList.get(1);
+    JFXButton exitBtn = (JFXButton) nodeList.get(2);
+    JFXButton floorBtn = (JFXButton) nodeList.get(3);
+    JFXButton helpBtn = (JFXButton) nodeList.get(4);
+    ImageView helpImage = (ImageView) nodeList.get(5);
+    StackPane stackPane = (StackPane) nodeList.get(6);
+    JFXButton testBtn = (JFXButton) nodeList.get(7);
+    JFXButton fl1Btn = (JFXButton) nodeList.get(8);
+    JFXButton fl2Btn = (JFXButton) nodeList.get(9);
+    JFXButton fl3Btn = (JFXButton) nodeList.get(10);
+    JFXButton fll1Btn = (JFXButton) nodeList.get(11);
+    JFXButton fll2Btn = (JFXButton) nodeList.get(12);
     JFXNodesList csvBtns = (JFXNodesList) nodeList.get(16);
 
     drawer.setLayoutX(-270);
