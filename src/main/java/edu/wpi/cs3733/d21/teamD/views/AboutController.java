@@ -138,7 +138,7 @@ public class AboutController implements AllAccessible {
             + "\n"
             + "2022. She is from Norwood, MA and loves"
             + "\n"
-            + "drinking coffee.",
+            + "to travel.",
         "OK",
         () -> {});
   }
