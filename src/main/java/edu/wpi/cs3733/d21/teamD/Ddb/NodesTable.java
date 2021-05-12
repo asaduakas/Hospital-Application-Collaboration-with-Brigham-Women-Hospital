@@ -192,8 +192,8 @@ public class NodesTable extends AbsTables {
           "CREATE TABLE FavoriteNodes("
               + "userID VARCHAR(100),"
               + "nodeID VARCHAR(100) NOT NULL,"
-              + "longName VARCHAR(450) NOT NULL,"
-              + "CONSTRAINT userID_FK FOREIGN KEY (userID) REFERENCES Users(id)"
+              + "longName VARCHAR(450) NOT NULL"
+              //              + "CONSTRAINT userID_FK FOREIGN KEY (userID) REFERENCES Users(id)"
               // + "CONSTRAINT nodeID_FK FOREIGN KEY (nodeID) REFERENCES Nodes(nodeID)" +
               + ")";
       // + "CONSTRAINT longName_FK FOREIGN KEY (longName) REFERENCES Nodes(longName));

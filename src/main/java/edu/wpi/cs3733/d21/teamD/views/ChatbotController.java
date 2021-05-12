@@ -2,6 +2,7 @@ package edu.wpi.cs3733.d21.teamD.views;
 
 import com.jfoenix.controls.*;
 import edu.wpi.cs3733.d21.teamD.App;
+import edu.wpi.cs3733.d21.teamD.Ddb.FDatabaseTables;
 import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
 import edu.wpi.cs3733.d21.teamD.Ddb.NodesTable;
 import edu.wpi.cs3733.d21.teamD.Ddb.UsersTable;
@@ -102,12 +103,16 @@ public class ChatbotController implements AllAccessible {
     } else if (changeUsernameFlag) {
       String newUsername = this.userMessage.getText();
       if (newUsername != null) {
-        dispMessageBot("user", newUsername);
-        this.userMessage.setText(null);
-        UsersTable.updateUsername(GlobalDb.getConnection(), HomeController.username, newUsername);
-        HomeController.username = newUsername;
-        dispMessageBot("bot", "Your username has been updated successfully to: " + newUsername);
-        changeUsernameFlag = false;
+        if (!FDatabaseTables.getUserTable().contains(GlobalDb.getConnection(), newUsername)) {
+          dispMessageBot("user", newUsername);
+          this.userMessage.setText(null);
+          UsersTable.updateUsername(GlobalDb.getConnection(), HomeController.username, newUsername);
+          HomeController.username = newUsername;
+          dispMessageBot("bot", "Your username has been updated successfully to: " + newUsername);
+          changeUsernameFlag = false;
+        } else {
+          dispMessageBot("bot", "Sorry this username is already taken!");
+        }
       }
     } else if (changePsswdFlag) {
       String newPasswd = this.userMessage.getText();

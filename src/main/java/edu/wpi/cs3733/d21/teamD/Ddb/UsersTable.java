@@ -331,6 +331,22 @@ public class UsersTable extends AbsTables {
     return adminData;
   }
 
+  public Boolean contains(Connection conn, String username) {
+    Boolean isExists = false;
+    try {
+      PreparedStatement prepStmt = null;
+      prepStmt = conn.prepareStatement("SELECT * FROM Users WHERE id = ?");
+      prepStmt.setString(1, username);
+      ResultSet rs = prepStmt.executeQuery();
+      if (rs.next()) {
+        isExists = true;
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    return isExists;
+  }
+
   public ObservableList<UsersNodeInfo> changeUserData(ObservableList<UsersNodeInfo> userData) {
     for (UsersNodeInfo info : userData) {
       PreparedStatement stmt = null;
