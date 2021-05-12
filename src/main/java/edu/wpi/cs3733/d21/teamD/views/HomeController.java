@@ -336,8 +336,9 @@ public class HomeController implements AllAccessible {
     JFXButton fll2Btn = (JFXButton) nodeList.get(12);
     JFXNodesList csvBtns = (JFXNodesList) nodeList.get(16);
 
-    drawer.setLayoutX(-270);
+    drawer.setLayoutX(-400);
     drawer.setLayoutY(0);
+    drawer.setPickOnBounds(false);
 
     exitBtn.setLayoutY(
         App.getPrimaryStage().getScene().getWindow().getHeight() - exitBtn.getHeight() - 60);

@@ -27,6 +27,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -46,6 +47,8 @@ public class MapDrawerController implements Initializable, AllAccessible {
   @FXML private ScrollPane textScrollPane;
   @FXML JFXButton dirBtn;
   @FXML TextFlow dirText;
+  @FXML private AnchorPane anchorPane;
+  @FXML private AnchorPane anotherPane;
   TextArea downloadText = new TextArea();
   private LinkedList<edu.wpi.cs3733.d21.teamD.Astar.Node> Targets = new LinkedList<>();
   private SimpleBooleanProperty isPressed = new SimpleBooleanProperty();
@@ -151,7 +154,6 @@ public class MapDrawerController implements Initializable, AllAccessible {
     textScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
     textScrollPane.setStyle(
         "-fx-background-color: transparent; -fx-padding: 0; -fx-background-insets: 0");
-    //    textScrollPane.
 
     directoryTreeView
         .getSelectionModel()

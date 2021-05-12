@@ -188,6 +188,7 @@ public class MapController implements AllAccessible {
             helpImage.setVisible(false);
           } else {
             helpImage.setVisible(true);
+            System.out.println("the help image has been clicked");
           }
         }));
 
