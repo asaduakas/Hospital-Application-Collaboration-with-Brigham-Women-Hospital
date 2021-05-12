@@ -239,7 +239,6 @@ public class UsersTable extends AbsTables {
     }
   }
 
-  // TODO: implement this function
   public static void updateUserPassword(Connection conn, String id, String password) {
     try {
 
@@ -275,7 +274,6 @@ public class UsersTable extends AbsTables {
     return employeeData;
   }
 
-  // TODO: implement this function
   public static void updateUsername(Connection conn, String id, String username) {
 
     try {

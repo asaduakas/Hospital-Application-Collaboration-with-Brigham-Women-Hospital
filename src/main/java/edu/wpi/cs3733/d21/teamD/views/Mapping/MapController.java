@@ -818,20 +818,18 @@ public class MapController implements AllAccessible {
   }
 
   private Node getCenteringEnd(Node trueEnd) {
-    return getNodeUIByID(
-            thePath.stream()
-                .filter(
-                    edge -> {
-                      final Node start = getNodeUIByID(edge.getStartNodeID()).getN();
-                      final Node end = getNodeUIByID(edge.getEndNodeID()).getN();
-                      if (trueEnd.getNodeID().equals(start.getNodeID())
-                          || trueEnd.getNodeID().equals(end.getNodeID())) return true;
-                      return start.compareFloor(end) != 0;
-                    })
-                .findFirst()
-                .get()
-                .getStartNodeID())
-        .getN();
+    Optional<Edge> centeringEdge =
+        thePath.stream()
+            .filter(
+                edge -> {
+                  final Node start = getNodeUIByID(edge.getStartNodeID()).getN();
+                  final Node end = getNodeUIByID(edge.getEndNodeID()).getN();
+                  return start.compareFloor(end) != 0;
+                })
+            .findFirst();
+    if (centeringEdge.isPresent())
+      return getNodeUIByID(centeringEdge.get().getStartNodeID()).getN();
+    else return trueEnd;
   }
 
   public void runPathFindingClick() {

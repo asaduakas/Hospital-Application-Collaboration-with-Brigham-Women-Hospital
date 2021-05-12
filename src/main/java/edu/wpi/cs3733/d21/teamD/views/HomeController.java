@@ -472,7 +472,7 @@ public class HomeController implements AllAccessible {
                   GlobalDb.establishClientCon();
                   System.out.println("Remote connection established");
                 } else {
-                  GlobalDb.getTables().createAllTables();
+                  // GlobalDb.getTables().createAllTables();
                   GlobalDb.establishCon();
                   System.out.println("Switched back to embedded");
                 }
