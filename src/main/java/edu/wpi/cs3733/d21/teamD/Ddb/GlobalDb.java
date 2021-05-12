@@ -7,6 +7,11 @@ import java.sql.SQLException;
 public class GlobalDb {
   private static Connection connection;
   private static FDatabaseTables tables;
+  private static Boolean remoteConn = false;
+
+  public static Boolean getRemoteConn() {
+    return remoteConn;
+  }
 
   public static Connection getConnection() {
     return connection;
@@ -38,6 +43,7 @@ public class GlobalDb {
       connection =
           DriverManager.getConnection("jdbc:derby:myDB;create=true;username=Admin;password=Admin");
       System.out.println("Apache Derby connection established to the embedded DB!");
+      remoteConn = false;
       // getConnection() gives a warning if there is already a database
       if (connection.getWarnings() == null) { // If there isn't already a populated database
 
@@ -78,11 +84,11 @@ public class GlobalDb {
           DriverManager.getConnection(
               "jdbc:derby://localhost:1527/MyDbTest;create=true;username=Admin;password=Admin");
       System.out.println("the client-server connection was established");
-      if (connection == null) System.out.println("Apache Derby connection established!");
+      remoteConn = true;
+      if (connection == null) System.out.println("Apache Derby connection not established!");
 
       // getConnection() gives a warning if there is already a database
       if (connection.getWarnings() == null) { // If there isn't already a populated database
-
         GlobalDb.getTables()
             .createAllTables(); // might not be doing what we want with the connections, but this
       }
@@ -92,6 +98,7 @@ public class GlobalDb {
             DriverManager.getConnection(
                 "jdbc:derby:myDB;create=true;username=Admin;password=Admin");
         System.out.println("the embedded database is being used");
+        remoteConn = false;
         if (connection.getWarnings() == null) { // If there isn't already a populated database
           GlobalDb.getTables().createAllTables();
         }
