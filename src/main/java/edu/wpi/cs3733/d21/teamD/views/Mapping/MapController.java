@@ -1800,8 +1800,10 @@ public class MapController implements AllAccessible {
 
   private void updateMapFromDB() {
     initialData = new RoomGraph(GlobalDb.getConnection());
-    NODES.clear();
+
     EDGES.clear();
+    NODES.clear();
+
     initializeNodes();
     initializeEdges();
     switchFloor(currentFloor); // Redraw current floor
@@ -1813,10 +1815,14 @@ public class MapController implements AllAccessible {
         "Are you sure to reset the CSV?",
         "Yes",
         () -> {
-          FDatabaseTables.getNodeTable().clearTable(GlobalDb.getConnection(), "Nodes");
           FDatabaseTables.getEdgeTable().clearTable(GlobalDb.getConnection(), "Edges");
-          FDatabaseTables.getNodeTable().populateTable(GlobalDb.getConnection(), "");
-          FDatabaseTables.getEdgeTable().populateTable(GlobalDb.getConnection(), "");
+          FDatabaseTables.getNodeTable().clearTable(GlobalDb.getConnection(), "Nodes");
+
+          FDatabaseTables.getNodeTable()
+              .populateTable(GlobalDb.getConnection(), "MapDAllNodes.csv");
+          FDatabaseTables.getEdgeTable()
+              .populateTable(GlobalDb.getConnection(), "MapDAllEdges.csv");
+
           updateMapFromDB();
         },
         "No",
