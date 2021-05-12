@@ -233,16 +233,19 @@ public class ChatbotController implements AllAccessible {
       } else if (category.equals("Security-Request")) {
         ControllerManager.attemptLoadPopupBlur("SecurityServicesView.fxml");
       } else if (category.equals("Request-Table")) {
-        if ((!HomeController.username.equalsIgnoreCase("Patient"))
-            && (HomeController.username != null)) {
-          answer = answer + "Sure thing!";
-          ControllerManager.attemptLoadPopupBlur(
-              "StatusView.fxml",
-              fxmlLoader -> ((Pane) fxmlLoader.getRoot()).setStyle("-fx-background-color: White"));
-
-        } else if (HomeController.username == null) {
+        if ((HomeController.username != null)) {
+          if (!HomeController.userCategory.equalsIgnoreCase("Patient")) {
+            answer = answer + "Sure thing!";
+            ControllerManager.attemptLoadPopupBlur(
+                "StatusView.fxml",
+                fxmlLoader ->
+                    ((Pane) fxmlLoader.getRoot()).setStyle("-fx-background-color: White"));
+          }
+        }
+        if (HomeController.username == null) {
           answer = answer + "Sorry, you need to be logged in first!";
-        } else if (HomeController.username.equalsIgnoreCase("Patient")) {
+        }
+        if (HomeController.userCategory.equalsIgnoreCase("Patient")) {
           answer = answer + "Sorry, you need to be logged in as either an admin or an employee!";
         }
       } else if (category.equals("User-Table")) {
