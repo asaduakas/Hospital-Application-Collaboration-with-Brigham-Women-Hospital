@@ -1,0 +1,16 @@
+Directions from Staircase K1 Floor 1 to Elevator H Floor L1:
+	Take the elevator towards floor L1
+	Head South towards: 
+		Hallway 8 Floor L1
+	Turn Left towards: 
+		Medical Records Film Library Floor L1
+	Continue Straight towards: 
+		Hallway 2 Floor L1
+	Continue Straight towards: 
+		Volunteers Floor L1
+	Continue Straight towards: 
+		Medical Records Conference Room Floor L1
+	Continue Straight towards: 
+		Elevator H Floor L1
+
+Welcome to Elevator H Floor L1

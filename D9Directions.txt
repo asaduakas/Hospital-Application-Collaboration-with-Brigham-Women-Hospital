@@ -1,0 +1,22 @@
+Directions from Radiation Oncology Floor L2 to Gynecology:
+	Head North towards: 
+		Hallway 3 Floor L2
+	Turn Right towards: 
+		Hallway 2 Floor L2
+	Continue Straight towards: 
+		Restroom K Elevator Floor L2
+	Turn Left towards: 
+		Radiation Oncology TX Suite Floor L2
+	Turn Right towards: 
+		Hallway K Elevator Floor L2
+	Turn Left towards: 
+		Elevator J Floor L2
+	Take the elevator towards floor 3
+	Head South towards: 
+		Hallway Node 18
+	Turn Left towards: 
+		Hallway Node 19
+	Continue Straight towards: 
+		Gynecology
+
+Welcome to Gynecology

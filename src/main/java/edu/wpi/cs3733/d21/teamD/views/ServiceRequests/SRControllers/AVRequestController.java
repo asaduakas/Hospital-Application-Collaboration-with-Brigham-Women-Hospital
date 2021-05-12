@@ -44,16 +44,15 @@ public class AVRequestController extends AbsRequest
                 .or(super.locationBox.valueProperty().isNull())
                 .or(issueDescription.textProperty().isEmpty()));
 
-    if (submitButton.isDisabled()) {
-      popupWarning(event);
-    }
+    System.out.println(
+        "dadadada - - - - - "
+            + super.locationBox.getItems().contains(super.locationBox.valueProperty()));
 
-    if (super.submitButton.isDisabled() == false) {
+    if (!super.locationBox.getItems().contains(super.locationBox.valueProperty())) {
 
-      // Tables.addExTransInfo(connection, super.firstName.getText());
       dialogFactory.createTwoButtonDialog(
-          "Submitted!",
-          "Your request is submitted." + "\n" + "Would you like to make another request?",
+          "Invalid Location!",
+          "The desired location does not exist. Would you like to try a different location?",
           "Yes",
           () -> {
             try {
@@ -64,19 +63,42 @@ public class AVRequestController extends AbsRequest
           },
           "No",
           this::goHome);
+    } else {
 
-      // TODO - add table
+      if (submitButton.isDisabled()) {
+        popupWarning(event);
+      }
 
-      GlobalDb.getTables()
-          .getAudVisTable()
-          .addEntity(
-              GlobalDb.getConnection(),
-              super.firstName.getText(),
-              super.lastName.getText(),
-              super.contactInfo.getText(),
-              super.locationBox.getValue(),
-              staffAssigned.getValue(),
-              issueDescription.getText());
+      if (super.submitButton.isDisabled() == false) {
+
+        // Tables.addExTransInfo(connection, super.firstName.getText());
+        dialogFactory.createTwoButtonDialog(
+            "Submitted!",
+            "Your request is submitted." + "\n" + "Would you like to make another request?",
+            "Yes",
+            () -> {
+              try {
+                popUpAction("ServicePageView.fxml");
+              } catch (IOException e) {
+                e.printStackTrace();
+              }
+            },
+            "No",
+            this::goHome);
+
+        // TODO - add table
+
+        GlobalDb.getTables()
+            .getAudVisTable()
+            .addEntity(
+                GlobalDb.getConnection(),
+                super.firstName.getText(),
+                super.lastName.getText(),
+                super.contactInfo.getText(),
+                super.locationBox.getValue(),
+                staffAssigned.getValue(),
+                issueDescription.getText());
+      }
     }
   }
 
