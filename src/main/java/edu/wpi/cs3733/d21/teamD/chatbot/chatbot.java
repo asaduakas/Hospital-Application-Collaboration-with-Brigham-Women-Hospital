@@ -58,7 +58,7 @@ public class chatbot {
   public String[] SentenceDetect(String paragraph) throws InvalidFormatException, IOException {
 
     // always start with a model, a model is learned from training data
-    InputStream is = new FileInputStream("openNLP/en-sent.bin");
+    InputStream is = getClass().getResourceAsStream("/openNLP/en-sent.bin");
     SentenceModel model = new SentenceModel(is);
     SentenceDetectorME sdetector = new SentenceDetectorME(model);
 
@@ -70,7 +70,7 @@ public class chatbot {
 
   // tokenizer
   public String[] Tokenize(String sentence) throws InvalidFormatException, IOException {
-    InputStream is = new FileInputStream("openNLP/en-token.bin");
+    InputStream is = getClass().getResourceAsStream("/openNLP/en-token.bin");
     TokenizerModel model = new TokenizerModel(is);
     Tokenizer tokenizer = new TokenizerME(model);
 
@@ -86,7 +86,7 @@ public class chatbot {
   public String[] detectPOSTags(String[] tokens) throws IOException {
     // Better to read file once at start of program & store model in instance
     // variable. but keeping here for simplicity in understanding.
-    try (InputStream modelIn = new FileInputStream("openNLP/en-pos-maxent.bin")) {
+    try (InputStream modelIn = getClass().getResourceAsStream("/openNLP/en-pos-maxent.bin")) {
       // Initialize POS tagger tool
       POSTaggerME myCategorizer = new POSTaggerME(new POSModel(modelIn));
 
@@ -105,7 +105,7 @@ public class chatbot {
       throws InvalidFormatException, IOException {
     // Better to read file once at start of program & store model in instance
     // variable. but keeping here for simplicity in understanding.
-    try (InputStream modelIn = new FileInputStream("openNLP/en-lemmatizer.bin")) {
+    try (InputStream modelIn = getClass().getResourceAsStream("/openNLP/en-lemmatizer.bin")) {
 
       // Tag sentence.
       LemmatizerME myCategorizer = new LemmatizerME(new LemmatizerModel(modelIn));
@@ -138,7 +138,7 @@ public class chatbot {
     LinkedList<String> names = new LinkedList<String>();
 
     String[] sentence = paragraph.split(" ");
-    InputStream is = new FileInputStream("openNLP/en-username.bin");
+    InputStream is = getClass().getResourceAsStream("/openNLP/en-username.bin");
 
     TokenNameFinderModel model = new TokenNameFinderModel(is);
     is.close();
