@@ -271,6 +271,7 @@ public class LoginController implements AllAccessible {
     JFXButton logoutButton = (JFXButton) nodeList.get(5);
     JFXButton exitButton = (JFXButton) nodeList.get(6);
     StackPane stackPane = (StackPane) nodeList.get(8);
+    JFXNodesList pagesBtn = (JFXNodesList) nodeList.get(10);
 
     topButtons.setLayoutX(
         App.getPrimaryStage().getScene().getWidth() - (topButtons.getWidth() + 26));
@@ -330,6 +331,9 @@ public class LoginController implements AllAccessible {
     //    chatbot.setLayoutX(logoutButton.getLayoutX() - logoutButton.getWidth() - 10);
     chatbot.setLayoutY(logoutButton.getLayoutY() - logoutButton.getWidth());
     chatbot.setLayoutX(exitButton.getLayoutX() + 10);
+
+    pagesBtn.setLayoutX(hospitalImage.getLayoutX() + 20);
+    pagesBtn.setLayoutY(exitButton.getLayoutY() - 10);
   }
 
   @FXML

@@ -7,6 +7,7 @@ import edu.wpi.cs3733.d21.teamD.Ddb.GlobalDb;
 import edu.wpi.cs3733.d21.teamD.views.HomeController;
 import edu.wpi.cs3733.d21.teamD.views.Mapping.MapController;
 import edu.wpi.cs3733.d21.teamD.views.Mapping.ServiceNode;
+import java.io.IOException;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 
@@ -72,7 +73,7 @@ public class ServiceRequestInfoController {
     Status.setPromptText(Sn.getInfo().getStatus());
   }
 
-  public void Update() {
+  public void Update() throws IOException {
 
     System.out.println("EMP:" + Emp.getSelectionModel().getSelectedIndex());
     System.out.println("STATUS:" + Status.getSelectionModel().getSelectedIndex());
@@ -101,6 +102,109 @@ public class ServiceRequestInfoController {
               Sn.getInfo().assignedEmployee,
               Sn.getInfo().getType());
     }
+
+    switch (Sn.getInfo().getType()) {
+      case "EXT":
+        FDatabaseTables.getExternalTransportTable()
+            .updateEntity(
+                GlobalDb.getConnection(),
+                Sn.getInfo().getId(),
+                Sn.getInfo().getStatus(),
+                Sn.getInfo().assignedEmployee);
+        break;
+      case "FLOW":
+        FDatabaseTables.getFloralDeliveryTable()
+            .updateEntity(
+                GlobalDb.getConnection(),
+                Sn.getInfo().getId(),
+                Sn.getInfo().getStatus(),
+                Sn.getInfo().assignedEmployee);
+        break;
+      case "FOOD":
+        FDatabaseTables.getFoodDeliveryTable()
+            .updateEntity(
+                GlobalDb.getConnection(),
+                Sn.getInfo().getId(),
+                Sn.getInfo().getStatus(),
+                Sn.getInfo().assignedEmployee);
+        break;
+      case "LAUN":
+        FDatabaseTables.getLaundryRequestTable()
+            .updateEntity(
+                GlobalDb.getConnection(),
+                Sn.getInfo().getId(),
+                Sn.getInfo().getStatus(),
+                Sn.getInfo().assignedEmployee);
+        break;
+      case "LANG":
+        FDatabaseTables.getLangInterpreterTable()
+            .updateEntity(
+                GlobalDb.getConnection(),
+                Sn.getInfo().getId(),
+                Sn.getInfo().getStatus(),
+                Sn.getInfo().assignedEmployee);
+        break;
+      case "ITRAN":
+        FDatabaseTables.getInternalDeliveryTable()
+            .updateEntity(
+                GlobalDb.getConnection(),
+                Sn.getInfo().getId(),
+                Sn.getInfo().getStatus(),
+                Sn.getInfo().assignedEmployee);
+        break;
+      case "SECUR":
+        FDatabaseTables.getSecurityRequestTable()
+            .updateEntity(
+                GlobalDb.getConnection(),
+                Sn.getInfo().getId(),
+                Sn.getInfo().getStatus(),
+                Sn.getInfo().assignedEmployee);
+        break;
+      case "FACIL":
+        FDatabaseTables.getFacilitiesTable()
+            .updateEntity(
+                GlobalDb.getConnection(),
+                Sn.getInfo().getId(),
+                Sn.getInfo().getStatus(),
+                Sn.getInfo().assignedEmployee);
+        break;
+      case "COMP":
+        FDatabaseTables.getCompRequestTable()
+            .updateEntity(
+                GlobalDb.getConnection(),
+                Sn.getInfo().getId(),
+                Sn.getInfo().getStatus(),
+                Sn.getInfo().assignedEmployee);
+        break;
+      case "AUD":
+        FDatabaseTables.getAudVisTable()
+            .updateEntity(
+                GlobalDb.getConnection(),
+                Sn.getInfo().getId(),
+                Sn.getInfo().getStatus(),
+                Sn.getInfo().assignedEmployee);
+        break;
+      case "SANI":
+        FDatabaseTables.getSanitationServiceTable()
+            .updateEntity(
+                GlobalDb.getConnection(),
+                Sn.getInfo().getId(),
+                Sn.getInfo().getStatus(),
+                Sn.getInfo().assignedEmployee);
+        break;
+      case "MEDD":
+        FDatabaseTables.getMedDeliveryTable()
+            .updateEntity(
+                GlobalDb.getConnection(),
+                Sn.getInfo().getId(),
+                Sn.getInfo().getStatus(),
+                Sn.getInfo().assignedEmployee);
+        break;
+    }
+
+    mapController.clearMap();
+    MapController.ServiceView = false;
+    mapController.LoadServices();
 
     exitpopup();
   }

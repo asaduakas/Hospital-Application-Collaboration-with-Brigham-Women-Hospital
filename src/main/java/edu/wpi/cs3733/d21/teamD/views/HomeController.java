@@ -39,6 +39,7 @@ public class HomeController implements AllAccessible {
   @FXML private JFXButton logoutButton;
   @FXML private JFXButton usersBtn;
 
+  @FXML private ImageView hospitalImage;
   @FXML private JFXButton mapEditing;
   @FXML private JFXButton serviceRequest;
   @FXML private JFXButton covidButton;
@@ -48,6 +49,7 @@ public class HomeController implements AllAccessible {
   @FXML private AnchorPane mainPane;
   @FXML private JFXToggleButton dbToggle;
   @FXML private Pane thePane;
+  @FXML private JFXButton pageButton;
 
   @FXML public ImageView chatbotImage;
   private Boolean mouseOnPopup = false;
@@ -68,6 +70,7 @@ public class HomeController implements AllAccessible {
 
   @FXML
   public void initialize() {
+    initializePages();
     chatbotImage.setOnMousePressed((e) -> chatbotPopUp());
     dbToggleSwitch();
     if (LoginController.getUserCategory() != null) {
@@ -472,6 +475,63 @@ public class HomeController implements AllAccessible {
                 }
               }
             });
+  }
+
+  @FXML
+  private void initializePages() {
+    pageButton.setPrefHeight(60);
+    pageButton.setPrefWidth(60);
+    pageButton.setStyle(
+        "-fx-background-color: #E5E5E5; -fx-background-radius: 60px; -fx-text-fill:  #000000; -fx-font-size: 14; -fx-font-weight: Bold");
+    Text pages = new Text("Pages");
+    //    pages.setStyle("-fx-text-fill:  #000000; -fx-font-size: 14; -fx-font-weight: Bold");
+
+    pageButton.setText(pages.getText());
+
+    JFXButton aboutButton = new JFXButton("ABOUT");
+    aboutButton.setButtonType(JFXButton.ButtonType.FLAT);
+    aboutButton.setStyle(
+        "-fx-background-color: #C8BEFF; -fx-background-radius: 60px; -fx-font-size: 12");
+    aboutButton.setPrefHeight(60);
+    aboutButton.setPrefWidth(60);
+    aboutButton.setOnAction(this::aboutPage);
+
+    JFXButton creditButton = new JFXButton("CREDITS");
+    creditButton.setButtonType(JFXButton.ButtonType.FLAT);
+    creditButton.setStyle(
+        "-fx-background-color: #AB9CFF; -fx-background-radius: 60px; -fx-font-size: 11");
+    creditButton.setPrefHeight(60);
+    creditButton.setPrefWidth(60);
+    creditButton.setOnAction(this::creditsPage);
+
+    JFXNodesList nodeList = new JFXNodesList();
+    nodeList.addAnimatedNode(pageButton);
+    nodeList.addAnimatedNode(aboutButton);
+    nodeList.addAnimatedNode(creditButton);
+    nodeList.setSpacing(20d);
+    mainPane.getChildren().add(nodeList);
+
+    nodeList.setRotate(180);
+  }
+
+  @FXML
+  private void aboutPage(ActionEvent event) {
+    ControllerManager.attemptLoadPopupBlur(
+        "AboutView.fxml",
+        fxmlLoader -> {
+          Pane root = (Pane) fxmlLoader.getRoot();
+          root.setStyle("-fx-background-color: White");
+        });
+  }
+
+  @FXML
+  private void creditsPage(ActionEvent event) {
+    ControllerManager.attemptLoadPopupBlur(
+        "CreditsView.fxml",
+        fxmlLoader -> {
+          Pane root = (Pane) fxmlLoader.getRoot();
+          root.setStyle("-fx-background-color: White");
+        });
   }
 
   public static String getUserCategory() {

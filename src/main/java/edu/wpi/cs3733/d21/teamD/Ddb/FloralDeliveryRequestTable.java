@@ -148,6 +148,20 @@ public class FloralDeliveryRequestTable extends AbsTables {
     return floralData;
   }
 
+  public void updateEntity(Connection conn, int id, String status, String employee) {
+    try {
+      PreparedStatement stmt =
+          conn.prepareStatement(
+              " UPDATE FloralRequests SET status = ?, assignedEmployee = ? WHERE id = ?");
+      stmt.setString(1, status);
+      stmt.setString(2, employee);
+      stmt.setInt(3, id);
+      stmt.executeUpdate();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
   public int getID(Connection conn) {
     int id = 420;
     try {

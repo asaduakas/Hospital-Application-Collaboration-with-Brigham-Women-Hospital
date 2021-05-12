@@ -99,7 +99,6 @@ public class App extends Application {
         App.getPrimaryStage().getScene().getHeight() - (exitButton.getHeight() + 50));
 
     aboutBtns.setLayoutX(hospitalImage.getLayoutX() + 20);
-    System.out.println("this is in the initPage " + hospitalImage.getLayoutX());
     aboutBtns.setLayoutY(exitButton.getLayoutY() - 10);
   }
 
