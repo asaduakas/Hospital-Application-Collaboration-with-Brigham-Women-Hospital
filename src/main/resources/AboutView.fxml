@@ -93,19 +93,19 @@
                <font>
                   <Font size="14.0" />
                </font></Label>
-            <Circle fx:id="kushalCircle" fill="DODGERBLUE" radius="23.0" stroke="BLACK" strokeType="INSIDE" />
-            <Circle fx:id="armanCircle" fill="DODGERBLUE" radius="23.0" stroke="BLACK" strokeType="INSIDE" GridPane.rowIndex="2" />
-            <Circle fx:id="curtisCircle" fill="DODGERBLUE" radius="23.0" stroke="BLACK" strokeType="INSIDE" GridPane.rowIndex="4" />
-            <Circle fx:id="tiaCircle" fill="DODGERBLUE" radius="23.0" stroke="BLACK" strokeType="INSIDE" GridPane.rowIndex="6" />
-            <Circle fx:id="patrickCircle" fill="DODGERBLUE" radius="23.0" stroke="BLACK" strokeType="INSIDE" GridPane.rowIndex="8" />
-            <Circle fx:id="elaineCircle" fill="DODGERBLUE" radius="23.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <Circle fx:id="yiyiCircle" fill="DODGERBLUE" radius="23.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <Circle fx:id="veronicaCircle" fill="DODGERBLUE" radius="23.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" />
-            <Circle fx:id="reaganCircle" fill="DODGERBLUE" radius="23.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-            <Circle fx:id="uriCircle" fill="DODGERBLUE" radius="23.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+            <Circle fx:id="kushalCircle" fill="DODGERBLUE" onMousePressed="#loadDialogK" radius="23.0" stroke="BLACK" strokeType="INSIDE" />
+            <Circle fx:id="armanCircle" fill="DODGERBLUE" onMousePressed="#loadDialogA" radius="23.0" stroke="BLACK" strokeType="INSIDE" GridPane.rowIndex="2" />
+            <Circle fx:id="curtisCircle" fill="DODGERBLUE" onMousePressed="#loadDialogC" radius="23.0" stroke="BLACK" strokeType="INSIDE" GridPane.rowIndex="4" />
+            <Circle fx:id="tiaCircle" fill="DODGERBLUE" onMousePressed="#loadDialogT" radius="23.0" stroke="BLACK" strokeType="INSIDE" GridPane.rowIndex="6" />
+            <Circle fx:id="patrickCircle" fill="DODGERBLUE" onMousePressed="#loadDialogP" radius="23.0" stroke="BLACK" strokeType="INSIDE" GridPane.rowIndex="8" />
+            <Circle fx:id="elaineCircle" fill="DODGERBLUE" onMousePressed="#loadDialogE" radius="23.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Circle fx:id="yiyiCircle" fill="DODGERBLUE" onMousePressed="#loadDialogY" radius="23.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Circle fx:id="veronicaCircle" fill="DODGERBLUE" onMousePressed="#loadDialogV" radius="23.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" />
+            <Circle fx:id="reaganCircle" fill="DODGERBLUE" onMousePressed="#loadDialogR" radius="23.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <Circle fx:id="uriCircle" fill="DODGERBLUE" onMousePressed="#loadDialogU" radius="23.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.rowIndex="8" />
          </children>
       </GridPane>
       <Line endX="524.7777709960938" layoutX="265.0" layoutY="466.0" startX="-255.0" startY="3.0" />
-      <StackPane fx:id="stackPane" layoutX="213.0" layoutY="151.0" prefHeight="217.0" prefWidth="368.0" />
+      <StackPane fx:id="stackPane" layoutX="239.0" layoutY="169.0" prefHeight="187.0" prefWidth="311.0" />
    </children>
 </AnchorPane>
