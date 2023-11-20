@@ -31,15 +31,11 @@ This is the gradle configuration file. Modify this file to add dependencies to y
        of the file
 
 ## .travis.yml
-This is the Travis-CI configuration file. **Only modify this file if you are sure you know what you are doing**
+This is the Travis-CI configuration file.
 
 ## lombox.config
 This is the configuration for [Lombok](https://projectlombok.org/), a very useful java library
- that makes 'enterprise' coding a breeze. **Only modify this file if you are sure you know what you are doing**
-
-## .gitignore
-This file tells git which files to ignore in the repo. It should be correctly configured already
-**Only modify this file if you are sure you know what you are doing**
+ that makes 'enterprise' coding a breeze.
 
 ## .hooks/
 This directory contains a useful git hook that will force your teammates to run tests before
@@ -49,8 +45,7 @@ To install these hooks, simply run `git config core.hookspath .hooks` from the r
 
 ## config/
 Config contains styleguide config files both for checkstyle (another optional plugin for gradle
-) and for intellij. Teams should determine a style guide to follow to make 
-although it is not a requirement for this class.
+) and for intellij.
 
 To install the styleguide scheme into IntelliJ, `Preferences -> Editor -> Code Style -> Scheme
  -> ... -> Import Scheme -> IntelliJ IDEA code style XML`, then select `config/intellij-java
