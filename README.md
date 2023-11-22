@@ -13,15 +13,13 @@ This is the gradle configuration file. Modify this file to add dependencies to y
   
   - `mainClassName`
     - Modifiy this variable to point to your main class. By default it is `Main
-    `, but once you update your teamname package to your team letter you will need to update this
-     path.
+    
      
   - jaCoCo
     - jaCoCo is a JAva COde COverage checker that enforces testing. By default the rules are 25
     % line coverage and 25% branch coverage, but if you would like to be more successful you
      should raise these numbers higher to enforce team members to write more tests. Simply modify
-      the `minimum` values to enforce stricter tests (but do not change to below .25, as that is
-       the required minimum for this class)
+      the `minimum` values to enforce stricter tests
   - spotless
     - spotless is a style guider checker/formatter that will automatically detect if your code
      adheres to an agreed style guide. For this starter code I have defaulted to Google's style
